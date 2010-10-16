@@ -16,12 +16,18 @@ class VimTest(object):
 		self.window = VimWindow(self)
 
 EVALRESULTS = {}
+
 def eval(cmd):
-	""" evaluate command 
+	""" evaluate command
 
 	:returns: TODO
 	"""
 	return EVALRESULTS.get(cmd, None)
+
+CMDRESULTS = {}
+def command(cmd):
+	return CMDRESULTS.get(cmd, None)
+
 
 
 current = VimTest()

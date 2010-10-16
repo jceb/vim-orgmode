@@ -7,7 +7,8 @@ sys.path.append('../ftplugin')
 
 import vim
 
-from orgmode import ORGMODE, Heading
+from orgmode import ORGMODE
+from orgmode.heading import Heading
 
 ORGMODE.debug = True
 
@@ -74,6 +75,8 @@ Bla Bla bla bla
 
 		# test backward movement
 		vim.current.window.cursor = (19, 6)
+		navigator.previous()
+		self.assertEqual(vim.current.window.cursor, (18, 3))
 		navigator.previous()
 		self.assertEqual(vim.current.window.cursor, (17, 3))
 		navigator.previous()

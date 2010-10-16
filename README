@@ -1,1 +1,8 @@
 An attempt to build org-mode for vim: http://orgmode.org
+
+TODO
+- implement org-menu
+- implement key registration, keep in mind that the user might want to
+  customize the key bindings
+- implement edit plugin
+- implement show/hide plugin

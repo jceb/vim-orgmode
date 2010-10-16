@@ -1,4 +1,7 @@
-from orgmode import echo, Heading, ORGMODE, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode import echo, ORGMODE
+from orgmode.menu import SubMenu, HorizontalLine, ActionEntry
+from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
+
 import vim
 
 class Navigator(object):
@@ -6,6 +9,7 @@ class Navigator(object):
 
 	def __init__(self):
 		object.__init__(self)
+		self.menu = ORGMODE.orgmenu + SubMenu('Navigate Headings')
 
 	def parent(self):
 		"""
@@ -35,6 +39,9 @@ class Navigator(object):
 			if not (heading or focus_heading):
 				echo('No heading found')
 				return
+		if direction == DIRECTION_BACKWARD:
+			if vim.current.window.cursor[0] - 1 != heading.start:
+				focus_heading = heading
 
 		if not focus_heading:
 			if direction == DIRECTION_FORWARD and heading.children:
@@ -79,3 +86,8 @@ class Navigator(object):
 		Focus next heading
 		"""
 		self._focus_heading(True)
+
+	def register(self):
+		self.menu + ActionEntry('Up', ':py ORGMODE.plugins["Navigator"].parent()<CR>', '???')
+		self.menu + ActionEntry('Next', ':py ORGMODE.plugins["Navigator"].next()<CR>', '}')
+		self.menu + ActionEntry('Previous', ':py ORGMODE.plugins["Navigator"].previous()<CR>', '{')
