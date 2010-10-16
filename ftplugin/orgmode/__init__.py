@@ -1,17 +1,55 @@
 # -*- coding: utf-8 -*-
 
 import vim
+
 import types
+import imp
+
+import orgmode.plugins
+
+__all__ = ['echo', 'echom', 'echoe', 'Heading', 'ORGMODE', 'DIRECTION_FORWARD', 'DIRECTION_BACKWARD', 'MODE_STAR', 'MODE_INDENT']
+
+def echo(message):
+	"""
+	Print a regular message that will not be visible to the user when
+	multiple lines are printed
+	"""
+	print message
+
+def echom(message):
+	"""
+	Print a regular message that will be visible to the user, even when
+	multiple lines are printed
+	"""
+	# probably some escaping is needed here
+	vim.command(':echomsg "%s"' % message)
+
+def echoe(message):
+	"""
+	Print an error message. This should only be used for serious errors!
+	"""
+	# probably some escaping is needed here
+	print message
+	#vim.command(':echoerr "%s"' % message)
+
+
+DIRECTION_FORWARD  = True
+DIRECTION_BACKWARD = False
+
+MODE_STAR   = True
+MODE_INDENT = False
 
 class Heading(object):
 	""" Structural heading object """
 
-	def __init__(self, start, end=None, mode=True):
+	def __init__(self, start, end=None, mode=MODE_STAR):
 		object.__init__(self)
 
 		self._start = start
 		self._end = end
 
+		if mode not in (MODE_STAR, MODE_INDENT):
+			raise ValueError('Parameter mode is not in (MODE_STAR, MODE_INDENT)')
 		self._mode = mode
 		self._level = Heading.identify_heading(vim.current.buffer[self.start], mode=self._mode)
 
@@ -105,12 +143,12 @@ class Heading(object):
 							start = heading.children[-1].start + 1
 
 					# * Heading 1 <- self
-					# * Heading 1 <- sibling
+					# * Heading 2 <- sibling
 					elif heading.level == self.level:
 						if self._next_sibling == None:
 							self._next_sibling = heading
 							heading._previous_sibling = self
-							break
+						break
 
 					# * Heading 1
 					#  * Heading 2 <- parent
@@ -121,7 +159,7 @@ class Heading(object):
 						if self._next_sibling == None:
 							self._next_sibling = heading
 							heading._previous_sibling = self
-							break
+						break
 
 					# * Heading 1
 					#  * Heading 2 <- self
@@ -157,7 +195,7 @@ class Heading(object):
 					heading = previous
 					previous = heading.previous_sibling
 				while True:
-					heading = Heading.find_heading(heading.start - 1, False, mode=self._mode)
+					heading = Heading.find_heading(heading.start - 1, DIRECTION_BACKWARD, mode=self._mode)
 					if heading.start == self.start:
 						break
 					if heading:
@@ -186,8 +224,9 @@ class Heading(object):
 		def fget(self):
 			if self._previous_sibling == None:
 				heading = self
+				tmp_heading = None
 				while True:
-					heading = Heading.find_heading(heading.start - 1, False, mode=self._mode)
+					heading = Heading.find_heading(heading.start - 1, DIRECTION_BACKWARD, mode=self._mode)
 					if heading:
 						if heading.start == self.start:
 							break
@@ -198,12 +237,21 @@ class Heading(object):
 						elif heading.level < self.level:
 							if self._parent == None:
 								self._parent = heading
+							if tmp_heading:
+								self._previous_sibling = tmp_heading
+								tmp_heading._parent = heading
+								tmp_heading._next_sibling = self
+								tmp_heading = None
 							sibling = self
 							while sibling:
 								if sibling._parent == None:
 									sibling._parent = heading
 								sibling = sibling.next_sibling
 							break
+						else:
+							# save previous heading, it might have a wrong
+							# level but still is a sibling
+							tmp_heading = heading
 					else:
 						break
 			return self._previous_sibling
@@ -231,7 +279,7 @@ class Heading(object):
 	next_sibling = property(**next_sibling())
 
 	@classmethod
-	def identify_heading(cls, line, mode=True):
+	def identify_heading(cls, line, mode=MODE_STAR):
 		""" Test if a certain line is a heading or not.
 
 		:line: the line to check
@@ -242,7 +290,7 @@ class Heading(object):
 		level = 0
 		if not line:
 			return None
-		if mode:
+		if mode == MODE_STAR:
 			for i in xrange(0, len(line)):
 				if line[i] == '*':
 					level += 1
@@ -261,10 +309,10 @@ class Heading(object):
 					return None
 
 	@classmethod
-	def find_heading(cls, start_line, direction=True, mode=True):
+	def find_heading(cls, start_line, direction=DIRECTION_FORWARD, mode=MODE_STAR):
 		""" Find heading in the given direction
 
-		:direction: downward == True, upward == False
+		:direction: downward == DIRECTION_FORWARD, upward == DIRECTION_BACKWARD
 
 		:returns: line in buffer or None
 		"""
@@ -279,7 +327,7 @@ class Heading(object):
 
 		tmp_line = start_line
 		# Search heading upwards
-		if direction:
+		if direction == DIRECTION_FORWARD:
 			while tmp_line < len_cb:
 				if Heading.identify_heading(cb[tmp_line], mode=mode) != None:
 					return Heading(tmp_line, mode=mode)
@@ -291,26 +339,61 @@ class Heading(object):
 				tmp_line -= 1
 
 	@classmethod
-	def current_heading(cls, mode=True):
-		""" Find the current heading and return the related object
+	def current_heading(cls, mode=MODE_STAR):
+		""" Find the current heading (search backward) and return the related object
 
 		:returns: Heading object or None
 		"""
-		heading = Heading.find_heading(vim.current.window.cursor[0] - 1, False, mode)
-		if heading != None:
-			return heading
+		return Heading.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_BACKWARD, mode)
+
+	@classmethod
+	def next_heading(cls, mode=MODE_STAR):
+		""" Find the next heading (search forward) and return the related object
+
+		:returns: Heading object or None
+		"""
+		return Heading.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_FORWARD, mode)
+
+class Settings(object):
+	""" OrgMode settings """
+
+	SCOPE_VIM = 'vim'
+	SCOPE_FILE = 'file'
+
+	def __init__(self):
+		object.__init__(self)
+
+	def register_setting(self, setting, allowed_scopes):
+		pass
+
+class PluginError(Exception):
+	def __init__(self, message):
+		Exception.__init__(self, message)
 
 class OrgMode(object):
 	""" Vim Buffer """
 
-	def __init__(self, mode=True):
-		""" TODO: Fill me in
-
-		:text: TODO
-		"""
+	def __init__(self, mode=MODE_STAR):
 		object.__init__(self)
 
+		if mode not in (MODE_STAR, MODE_INDENT):
+			raise ValueError('Parameter mode is not in (MODE_STAR, MODE_INDENT)')
 		self._mode = mode
+		self._settings = None
+
+		self.debug = False
+
+		self._plugins = {}
+
+	@property
+	def plugins(self):
+		return self._plugins.copy()
+
+	@property
+	def settings(self):
+		if self._settings == None:
+			self._settings = Settings()
+		return self._settings
 
 	@property
 	def mode(self):
@@ -320,7 +403,48 @@ class OrgMode(object):
 		pass
 
 	def register_plugin(self, plugin):
-		print 'register plugin %s' % plugin
+		if not isinstance(plugin, basestring):
+			raise ValueError('Parameter plugin is not of type string')
+
+		if self._plugins.has_key(plugin):
+			raise PluginError('Plugin %s has already been loaded')
+
+		# a python module
+		module = None
+
+		# actual plugin class
+		_class = None
+
+		# locate module and initialize plugin class
+		try:
+			module = imp.find_module(plugin, orgmode.plugins.__path__)
+		except ImportError, e:
+			echom('Plugin not found: %s')
+			if self.debug:
+				raise e
+			return
+
+		if not module:
+			echom('Plugin not found: %s\n')
+			return
+
+		try:
+			module = imp.load_module(plugin, *module)
+			if not hasattr(module, plugin):
+				echoe('Unable to activate plugin: %s' % plugin)
+				if self.debug:
+					raise PluginError('Unable to find class %s' % plugin)
+				return
+			_class = getattr(module, plugin)
+			self._plugins[plugin] = _class()
+			if self.debug:
+				echo('Plugin registered: %s' % plugin)
+			return self._plugins[plugin]
+		except Exception, e:
+			echoe('Unable to activate plugin: %s' % plugin)
+			if self.debug:
+				raise e
+			return
 
 	def unregister_menu(self):
 		pass
@@ -334,11 +458,7 @@ class OrgMode(object):
 	def register_keybinding(self):
 		pass
 
-	def find_current_heading(self, mode=True):
-		""" TODO: Docstring for find_current_heading
-
-		:returns: TODO
-		"""
+	def find_current_heading(self, mode=MODE_STAR):
 		heading = Heading.current_heading(mode)
 		if heading:
 			if heading.parent:
