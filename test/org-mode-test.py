@@ -20,6 +20,30 @@ class TestSequenceFunctions(unittest.TestCase):
 				"g:orgmode_plugins": ['Todo']
 				}
 
+	def test_editstructure(self):
+		vim.current.buffer = """
+* Überschrift 1
+Text 1
+
+Bla bla
+** Überschrift 1.1
+Text 2
+
+Bla Bla bla
+** Überschrift 1.2
+Text 3
+
+**** Überschrift 1.2.1.falsch
+
+Bla Bla bla bla
+*** Überschrift 1.2.1
+* Überschrift 2
+* Überschrift 3
+  asdf sdf
+""".split('\n')
+		ORGMODE.register_plugin('EditStructure')
+		editstructure = ORGMODE.plugins['EditStructure']
+
 	def test_navigator(self):
 		vim.current.buffer = """
 * Überschrift 1
