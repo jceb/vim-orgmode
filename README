@@ -1,10 +1,12 @@
-An attempt to build org-mode for vim: http://orgmode.org
+An attempt to build org-mode for vim (http://orgmode.org)
 
 Information about the license are found in the file LICENSE
 
 TODO
-- implement org-menu
-- implement key registration, keep in mind that the user might want to
+~ implement key registration, keep in mind that the user might want to
   customize the key bindings
 - implement edit plugin
 - implement show/hide plugin
+
+DONE
++ implement org-menu
