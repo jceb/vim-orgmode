@@ -1,19 +1,18 @@
 import vim
 
-MENU_ALL = 'a'
-MENU_NORMAL = 'n'
-MENU_VISUAL = 'v'
-MENU_INSERT = 'i'
+from orgmode.keybinding import Keybinding, MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT
 
 def register_menu(f):
 	def r(*args, **kwargs):
 		p = f(*args, **kwargs)
-		if hasattr(p, 'menu'):
+		if hasattr(p, 'menu') and (isinstance(p.menu, Submenu) \
+				or isinstance(p.menu, HorizontalLine) or isinstance(p.menu, ActionEntry)):
 			p.menu.create()
+		return p
 	return r
 
-class SubMenu(object):
-	""" SubMenu entry """
+class Submenu(object):
+	""" Submenu entry """
 
 	def __init__(self, name, parent=None):
 		object.__init__(self)
@@ -59,15 +58,46 @@ class HorizontalLine(object):
 class ActionEntry(object):
 	""" ActionEntry entry """
 
-	def __init__(self, rname, action, lname=None, mode=MENU_NORMAL, parent=None):
+	def __init__(self, lname, action, rname=None, mode=MODE_NORMAL, parent=None):
+		"""
+		:lname: menu title on the left hand side of the menu entry
+		:action: could be a vim command sequence or an actual Keybinding
+		:rname: menu title that appears on the right hand side of the menu
+				entry. If action is a Keybinding this value ignored and is
+				taken from the Keybinding
+		:mode: defines when the menu entry/action is executable
+		:parent: the parent instance of this object. The only valid parent is Submenu
+		"""
 		object.__init__(self)
-		self.rname = rname
-		self.action = action
-		self.lname = lname
-		if mode not in (MENU_ALL, MENU_NORMAL, MENU_VISUAL, MENU_INSERT):
-			raise ValueError('Parameter mode not in MENU_ALL, MENU_NORMAL, MENU_VISUAL, MENU_INSERT')
-		self.mode = mode
+		self._lname = lname
+		self._action = action
+		self._rname = rname
+		if mode not in (MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT):
+			raise ValueError('Parameter mode not in MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT')
+		self._mode = mode
 		self.parent = parent
+
+	@property
+	def lname(self):
+		return self._lname.replace(' ', '\\ ')
+
+	@property
+	def action(self):
+		if isinstance(self._action, Keybinding):
+			return self._action.action
+		return self._action
+
+	@property
+	def rname(self):
+		if isinstance(self._action, Keybinding):
+			return self._action.key
+		return self._rname
+
+	@property
+	def mode(self):
+		if isinstance(self._action, Keybinding):
+			return self._action.mode
+		return self._mode
 
 	def create(self):
 		menucmd = ':%smenu ' % self.mode
@@ -76,11 +106,14 @@ class ActionEntry(object):
 
 		if self.parent:
 			menu = self.parent.get_menu()
-		menu += '.%s' % self.rname.replace(' ', '\\ ')
+		menu += '.%s' % self.lname
 
-		if self.lname:
-			cmd = '%s %s<Tab>%s %s' % (menucmd, menu, self.lname.replace(' ', '\\ '), self.action)
+		if self.rname:
+			cmd = '%s %s<Tab>%s %s' % (menucmd, menu, self.rname, self.action)
 		else:
 			cmd = '%s %s %s' % (menucmd, menu, self.action)
 
 		vim.command(cmd)
+
+		if isinstance(self._action, Keybinding):
+			self._action.create()

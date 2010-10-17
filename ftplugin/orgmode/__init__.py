@@ -8,6 +8,7 @@ import time
 
 import orgmode.plugins
 import orgmode.menu
+import orgmode.keybinding
 from orgmode.exceptions import PluginError
 
 __all__ = ['echo', 'echom', 'echoe', 'ORGMODE', 'MODE_STAR', 'MODE_INDENT']
@@ -48,7 +49,7 @@ class OrgMode(object):
 		self._mode = mode
 		self._settings = None
 		self.register_menu = True
-		self.orgmenu = orgmode.menu.SubMenu('Org')
+		self.orgmenu = orgmode.menu.Submenu('&Org')
 
 		self.debug = False
 
@@ -62,6 +63,7 @@ class OrgMode(object):
 	def mode(self):
 		return self._mode
 
+	@orgmode.keybinding.register_keybindings
 	@orgmode.menu.register_menu
 	def register_plugin(self, plugin):
 		if not isinstance(plugin, basestring):
@@ -130,5 +132,5 @@ if vim.eval('exists("g:orgmode_plugins")'):
 		ORGMODE.register_plugin(PLUGINS)
 	elif isinstance(PLUGINS, types.ListType) or \
 			isinstance(PLUGINS, types.TupleType):
-				for p in PLUGINS:
-					ORGMODE.register_plugin(p)
+		for p in PLUGINS:
+			ORGMODE.register_plugin(p)

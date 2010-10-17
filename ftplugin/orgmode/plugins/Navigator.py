@@ -1,5 +1,6 @@
 from orgmode import echo, ORGMODE
-from orgmode.menu import SubMenu, HorizontalLine, ActionEntry
+from orgmode.menu import Submenu, HorizontalLine, ActionEntry
+from orgmode.keybinding import Keybinding
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
@@ -9,7 +10,8 @@ class Navigator(object):
 
 	def __init__(self):
 		object.__init__(self)
-		self.menu = ORGMODE.orgmenu + SubMenu('Navigate Headings')
+		self.menu = ORGMODE.orgmenu + Submenu('&Navigate Headings')
+		self.keybindings = []
 
 	def parent(self):
 		"""
@@ -88,6 +90,6 @@ class Navigator(object):
 		self._focus_heading(True)
 
 	def register(self):
-		self.menu + ActionEntry('Up', ':py ORGMODE.plugins["Navigator"].parent()<CR>', '???')
-		self.menu + ActionEntry('Next', ':py ORGMODE.plugins["Navigator"].next()<CR>', '}')
-		self.menu + ActionEntry('Previous', ':py ORGMODE.plugins["Navigator"].previous()<CR>', '{')
+		self.menu + ActionEntry('Up', Keybinding('g{', ':py ORGMODE.plugins["Navigator"].parent()<CR>'))
+		self.menu + ActionEntry('Next', Keybinding('}', ':py ORGMODE.plugins["Navigator"].next()<CR>'))
+		self.menu + ActionEntry('Previous', Keybinding('{', ':py ORGMODE.plugins["Navigator"].previous()<CR>'))
