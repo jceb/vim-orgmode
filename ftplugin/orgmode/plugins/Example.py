@@ -12,7 +12,7 @@ class Example(object):
 		""" Initialize plugin """
 		object.__init__(self)
 		# menu entries this plugin should create
-		self.menu = ORGMODE.menu + Submenu('Example')
+		self.menu = ORGMODE.orgmenu + Submenu('Example')
 
 		# key bindings for this plugin
 		# key bindings are also registered through the menu so only additional
