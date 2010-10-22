@@ -1,4 +1,4 @@
-from orgmode import echo, ORGMODE
+from orgmode import echo, ORGMODE, apply_count
 from orgmode.menu import Submenu, HorizontalLine, ActionEntry
 from orgmode.keybinding import Keybinding
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
@@ -13,9 +13,12 @@ class Navigator(object):
 		self.menu = ORGMODE.orgmenu + Submenu('&Navigate Headings')
 		self.keybindings = []
 
+	@apply_count
 	def parent(self):
 		"""
 		Focus parent heading
+
+		:returns: parent heading or None
 		"""
 		heading = Heading.current_heading()
 		if not heading:
@@ -23,15 +26,17 @@ class Navigator(object):
 			return
 
 		if heading.parent:
-			vim.current.window.cursor = (heading.parent.start + 1, 0)
+			vim.current.window.cursor = (heading.parent.start + 1, heading.parent.level + 2)
+			return heading.parent
 		else:
 			echo('No parent heading found')
 
-	def _focus_heading(self, direction=DIRECTION_FORWARD):
+	def _focus_heading(self, direction=DIRECTION_FORWARD, test_count=None):
 		"""
 		Focus next or previous heading in the given direction
 
 		:direction: True for next heading, False for previous heading
+		:returns: next heading or None
 		"""
 		heading = Heading.current_heading()
 		focus_heading = None
@@ -76,18 +81,21 @@ class Navigator(object):
 			return
 
 		vim.current.window.cursor = (focus_heading.start + 1, focus_heading.level + 2)
+		return focus_heading
 
+	@apply_count
 	def previous(self):
 		"""
 		Focus previous heading
 		"""
-		self._focus_heading(False)
+		return self._focus_heading(False)
 
+	@apply_count
 	def next(self):
 		"""
 		Focus next heading
 		"""
-		self._focus_heading(True)
+		return self._focus_heading(True)
 
 	def register(self):
 		self.menu + ActionEntry('Up', Keybinding('g{', ':py ORGMODE.plugins["Navigator"].parent()<CR>'))

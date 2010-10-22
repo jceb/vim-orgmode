@@ -13,6 +13,28 @@ from orgmode.exceptions import PluginError
 
 __all__ = ['echo', 'echom', 'echoe', 'ORGMODE', 'MODE_STAR', 'MODE_INDENT']
 
+def apply_count(f):
+	"""
+	Decorator which executes function v:count times
+	"""
+	def r(*args, **kwargs):
+		count = 0
+		try:
+			count = int(vim.eval('v:count'))
+			if kwargs.has_key('test_count'):
+				count = kwargs['test_count']
+				del kwargs['test_count']
+		except Exception, e:
+			pass
+
+		res = f(*args, **kwargs)
+		count -= 1
+		while res and count > 0:
+			f(*args, **kwargs)
+			count -= 1
+		return res
+	return r
+
 def echo(message):
 	"""
 	Print a regular message that will not be visible to the user when

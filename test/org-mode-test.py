@@ -17,7 +17,8 @@ class TestSequenceFunctions(unittest.TestCase):
 	def setUp(self):
 		vim.EVALRESULTS = {
 				'exists("g:orgmode_plugins")': True,
-				"g:orgmode_plugins": ['Todo']
+				"g:orgmode_plugins": ['Todo'],
+				"v:count": 0
 				}
 
 	def test_editstructure(self):
@@ -69,6 +70,7 @@ Bla Bla bla bla
 		ORGMODE.register_plugin('Navigator')
 		navigator = ORGMODE.plugins['Navigator']
 
+		# test movement outside any heading
 		vim.current.window.cursor = (0, 0)
 		navigator.previous()
 		self.assertEqual(vim.current.window.cursor, (0, 0))
@@ -92,10 +94,29 @@ Bla Bla bla bla
 		navigator.next()
 		self.assertEqual(vim.current.window.cursor, (18, 3))
 
-		# don't move cursor if last heading is already focussed
+		## don't move cursor if last heading is already focussed
 		vim.current.window.cursor = (19, 6)
 		navigator.next()
 		self.assertEqual(vim.current.window.cursor, (19, 6))
+
+		## test movement with count
+		vim.current.window.cursor = (2, 0)
+		navigator.next(test_count=-1)
+		self.assertEqual(vim.current.window.cursor, (6, 4))
+
+		vim.current.window.cursor = (2, 0)
+		navigator.next(test_count=0)
+		self.assertEqual(vim.current.window.cursor, (6, 4))
+
+		vim.current.window.cursor = (2, 0)
+		navigator.next(test_count=1)
+		self.assertEqual(vim.current.window.cursor, (6, 4))
+		navigator.next(test_count=3)
+		self.assertEqual(vim.current.window.cursor, (16, 5))
+		navigator.next(test_count=3)
+		self.assertEqual(vim.current.window.cursor, (18, 3))
+		navigator.next(test_count=3)
+		self.assertEqual(vim.current.window.cursor, (18, 3))
 
 		# test backward movement
 		vim.current.window.cursor = (19, 6)
@@ -112,7 +133,66 @@ Bla Bla bla bla
 		navigator.previous()
 		self.assertEqual(vim.current.window.cursor, (6, 4))
 		navigator.previous()
+		self.assertEqual(vim.current.window.cursor, (2, 3))
+
+		## test movement with count
+		vim.current.window.cursor = (19, 6)
+		navigator.previous(test_count=-1)
+		self.assertEqual(vim.current.window.cursor, (18, 3))
+
+		vim.current.window.cursor = (19, 6)
+		navigator.previous(test_count=0)
+		self.assertEqual(vim.current.window.cursor, (18, 3))
+
+		vim.current.window.cursor = (19, 6)
+		navigator.previous(test_count=3)
+		self.assertEqual(vim.current.window.cursor, (16, 5))
+		navigator.previous(test_count=4)
+		self.assertEqual(vim.current.window.cursor, (2, 3))
+		navigator.previous(test_count=4)
+		self.assertEqual(vim.current.window.cursor, (2, 3))
+
+		# test movement to parent
 		vim.current.window.cursor = (2, 0)
+		navigator.parent()
+		self.assertEqual(vim.current.window.cursor, (2, 0))
+
+		vim.current.window.cursor = (3, 4)
+		navigator.parent()
+		self.assertEqual(vim.current.window.cursor, (3, 4))
+
+		vim.current.window.cursor = (16, 4)
+		navigator.parent()
+		self.assertEqual(vim.current.window.cursor, (10, 4))
+		navigator.parent()
+		self.assertEqual(vim.current.window.cursor, (2, 3))
+
+		vim.current.window.cursor = (15, 6)
+		navigator.parent()
+		self.assertEqual(vim.current.window.cursor, (10, 4))
+		navigator.parent()
+		self.assertEqual(vim.current.window.cursor, (2, 3))
+
+		## test movement with count
+		vim.current.window.cursor = (16, 4)
+		navigator.parent(test_count=-1)
+		self.assertEqual(vim.current.window.cursor, (10, 4))
+
+		vim.current.window.cursor = (16, 4)
+		navigator.parent(test_count=0)
+		self.assertEqual(vim.current.window.cursor, (10, 4))
+
+		vim.current.window.cursor = (16, 4)
+		navigator.parent(test_count=1)
+		self.assertEqual(vim.current.window.cursor, (10, 4))
+
+		vim.current.window.cursor = (16, 4)
+		navigator.parent(test_count=2)
+		self.assertEqual(vim.current.window.cursor, (2, 3))
+
+		vim.current.window.cursor = (16, 4)
+		navigator.parent(test_count=3)
+		self.assertEqual(vim.current.window.cursor, (2, 3))
 
 	def test_heading_structure_normal(self):
 		vim.current.buffer = """
