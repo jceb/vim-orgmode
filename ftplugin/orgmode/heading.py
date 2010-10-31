@@ -43,7 +43,19 @@ class Heading(object):
 	@property
 	def end(self):
 		if not self._end:
-			self._end = Heading.find_heading(self.start, mode=self._mode)
+			tmp = len(vim.current.buffer)
+			if self.children:
+				tmp = self.children[0].start - 1
+			elif self.next_sibling:
+				tmp = self.next_sibling.start - 1
+			else:
+				p = self.parent
+				while p:
+					if p.next_sibling:
+						tmp = p.next_sibling.start - 1
+						break
+					p = p.parent
+			self._end = tmp
 		return self._end
 
 	def has_children(self):

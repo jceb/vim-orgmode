@@ -1,6 +1,6 @@
 from orgmode import echo, ORGMODE, apply_count
 from orgmode.menu import Submenu, HorizontalLine, ActionEntry
-from orgmode.keybinding import Keybinding
+from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_ALL
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
@@ -14,7 +14,7 @@ class Navigator(object):
 		self.keybindings = []
 
 	@apply_count
-	def parent(self):
+	def parent(self, visual=False):
 		"""
 		Focus parent heading
 
@@ -26,7 +26,50 @@ class Navigator(object):
 			return
 
 		if heading.parent:
-			vim.current.window.cursor = (heading.parent.start + 1, heading.parent.level + 2)
+			if visual:
+				current = vim.current.window.cursor[0]
+				start = int(vim.eval('line("\'<")'))
+				end = int(vim.eval('line("\'>")'))
+
+				pstart = heading.parent.start + 1
+				pend = heading.parent.end + 1
+				switch_cursor = True
+
+				# |visual start <- cursor position: |
+				# selection end
+				if current == start:
+					# parent here
+					# |visual start <- cursor position: |
+					# selection end
+					start = pstart
+
+				# visual start <- cursor position: |
+				# selection end|
+				else:
+
+					# parent here
+					# visual start <- cursor position: |
+					# selection end|
+					if pstart < start:
+						end = start
+						start = pstart
+
+					# visual start <- cursor position: |
+					# parent here
+					# selection end|
+
+					# visual start <- cursor position: |
+					# selection end|
+					# parent here
+					else:
+						end = pstart
+						switch_cursor = False
+
+				vim.command('normal %dggV%dgg' % (start, end))
+				if switch_cursor:
+					vim.command('normal o')
+			else:
+				vim.current.window.cursor = (heading.parent.start + 1, heading.parent.level + 2)
 			return heading.parent
 		else:
 			echo('No parent heading found')
@@ -101,3 +144,6 @@ class Navigator(object):
 		self.menu + ActionEntry('Up', Keybinding('g{', ':py ORGMODE.plugins["Navigator"].parent()<CR>'))
 		self.menu + ActionEntry('Next', Keybinding('}', ':py ORGMODE.plugins["Navigator"].next()<CR>'))
 		self.menu + ActionEntry('Previous', Keybinding('{', ':py ORGMODE.plugins["Navigator"].previous()<CR>'))
+		self.keybindings.append(Keybinding('g{', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].parent(visual=True)<CR>', mode=MODE_VISUAL))
+		self.keybindings.append(Keybinding('{', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].previous(visual=True)<CR>', mode=MODE_VISUAL))
+		self.keybindings.append(Keybinding('}', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].next(visual=True)<CR>', mode=MODE_VISUAL))
