@@ -43,7 +43,7 @@ class Heading(object):
 	@property
 	def end(self):
 		if not self._end:
-			tmp = len(vim.current.buffer)
+			tmp = len(vim.current.buffer) - 1
 			if self.children:
 				tmp = self.children[0].start - 1
 			elif self.next_sibling:
@@ -57,6 +57,15 @@ class Heading(object):
 					p = p.parent
 			self._end = tmp
 		return self._end
+
+	@property
+	def end_of_last_child(self):
+		if self.has_children():
+			child = self.children[-1]
+			while child.has_children():
+				child = child.children[-1]
+			return child.end
+		return self.end
 
 	def has_children(self):
 		if self._first_child == None:

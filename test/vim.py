@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 class VimWindow(object):
 	""" Docstring for VimWindow """
 
@@ -24,10 +26,10 @@ def eval(cmd):
 	"""
 	return EVALRESULTS.get(cmd, None)
 
+CMDHISTORY = []
 CMDRESULTS = {}
 def command(cmd):
+	CMDHISTORY.append(cmd)
 	return CMDRESULTS.get(cmd, None)
-
-
 
 current = VimTest()

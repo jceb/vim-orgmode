@@ -25,9 +25,6 @@ def apply_count(f):
 			# visual count is not implemented yet
 			#if not count:
 			#	count = int(vim.eval('v:prevcount'))
-			if kwargs.has_key('test_count'):
-				count = kwargs['test_count']
-				del kwargs['test_count']
 		except Exception, e:
 			pass
 

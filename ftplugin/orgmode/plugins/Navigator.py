@@ -1,6 +1,6 @@
 from orgmode import echo, ORGMODE, apply_count
 from orgmode.menu import Submenu, HorizontalLine, ActionEntry
-from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_ALL
+from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_ALL, MODE_NORMAL
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
@@ -14,7 +14,7 @@ class Navigator(object):
 		self.keybindings = []
 
 	@apply_count
-	def parent(self, visual=False):
+	def parent(self, visualmode=False):
 		"""
 		Focus parent heading
 
@@ -25,56 +25,90 @@ class Navigator(object):
 			echo('No heading found')
 			return
 
-		if heading.parent:
-			if visual:
-				current = vim.current.window.cursor[0]
-				start = int(vim.eval('line("\'<")'))
-				end = int(vim.eval('line("\'>")'))
-
-				pstart = heading.parent.start + 1
-				pend = heading.parent.end + 1
-				switch_cursor = True
-
-				# |visual start <- cursor position: |
-				# selection end
-				if current == start:
-					# parent here
-					# |visual start <- cursor position: |
-					# selection end
-					start = pstart
-
-				# visual start <- cursor position: |
-				# selection end|
-				else:
-
-					# parent here
-					# visual start <- cursor position: |
-					# selection end|
-					if pstart < start:
-						end = start
-						start = pstart
-
-					# visual start <- cursor position: |
-					# parent here
-					# selection end|
-
-					# visual start <- cursor position: |
-					# selection end|
-					# parent here
-					else:
-						end = pstart
-						switch_cursor = False
-
-				vim.command('normal %dggV%dgg' % (start, end))
-				if switch_cursor:
-					vim.command('normal o')
-			else:
-				vim.current.window.cursor = (heading.parent.start + 1, heading.parent.level + 2)
-			return heading.parent
-		else:
+		if not heading.parent:
 			echo('No parent heading found')
+			return
 
-	def _focus_heading(self, direction=DIRECTION_FORWARD, test_count=None):
+		if visualmode:
+			self._change_visual_selection(heading.parent, direction=DIRECTION_BACKWARD)
+		else:
+			vim.current.window.cursor = (heading.parent.start + 1, heading.parent.level + 2)
+		return heading.parent
+
+
+	def _change_visual_selection(self, heading, direction=DIRECTION_FORWARD, noheadingfound=False):
+		visualmode = vim.eval('visualmode()')
+		current = vim.current.window.cursor[0]
+		line_start, col_start = [ int(i) for i in vim.eval('getpos("\'<")')[1:3] ]
+		line_end, col_end = [ int(i) for i in vim.eval('getpos("\'>")')[1:3] ]
+
+		f_start = heading.start + 1
+		f_end = heading.end + 1
+		swap_cursor = True
+
+		# |visual start <- cursor position: |
+		# selection end
+		if current == line_start:
+			if (direction == DIRECTION_FORWARD and line_end < f_start) or noheadingfound:
+				swap_cursor = False
+
+			# focus heading HERE
+			# |visual start <- cursor position: |
+			# selection end
+
+			# |visual start <- cursor position: |
+			# focus heading HERE
+			# selection end
+			if (f_start < line_start or f_start < line_end) and not noheadingfound:
+				line_start = f_start
+
+			# |visual start <- cursor position: |
+			# selection end
+			# focus heading HERE
+			else:
+				line_start = line_end
+				line_end = f_end
+
+		# visual start <- cursor position: |
+		# selection end|
+		else:
+			# focus heading HERE
+			# visual start <- cursor position: |
+			# selection end|
+			if f_start < line_start:
+				line_end = line_start
+				line_start = f_start
+
+			# visual start <- cursor position: |
+			# selection end and focus heading end HERE|
+
+			# visual start <- cursor position: |
+			# focus heading HERE
+			# selection end|
+
+			# visual start <- cursor position: |
+			# selection end|
+			# focus heading HERE
+			else:
+				if direction == DIRECTION_FORWARD:
+					if current < f_start - 1:
+						# focus end of previous heading instead of beginning of next heading
+						line_end = f_start - 1
+					else:
+						# focus end of next heading
+						line_end = f_end
+				else:
+					line_end = f_start
+				swap_cursor = False
+
+		move_col_start = '%dl' % (col_start - 1) if (col_start - 1) else ''
+		move_col_end = '%dl' % (col_end - 1) if (col_end - 1) else ''
+		swap = 'o' if swap_cursor else ''
+
+		vim.command('normal %dgg%s%s%dgg%s%s' % \
+				(line_start, move_col_start, visualmode, line_end, move_col_end, swap))
+
+	def _focus_heading(self, direction=DIRECTION_FORWARD, visualmode=False):
 		"""
 		Focus next or previous heading in the given direction
 
@@ -116,34 +150,70 @@ class Navigator(object):
 					else:
 						break
 
+		noheadingfound = False
 		if not focus_heading:
-			if direction == DIRECTION_FORWARD:
-				echo('Already focussing last heading')
+			if visualmode:
+				# the cursor seems to be on the last heading of this document
+				# and performes another next-operation
+				focus_heading = heading
+				noheadingfound = True
 			else:
-				echo('Already focussing first heading')
-			return
+				if direction == DIRECTION_FORWARD:
+					echo('Already focussing last heading')
+				else:
+					echo('Already focussing first heading')
+				return
 
-		vim.current.window.cursor = (focus_heading.start + 1, focus_heading.level + 2)
+		if visualmode:
+			self._change_visual_selection(focus_heading, direction=direction, noheadingfound=noheadingfound)
+		else:
+			vim.current.window.cursor = (focus_heading.start + 1, focus_heading.level + 2)
+		if noheadingfound:
+			return
 		return focus_heading
 
 	@apply_count
-	def previous(self):
+	def previous(self, visualmode=None):
 		"""
 		Focus previous heading
 		"""
-		return self._focus_heading(False)
+		return self._focus_heading(direction=DIRECTION_BACKWARD, visualmode=visualmode)
 
 	@apply_count
-	def next(self):
+	def next(self, visualmode=None):
 		"""
 		Focus next heading
 		"""
-		return self._focus_heading(True)
+		return self._focus_heading(direction=DIRECTION_FORWARD, visualmode=visualmode)
+
+	@apply_count
+	def previous_end(self, indent=None, visualmode=None):
+		"""
+		Focus end of (next) heading
+		"""
+		return self._focus_heading(direction=DIRECTION_BACKWARD, visualmode=visualmode)
+
+	@apply_count
+	def next_end(self, indent=None, visualmode=None):
+		"""
+		Focus end of (next) heading
+		"""
+		return self._focus_heading(direction=DIRECTION_FORWARD, visualmode=visualmode)
 
 	def register(self):
 		self.menu + ActionEntry('Up', Keybinding('g{', ':py ORGMODE.plugins["Navigator"].parent()<CR>'))
-		self.menu + ActionEntry('Next', Keybinding('}', ':py ORGMODE.plugins["Navigator"].next()<CR>'))
 		self.menu + ActionEntry('Previous', Keybinding('{', ':py ORGMODE.plugins["Navigator"].previous()<CR>'))
-		self.keybindings.append(Keybinding('g{', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].parent(visual=True)<CR>', mode=MODE_VISUAL))
-		self.keybindings.append(Keybinding('{', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].previous(visual=True)<CR>', mode=MODE_VISUAL))
-		self.keybindings.append(Keybinding('}', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].next(visual=True)<CR>', mode=MODE_VISUAL))
+		self.menu + ActionEntry('Next', Keybinding('}', ':py ORGMODE.plugins["Navigator"].next()<CR>'))
+		self.keybindings.append(Keybinding('g{', '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].parent(visualmode=True)"<CR>', mode=MODE_VISUAL))
+		self.keybindings.append(Keybinding('{', '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].previous(visualmode=True)"<CR>', mode=MODE_VISUAL))
+		self.keybindings.append(Keybinding('}', '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].next(visualmode=True)"<CR>', mode=MODE_VISUAL))
+
+		self.keybindings.append(Keybinding("`{", ':py ORGMODE.plugins[\'Navigator\'].previous_end(indent=True)<CR>', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding("'{", ':py ORGMODE.plugins[\'Navigator\'].previous_end(indent=False)<CR>', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding("`}", ':py ORGMODE.plugins[\'Navigator\'].next_end(indent=True)<CR>', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding("'}", ':py ORGMODE.plugins[\'Navigator\'].next_end(indent=False)<CR>', mode=MODE_NORMAL))
+
+		self.keybindings.append(Keybinding("`{", '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].previous_end(indent=True, visualmode=True)"<CR>', mode=MODE_VISUAL))
+		self.keybindings.append(Keybinding("'{", '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].previous_end(indent=False, visualmode=True)"<CR>', mode=MODE_VISUAL))
+		self.keybindings.append(Keybinding("`}", '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].next_end(indent=True, visualmode=True)"<CR>', mode=MODE_VISUAL))
+		self.keybindings.append(Keybinding("'}", '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].next_end(indent=False, visualmode=True)"<CR>', mode=MODE_VISUAL))
