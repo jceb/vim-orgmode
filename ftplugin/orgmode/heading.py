@@ -28,6 +28,9 @@ class Heading(object):
 		self._first_child = None
 		self._last_child = None
 
+	def __str__(self):
+		return vim.current.buffer[self.start]
+
 	@property
 	def mode(self):
 		return self._mode
@@ -340,3 +343,13 @@ class Heading(object):
 		:returns: Heading object or None
 		"""
 		return Heading.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_FORWARD, mode)
+
+	@classmethod
+	def previous_heading(cls, mode=MODE_STAR):
+		""" Find the next heading (search forward) and return the related object
+
+		:returns: Heading object or None
+		"""
+		h = Heading.current_heading(mode=mode)
+		if h:
+			return Heading.find_heading(h.start - 1, DIRECTION_BACKWARD, mode)

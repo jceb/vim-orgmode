@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from orgmode import echo, ORGMODE, apply_count
 from orgmode.menu import Submenu, HorizontalLine, ActionEntry
 from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_ALL, MODE_NORMAL
@@ -22,21 +24,27 @@ class Navigator(object):
 		"""
 		heading = Heading.current_heading()
 		if not heading:
-			echo('No heading found')
+			if visualmode:
+				vim.command('normal gv')
+			else:
+				echo('No heading found')
 			return
 
 		if not heading.parent:
-			echo('No parent heading found')
+			if visualmode:
+				vim.command('normal gv')
+			else:
+				echo('No parent heading found')
 			return
 
 		if visualmode:
-			self._change_visual_selection(heading.parent, direction=DIRECTION_BACKWARD)
+			self._change_visual_selection(heading, heading.parent, direction=DIRECTION_BACKWARD, parent=True)
 		else:
 			vim.current.window.cursor = (heading.parent.start + 1, heading.parent.level + 2)
 		return heading.parent
 
 
-	def _change_visual_selection(self, heading, direction=DIRECTION_FORWARD, noheadingfound=False):
+	def _change_visual_selection(self, current_heading, heading, direction=DIRECTION_FORWARD, noheadingfound=False, parent=False):
 		visualmode = vim.eval('visualmode()')
 		current = vim.current.window.cursor[0]
 		line_start, col_start = [ int(i) for i in vim.eval('getpos("\'<")')[1:3] ]
@@ -46,59 +54,79 @@ class Navigator(object):
 		f_end = heading.end + 1
 		swap_cursor = True
 
-		# |visual start <- cursor position: |
-		# selection end
+		# << |visual start
+		# selection end >>
 		if current == line_start:
-			if (direction == DIRECTION_FORWARD and line_end < f_start) or noheadingfound:
+			if (direction == DIRECTION_FORWARD and line_end < f_start) or noheadingfound and not direction == DIRECTION_BACKWARD:
 				swap_cursor = False
 
 			# focus heading HERE
-			# |visual start <- cursor position: |
-			# selection end
+			# << |visual start
+			# selection end >>
 
-			# |visual start <- cursor position: |
+			# << |visual start
 			# focus heading HERE
-			# selection end
-			if (f_start < line_start or f_start < line_end) and not noheadingfound:
+			# selection end >>
+			if f_start < line_start and direction == DIRECTION_BACKWARD:
+				if current_heading.start + 1 < line_start and not parent:
+					line_start = current_heading.start + 1
+				else:
+					line_start = f_start
+
+			elif (f_start < line_start or f_start < line_end) and not noheadingfound:
 				line_start = f_start
 
-			# |visual start <- cursor position: |
-			# selection end
-			# focus heading HERE
-			else:
-				line_start = line_end
-				line_end = f_end
-
-		# visual start <- cursor position: |
-		# selection end|
-		else:
-			# focus heading HERE
-			# visual start <- cursor position: |
-			# selection end|
-			if f_start < line_start:
-				line_end = line_start
-				line_start = f_start
-
-			# visual start <- cursor position: |
-			# selection end and focus heading end HERE|
-
-			# visual start <- cursor position: |
-			# focus heading HERE
-			# selection end|
-
-			# visual start <- cursor position: |
-			# selection end|
+			# << |visual start
+			# selection end >>
 			# focus heading HERE
 			else:
 				if direction == DIRECTION_FORWARD:
-					if current < f_start - 1:
+					if line_end < f_start and not line_start == f_start - 1 and current_heading:
+						# focus end of previous heading instead of beginning of next heading
+						line_start = line_end
+						line_end = f_start - 1
+					else:
+						# focus end of next heading
+						line_start = line_end
+						line_end = f_end
+				elif direction == DIRECTION_BACKWARD:
+					if line_end < f_end:
+						pass
+				else:
+					line_start = line_end
+					line_end = f_end
+
+		# << visual start
+		# selection end| >>
+		else:
+			# focus heading HERE
+			# << visual start
+			# selection end| >>
+			if line_start > f_start or \
+					line_start == f_start and line_end <= f_end and direction == DIRECTION_BACKWARD:
+				line_end = line_start
+				line_start = f_start
+
+			# << visual start
+			# selection end and focus heading end HERE| >>
+
+			# << visual start
+			# focus heading HERE
+			# selection end| >>
+
+			# << visual start
+			# selection end| >>
+			# focus heading HERE
+			else:
+				if direction == DIRECTION_FORWARD:
+					if line_end < f_start - 1:
 						# focus end of previous heading instead of beginning of next heading
 						line_end = f_start - 1
 					else:
 						# focus end of next heading
 						line_end = f_end
 				else:
-					line_end = f_start
+					line_end = f_end
 				swap_cursor = False
 
 		move_col_start = '%dl' % (col_start - 1) if (col_start - 1) else ''
@@ -115,15 +143,20 @@ class Navigator(object):
 		:direction: True for next heading, False for previous heading
 		:returns: next heading or None
 		"""
-		heading = Heading.current_heading()
+		current_heading = Heading.current_heading()
+		heading = current_heading
 		focus_heading = None
 		if not heading:
 			if direction == DIRECTION_FORWARD:
 				focus_heading = Heading.next_heading(ORGMODE.mode)
 			if not (heading or focus_heading):
-				echo('No heading found')
+				if visualmode:
+					# restore visual selection when no heading was found
+					vim.command('normal gv')
+				else:
+					echo('No heading found')
 				return
-		if direction == DIRECTION_BACKWARD:
+		elif direction == DIRECTION_BACKWARD and not visualmode:
 			if vim.current.window.cursor[0] - 1 != heading.start:
 				focus_heading = heading
 
@@ -153,8 +186,8 @@ class Navigator(object):
 		noheadingfound = False
 		if not focus_heading:
 			if visualmode:
-				# the cursor seems to be on the last heading of this document
-				# and performes another next-operation
+				# the cursor seems to be on the last or first heading of this
+				# document and performes another next/previous-operation
 				focus_heading = heading
 				noheadingfound = True
 			else:
@@ -165,9 +198,9 @@ class Navigator(object):
 				return
 
 		if visualmode:
-			self._change_visual_selection(focus_heading, direction=direction, noheadingfound=noheadingfound)
+			self._change_visual_selection(current_heading, focus_heading, direction=direction, noheadingfound=noheadingfound)
 		else:
-			vim.current.window.cursor = (focus_heading.start + 1, focus_heading.level + 2)
+			vim.current.window.cursor = (focus_heading.start + 1, focus_heading.level + 1)
 		if noheadingfound:
 			return
 		return focus_heading
