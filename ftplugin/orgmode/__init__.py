@@ -133,20 +133,6 @@ class OrgMode(object):
 				raise e
 			return
 
-	def find_current_heading(self, mode=MODE_STAR):
-		heading = Heading.current_heading(mode)
-		if heading:
-			if heading.parent:
-				print 'parent', vim.current.buffer[heading.parent.start]
-			print heading.level, heading.start, vim.current.buffer[heading.start]
-			print 'children', len(heading.children)
-			if heading.previous_sibling:
-				print 'previous sibling', vim.current.buffer[heading.previous_sibling.start]
-			if heading.next_sibling:
-				print 'next sibling', vim.current.buffer[heading.next_sibling.start]
-		else:
-			print 'nothing found'
-
 ORGMODE = OrgMode()
 
 if vim.eval('exists("g:orgmode_plugins")'):
