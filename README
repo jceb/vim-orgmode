@@ -3,12 +3,15 @@ An attempt to build org-mode for vim (http://orgmode.org)
 Information about the license are found in the file LICENSE
 
 TODO
+- implement M-RET to insert new headings
+- implement TAB to cycle folding
 - implement count for navigator mappings in visual mode
 - allow the user to customize keybindings
 - implement edit structure plugin
 - implement show/hide plugin
 
 DONE
++ implement implement indentation
 + implement ctags to make browsing bigger files easy
 + implement org-menu
 + implement key registration
