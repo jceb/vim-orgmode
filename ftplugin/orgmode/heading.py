@@ -8,11 +8,11 @@ DIRECTION_BACKWARD = False
 class Heading(object):
 	""" Structural heading object """
 
-	def __init__(self, start, end=None, mode=MODE_STAR):
+	def __init__(self, start, mode=MODE_STAR):
 		object.__init__(self)
 
 		self._start = start
-		self._end = end
+		self._end = None
 
 		if mode not in (MODE_STAR, MODE_INDENT):
 			raise ValueError('Parameter mode is not in (MODE_STAR, MODE_INDENT)')
