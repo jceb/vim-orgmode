@@ -12,7 +12,7 @@ class EditStructure(object):
 		""" Initialize plugin """
 		object.__init__(self)
 		# menu entries this plugin should create
-		self.menu = ORGMODE.orgmenu + Submenu('EditStructure')
+		self.menu = ORGMODE.orgmenu + Submenu('&Edit Structure')
 
 		# key bindings for this plugin
 		# key bindings are also registered through the menu so only additional
@@ -86,7 +86,7 @@ class EditStructure(object):
 		"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		self.menu + ActionEntry('New &Heading', Keybinding('o', ':py ORGMODE.plugins["EditStructure"].new_heading_below()<CR>'))
-		self.keybindings.append(Keybinding("O", ':py ORGMODE.plugins[\'EditStructure\'].new_heading_above()<CR>'))
+		self.menu + ActionEntry('New Heading &below', Keybinding('o', ':py ORGMODE.plugins["EditStructure"].new_heading_below()<CR>'))
+		self.menu + ActionEntry('New Heading &above', Keybinding('O', ':py ORGMODE.plugins["EditStructure"].new_heading_above()<CR>'))
 		#self.menu + ActionEntry('Copy/yank Subtree', Keybinding('y}', ':py ORGMODE.plugins["EditStructure"].copy_heading()<CR>'))
 		#self.menu + ActionEntry('Delete Subtree', Keybinding('d}', ':py ORGMODE.plugins["EditStructure"].delete_heading()<CR>'))
