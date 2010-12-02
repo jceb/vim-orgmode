@@ -1,4 +1,4 @@
-from orgmode import echo, ORGMODE
+from orgmode import echo, echom, echoe, ORGMODE
 from orgmode.menu import Submenu, HorizontalLine, ActionEntry
 from orgmode.keybinding import Keybinding
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
@@ -25,3 +25,4 @@ class Example(object):
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
 		self.menu + ActionEntry('Action', Keybinding('keybinding', ':action'))
+		self.keybindings.append(Keybinding("keybinding", ':action'))
