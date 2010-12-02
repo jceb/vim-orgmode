@@ -1,8 +1,10 @@
 class Todo(object):
-	""" Plugin implementing todo lists """
+	""" Implement todo items """
 
 	def __init__(self):
 		object.__init__(self)
+		self.menu = ORGMODE.orgmenu + Submenu('&TODO')
+		self.keybindings = []
 
 	def register(self):
 	    pass
