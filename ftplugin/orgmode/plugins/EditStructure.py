@@ -43,7 +43,7 @@ class EditStructure(object):
 
 	def new_heading(self, below=True):
 		h = Heading.current_heading()
-		if not h:
+		if not h or h.start + 1 != vim.current.window.cursor[0]:
 			if below:
 				vim.eval('feedkeys("o", "n")')
 			else:
