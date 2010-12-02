@@ -16,7 +16,7 @@ from orgmode.heading import Heading, DIRECTION_BACKWARD
 res = -1
 try:
 	line = int(vim.eval('v:lnum'))
-	h = Heading.find_heading(line, direction=DIRECTION_BACKWARD)
+	h = Heading.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 	if h and line != h.start + 1:
 		res = h.level + 1
 except Exception, e:
