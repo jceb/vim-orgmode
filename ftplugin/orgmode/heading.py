@@ -186,9 +186,9 @@ class Heading(object):
 					previous = heading.previous_sibling
 				while True:
 					heading = Heading.find_heading(heading.start - 1, DIRECTION_BACKWARD, mode=self._mode)
-					if heading.start == self.start:
-						break
 					if heading:
+						if heading.start == self.start:
+							break
 						if heading.level < self.level:
 							self._parent = heading
 							sibling = previous

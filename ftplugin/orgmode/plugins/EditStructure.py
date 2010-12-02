@@ -1,4 +1,4 @@
-from orgmode import echo, echom, echoe, ORGMODE
+from orgmode import echo, echom, echoe, ORGMODE, apply_count
 from orgmode.menu import Submenu, HorizontalLine, ActionEntry
 from orgmode.keybinding import Keybinding
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
@@ -76,6 +76,56 @@ class EditStructure(object):
 	def new_heading_above(self):
 		return self.new_heading(False)
 
+	def _change_heading_level(self, level, relative=True):
+		h = Heading.current_heading()
+		if not h or h.start + 1 != vim.current.window.cursor[0]:
+			if (relative and level > 0) or (not relative and level > h.level):
+				vim.eval('feedkeys(">>", "n")')
+			else:
+				vim.eval('feedkeys("<<", "n")')
+			# return True because otherwise apply_count will not work
+			return True
+
+		# don't allow demotion below level 1
+		if h.level == 1 and level < 1:
+			return False
+
+		# reduce level of demotion to a minimum heading level of 1
+		if (h.level + level) < 1:
+			level = h.level - 1
+
+		def indent(heading):
+			if not heading:
+				return
+			start = heading.start
+			tmp = vim.current.buffer[start:]
+			del vim.current.buffer[start:]
+
+			# strip level and add new level
+			tmp[0] = '%s%s' % ('*' * (h.level + level), tmp[0][h.level:])
+
+			vim.current.buffer.append(tmp)
+			for child in heading.children:
+				indent(child)
+
+		# save cursor position
+		c = vim.current.window.cursor[:]
+		indent(h)
+		# indent the promoted/demoted heading
+		vim.command('normal %dggV%dgg=' % (h.start + 1, h.end_of_last_child + 1))
+		# restore cursor position
+		vim.current.window.cursor = (c[0], c[1] + level)
+
+		return True
+
+	@apply_count
+	def demote_heading(self):
+		return self._change_heading_level(-1)
+
+	@apply_count
+	def promote_heading(self):
+		return self._change_heading_level(1)
+
 	#def copy_heading(self):
 	#	self._action_heading('y', Heading.current_heading())
 
@@ -88,5 +138,7 @@ class EditStructure(object):
 		"""
 		self.menu + ActionEntry('New Heading &below', Keybinding('o', ':py ORGMODE.plugins["EditStructure"].new_heading_below()<CR>'))
 		self.menu + ActionEntry('New Heading &above', Keybinding('O', ':py ORGMODE.plugins["EditStructure"].new_heading_above()<CR>'))
+		self.menu + ActionEntry('&Promote Heading', Keybinding('>>', ':py ORGMODE.plugins["EditStructure"].promote_heading()<CR>'))
+		self.menu + ActionEntry('&Demote Heading', Keybinding('<<', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>'))
 		#self.menu + ActionEntry('Copy/yank Subtree', Keybinding('y}', ':py ORGMODE.plugins["EditStructure"].copy_heading()<CR>'))
 		#self.menu + ActionEntry('Delete Subtree', Keybinding('d}', ':py ORGMODE.plugins["EditStructure"].delete_heading()<CR>'))

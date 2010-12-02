@@ -153,6 +153,51 @@ Bla Bla bla bla
 		self.assertEqual(vim.current.buffer[17], '* ')
 		self.assertEqual(vim.current.buffer[18], '* Überschrift 3')
 
+	def test_promote_heading(self):
+		vim.current.window.cursor = (13, 0)
+		self.assertNotEqual(self.editstructure.promote_heading(), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 13ggV15gg=')
+		self.assertEqual(vim.current.buffer[10], 'Text 3')
+		self.assertEqual(vim.current.buffer[11], '')
+		self.assertEqual(vim.current.buffer[12], '***** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[13], '')
+		# actually the indentation comes through vim, just the heading is updated
+		self.assertEqual(vim.current.buffer[14], 'Bla Bla bla bla')
+		self.assertEqual(vim.current.buffer[15], '*** Überschrift 1.2.1')
+		self.assertEqual(vim.current.window.cursor, (13, 1))
+
+	def test_demote_heading(self):
+		vim.current.window.cursor = (13, 0)
+		self.assertNotEqual(self.editstructure.demote_heading(), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 13ggV15gg=')
+		self.assertEqual(vim.current.buffer[10], 'Text 3')
+		self.assertEqual(vim.current.buffer[11], '')
+		self.assertEqual(vim.current.buffer[12], '*** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[13], '')
+		# actually the indentation comes through vim, just the heading is updated
+		self.assertEqual(vim.current.buffer[14], 'Bla Bla bla bla')
+		self.assertEqual(vim.current.buffer[15], '*** Überschrift 1.2.1')
+		self.assertEqual(vim.current.window.cursor, (13, -1))
+
+	def test_demote_level_one_heading(self):
+		vim.current.window.cursor = (2, 0)
+		self.assertEqual(self.editstructure.demote_heading(), False)
+		self.assertEqual(len(vim.CMDHISTORY), 0)
+		self.assertEqual(vim.current.buffer[1], '* Überschrift 1')
+		self.assertEqual(vim.current.window.cursor, (2, 0))
+
+	def test_promote_parent_heading(self):
+		vim.current.window.cursor = (2, 0)
+		self.assertNotEqual(self.editstructure.promote_heading(), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV16gg=')
+		self.assertEqual(vim.current.buffer[1], '** Überschrift 1')
+		self.assertEqual(vim.current.buffer[5], '*** Überschrift 1.1')
+		self.assertEqual(vim.current.buffer[9], '*** Überschrift 1.2')
+		self.assertEqual(vim.current.buffer[12], '***** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[15], '**** Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[16], '* Überschrift 2')
+		self.assertEqual(vim.current.window.cursor, (2, 0))
+
 
 class NavigatorTestCase(unittest.TestCase):
 	def setUp(self):
