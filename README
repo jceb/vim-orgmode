@@ -3,8 +3,8 @@ An attempt to build org-mode for vim (http://orgmode.org)
 Information about the license are found in the file LICENSE
 
 TODO
+- improve tests for Heading.end_of_last_child
 - implement promotion/demotion of headings in visual mode
-- add tests for Heading.end_of_last_child
 - add an additional empty line when adding a new heading
 - implement better object structure for Heading.parent and
   Heading.children. At the moment the already created objects are not
@@ -16,6 +16,8 @@ TODO
 - implement edit structure plugin
 
 DONE
++ implement promotion and demotion for space indented files
++ add tests for Heading.end_of_last_child
 + implement promotion/demotion of headings
 + implement M-RET to insert new headings
 + implement implement indentation

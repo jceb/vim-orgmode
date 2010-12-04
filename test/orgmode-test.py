@@ -7,7 +7,7 @@ sys.path.append('../ftplugin')
 
 import vim
 
-from orgmode import ORGMODE
+from orgmode import ORGMODE, MODE_STAR, MODE_INDENT
 from orgmode.heading import Heading
 
 ORGMODE.debug = True
@@ -31,6 +31,7 @@ def set_visual_selection(visualmode, line_start, line_end, col_start=1, col_end=
 
 class EditStructureTestCase(unittest.TestCase):
 	def setUp(self):
+		self.mode = MODE_STAR
 		vim.CMDHISTORY = []
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
@@ -39,6 +40,9 @@ class EditStructureTestCase(unittest.TestCase):
 				"g:orgmode_plugins": ['EditStructure'],
 				"v:count": 0
 				}
+		if not ORGMODE.plugins.has_key('EditStructure'):
+			ORGMODE.register_plugin('EditStructure')
+		self.editstructure = ORGMODE.plugins['EditStructure']
 		vim.current.buffer = """
 * Überschrift 1
 Text 1
@@ -59,145 +63,258 @@ Bla Bla bla bla
 * Überschrift 3
   asdf sdf
 """.split('\n')
-		if not ORGMODE.plugins.has_key('EditStructure'):
-			ORGMODE.register_plugin('EditStructure')
-		self.editstructure = ORGMODE.plugins['EditStructure']
-
+	
 	def test_new_heading_below_normal_behavior(self):
 		vim.current.window.cursor = (1, 0)
-		self.assertEqual(self.editstructure.new_heading_below(), None)
+		self.assertEqual(self.editstructure.new_heading_below(self.mode), None)
 		self.assertEqual(vim.EVALHISTORY[-1], 'feedkeys("o", "n")')
 
 	def test_new_heading_above_normal_behavior(self):
 		vim.current.window.cursor = (1, 0)
-		self.assertEqual(self.editstructure.new_heading_above(), None)
+		self.assertEqual(self.editstructure.new_heading_above(self.mode), None)
 		self.assertEqual(vim.EVALHISTORY[-1], 'feedkeys("O", "n")')
 
 	def test_new_heading_below(self):
+		leading_char = '*' if self.mode == MODE_STAR else ' '
+
 		vim.current.window.cursor = (2, 0)
-		self.assertNotEqual(self.editstructure.new_heading_below(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 6ggA')
+		self.assertNotEqual(self.editstructure.new_heading_below(self.mode), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 6gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[4], 'Bla bla')
-		self.assertEqual(vim.current.buffer[5], '** ')
-		self.assertEqual(vim.current.buffer[6], '** Überschrift 1.1')
+		self.assertEqual(vim.current.buffer[5], leading_char + '* ')
+		self.assertEqual(vim.current.buffer[6], '')
+		self.assertEqual(vim.current.buffer[7], leading_char + '* Überschrift 1.1')
 
 	def test_new_heading_below_in_the_middle(self):
+		leading_char = '*' if self.mode == MODE_STAR else ' '
+
 		vim.current.window.cursor = (10, 0)
-		self.assertNotEqual(self.editstructure.new_heading_below(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 13ggA')
+		self.assertNotEqual(self.editstructure.new_heading_below(self.mode), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 13gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[11], '')
-		self.assertEqual(vim.current.buffer[12], '**** ')
-		self.assertEqual(vim.current.buffer[13], '**** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[12], 3*leading_char + '* ')
+		self.assertEqual(vim.current.buffer[13], '')
+		self.assertEqual(vim.current.buffer[14], 3*leading_char + '* Überschrift 1.2.1.falsch')
 
 	def test_new_heading_below_in_the_middle2(self):
+		leading_char = '*' if self.mode == MODE_STAR else ' '
+
 		vim.current.window.cursor = (13, 0)
-		self.assertNotEqual(self.editstructure.new_heading_below(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 16ggA')
+		self.assertNotEqual(self.editstructure.new_heading_below(self.mode), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 16gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[14], 'Bla Bla bla bla')
-		self.assertEqual(vim.current.buffer[15], '**** ')
-		self.assertEqual(vim.current.buffer[16], '*** Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[15], 3*leading_char + '* ')
+		self.assertEqual(vim.current.buffer[16], '')
+		self.assertEqual(vim.current.buffer[17], 2*leading_char + '* Überschrift 1.2.1')
 
 	def test_new_heading_below_in_the_middle3(self):
+		leading_char = '*' if self.mode == MODE_STAR else ' '
+
 		vim.current.window.cursor = (16, 0)
-		self.assertNotEqual(self.editstructure.new_heading_below(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 17ggA')
-		self.assertEqual(vim.current.buffer[15], '*** Überschrift 1.2.1')
-		self.assertEqual(vim.current.buffer[16], '*** ')
-		self.assertEqual(vim.current.buffer[17], '* Überschrift 2')
+		self.assertNotEqual(self.editstructure.new_heading_below(self.mode), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 17gg"|startinsert!')
+		self.assertEqual(vim.current.buffer[15], 2*leading_char + '* Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[16], 2*leading_char + '* ')
+		self.assertEqual(vim.current.buffer[17], '')
+		self.assertEqual(vim.current.buffer[18], '* Überschrift 2')
 
 	def test_new_heading_below_at_the_end(self):
 		vim.current.window.cursor = (18, 0)
-		self.assertNotEqual(self.editstructure.new_heading_below(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 21ggA')
+		self.assertNotEqual(self.editstructure.new_heading_below(self.mode), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 21gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[19], '')
 		self.assertEqual(vim.current.buffer[20], '* ')
-		self.assertEqual(len(vim.current.buffer), 21)
+		self.assertEqual(vim.current.buffer[21], '')
+		self.assertEqual(len(vim.current.buffer), 22)
 
 	def test_new_heading_above(self):
 		vim.current.window.cursor = (2, 0)
-		self.assertNotEqual(self.editstructure.new_heading_above(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggA')
+		self.assertNotEqual(self.editstructure.new_heading_above(self.mode), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 2gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[0], '')
 		self.assertEqual(vim.current.buffer[1], '* ')
-		self.assertEqual(vim.current.buffer[2], '* Überschrift 1')
+		self.assertEqual(vim.current.buffer[2], '')
+		self.assertEqual(vim.current.buffer[3], '* Überschrift 1')
 
 	def test_new_heading_above_in_the_middle(self):
+		leading_char = '*' if self.mode == MODE_STAR else ' '
+
 		vim.current.window.cursor = (10, 0)
-		self.assertNotEqual(self.editstructure.new_heading_above(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 10ggA')
+		self.assertNotEqual(self.editstructure.new_heading_above(self.mode), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 10gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[8], 'Bla Bla bla')
-		self.assertEqual(vim.current.buffer[9], '** ')
-		self.assertEqual(vim.current.buffer[10], '** Überschrift 1.2')
+		self.assertEqual(vim.current.buffer[9], leading_char + '* ')
+		self.assertEqual(vim.current.buffer[10], '')
+		self.assertEqual(vim.current.buffer[11], leading_char + '* Überschrift 1.2')
 
 	def test_new_heading_above_in_the_middle2(self):
+		leading_char = '*' if self.mode == MODE_STAR else ' '
+
 		vim.current.window.cursor = (13, 0)
-		self.assertNotEqual(self.editstructure.new_heading_above(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 13ggA')
+		self.assertNotEqual(self.editstructure.new_heading_above(self.mode), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 13gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[11], '')
-		self.assertEqual(vim.current.buffer[12], '*** ')
-		self.assertEqual(vim.current.buffer[13], '**** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[12], 2*leading_char + '* ')
+		self.assertEqual(vim.current.buffer[13], '')
+		self.assertEqual(vim.current.buffer[14], 3*leading_char + '* Überschrift 1.2.1.falsch')
 
 	def test_new_heading_above_in_the_middle3(self):
+		leading_char = '*' if self.mode == MODE_STAR else ' '
+
 		vim.current.window.cursor = (16, 0)
-		self.assertNotEqual(self.editstructure.new_heading_above(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 16ggA')
+		self.assertNotEqual(self.editstructure.new_heading_above(self.mode), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 16gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[14], 'Bla Bla bla bla')
-		self.assertEqual(vim.current.buffer[15], '*** ')
-		self.assertEqual(vim.current.buffer[16], '*** Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[15], 2*leading_char + '* ')
+		self.assertEqual(vim.current.buffer[16], '')
+		self.assertEqual(vim.current.buffer[17], 2*leading_char + '* Überschrift 1.2.1')
 
 	def test_new_heading_above_at_the_end(self):
 		vim.current.window.cursor = (18, 0)
-		self.assertNotEqual(self.editstructure.new_heading_above(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 18ggA')
+		self.assertNotEqual(self.editstructure.new_heading_above(self.mode), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 18gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[16], '* Überschrift 2')
 		self.assertEqual(vim.current.buffer[17], '* ')
-		self.assertEqual(vim.current.buffer[18], '* Überschrift 3')
+		self.assertEqual(vim.current.buffer[18], '')
+		self.assertEqual(vim.current.buffer[19], '* Überschrift 3')
 
 	def test_promote_heading(self):
+		leading_char = '*' if self.mode == MODE_STAR else ' '
+
 		vim.current.window.cursor = (13, 0)
-		self.assertNotEqual(self.editstructure.promote_heading(), None)
+		self.assertNotEqual(self.editstructure.promote_heading(self.mode), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'normal 13ggV15gg=')
 		self.assertEqual(vim.current.buffer[10], 'Text 3')
 		self.assertEqual(vim.current.buffer[11], '')
-		self.assertEqual(vim.current.buffer[12], '***** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[12], 4*leading_char + '* Überschrift 1.2.1.falsch')
 		self.assertEqual(vim.current.buffer[13], '')
 		# actually the indentation comes through vim, just the heading is updated
 		self.assertEqual(vim.current.buffer[14], 'Bla Bla bla bla')
-		self.assertEqual(vim.current.buffer[15], '*** Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[15], 2*leading_char + '* Überschrift 1.2.1')
 		self.assertEqual(vim.current.window.cursor, (13, 1))
 
 	def test_demote_heading(self):
+		leading_char = '*' if self.mode == MODE_STAR else ' '
+
 		vim.current.window.cursor = (13, 0)
-		self.assertNotEqual(self.editstructure.demote_heading(), None)
+		self.assertNotEqual(self.editstructure.demote_heading(self.mode), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'normal 13ggV15gg=')
 		self.assertEqual(vim.current.buffer[10], 'Text 3')
 		self.assertEqual(vim.current.buffer[11], '')
-		self.assertEqual(vim.current.buffer[12], '*** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[12], 2*leading_char + '* Überschrift 1.2.1.falsch')
 		self.assertEqual(vim.current.buffer[13], '')
 		# actually the indentation comes through vim, just the heading is updated
 		self.assertEqual(vim.current.buffer[14], 'Bla Bla bla bla')
-		self.assertEqual(vim.current.buffer[15], '*** Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[15], 2*leading_char + '* Überschrift 1.2.1')
 		self.assertEqual(vim.current.window.cursor, (13, -1))
 
 	def test_demote_level_one_heading(self):
 		vim.current.window.cursor = (2, 0)
-		self.assertEqual(self.editstructure.demote_heading(), False)
+		self.assertEqual(self.editstructure.demote_heading(self.mode), False)
 		self.assertEqual(len(vim.CMDHISTORY), 0)
 		self.assertEqual(vim.current.buffer[1], '* Überschrift 1')
 		self.assertEqual(vim.current.window.cursor, (2, 0))
 
 	def test_promote_parent_heading(self):
-		vim.current.window.cursor = (2, 0)
-		self.assertNotEqual(self.editstructure.promote_heading(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV16gg=')
-		self.assertEqual(vim.current.buffer[1], '** Überschrift 1')
-		self.assertEqual(vim.current.buffer[5], '*** Überschrift 1.1')
-		self.assertEqual(vim.current.buffer[9], '*** Überschrift 1.2')
-		self.assertEqual(vim.current.buffer[12], '***** Überschrift 1.2.1.falsch')
-		self.assertEqual(vim.current.buffer[15], '**** Überschrift 1.2.1')
-		self.assertEqual(vim.current.buffer[16], '* Überschrift 2')
-		self.assertEqual(vim.current.window.cursor, (2, 0))
+		leading_char = '*' if self.mode == MODE_STAR else ' '
 
+		vim.current.window.cursor = (2, 0)
+		self.assertNotEqual(self.editstructure.promote_heading(self.mode), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV16gg=')
+		self.assertEqual(vim.current.buffer[1], leading_char + '* Überschrift 1')
+		self.assertEqual(vim.current.buffer[5], 2*leading_char + '* Überschrift 1.1')
+		self.assertEqual(vim.current.buffer[9], 2*leading_char + '* Überschrift 1.2')
+		self.assertEqual(vim.current.buffer[12], 4*leading_char + '* Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[15], 3*leading_char + '* Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[16], '* Überschrift 2')
+		self.assertEqual(vim.current.window.cursor, (2, 1))
+
+	def test_demote_parent_heading(self):
+		leading_char = '*' if self.mode == MODE_STAR else ' '
+
+		vim.current.window.cursor = (10, 0)
+		self.assertNotEqual(self.editstructure.demote_heading(self.mode), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 10ggV16gg=')
+		self.assertEqual(vim.current.buffer[5], leading_char + '* Überschrift 1.1')
+		self.assertEqual(vim.current.buffer[9], '* Überschrift 1.2')
+		self.assertEqual(vim.current.buffer[12], 2*leading_char + '* Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[15], leading_char + '* Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[16], '* Überschrift 2')
+		self.assertEqual(vim.current.window.cursor, (10, -1))
+
+	# run tests with count
+	def test_promote_parent_heading_count(self):
+		leading_char = '*' if self.mode == MODE_STAR else ' '
+
+		vim.current.window.cursor = (2, 0)
+		vim.EVALRESULTS["v:count"] = 3
+		print 'x'
+		self.assertNotEqual(self.editstructure.promote_heading(self.mode), None)
+		print 'y'
+		self.assertEqual(len(vim.CMDHISTORY), 3)
+		self.assertEqual(vim.CMDHISTORY[-3], 'normal 2ggV16gg=')
+		self.assertEqual(vim.CMDHISTORY[-2], 'normal 2ggV16gg=')
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV16gg=')
+		self.assertEqual(vim.current.buffer[1], 3*leading_char + '* Überschrift 1')
+		self.assertEqual(vim.current.buffer[5], 4*leading_char + '* Überschrift 1.1')
+		self.assertEqual(vim.current.buffer[9], 4*leading_char + '* Überschrift 1.2')
+		self.assertEqual(vim.current.buffer[12], 6*leading_char + '* Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[15], 5*leading_char + '* Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[16], '* Überschrift 2')
+		self.assertEqual(vim.current.buffer[16], '* Überschrift 2')
+		self.assertEqual(vim.current.window.cursor, (2, 3))
+
+	def test_demote_parent_heading(self):
+		leading_char = '*' if self.mode == MODE_STAR else ' '
+
+		vim.current.window.cursor = (13, 0)
+		vim.EVALRESULTS["v:count"] = 3
+		self.assertNotEqual(self.editstructure.demote_heading(self.mode), None)
+		self.assertEqual(len(vim.CMDHISTORY), 3)
+		self.assertEqual(vim.CMDHISTORY[-3], 'normal 13ggV15gg=')
+		self.assertEqual(vim.CMDHISTORY[-2], 'normal 13ggV15gg=')
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 13ggV16gg=')
+		self.assertEqual(vim.current.buffer[5], leading_char + '* Überschrift 1.1')
+		self.assertEqual(vim.current.buffer[9], leading_char + '* Überschrift 1.2')
+		self.assertEqual(vim.current.buffer[12], '* Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[15], leading_char + '* Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[16], '* Überschrift 2')
+		self.assertEqual(vim.current.window.cursor, (13, -3))
+
+class EditStructureTestCaseIndent(EditStructureTestCase):
+	def setUp(self):
+		self.mode = MODE_INDENT
+		vim.CMDHISTORY = []
+		vim.CMDRESULTS = {}
+		vim.EVALHISTORY = []
+		vim.EVALRESULTS = {
+				'exists("g:orgmode_plugins")': True,
+				"g:orgmode_plugins": ['EditStructure'],
+				"v:count": 0
+				}
+		if not ORGMODE.plugins.has_key('EditStructure'):
+			ORGMODE.register_plugin('EditStructure')
+		self.editstructure = ORGMODE.plugins['EditStructure']
+		vim.current.buffer = """
+* Überschrift 1
+Text 1
+
+Bla bla
+ * Überschrift 1.1
+Text 2
+
+Bla Bla bla
+ * Überschrift 1.2
+Text 3
+
+   * Überschrift 1.2.1.falsch
+
+Bla Bla bla bla
+  * Überschrift 1.2.1
+* Überschrift 2
+* Überschrift 3
+  asdf sdf
+""".split('\n')
 
 class NavigatorTestCase(unittest.TestCase):
 	def setUp(self):
@@ -734,13 +851,12 @@ Bla Bla bla bla
 
 class HeadingTestCase(unittest.TestCase):
 	def setUp(self):
+		self.mode = MODE_STAR
 		vim.EVALRESULTS = {
 				'exists("g:orgmode_plugins")': True,
 				"g:orgmode_plugins": ['Todo'],
 				"v:count": 0
 				}
-
-	def test_heading_structure_normal(self):
 		vim.current.buffer = """
 * Überschrift 1
 Text 1
@@ -759,44 +875,23 @@ Bla Bla bla bla
 *** Überschrift 1.2.1
 * Überschrift 2
 * Überschrift 3
+  asdf sdf
 """.split('\n')
-		self.run_heading_tests(True)
 
-	def test_heading_structure_indent(self):
-		vim.current.buffer = """
-* Überschrift 1
-Text 1
-
-Bla bla
- * Überschrift 1.1
-Text 2
-
-Bla Bla bla
- * Überschrift 1.2
-Text 3
-
-   * Überschrift 1.2.1.falsch
-
-Bla Bla bla bla
-  * Überschrift 1.2.1
-* Überschrift 2
-* Überschrift 3
-""".split('\n')
-		self.run_heading_tests(False)
-
-	def run_heading_tests(self, mode=False):
+	def test_no_heading(self):
 		# test no heading
 		vim.current.window.cursor = (1, 0)
-		h = Heading.current_heading(mode)
+		h = Heading.current_heading(self.mode)
 		self.assertEqual(h, None)
 
+	def test_index_boundaries(self):
 		# test index boundaries
 		vim.current.window.cursor = (-1, 0)
-		h = Heading.current_heading(mode)
+		h = Heading.current_heading(self.mode)
 		self.assertEqual(h, None)
 
 		vim.current.window.cursor = (999, 0)
-		h = Heading.current_heading(mode)
+		h = Heading.current_heading(self.mode)
 		self.assertNotEqual(h, None)
 		self.assertEqual(h.level, 1)
 		self.assertEqual(h.previous_sibling.level, 1)
@@ -804,28 +899,33 @@ Bla Bla bla bla
 		self.assertEqual(h.next_sibling, None)
 		self.assertEqual(len(h.children), 0)
 
+	def test_heading_start_and_end(self):
 		# test heading start and end
 		vim.current.window.cursor = (2, 0)
-		h = Heading.current_heading(mode)
+		h = Heading.current_heading(self.mode)
 		self.assertNotEqual(h, None)
 		self.assertEqual(h.start, 1)
 		self.assertEqual(h.end, 4)
+		self.assertEqual(h.end_of_last_child, 15)
 
 		vim.current.window.cursor = (11, 0)
-		h = Heading.current_heading(mode)
+		h = Heading.current_heading(self.mode)
 		self.assertNotEqual(h, None)
 		self.assertEqual(h.start, 9)
 		self.assertEqual(h.end, 11)
+		self.assertEqual(h.end_of_last_child, 15)
 
 		vim.current.window.cursor = (18, 0)
-		h = Heading.current_heading(mode)
+		h = Heading.current_heading(self.mode)
 		self.assertNotEqual(h, None)
 		self.assertEqual(h.start, 17)
-		self.assertEqual(h.end, 18)
+		self.assertEqual(h.end, 19)
+		self.assertEqual(h.end_of_last_child, 19)
 
+	def test_first_heading(self):
 		# test first heading
 		vim.current.window.cursor = (2, 0)
-		h = Heading.current_heading(mode)
+		h = Heading.current_heading(self.mode)
 
 		self.assertNotEqual(h, None)
 		self.assertEqual(h.parent, None)
@@ -847,9 +947,10 @@ Bla Bla bla bla
 		self.assertEqual(h.next_sibling.next_sibling.next_sibling, None)
 		self.assertEqual(h.next_sibling.next_sibling.parent, None)
 
+	def test_heading_in_the_middle(self):
 		# test heading in the middle of the file
 		vim.current.window.cursor = (14, 0)
-		h = Heading.current_heading(mode)
+		h = Heading.current_heading(self.mode)
 
 		self.assertNotEqual(h, None)
 		self.assertEqual(h.level, 4)
@@ -859,9 +960,10 @@ Bla Bla bla bla
 		self.assertEqual(h.next_sibling.level, 3)
 		self.assertEqual(h.previous_sibling, None)
 
+	def test_previous_headings(self):
 		# test previous headings
 		vim.current.window.cursor = (16, 0)
-		h = Heading.current_heading(mode)
+		h = Heading.current_heading(self.mode)
 
 		self.assertNotEqual(h, None)
 		self.assertEqual(h.level, 3)
@@ -872,12 +974,12 @@ Bla Bla bla bla
 		self.assertEqual(h.previous_sibling.parent.start, 9)
 
 		vim.current.window.cursor = (13, 0)
-		h = Heading.current_heading(mode)
+		h = Heading.current_heading(self.mode)
 		self.assertNotEqual(h.parent, None)
 		self.assertEqual(h.parent.start, 9)
 
 		vim.current.window.cursor = (77, 0)
-		h = Heading.current_heading(mode)
+		h = Heading.current_heading(self.mode)
 
 		self.assertNotEqual(h, None)
 		self.assertEqual(h.level, 1)
@@ -890,6 +992,35 @@ Bla Bla bla bla
 		# test heading extractor
 		#self.assertEqual(h.heading, 'Überschrift 1')
 		#self.assertEqual(h.text, 'Text 1\n\nBla bla')
+
+class HeadingTestCaseIndent(HeadingTestCase):
+	def setUp(self):
+		self.mode = MODE_INDENT
+		vim.EVALRESULTS = {
+				'exists("g:orgmode_plugins")': True,
+				"g:orgmode_plugins": ['Todo'],
+				"v:count": 0
+				}
+		vim.current.buffer = """
+* Überschrift 1
+Text 1
+
+Bla bla
+ * Überschrift 1.1
+Text 2
+
+Bla Bla bla
+ * Überschrift 1.2
+Text 3
+
+   * Überschrift 1.2.1.falsch
+
+Bla Bla bla bla
+  * Überschrift 1.2.1
+* Überschrift 2
+* Überschrift 3
+  asdf sdf
+""".split('\n')
 
 if __name__ == '__main__':
 	unittest.main()

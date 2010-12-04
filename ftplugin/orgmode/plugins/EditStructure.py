@@ -1,4 +1,4 @@
-from orgmode import echo, echom, echoe, ORGMODE, apply_count
+from orgmode import echo, echom, echoe, ORGMODE, apply_count, MODE_STAR, MODE_INDENT
 from orgmode.menu import Submenu, HorizontalLine, ActionEntry
 from orgmode.keybinding import Keybinding
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
@@ -41,8 +41,8 @@ class EditStructure(object):
 
 	#	vim.command(':%s,%s%s' % (heading.start + 1, end, action))
 
-	def new_heading(self, below=True):
-		h = Heading.current_heading()
+	def new_heading(self, below=True, mode=MODE_STAR):
+		h = Heading.current_heading(mode=mode)
 		if not h or h.start + 1 != vim.current.window.cursor[0]:
 			if below:
 				vim.eval('feedkeys("o", "n")')
@@ -62,22 +62,24 @@ class EditStructure(object):
 				if h.parent.children[0].start == h.start:
 					level = h.parent.level + 1
 
-		tmp = ['%s ' % ('*' * level)] + vim.current.buffer[pos:]
+		leading_char = '*' if mode == MODE_STAR else ' '
+
+		tmp = ['%s* ' % (leading_char * (level - 1)), ''] + vim.current.buffer[pos:]
 		del vim.current.buffer[pos:]
 		vim.current.buffer.append(tmp)
-		vim.command('normal %dggA' % (pos + 1, ))
+		vim.command('exe "normal %dgg"|startinsert!' % (pos + 1, ))
 
 		# not sure what to return here .. line number of new heading or old heading object?
 		return h
 
-	def new_heading_below(self):
-		return self.new_heading(True)
+	def new_heading_below(self, mode=MODE_STAR):
+		return self.new_heading(True, mode=mode)
 
-	def new_heading_above(self):
-		return self.new_heading(False)
+	def new_heading_above(self, mode=MODE_STAR):
+		return self.new_heading(False, mode=mode)
 
-	def _change_heading_level(self, level, relative=True):
-		h = Heading.current_heading()
+	def _change_heading_level(self, level, relative=True, mode=MODE_STAR):
+		h = Heading.current_heading(mode=mode)
 		if not h or h.start + 1 != vim.current.window.cursor[0]:
 			if (relative and level > 0) or (not relative and level > h.level):
 				vim.eval('feedkeys(">>", "n")')
@@ -94,6 +96,8 @@ class EditStructure(object):
 		if (h.level + level) < 1:
 			level = h.level - 1
 
+		leading_char = '*' if mode == MODE_STAR else ' '
+
 		def indent(heading):
 			if not heading:
 				return
@@ -102,7 +106,7 @@ class EditStructure(object):
 			del vim.current.buffer[start:]
 
 			# strip level and add new level
-			tmp[0] = '%s%s' % ('*' * (h.level + level), tmp[0][h.level:])
+			tmp[0] = '%s*%s' % (leading_char * (heading.level + level - 1), tmp[0][heading.level:])
 
 			vim.current.buffer.append(tmp)
 			for child in heading.children:
@@ -110,21 +114,23 @@ class EditStructure(object):
 
 		# save cursor position
 		c = vim.current.window.cursor[:]
+		eolc = h.end_of_last_child
+		print h.start, eolc
 		indent(h)
 		# indent the promoted/demoted heading
-		vim.command('normal %dggV%dgg=' % (h.start + 1, h.end_of_last_child + 1))
+		vim.command('normal %dggV%dgg=' % (h.start + 1, eolc + 1))
 		# restore cursor position
 		vim.current.window.cursor = (c[0], c[1] + level)
 
 		return True
 
 	@apply_count
-	def demote_heading(self):
-		return self._change_heading_level(-1)
+	def demote_heading(self, mode=MODE_STAR):
+		return self._change_heading_level(-1, mode=mode)
 
 	@apply_count
-	def promote_heading(self):
-		return self._change_heading_level(1)
+	def promote_heading(self, mode=MODE_STAR):
+		return self._change_heading_level(1, mode=mode)
 
 	#def copy_heading(self):
 	#	self._action_heading('y', Heading.current_heading())
