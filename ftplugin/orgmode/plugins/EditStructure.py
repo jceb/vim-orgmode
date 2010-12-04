@@ -115,7 +115,6 @@ class EditStructure(object):
 		# save cursor position
 		c = vim.current.window.cursor[:]
 		eolc = h.end_of_last_child
-		print h.start, eolc
 		indent(h)
 		# indent the promoted/demoted heading
 		vim.command('normal %dggV%dgg=' % (h.start + 1, eolc + 1))

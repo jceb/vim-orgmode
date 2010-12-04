@@ -248,9 +248,7 @@ Bla Bla bla bla
 
 		vim.current.window.cursor = (2, 0)
 		vim.EVALRESULTS["v:count"] = 3
-		print 'x'
 		self.assertNotEqual(self.editstructure.promote_heading(self.mode), None)
-		print 'y'
 		self.assertEqual(len(vim.CMDHISTORY), 3)
 		self.assertEqual(vim.CMDHISTORY[-3], 'normal 2ggV16gg=')
 		self.assertEqual(vim.CMDHISTORY[-2], 'normal 2ggV16gg=')
@@ -921,6 +919,32 @@ Bla Bla bla bla
 		self.assertEqual(h.start, 17)
 		self.assertEqual(h.end, 19)
 		self.assertEqual(h.end_of_last_child, 19)
+
+		lc = '*' if self.mode == MODE_STAR else ' '
+		vim.current.buffer = ("""
+%s* Überschrift 1.2
+Text 3
+
+%s* Überschrift 1.2.1.falsch
+
+Bla Bla bla bla
+%s* Überschrift 1.2.1
+* Überschrift 2
+* Überschrift 3
+  asdf sdf
+""" % (lc, 3*lc, 2*lc)).split('\n')
+		vim.current.window.cursor = (2, 0)
+		h = Heading.current_heading(self.mode)
+		self.assertNotEqual(h, None)
+		self.assertEqual(h.parent, None)
+		self.assertEqual(len(h.children), 2)
+		self.assertEqual(h.children[1].start, 7)
+		self.assertEqual(h.children[1].children, [])
+		self.assertEqual(h.children[1].next_sibling, None)
+		self.assertEqual(h.children[1].end, 7)
+		self.assertEqual(h.start, 1)
+		self.assertEqual(h.end, 3)
+		self.assertEqual(h.end_of_last_child, 7)
 
 	def test_first_heading(self):
 		# test first heading

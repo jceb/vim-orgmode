@@ -3,19 +3,20 @@ An attempt to build org-mode for vim (http://orgmode.org)
 Information about the license are found in the file LICENSE
 
 TODO
-- improve tests for Heading.end_of_last_child
-- implement promotion/demotion of headings in visual mode
-- add an additional empty line when adding a new heading
 - implement better object structure for Heading.parent and
   Heading.children. At the moment the already created objects are not
-  reused!
+  reused, especially for iterchildern this is important!
 - implement TAB to cycle folding
 	- implement show/hide plugin
 - implement count for navigator mappings in visual mode
 - allow the user to customize keybindings
 - implement edit structure plugin
+- implement promotion/demotion of headings in visual mode, do I really
+  need this?
 
 DONE
++ add an additional empty line when adding a new heading
++ improve tests for Heading.end_of_last_child
 + implement promotion and demotion for space indented files
 + add tests for Heading.end_of_last_child
 + implement promotion/demotion of headings

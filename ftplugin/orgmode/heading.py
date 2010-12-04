@@ -118,7 +118,7 @@ class Heading(object):
 
 					# * Heading 1 <- self
 					#  * Heading 2 <- first child
-					#  * Heading 2 <- anjther child
+					#  * Heading 2 <- another child
 					if heading.level == self.level + 1:
 						if self._first_child == None:
 							self._first_child = heading
@@ -144,8 +144,9 @@ class Heading(object):
 					#  * Heading 2 <- parent
 					#    * Heading 4 <- self, the indentation is wrong but someone has to take care of the child
 					#   * Heading 3 <- heading
-					elif heading.level < self.level and self.parent and \
-							self.parent.level < heading.level:
+					elif heading.level < self.level and ((self.parent and \
+							self.parent.level < heading.level) or \
+							not self.parent):
 						if self._next_sibling == None:
 							self._next_sibling = heading
 							heading._previous_sibling = self
