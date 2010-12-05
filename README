@@ -3,18 +3,26 @@ An attempt to build org-mode for vim (http://orgmode.org)
 Information about the license are found in the file LICENSE
 
 TODO
+- make plugin work for more than one buffer. register menu end
+  keybindings for each buffer
+- implement TAB to cycle folding
+	- implement show/hide plugin
+- implement sparse tree. is a special folding needed?
+- implement dates
+- implement a calendar
+- implement the agenda view by using the location list
+- implement todo items
+- allow the user to customize keybindings
 - implement better object structure for Heading.parent and
   Heading.children. At the moment the already created objects are not
   reused, especially for iterchildern this is important!
-- implement TAB to cycle folding
-	- implement show/hide plugin
 - implement count for navigator mappings in visual mode
-- allow the user to customize keybindings
-- implement edit structure plugin
 - implement promotion/demotion of headings in visual mode, do I really
-  need this?
+  need this? How do I promote/demote a single heading without
+  subheadings?
 
 DONE
++ add tests for indentation and and folding
 + add an additional empty line when adding a new heading
 + improve tests for Heading.end_of_last_child
 + implement promotion and demotion for space indented files

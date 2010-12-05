@@ -61,6 +61,44 @@ def echoe(message):
 MODE_STAR   = True
 MODE_INDENT = False
 
+def indent_orgmode():
+	""" Set the indent value for the current line in the variable b:indent_level
+	Vim prerequisites:
+		:set indentexpr=Method-which-calls-indent_orgmode
+
+	:returns: None
+	"""
+	from orgmode.heading import Heading, DIRECTION_BACKWARD
+	try:
+		line = int(vim.eval('v:lnum'))
+		heading = Heading.find_heading(line - 1, direction=DIRECTION_BACKWARD)
+		if heading and line != heading.start + 1:
+			vim.command('let b:indent_level = %d' % (heading.level + 1))
+	except Exception, e:
+		pass
+
+def fold_orgmode():
+	""" Set the fold expression/value for the current line in the variable b:fold_expr
+	Vim prerequisites:
+		:set foldmethod=expr
+		:set foldexpr=Method-which-calls-fold_orgmode
+
+	:returns: None
+	"""
+	from orgmode.heading import Heading, DIRECTION_BACKWARD
+	try:
+		line = int(vim.eval('v:lnum'))
+		heading = Heading.find_heading(line - 1, direction=DIRECTION_BACKWARD)
+		if heading:
+			if line == heading.start + 1:
+				vim.command('let b:fold_expr = ">%d"' % heading.level)
+			elif line == heading.end_of_last_child + 1:
+				vim.command('let b:fold_expr = "<%d"' % heading.level)
+			else:
+				vim.command('let b:fold_expr = %d' % heading.level)
+	except Exception, e:
+		pass
+
 class OrgMode(object):
 	""" Vim Buffer """
 
