@@ -40,7 +40,7 @@ class Navigator(object):
 		if visualmode:
 			self._change_visual_selection(heading, heading.parent, direction=DIRECTION_BACKWARD, parent=True)
 		else:
-			vim.current.window.cursor = (heading.parent.start + 1, heading.parent.level + 2)
+			vim.current.window.cursor = (heading.parent.start + 1, heading.parent.level + 1)
 		return heading.parent
 
 

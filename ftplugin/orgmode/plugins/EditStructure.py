@@ -98,24 +98,23 @@ class EditStructure(object):
 
 		leading_char = '*' if mode == MODE_STAR else ' '
 
-		def indent(heading):
+		def indent(heading, _buffer):
 			if not heading:
-				return
-			start = heading.start
-			tmp = vim.current.buffer[start:]
-			del vim.current.buffer[start:]
-
+				return _buffer
 			# strip level and add new level
-			tmp[0] = '%s*%s' % (leading_char * (heading.level + level - 1), tmp[0][heading.level:])
+			_buffer[heading.start] = '%s*%s' % (leading_char * (heading.level + level - 1), _buffer[heading.start][heading.level:])
 
-			vim.current.buffer.append(tmp)
 			for child in heading.children:
-				indent(child)
+				_buffer = indent(child, _buffer)
+			return _buffer
 
 		# save cursor position
 		c = vim.current.window.cursor[:]
 		eolc = h.end_of_last_child
-		indent(h)
+		vim_buffer = vim.current.buffer[:]
+		vim_buffer = indent(h, vim_buffer)
+		del vim.current.buffer[h.start:]
+		vim.current.buffer.append(vim_buffer[h.start:])
 		# indent the promoted/demoted heading
 		vim.command('normal %dggV%dgg=' % (h.start + 1, eolc + 1))
 		# restore cursor position

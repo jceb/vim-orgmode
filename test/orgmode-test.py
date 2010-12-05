@@ -456,41 +456,41 @@ Bla Bla bla bla
 
 		vim.current.window.cursor = (16, 4)
 		self.navigator.parent()
-		self.assertEqual(vim.current.window.cursor, (10, 4))
+		self.assertEqual(vim.current.window.cursor, (10, 3))
 		self.navigator.parent()
-		self.assertEqual(vim.current.window.cursor, (2, 3))
+		self.assertEqual(vim.current.window.cursor, (2, 2))
 
 		vim.current.window.cursor = (15, 6)
 		self.navigator.parent()
-		self.assertEqual(vim.current.window.cursor, (10, 4))
+		self.assertEqual(vim.current.window.cursor, (10, 3))
 		self.navigator.parent()
-		self.assertEqual(vim.current.window.cursor, (2, 3))
+		self.assertEqual(vim.current.window.cursor, (2, 2))
 
 		## test movement with count
 		vim.current.window.cursor = (16, 4)
 		vim.EVALRESULTS["v:count"] = -1
 		self.navigator.parent()
-		self.assertEqual(vim.current.window.cursor, (10, 4))
+		self.assertEqual(vim.current.window.cursor, (10, 3))
 
 		vim.current.window.cursor = (16, 4)
 		vim.EVALRESULTS["v:count"] = 0
 		self.navigator.parent()
-		self.assertEqual(vim.current.window.cursor, (10, 4))
+		self.assertEqual(vim.current.window.cursor, (10, 3))
 
 		vim.current.window.cursor = (16, 4)
 		vim.EVALRESULTS["v:count"] = 1
 		self.navigator.parent()
-		self.assertEqual(vim.current.window.cursor, (10, 4))
+		self.assertEqual(vim.current.window.cursor, (10, 3))
 
 		vim.current.window.cursor = (16, 4)
 		vim.EVALRESULTS["v:count"] = 2
 		self.navigator.parent()
-		self.assertEqual(vim.current.window.cursor, (2, 3))
+		self.assertEqual(vim.current.window.cursor, (2, 2))
 
 		vim.current.window.cursor = (16, 4)
 		vim.EVALRESULTS["v:count"] = 3
 		self.navigator.parent()
-		self.assertEqual(vim.current.window.cursor, (2, 3))
+		self.assertEqual(vim.current.window.cursor, (2, 2))
 
 	def test_forward_movement_visual(self):
 		# selection start: <<

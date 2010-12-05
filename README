@@ -3,6 +3,8 @@ An attempt to build org-mode for vim (http://orgmode.org)
 Information about the license are found in the file LICENSE
 
 TODO
+- implement non-relative heading changes
+- implement |fold-foldtext|
 - make plugin work for more than one buffer. register menu end
   keybindings for each buffer
 - implement TAB to cycle folding
@@ -13,6 +15,7 @@ TODO
 - implement the agenda view by using the location list
 - implement todo items
 - allow the user to customize keybindings
+- implement time tracking
 - implement better object structure for Heading.parent and
   Heading.children. At the moment the already created objects are not
   reused, especially for iterchildern this is important!
@@ -22,6 +25,11 @@ TODO
   subheadings?
 
 DONE
++ bug in indentation function something goes wrong with mixed heading
+  levels
++ bug in function g{, it places the cursor one character too far to the
+  right
++ bug in indentation function it appears to be really slow
 + add tests for indentation and and folding
 + add an additional empty line when adding a new heading
 + improve tests for Heading.end_of_last_child
