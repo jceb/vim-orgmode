@@ -40,7 +40,7 @@ class Navigator(object):
 		if visualmode:
 			self._change_visual_selection(heading, heading.parent, direction=DIRECTION_BACKWARD, parent=True)
 		else:
-			vim.current.window.cursor = (heading.parent.start + 1, heading.parent.level + 1)
+			vim.current.window.cursor = (heading.parent.start_vim, heading.parent.level + 1)
 		return heading.parent
 
 
@@ -50,8 +50,8 @@ class Navigator(object):
 		line_start, col_start = [ int(i) for i in vim.eval('getpos("\'<")')[1:3] ]
 		line_end, col_end = [ int(i) for i in vim.eval('getpos("\'>")')[1:3] ]
 
-		f_start = heading.start + 1
-		f_end = heading.end + 1
+		f_start = heading.start_vim
+		f_end = heading.end_vim
 		swap_cursor = True
 
 		# << |visual start
@@ -68,8 +68,8 @@ class Navigator(object):
 			# focus heading HERE
 			# selection end >>
 			if f_start < line_start and direction == DIRECTION_BACKWARD:
-				if current_heading.start + 1 < line_start and not parent:
-					line_start = current_heading.start + 1
+				if current_heading.start_vim < line_start and not parent:
+					line_start = current_heading.start_vim
 				else:
 					line_start = f_start
 
@@ -102,7 +102,11 @@ class Navigator(object):
 			# focus heading HERE
 			# << visual start
 			# selection end| >>
-			if line_start > f_start or \
+			if line_start > f_start and line_end > f_end and not parent:
+				line_end = f_end
+				swap_cursor = False
+
+			elif line_start > f_start or \
 					line_start == f_start and line_end <= f_end and direction == DIRECTION_BACKWARD:
 				line_end = line_start
 				line_start = f_start
@@ -129,8 +133,8 @@ class Navigator(object):
 					line_end = f_end
 				swap_cursor = False
 
-		move_col_start = '%dl' % (col_start - 1) if (col_start - 1) else ''
-		move_col_end = '%dl' % (col_end - 1) if (col_end - 1) else ''
+		move_col_start = '%dl' % (col_start - 1) if (col_start - 1) > 0 and (col_start - 1) < 2000000000 else ''
+		move_col_end = '%dl' % (col_end - 1) if (col_end - 1) > 0 and (col_end - 1) < 2000000000 else ''
 		swap = 'o' if swap_cursor else ''
 
 		vim.command('normal %dgg%s%s%dgg%s%s' % \
@@ -156,9 +160,16 @@ class Navigator(object):
 				else:
 					echo('No heading found')
 				return
-		elif direction == DIRECTION_BACKWARD and not visualmode:
-			if vim.current.window.cursor[0] - 1 != heading.start:
-				focus_heading = heading
+		#elif direction == DIRECTION_BACKWARD and not visualmode:
+		elif direction == DIRECTION_BACKWARD:
+			if vim.current.window.cursor[0] != heading.start_vim:
+				if visualmode:
+					line_start, col_start = [ int(i) for i in vim.eval('getpos("\'<")')[1:3] ]
+					line_end, col_end = [ int(i) for i in vim.eval('getpos("\'>")')[1:3] ]
+					if line_start >= heading.start_vim and line_end > heading.start_vim:
+						focus_heading = heading
+				else:
+					focus_heading = heading
 
 		if not focus_heading:
 			if direction == DIRECTION_FORWARD and heading.children:
@@ -200,7 +211,7 @@ class Navigator(object):
 		if visualmode:
 			self._change_visual_selection(current_heading, focus_heading, direction=direction, noheadingfound=noheadingfound)
 		else:
-			vim.current.window.cursor = (focus_heading.start + 1, focus_heading.level + 1)
+			vim.current.window.cursor = (focus_heading.start_vim, focus_heading.level + 1)
 		if noheadingfound:
 			return
 		return focus_heading

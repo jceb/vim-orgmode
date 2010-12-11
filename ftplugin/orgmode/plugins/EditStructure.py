@@ -39,11 +39,11 @@ class EditStructure(object):
 	#		elif h.parent:
 	#			h = h.parent
 
-	#	vim.command(':%s,%s%s' % (heading.start + 1, end, action))
+	#	vim.command(':%s,%s%s' % (heading.start_vim, end, action))
 
 	def new_heading(self, below=True, mode=MODE_STAR):
 		h = Heading.current_heading(mode=mode)
-		if not h or h.start + 1 != vim.current.window.cursor[0]:
+		if not h or h.start_vim != vim.current.window.cursor[0]:
 			if below:
 				vim.eval('feedkeys("o", "n")')
 			else:
@@ -51,7 +51,7 @@ class EditStructure(object):
 			return
 
 		if below:
-			pos = h.end + 1
+			pos = h.end_vim
 			level = h.level
 			if h.children:
 				level = h.children[0].level
@@ -80,7 +80,7 @@ class EditStructure(object):
 
 	def _change_heading_level(self, level, relative=True, mode=MODE_STAR):
 		h = Heading.current_heading(mode=mode)
-		if not h or h.start + 1 != vim.current.window.cursor[0]:
+		if not h or h.start_vim != vim.current.window.cursor[0]:
 			if (relative and level > 0) or (not relative and level > h.level):
 				vim.eval('feedkeys(">>", "n")')
 			else:
@@ -110,13 +110,13 @@ class EditStructure(object):
 
 		# save cursor position
 		c = vim.current.window.cursor[:]
-		eolc = h.end_of_last_child
+		eolc = h.end_of_last_child_vim
 		vim_buffer = vim.current.buffer[:]
 		vim_buffer = indent(h, vim_buffer)
 		del vim.current.buffer[h.start:]
 		vim.current.buffer.append(vim_buffer[h.start:])
 		# indent the promoted/demoted heading
-		vim.command('normal %dggV%dgg=' % (h.start + 1, eolc + 1))
+		vim.command('normal %dggV%dgg=' % (h.start_vim, eolc))
 		# restore cursor position
 		vim.current.window.cursor = (c[0], c[1] + level)
 

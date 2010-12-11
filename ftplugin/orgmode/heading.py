@@ -44,6 +44,10 @@ class Heading(object):
 		return self._start
 
 	@property
+	def start_vim(self):
+		return self.start + 1
+
+	@property
 	def end(self):
 		if not self._end:
 			tmp = len(vim.current.buffer) - 1
@@ -62,6 +66,10 @@ class Heading(object):
 		return self._end
 
 	@property
+	def end_vim(self):
+		return self.end + 1
+
+	@property
 	def end_of_last_child(self):
 		if self.has_children():
 			child = self.children[-1]
@@ -69,6 +77,10 @@ class Heading(object):
 				child = child.children[-1]
 			return child.end
 		return self.end
+
+	@property
+	def end_of_last_child_vim(self):
+		return self.end_of_last_child + 1
 
 	def has_children(self):
 		if self._first_child == None:
