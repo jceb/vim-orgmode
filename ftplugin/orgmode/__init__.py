@@ -92,8 +92,9 @@ def fold_orgmode():
 		if heading:
 			if line == heading.start + 1:
 				vim.command('let b:fold_expr = ">%d"' % heading.level)
-			elif line == heading.end_of_last_child + 1:
-				vim.command('let b:fold_expr = "<%d"' % heading.level)
+			# end_of_last_child_vim is a performance junky and is actually not needed
+			#elif line == heading.end_of_last_child_vim:
+			#	vim.command('let b:fold_expr = "<%d"' % heading.level)
 			else:
 				vim.command('let b:fold_expr = %d' % heading.level)
 	except Exception, e:
