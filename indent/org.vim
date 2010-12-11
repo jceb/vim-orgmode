@@ -3,6 +3,9 @@ if !exists("g:org_indent")
   let g:org_indent = 0
 endif
 
+setlocal foldtext=GetOrgFoldtext()
+setlocal fillchars-=fold:-
+setlocal fillchars+=fold:\ 
 setlocal foldexpr=GetOrgFolding()
 setlocal foldmethod=expr
 setlocal indentexpr=GetOrgIndent()
@@ -35,5 +38,17 @@ EOF
 		return tmp
 	else:
 		return -1
+	endif
+endfunction
+
+function! GetOrgFoldtext()
+python << EOF
+from orgmode import fold_text
+fold_text()
+EOF
+	if exists('b:foldtext')
+		let tmp = b:foldtext
+		unlet b:foldtext
+		return tmp
 	endif
 endfunction

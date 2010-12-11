@@ -4,7 +4,6 @@ Information about the license are found in the file LICENSE
 
 TODO
 - implement non-relative heading changes
-- implement |fold-foldtext|
 - make plugin work for more than one buffer. register menu end
   keybindings for each buffer
 - implement TAB to cycle folding
@@ -25,6 +24,7 @@ TODO
   subheadings?
 
 DONE
++ implement |fold-foldtext|
 + bug in indentation function something goes wrong with mixed heading
   levels
 + bug in function g{, it places the cursor one character too far to the

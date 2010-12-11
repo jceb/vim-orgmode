@@ -64,7 +64,7 @@ MODE_INDENT = False
 def indent_orgmode():
 	""" Set the indent value for the current line in the variable b:indent_level
 	Vim prerequisites:
-		:set indentexpr=Method-which-calls-indent_orgmode
+		:setlocal indentexpr=Method-which-calls-indent_orgmode
 
 	:returns: None
 	"""
@@ -77,11 +77,27 @@ def indent_orgmode():
 	except Exception, e:
 		pass
 
+def fold_text():
+	""" Set the fold text
+		:setlocal foldtext=Method-which-calls-foldtext
+
+	:returns: None
+	"""
+	from orgmode.heading import Heading, DIRECTION_BACKWARD
+	try:
+		line = int(vim.eval('v:foldstart'))
+		heading = Heading.find_heading(line - 1, direction=DIRECTION_BACKWARD)
+		if heading:
+			print heading.text
+			vim.command('let b:foldtext = "%s... "' % (heading))
+	except Exception, e:
+		pass
+
 def fold_orgmode():
 	""" Set the fold expression/value for the current line in the variable b:fold_expr
 	Vim prerequisites:
-		:set foldmethod=expr
-		:set foldexpr=Method-which-calls-fold_orgmode
+		:setlocal foldmethod=expr
+		:setlocal foldexpr=Method-which-calls-fold_orgmode
 
 	:returns: None
 	"""

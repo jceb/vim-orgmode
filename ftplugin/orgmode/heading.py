@@ -32,6 +32,12 @@ class Heading(object):
 		return vim.current.buffer[self.start]
 
 	@property
+	def text(self):
+		""" Return the text of the current heading, all surrounding strings are stripped
+		"""
+		return vim.current.buffer[self.start][self.level + 1:]
+
+	@property
 	def mode(self):
 		return self._mode
 
