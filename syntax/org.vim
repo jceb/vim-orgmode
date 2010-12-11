@@ -90,15 +90,15 @@ hi OL6 guifg=#9966ff 	ctermfg=yellow
 hi OL7 guifg=#dd99dd  	ctermfg=red
 hi OL8 guifg=cyan	ctermfg=grey
 hi OL9 guifg=magenta	ctermfg=blue
-hi Folded gui=bold guifg=#6633ff guibg=#111111 	ctermfg=blue
+hi Folded gui=bold guifg=#6633ff ctermfg=blue
 "hi link OLB1 Folded 
-hi WarningMsg gui=bold guifg=#aaaa22  guibg=#111111	ctermfg=brown
+hi WarningMsg gui=bold guifg=#aaaa22  ctermfg=brown
 "hi link OLB2 WarningMsg
-hi WildMenu gui=bold guifg=#00ccff  guibg=#111111	ctermfg=cyan
+hi WildMenu gui=bold guifg=#00ccff  ctermfg=cyan
 "hi link OLB3 WildMenu
-hi DiffAdd gui=bold guifg=#999999 gui=italic  guibg=#111111	ctermfg=gray
+hi DiffAdd gui=bold guifg=#999999 gui=italic  ctermfg=gray
 "hi link OLB4 DiffAdd
-hi DiffChange gui=bold guifg=#eeaaee  guibg=#111111	ctermfg=lightgray
+hi DiffChange gui=bold guifg=#eeaaee  ctermfg=lightgray
 
 hi OLB6 gui=bold guifg=#9966ff 	ctermfg=yellow
 hi OLB7 gui=bold guifg=#dd99dd  	ctermfg=red
