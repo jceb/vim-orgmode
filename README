@@ -4,10 +4,10 @@ Information about the license are found in the file LICENSE
 
 TODO
 - implement non-relative heading changes
+- implement tests for toggle_folding
 - make plugin work for more than one buffer. register menu end
   keybindings for each buffer
-- implement TAB to cycle folding
-	- implement show/hide plugin
+- implement show/hide plugin
 - implement sparse tree. is a special folding needed?
 - implement dates
 - implement a calendar
@@ -24,6 +24,7 @@ TODO
   subheadings?
 
 DONE
++ implement TAB to cycle folding
 + implement |fold-foldtext|
 + bug in indentation function something goes wrong with mixed heading
   levels

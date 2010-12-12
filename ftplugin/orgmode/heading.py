@@ -229,6 +229,15 @@ class Heading(object):
 		return locals()
 	parent = property(**parent())
 
+	@property
+	def number_of_parents(self):
+		def count_parents(h):
+			if h.parent:
+				return 1 + count_parents(h.parent)
+			else:
+				return 0
+		return count_parents(self)
+
 	def previous_sibling():
 		def fget(self):
 			if self._previous_sibling == None:
