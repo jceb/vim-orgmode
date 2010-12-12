@@ -70,10 +70,10 @@ class ShowHide(object):
 					open_fold(child)
 
 			if not found_fold:
-				vim.command('normal %dggV%dggzC' % (heading.start_vim, heading.end_of_last_child_vim))
+				vim.command('%d,%dfoldclose!' % (heading.start_vim, heading.end_of_last_child_vim))
 
 				if heading.number_of_parents:
-					# restore cursor position
+					# restore cursor position, it might have been changed by open_fold
 					vim.current.window.cursor = cursor
 
 					# reopen fold again beacause the former closing of the fold closed all levels, including parents!
@@ -87,5 +87,5 @@ class ShowHide(object):
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
-		self.menu + ActionEntry('Action', Keybinding('<Tab>', ':py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>'))
+		self.menu + ActionEntry('&Cycle Visibility', Keybinding('<Tab>', ':py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>'))
 		#self.keybindings.append(Keybinding("keybinding", ':action'))
