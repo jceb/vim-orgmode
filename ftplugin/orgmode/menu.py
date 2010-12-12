@@ -90,7 +90,7 @@ class ActionEntry(object):
 	@property
 	def rname(self):
 		if isinstance(self._action, Keybinding):
-			return self._action.key
+			return self._action.key.replace('<Tab>', 'Tab')
 		return self._rname
 
 	@property
