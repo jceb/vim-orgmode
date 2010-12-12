@@ -29,6 +29,45 @@ def set_visual_selection(visualmode, line_start, line_end, col_start=1, col_end=
 	else:
 		vim.current.window.cursor = (line_end, col_end)
 
+class ShowHideTestCase(unittest.TestCase):
+	def setUp(self):
+		vim.CMDHISTORY = []
+		vim.CMDRESULTS = {}
+		vim.EVALHISTORY = []
+		vim.EVALRESULTS = {
+				'exists("g:orgmode_plugins")': True,
+				"g:orgmode_plugins": ['ShowHide'],
+				"v:count": 0
+				}
+		if not ORGMODE.plugins.has_key('ShowHide'):
+			ORGMODE.register_plugin('ShowHide')
+		self.showhide = ORGMODE.plugins['ShowHide']
+		vim.current.buffer = """
+* Überschrift 1
+Text 1
+
+Bla bla
+** Überschrift 1.1
+Text 2
+
+Bla Bla bla
+** Überschrift 1.2
+Text 3
+
+**** Überschrift 1.2.1.falsch
+
+Bla Bla bla bla
+*** Überschrift 1.2.1
+* Überschrift 2
+* Überschrift 3
+  asdf sdf
+""".split('\n')
+
+	def test_toggle_folding(self):
+		vim.current.window.cursor = (1, 0)
+		self.assertEqual(self.editstructure.new_heading_below(self.mode), None)
+		self.assertEqual(vim.EVALHISTORY[-1], 'feedkeys("o", "n")')
+
 class EditStructureTestCase(unittest.TestCase):
 	def setUp(self):
 		self.mode = MODE_STAR

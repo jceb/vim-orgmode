@@ -245,9 +245,9 @@ class Navigator(object):
 		return self._focus_heading(direction=DIRECTION_FORWARD, visualmode=visualmode)
 
 	def register(self):
-		self.menu + ActionEntry('Up', Keybinding('g{', ':py ORGMODE.plugins["Navigator"].parent()<CR>'))
-		self.menu + ActionEntry('Previous', Keybinding('{', ':py ORGMODE.plugins["Navigator"].previous()<CR>'))
-		self.menu + ActionEntry('Next', Keybinding('}', ':py ORGMODE.plugins["Navigator"].next()<CR>'))
+		self.menu + ActionEntry('&Up', Keybinding('g{', ':py ORGMODE.plugins["Navigator"].parent()<CR>'))
+		self.menu + ActionEntry('&Previous', Keybinding('{', ':py ORGMODE.plugins["Navigator"].previous()<CR>'))
+		self.menu + ActionEntry('&Next', Keybinding('}', ':py ORGMODE.plugins["Navigator"].next()<CR>'))
 		self.keybindings.append(Keybinding('g{', '<Esc>:<C-u>exe "py ORGMODE.plugins["Navigator"].parent(visualmode=True)"<CR>', mode=MODE_VISUAL))
 		self.keybindings.append(Keybinding('{', '<Esc>:<C-u>exe "py ORGMODE.plugins["Navigator"].previous(visualmode=True)"<CR>', mode=MODE_VISUAL))
 		self.keybindings.append(Keybinding('}', '<Esc>:<C-u>exe "py ORGMODE.plugins["Navigator"].next(visualmode=True)"<CR>', mode=MODE_VISUAL))
