@@ -88,7 +88,6 @@ def fold_text():
 		line = int(vim.eval('v:foldstart'))
 		heading = Heading.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 		if heading:
-			print heading.text
 			vim.command('let b:foldtext = "%s... "' % (heading))
 	except Exception, e:
 		pass
@@ -106,8 +105,10 @@ def fold_orgmode():
 		line = int(vim.eval('v:lnum'))
 		heading = Heading.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 		if heading:
-			if line == heading.start + 1:
+			if line == heading.start_vim:
 				vim.command('let b:fold_expr = ">%d"' % heading.level)
+			#elif line == heading.end_vim:
+			#	vim.command('let b:fold_expr = "<%d"' % heading.level)
 			# end_of_last_child_vim is a performance junky and is actually not needed
 			#elif line == heading.end_of_last_child_vim:
 			#	vim.command('let b:fold_expr = "<%d"' % heading.level)
