@@ -24,6 +24,7 @@ TODO
   subheadings?
 
 DONE
++ implement moving of headings
 + implement TAB to cycle folding
 + implement |fold-foldtext|
 + bug in indentation function something goes wrong with mixed heading

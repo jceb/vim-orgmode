@@ -136,6 +136,51 @@ class EditStructure(object):
 	#def delete_heading(self):
 	#	self._action_heading('d', Heading.current_heading())
 
+	def move_heading(self, direction=DIRECTION_FORWARD):
+		""" Move heading up or down
+
+		:returns: heading or None
+		"""
+		heading = Heading.current_heading()
+		if not heading or \
+				direction == DIRECTION_FORWARD and not heading.next_sibling or \
+				direction == DIRECTION_BACKWARD and not heading.previous_sibling:
+			return None
+
+		replaced_heading = None
+		if direction == DIRECTION_FORWARD:
+			replaced_heading = heading.next_sibling
+		else:
+			replaced_heading = heading.previous_sibling
+
+		# move heading including all sub heading upwards
+		save_next_previous_sibling = vim.current.buffer[replaced_heading.start:replaced_heading.end_of_last_child + 1]
+		save_current_heading = vim.current.buffer[heading.start:heading.end_of_last_child + 1]
+
+		new_end_of_last_child = None
+		new_start = None
+		new_cursor_position = None
+		old_start = None
+		old_end_of_last_child = None
+
+		if direction == DIRECTION_FORWARD:
+			new_start = replaced_heading.end_of_last_child - (heading.end_of_last_child - heading.start)
+			new_end_of_last_child = replaced_heading.end_of_last_child
+			new_cursor_position = vim.current.window.cursor[0] + (new_start - heading.start)
+			old_start = heading.start
+			old_end_of_last_child = new_start
+		else:
+			new_start = replaced_heading.start
+			new_end_of_last_child = replaced_heading.start + heading.end_of_last_child - heading.start
+			new_cursor_position = vim.current.window.cursor[0] - (heading.start - new_start)
+			old_start = new_end_of_last_child + 1
+			old_end_of_last_child = heading.end_of_last_child + 1
+
+		vim.current.buffer[new_start:new_end_of_last_child + 1] = save_current_heading
+		vim.current.buffer[old_start:old_end_of_last_child] = save_next_previous_sibling
+
+		vim.current.window.cursor = (new_cursor_position, vim.current.window.cursor[1])
+
 	def register(self):
 		"""
 		Registration of plugin. Key bindings and other initialization should be done.
@@ -144,5 +189,7 @@ class EditStructure(object):
 		self.menu + ActionEntry('New Heading &above', Keybinding('O', ':py ORGMODE.plugins["EditStructure"].new_heading_above()<CR>'))
 		self.menu + ActionEntry('&Promote Heading', Keybinding('>>', ':py ORGMODE.plugins["EditStructure"].promote_heading()<CR>'))
 		self.menu + ActionEntry('&Demote Heading', Keybinding('<<', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>'))
+		self.menu + ActionEntry('Move Subtree &up', Keybinding('m{', ':py ORGMODE.plugins["EditStructure"].move_heading(False)<CR>'))
+		self.menu + ActionEntry('Move Subtree &down', Keybinding('m}', ':py ORGMODE.plugins["EditStructure"].move_heading(True)<CR>'))
 		#self.menu + ActionEntry('Copy/yank Subtree', Keybinding('y}', ':py ORGMODE.plugins["EditStructure"].copy_heading()<CR>'))
 		#self.menu + ActionEntry('Delete Subtree', Keybinding('d}', ':py ORGMODE.plugins["EditStructure"].delete_heading()<CR>'))
