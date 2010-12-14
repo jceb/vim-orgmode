@@ -3,16 +3,15 @@ An attempt to build org-mode for vim (http://orgmode.org)
 Information about the license are found in the file LICENSE
 
 TODO
-- implement non-relative heading changes
+- implement tests for toggle_todo_state
 - implement tests for toggle_folding
+- implement non-relative heading changes
 - make plugin work for more than one buffer. register menu end
   keybindings for each buffer
-- implement show/hide plugin
 - implement sparse tree. is a special folding needed?
 - implement dates
 - implement a calendar
 - implement the agenda view by using the location list
-- implement todo items
 - allow the user to customize keybindings
 - implement time tracking
 - implement better object structure for Heading.parent and
@@ -24,6 +23,8 @@ TODO
   subheadings?
 
 DONE
++ implement todo items
++ implement show/hide plugin
 + implement moving of headings
 + implement TAB to cycle folding
 + implement |fold-foldtext|

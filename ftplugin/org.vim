@@ -2,7 +2,7 @@
 " @Author       : Jan Christoph Ebersbach (jceb@e-jc.de)
 " @License      : GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created      : 2010-10-03
-" @Last Modified: Sun 12. Dec 2010 15:06:30 +0100 CET
+" @Last Modified: Tue 14. Dec 2010 21:03:57 +0100 CET
 " @Revision     : 0.1
 " @vi           : ft=vim:tw=80:sw=4:ts=4
 " 
@@ -17,7 +17,7 @@ endif
 let b:loaded_org = 1
 
 if ! exists('g:orgmode_plugins')
-	let g:orgmode_plugins = ['ShowHide', 'Navigator', 'EditStructure']
+	let g:orgmode_plugins = ['ShowHide', 'Navigator', 'EditStructure', 'Todo']
 endif
 
 " Expand our path
