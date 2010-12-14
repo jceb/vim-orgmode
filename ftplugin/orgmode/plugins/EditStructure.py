@@ -136,6 +136,7 @@ class EditStructure(object):
 	#def delete_heading(self):
 	#	self._action_heading('d', Heading.current_heading())
 
+	@apply_count
 	def move_heading(self, direction=DIRECTION_FORWARD):
 		""" Move heading up or down
 
@@ -180,6 +181,7 @@ class EditStructure(object):
 		vim.current.buffer[old_start:old_end_of_last_child] = save_next_previous_sibling
 
 		vim.current.window.cursor = (new_cursor_position, vim.current.window.cursor[1])
+		return heading
 
 	def register(self):
 		"""
