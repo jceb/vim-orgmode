@@ -2,46 +2,53 @@ An attempt to build org-mode for vim (http://orgmode.org)
 
 Information about the license are found in the file LICENSE
 
-TODO
-- implement tests for toggle_todo_state
-- implement tests for toggle_folding
-- implement non-relative heading changes
-- make plugin work for more than one buffer. register menu end
-  keybindings for each buffer
-- implement sparse tree. is a special folding needed?
-- implement dates
-- implement a calendar
-- implement the agenda view by using the location list
-- allow the user to customize keybindings
-- implement time tracking
-- implement better object structure for Heading.parent and
-  Heading.children. At the moment the already created objects are not
-  reused, especially for iterchildern this is important!
-- implement count for navigator mappings in visual mode
-- implement promotion/demotion of headings in visual mode, do I really
-  need this? How do I promote/demote a single heading without
-  subheadings?
+* Todo/Done plugin
+** implement keyboard shortcuts to select todo state
+** implement tests for toggle_todo_state
+** implement todo state triggers
+** DONE implement multi-state workflows
+** DONE implement todo items
 
-DONE
-+ implement todo items
-+ implement show/hide plugin
-+ implement moving of headings
-+ implement TAB to cycle folding
-+ implement |fold-foldtext|
-+ bug in indentation function something goes wrong with mixed heading
-  levels
-+ bug in function g{, it places the cursor one character too far to the
-  right
-+ bug in indentation function it appears to be really slow
-+ add tests for indentation and and folding
-+ add an additional empty line when adding a new heading
-+ improve tests for Heading.end_of_last_child
-+ implement promotion and demotion for space indented files
-+ add tests for Heading.end_of_last_child
-+ implement promotion/demotion of headings
-+ implement M-RET to insert new headings
-+ implement implement indentation
-+ implement ctags to make browsing bigger files easy
-+ implement org-menu
-+ implement key registration
-+ implement navigator mappings for visual mode
+* ShowHide plugin
+** implement tests for toggle_folding
+** DONE implement show/hide plugin
+** DONE implement TAB to cycle folding
+** DONE implement |fold-foldtext|
+
+* Navigator plugin
+** implement count for navigator mappings in visual mode
+** implement sparse tree. is a special folding needed?
+** DONE implement navigator mappings for visual mode
+** DONE bug in function g{, it places the cursor one character too far to the right
+
+* EditStructure plugin
+** implement non-relative heading changes
+** implement promotion/demotion of headings in visual mode, do I really need this? How do I promote/demote a single heading without subheadings?
+** DONE implement M-RET to insert new headings
+** DONE implement moving of headings
+** DONE add an additional empty line when adding a new heading
+** DONE implement promotion and demotion for space indented files
+** DONE implement promotion/demotion of headings
+
+* Dates plugin
+** implement dates
+** implement a calendar
+** implement the agenda view by using the location list
+** implement time tracking
+
+* Misc
+** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
+** allow the user to customize keybindings
+** make plugin work for more than one buffer. register menu end keybindings for each buffer
+** DONE allow user definied settings
+** DONE implement implement indentation
+** DONE implement ctags to make browsing bigger files easy
+** DONE implement org-menu
+** DONE implement key registration
+** DONE bug in indentation function something goes wrong with mixed heading levels
+** DONE bug in indentation function it appears to be really slow
+** DONE add tests for indentation and and folding
+** DONE improve tests for Heading.end_of_last_child
+** DONE add tests for Heading.end_of_last_child
+
+vi: ft=org:tw=72:sw=4:ts=4

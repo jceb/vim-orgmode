@@ -1,5 +1,6 @@
 from orgmode import echo, echom, echoe, ORGMODE, apply_count
 from orgmode.menu import Submenu, HorizontalLine, ActionEntry
+from orgmode import settings
 from orgmode.keybinding import Keybinding
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
@@ -20,7 +21,7 @@ class Todo(object):
 		self.keybindings = []
 
 	@apply_count
-	def toggle_todo_state(self):
+	def toggle_todo_state(self, direction=DIRECTION_FORWARD):
 		""" Toggle state of TODO item
 
 		:returns: The changed heading
@@ -30,14 +31,52 @@ class Todo(object):
 			vim.eval('feedkeys("^", "n")')
 			return
 
-		# TODO: externalize states to a settings plugin and make them customizable
-		states = ('TODO', 'NEXT', 'STARTED', 'DONE', 'CANCELED', '')
+		states = settings.get('org_todo_keywords', [])
 
-		current_state, rest = heading.text.split(' ', 1)
+		current_state = ''
+		rest = ''
+		if heading.text.find(' ') != -1:
+			current_state, rest = heading.text.split(' ', 1)
+		else:
+			rest = heading.text
+
+		action_states = []
+		done_states = []
+
+		if states and isinstance(states[0], list):
+			found_list = False
+			for state_list in states:
+				if state_list and current_state in state_list or not current_state:
+					states = state_list
+					found_list = True
+					break
+			if not found_list:
+				states = states[0]
+
+		if '|' not in states:
+			action_states = states
+		else:
+			state_sep = states.index('|')
+			action_states = states[:state_sep]
+			done_states = filter(lambda x: x != '|', states[state_sep + 1:])
+			done_states.append('')
+
+		states = action_states + done_states
+
+		if len(states) < 2:
+			echom('No todo keywords configured.')
+			return
+
 		new_state = states[0]
-		if current_state in states:
-			# advance to next state
-			new_state = states[(states.index(current_state) + 1) % len(states)]
+		if direction == DIRECTION_BACKWARD:
+			new_state = states[-2]
+
+		if current_state != '|' and current_state in states:
+			# advance to next/previous state
+			if direction == DIRECTION_FORWARD:
+				new_state = states[(states.index(current_state) + 1) % len(states)]
+			else:
+				new_state = states[(states.index(current_state) + len(states) - 1) % len(states)]
 		else:
 			rest = ' '.join((current_state, rest))
 			current_state = ''
@@ -51,6 +90,8 @@ class Todo(object):
 		if vim.current.window.cursor[1] > (heading.level + len(current_state)):
 			extra = 1 if not current_state else -1 if not new_state else 0
 			vim.current.window.cursor = (vim.current.window.cursor[0], vim.current.window.cursor[1] + len(new_state) - len(current_state) + extra)
+		elif vim.current.window.cursor[1] > heading.level:
+			vim.current.window.cursor = (vim.current.window.cursor[0], heading.level)
 
 		return heading
 
@@ -60,4 +101,9 @@ class Todo(object):
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
 		self.menu + ActionEntry('&TODO/DONE/-', Keybinding('^', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>'))
+		# figure out the name for these actions
+		self.menu + ActionEntry('Change &Forward', Keybinding('<S-Right>', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>'))
+		self.menu + ActionEntry('Change &Backward', Keybinding('<S-Left>', ':py ORGMODE.plugins["Todo"].toggle_todo_state(False)<CR>'))
 		#self.keybindings.append(Keybinding("keybinding", ':action'))
+
+		settings.set('org_todo_keywords', ['TODO', '|', 'DONE'])
