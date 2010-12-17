@@ -1,5 +1,5 @@
 from orgmode import echo, echom, echoe, ORGMODE
-from orgmode.menu import Submenu, HorizontalLine, ActionEntry
+from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
@@ -12,7 +12,7 @@ class ShowHide(object):
 		""" Initialize plugin """
 		object.__init__(self)
 		# menu entries this plugin should create
-		self.menu = ORGMODE.orgmenu + Submenu('&Show Hide')
+		self.menu = (ORGMODE.orgmenu + Submenu('&Show Hide'), ORGMODE.orgmenu + Separator())
 
 		# key bindings for this plugin
 		# key bindings are also registered through the menu so only additional
@@ -87,5 +87,4 @@ class ShowHide(object):
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
-		self.menu + ActionEntry('&Cycle Visibility', Keybinding('<Tab>', ':py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>'))
-		#self.keybindings.append(Keybinding("keybinding", ':action'))
+		self.menu[0] + ActionEntry('&Cycle Visibility', Keybinding('<Tab>', ':py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>'))

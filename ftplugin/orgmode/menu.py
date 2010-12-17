@@ -5,9 +5,17 @@ from orgmode.keybinding import Keybinding, MODE_ALL, MODE_NORMAL, MODE_VISUAL, M
 def register_menu(f):
 	def r(*args, **kwargs):
 		p = f(*args, **kwargs)
-		if hasattr(p, 'menu') and (isinstance(p.menu, Submenu) \
-				or isinstance(p.menu, HorizontalLine) or isinstance(p.menu, ActionEntry)):
-			p.menu.create()
+		def create(entry):
+			if isinstance(entry, Submenu) or isinstance(entry, Separator) \
+					or isinstance(entry, ActionEntry):
+				entry.create()
+
+		if hasattr(p, 'menu'):
+			if isinstance(p.menu, list) or isinstance(p.menu, tuple):
+				for e in p.menu:
+					create(e)
+			else:
+				create(p.menu)
 		return p
 	return r
 
@@ -45,15 +53,26 @@ class Submenu(object):
 		for c in self.children:
 			c.create()
 
-class HorizontalLine(object):
-	""" Menu entry for a HorizontalLine """
+	def __str__(self):
+		res = self.name
+		for c in self.children:
+			res += str(c)
+		return res
 
-	def __init__(self, parent):
+class Separator(object):
+	""" Menu entry for a Separator """
+
+	def __init__(self, parent=None):
 		object.__init__(self)
 		self.parent = parent
 
+	def __str__(self):
+		return '-----'
+
 	def create(self):
-		vim.command('-%s-' % repr(self))
+		if self.parent:
+			menu = self.parent.get_menu()
+			vim.command('menu %s.-%s- :' % (menu, id(self)))
 
 class ActionEntry(object):
 	""" ActionEntry entry """
@@ -76,6 +95,9 @@ class ActionEntry(object):
 			raise ValueError('Parameter mode not in MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT')
 		self._mode = mode
 		self.parent = parent
+
+	def __str__(self):
+		return '%s\t%s' % (self.lname, self.rname)
 
 	@property
 	def lname(self):

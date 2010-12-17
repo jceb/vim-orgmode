@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from orgmode import echo, ORGMODE, apply_count
-from orgmode.menu import Submenu, HorizontalLine, ActionEntry
+from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_ALL, MODE_NORMAL
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 

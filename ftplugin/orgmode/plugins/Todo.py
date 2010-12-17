@@ -1,5 +1,5 @@
 from orgmode import echo, echom, echoe, ORGMODE, apply_count
-from orgmode.menu import Submenu, HorizontalLine, ActionEntry
+from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode import settings
 from orgmode.keybinding import Keybinding
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
@@ -102,8 +102,8 @@ class Todo(object):
 		# an Action menu entry which binds "keybinding" to action ":action"
 		self.menu + ActionEntry('&TODO/DONE/-', Keybinding('^', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>'))
 		# figure out the name for these actions
-		self.menu + ActionEntry('Change &Forward', Keybinding('<S-Right>', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>'))
-		self.menu + ActionEntry('Change &Backward', Keybinding('<S-Left>', ':py ORGMODE.plugins["Todo"].toggle_todo_state(False)<CR>'))
-		#self.keybindings.append(Keybinding("keybinding", ':action'))
+		submenu = self.menu + Submenu('Select &keyword')
+		submenu + ActionEntry('&Next keyword', Keybinding('<S-Right>', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>'))
+		submenu + ActionEntry('&Previous keyword', Keybinding('<S-Left>', ':py ORGMODE.plugins["Todo"].toggle_todo_state(False)<CR>'))
 
 		settings.set('org_todo_keywords', ['TODO', '|', 'DONE'])

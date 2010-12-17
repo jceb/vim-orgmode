@@ -1,5 +1,5 @@
 from orgmode import echo, echom, echoe, ORGMODE, apply_count, MODE_STAR, MODE_INDENT
-from orgmode.menu import Submenu, HorizontalLine, ActionEntry
+from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
