@@ -130,7 +130,6 @@ class OrgMode(object):
 
 		self._mode = mode
 		self.orgmenu = orgmode.menu.Submenu('&Org')
-		self._plugin_order = []
 		self._plugins = {}
 
 
@@ -180,7 +179,6 @@ class OrgMode(object):
 			_class = getattr(module, plugin)
 			self._plugins[plugin] = _class()
 			self._plugins[plugin].register()
-			self._plugin_order.append(plugin)
 			if self.debug:
 				echo('Plugin registered: %s' % plugin)
 			return self._plugins[plugin]
@@ -198,16 +196,11 @@ class OrgMode(object):
 		for p in self.plugins.itervalues():
 			dummy(p)
 
-	def register_menu(self):
-		@orgmode.menu.register_menu
-		def dummy(plugin):
-			return plugin
+	def enable_menu(self):
+		vim.command('aunmenu enable Org')
 
-		for p in self._plugin_order:
-			dummy(self._plugins[p])
-
-	def unregister_menu(self):
-		vim.command('aunmenu Org')
+	def disable_menu(self):
+		vim.command('aunmenu disable Org')
 
 ORGMODE = OrgMode()
 

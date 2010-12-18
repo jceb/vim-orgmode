@@ -2,7 +2,7 @@
 " @Author       : Jan Christoph Ebersbach (jceb@e-jc.de)
 " @License      : GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created      : 2010-10-03
-" @Last Modified: Sat 18. Dec 2010 01:24:34 +0100 CET
+" @Last Modified: Sat 18. Dec 2010 01:53:23 +0100 CET
 " @Revision     : 0.1
 " @vi           : ft=vim:tw=80:sw=4:ts=4
 " 
@@ -10,6 +10,15 @@
 " @Usage        :
 " @TODO         :
 " @CHANGES      :
+
+if ! exists("b:loaded_org_menu")
+	" show and hide Org menu depending on the filetype
+	augroup orgmode
+		au BufEnter		<buffer>		:python ORGMODE.enable_menu()
+		au BufLeave		<buffer>		:python ORGMODE.disable_menu()
+	augroup END
+	let b:loaded_org_menu = 1
+endif
 
 " register keybindings if they don't have been registered before
 if has('python') && exists("g:loaded_org") && ! exists("b:loaded_org")
@@ -28,12 +37,6 @@ if ! has('python')
 	echom 'Python not found, orgmode plugin not usable.'
 	exit
 endif
-
-" show and hide Org menu depending on the filetype
-augroup orgmode
-	au BufEnter		*.org		:python ORGMODE.register_menu()
-	au BufLeave		*.org		:python ORGMODE.unregister_menu()
-augroup END
 
 " general setting plugins that should be loaded and their order
 if ! exists('g:orgmode_plugins')
