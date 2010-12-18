@@ -12,7 +12,7 @@ class ShowHide(object):
 		""" Initialize plugin """
 		object.__init__(self)
 		# menu entries this plugin should create
-		self.menu = (ORGMODE.orgmenu + Submenu('&Show Hide'), ORGMODE.orgmenu + Separator())
+		self.menu = ORGMODE.orgmenu + Submenu('&Show Hide')
 
 		# key bindings for this plugin
 		# key bindings are also registered through the menu so only additional
@@ -88,4 +88,4 @@ class ShowHide(object):
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
 		self.keybindings.append(Keybinding('<Tab>', ':py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>'))
-		self.menu[0] + ActionEntry('&Cycle Visibility', self.keybindings[-1])
+		self.menu + ActionEntry('&Cycle Visibility', self.keybindings[-1])

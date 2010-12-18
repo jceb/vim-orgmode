@@ -147,6 +147,11 @@ class OrgMode(object):
 		if not isinstance(plugin, basestring):
 			raise ValueError('Parameter plugin is not of type string')
 
+		if plugin == '|':
+			self.orgmenu + orgmode.menu.Separator()
+			self.orgmenu.children[-1].create()
+			return
+
 		if self._plugins.has_key(plugin):
 			raise PluginError('Plugin %s has already been loaded')
 
@@ -196,11 +201,11 @@ class OrgMode(object):
 		for p in self.plugins.itervalues():
 			dummy(p)
 
-	def enable_menu(self):
-		vim.command('aunmenu enable Org')
+	def register_menu(self):
+		self.orgmenu.create()
 
-	def disable_menu(self):
-		vim.command('aunmenu disable Org')
+	def unregister_menu(self):
+		vim.command('silent! aunmenu Org')
 
 ORGMODE = OrgMode()
 
