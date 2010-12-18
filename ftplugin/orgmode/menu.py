@@ -137,5 +137,6 @@ class ActionEntry(object):
 
 		vim.command(cmd)
 
-		if isinstance(self._action, Keybinding):
-			self._action.create()
+		# keybindings should be stored in the plugin.keybindings property and be registered by the appropriate keybinding registrar
+		#if isinstance(self._action, Keybinding):
+		#	self._action.create()

@@ -87,4 +87,5 @@ class ShowHide(object):
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
-		self.menu[0] + ActionEntry('&Cycle Visibility', Keybinding('<Tab>', ':py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>'))
+		self.keybindings.append(Keybinding('<Tab>', ':py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>'))
+		self.menu[0] + ActionEntry('&Cycle Visibility', self.keybindings[-1])

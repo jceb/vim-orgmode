@@ -39,7 +39,7 @@ Information about the license are found in the file LICENSE
 * Misc
 ** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
 ** allow the user to customize keybindings
-** make plugin work for more than one buffer. register menu end keybindings for each buffer
+** DONE make plugin work for more than one buffer. register menu end keybindings for each buffer
 ** DONE allow user definied settings
 ** DONE implement implement indentation
 ** DONE implement ctags to make browsing bigger files easy

@@ -9,6 +9,7 @@ import time
 import orgmode.plugins
 import orgmode.menu
 import orgmode.keybinding
+import orgmode.settings
 from orgmode.exceptions import PluginError
 
 __all__ = ['echo', 'echom', 'echoe', 'ORGMODE', 'MODE_STAR', 'MODE_INDENT']
@@ -122,17 +123,16 @@ class OrgMode(object):
 
 	def __init__(self, mode=MODE_STAR):
 		object.__init__(self)
-
 		if mode not in (MODE_STAR, MODE_INDENT):
 			raise ValueError('Parameter mode is not in (MODE_STAR, MODE_INDENT)')
+
+		self.debug = bool(int(orgmode.settings.get('org_debug', False)))
+
 		self._mode = mode
-		self._settings = None
-		self.register_menu = True
 		self.orgmenu = orgmode.menu.Submenu('&Org')
-
-		self.debug = False
-
+		self._plugin_order = []
 		self._plugins = {}
+
 
 	@property
 	def plugins(self):
@@ -180,6 +180,7 @@ class OrgMode(object):
 			_class = getattr(module, plugin)
 			self._plugins[plugin] = _class()
 			self._plugins[plugin].register()
+			self._plugin_order.append(plugin)
 			if self.debug:
 				echo('Plugin registered: %s' % plugin)
 			return self._plugins[plugin]
@@ -188,6 +189,25 @@ class OrgMode(object):
 			if self.debug:
 				raise e
 			return
+
+	def register_keybindings(self):
+		@orgmode.keybinding.register_keybindings
+		def dummy(plugin):
+			return plugin
+
+		for p in self.plugins.itervalues():
+			dummy(p)
+
+	def register_menu(self):
+		@orgmode.menu.register_menu
+		def dummy(plugin):
+			return plugin
+
+		for p in self._plugin_order:
+			dummy(self._plugins[p])
+
+	def unregister_menu(self):
+		vim.command('aunmenu Org')
 
 ORGMODE = OrgMode()
 

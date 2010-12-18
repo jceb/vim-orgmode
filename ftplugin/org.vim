@@ -2,7 +2,7 @@
 " @Author       : Jan Christoph Ebersbach (jceb@e-jc.de)
 " @License      : GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created      : 2010-10-03
-" @Last Modified: Tue 14. Dec 2010 21:03:57 +0100 CET
+" @Last Modified: Sat 18. Dec 2010 01:24:34 +0100 CET
 " @Revision     : 0.1
 " @vi           : ft=vim:tw=80:sw=4:ts=4
 " 
@@ -11,11 +11,31 @@
 " @TODO         :
 " @CHANGES      :
 
-if &cp || exists("b:loaded_org")
+" register keybindings if they don't have been registered before
+if has('python') && exists("g:loaded_org") && ! exists("b:loaded_org")
+	python ORGMODE.register_keybindings()
+	let b:loaded_org = 1
+endif
+
+" load plugin just once
+if &cp || exists("g:loaded_org")
     finish
 endif
-let b:loaded_org = 1
+let g:loaded_org = 1
 
+" display error message if python is not available
+if ! has('python')
+	echom 'Python not found, orgmode plugin not usable.'
+	exit
+endif
+
+" show and hide Org menu depending on the filetype
+augroup orgmode
+	au BufEnter		*.org		:python ORGMODE.register_menu()
+	au BufLeave		*.org		:python ORGMODE.unregister_menu()
+augroup END
+
+" general setting plugins that should be loaded and their order
 if ! exists('g:orgmode_plugins')
 	let g:orgmode_plugins = ['ShowHide', 'Navigator', 'EditStructure', 'Todo']
 endif
