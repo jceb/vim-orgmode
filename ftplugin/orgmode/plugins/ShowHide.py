@@ -1,4 +1,4 @@
-from orgmode import echo, echom, echoe, ORGMODE
+from orgmode import echo, echom, echoe, ORGMODE, apply_count
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
@@ -19,6 +19,7 @@ class ShowHide(object):
 		# bindings should be put in this variable
 		self.keybindings = []
 	
+	@apply_count
 	def toggle_folding(self):
 		""" Toggle folding similar to the way orgmode does
 
@@ -36,7 +37,7 @@ class ShowHide(object):
 			# open closed fold
 			vim.command('normal %dzo' % heading.number_of_parents)
 			vim.current.window.cursor = cursor
-			return
+			return heading
 
 		found_fold = False
 		open_depth = 0
@@ -84,6 +85,7 @@ class ShowHide(object):
 
 		# restore cursor position
 		vim.current.window.cursor = cursor
+		return heading
 
 	def register(self):
 		"""

@@ -11,6 +11,7 @@ Information about the license are found in the file LICENSE
 ** DONE implement todo items
 
 * ShowHide plugin
+** DONE implement count for toggle folding
 ** DONE implement tests for toggle_folding
 ** DONE implement show/hide plugin
 ** DONE implement TAB to cycle folding
