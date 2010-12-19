@@ -1,7 +1,7 @@
 from orgmode import echo, echom, echoe, ORGMODE, apply_count
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode import settings
-from orgmode.keybinding import Keybinding
+from orgmode.keybinding import Keybinding, Plug
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
@@ -100,13 +100,13 @@ class Todo(object):
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
-		self.keybindings.append(Keybinding('^', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>'))
+		self.keybindings.append(Keybinding('^', Plug('OrgToggleTodo', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>')))
 		self.menu + ActionEntry('&TODO/DONE/-', self.keybindings[-1])
 		# figure out the name for these actions
 		submenu = self.menu + Submenu('Select &keyword')
-		self.keybindings.append(Keybinding('<S-Right>', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>'))
+		self.keybindings.append(Keybinding('<S-Right>', '<Plug>OrgToggleTodo'))
 		submenu + ActionEntry('&Next keyword', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<S-Left>', ':py ORGMODE.plugins["Todo"].toggle_todo_state(False)<CR>'))
+		self.keybindings.append(Keybinding('<S-Left>', Plug('OrgToggleTodoBackward', ':py ORGMODE.plugins["Todo"].toggle_todo_state(False)<CR>')))
 		submenu + ActionEntry('&Previous keyword', self.keybindings[-1])
 
 		settings.set('org_todo_keywords', ['TODO', '|', 'DONE'])

@@ -2,7 +2,7 @@
 " @Author       : Jan Christoph Ebersbach (jceb@e-jc.de)
 " @License      : GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created      : 2010-10-03
-" @Last Modified: Sat 18. Dec 2010 15:53:22 +0100 CET
+" @Last Modified: Sun 19. Dec 2010 14:36:34 +0100 CET
 " @Revision     : 0.1
 " @vi           : ft=vim:tw=80:sw=4:ts=4
 " 
@@ -26,7 +26,7 @@ let g:loaded_org = 1
 " display error message if python is not available
 if ! has('python')
 	echom 'Python not found, orgmode plugin not usable.'
-	exit
+	finish
 endif
 
 " general setting plugins that should be loaded and their order

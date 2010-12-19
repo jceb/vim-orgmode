@@ -1,6 +1,6 @@
 from orgmode import echo, echom, echoe, ORGMODE, apply_count, MODE_STAR, MODE_INDENT
 from orgmode.menu import Submenu, Separator, ActionEntry
-from orgmode.keybinding import Keybinding
+from orgmode.keybinding import Keybinding, Plug
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
@@ -187,17 +187,17 @@ class EditStructure(object):
 		"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		self.keybindings.append(Keybinding('o', ':py ORGMODE.plugins["EditStructure"].new_heading_below()<CR>'))
+		self.keybindings.append(Keybinding('o', Plug('OrgNewHeadingBelow', ':py ORGMODE.plugins["EditStructure"].new_heading_below()<CR>')))
 		self.menu + ActionEntry('New Heading &below', self.keybindings[-1])
-		self.keybindings.append(Keybinding('O', ':py ORGMODE.plugins["EditStructure"].new_heading_above()<CR>'))
+		self.keybindings.append(Keybinding('O', Plug('OrgNewHeadingAbove', ':py ORGMODE.plugins["EditStructure"].new_heading_above()<CR>')))
 		self.menu + ActionEntry('New Heading &above', self.keybindings[-1])
-		self.keybindings.append(Keybinding('>>', ':py ORGMODE.plugins["EditStructure"].promote_heading()<CR>'))
+		self.keybindings.append(Keybinding('>>', Plug('OrgPromoteHeading', ':py ORGMODE.plugins["EditStructure"].promote_heading()<CR>')))
 		self.menu + ActionEntry('&Promote Heading', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<<', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>'))
+		self.keybindings.append(Keybinding('<<', Plug('OrgDemoteHeading', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>')))
 		self.menu + ActionEntry('&Demote Heading', self.keybindings[-1])
-		self.keybindings.append(Keybinding('m{', ':py ORGMODE.plugins["EditStructure"].move_heading(False)<CR>'))
+		self.keybindings.append(Keybinding('m{', Plug('OrgMoveHeadingUpward', ':py ORGMODE.plugins["EditStructure"].move_heading(False)<CR>')))
 		self.menu + ActionEntry('Move Subtree &up', self.keybindings[-1])
-		self.keybindings.append(Keybinding('m}', ':py ORGMODE.plugins["EditStructure"].move_heading(True)<CR>'))
+		self.keybindings.append(Keybinding('m}', Plug('OrgMoveHeadingDownward', ':py ORGMODE.plugins["EditStructure"].move_heading(True)<CR>')))
 		self.menu + ActionEntry('Move Subtree &down', self.keybindings[-1])
 		#self.keybindings.append(Keybinding('y}', ':py ORGMODE.plugins["EditStructure"].copy_heading()<CR>'))
 		#self.menu + ActionEntry('Copy/yank Subtree', self.keybindings[-1])

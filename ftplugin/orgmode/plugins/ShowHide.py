@@ -1,6 +1,6 @@
 from orgmode import echo, echom, echoe, ORGMODE
 from orgmode.menu import Submenu, Separator, ActionEntry
-from orgmode.keybinding import Keybinding
+from orgmode.keybinding import Keybinding, Plug
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
@@ -30,12 +30,14 @@ class ShowHide(object):
 			vim.eval('feedkeys("<Tab>", "n")')
 			return
 
+		cursor = vim.current.window.cursor[:]
+
 		if int(vim.eval('foldclosed(%d)' % heading.start_vim)) != -1:
 			# open closed fold
 			vim.command('normal %dzo' % heading.number_of_parents)
+			vim.current.window.cursor = cursor
 			return
 
-		cursor = vim.current.window.cursor[:]
 		found_fold = False
 		open_depth = 0
 
@@ -53,16 +55,16 @@ class ShowHide(object):
 
 				return (max(res), found)
 
-		# find deepest fold
-		open_depth, found_fold = fold_depth(heading)
-		open_depth = open_depth
-
 		def open_fold(h):
 			if h.number_of_parents <= open_depth:
 				vim.command('normal %dgg%dzo' % (h.start_vim, open_depth))
 			if h.children:
 				for c in h.children:
 					open_fold(c)
+
+		# find deepest fold
+		open_depth, found_fold = fold_depth(heading)
+		open_depth = open_depth
 
 		# recursively open folds
 		for child in heading.children:
@@ -80,13 +82,14 @@ class ShowHide(object):
 				# reopen fold again beacause the former closing of the fold closed all levels, including parents!
 				vim.command('normal %dzo' % (heading.number_of_parents, ))
 
-			# restore cursor position
-			vim.current.window.cursor = cursor
+		# restore cursor position
+		vim.current.window.cursor = cursor
 
 	def register(self):
 		"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		# an Action menu entry which binds "keybinding" to action ":action"
-		self.keybindings.append(Keybinding('<Tab>', ':py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>'))
+		# register plug
+		
+		self.keybindings.append(Keybinding('<Tab>', Plug('OrgToggleFolding', ':py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>')))
 		self.menu + ActionEntry('&Cycle Visibility', self.keybindings[-1])

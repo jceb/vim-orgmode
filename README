@@ -5,6 +5,7 @@ Information about the license are found in the file LICENSE
 * Todo/Done plugin
 ** TODO implement tests for toggle_todo_state
 ** implement keyboard shortcuts to select todo state
+** implement switching to next/previous todo state list
 ** implement todo state triggers
 ** DONE implement multi-state workflows
 ** DONE implement todo items
@@ -22,6 +23,8 @@ Information about the license are found in the file LICENSE
 ** DONE bug in function g{, it places the cursor one character too far to the right
 
 * EditStructure plugin
+** TODO implement other paragraph motions, e.g. d}, c{, dap, cip, this should also work for a whole heading with subheadings
+** maybe change keybinding for headings to M-RET
 ** implement non-relative heading changes
 ** implement promotion/demotion of headings in visual mode, do I really need this? How do I promote/demote a single heading without subheadings?
 ** DONE implement M-RET to insert new headings
@@ -40,10 +43,11 @@ Information about the license are found in the file LICENSE
 ** TODO make plugin keybindings/commands repeatable by pressing .
 ** integrate with Narrow Region plugin
 ** integrate with UTL plugin
-** generate documentation from plugin code
+** generate documentation from plugin code, add short/long descriptions to keybindings
 ** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
 ** allow the user to customize keybindings
-** remove indent mode, it's not needed!
+** TODO remove indent mode, it's not needed!
+** DONE implement <plug> for all commands
 ** DONE improve syntax highlighting for light backgrounds
 ** DONE disable menu instead of removing and adding it every time
 ** DONE make plugin work for more than one buffer. register menu end keybindings for each buffer

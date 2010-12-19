@@ -2,7 +2,7 @@
 
 from orgmode import echo, ORGMODE, apply_count
 from orgmode.menu import Submenu, Separator, ActionEntry
-from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_ALL, MODE_NORMAL
+from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_ALL, MODE_NORMAL, Plug
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
@@ -245,15 +245,15 @@ class Navigator(object):
 		return self._focus_heading(direction=DIRECTION_FORWARD, visualmode=visualmode)
 
 	def register(self):
-		self.keybindings.append(Keybinding('g{', ':py ORGMODE.plugins["Navigator"].parent()<CR>'))
+		self.keybindings.append(Keybinding('g{', Plug('OrgJumpToParent', ':py ORGMODE.plugins["Navigator"].parent()<CR>')))
 		self.menu + ActionEntry('&Up', self.keybindings[-1])
-		self.keybindings.append(Keybinding('{', ':py ORGMODE.plugins["Navigator"].previous()<CR>'))
+		self.keybindings.append(Keybinding('{', Plug('OrgJumpToPrevious', ':py ORGMODE.plugins["Navigator"].previous()<CR>')))
 		self.menu + ActionEntry('&Previous', self.keybindings[-1])
-		self.keybindings.append(Keybinding('}', ':py ORGMODE.plugins["Navigator"].next()<CR>'))
+		self.keybindings.append(Keybinding('}', Plug('OrgJumpToNext', ':py ORGMODE.plugins["Navigator"].next()<CR>')))
 		self.menu + ActionEntry('&Next', self.keybindings[-1])
-		self.keybindings.append(Keybinding('g{', '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].parent(visualmode=True)"<CR>', mode=MODE_VISUAL))
-		self.keybindings.append(Keybinding('{', '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].previous(visualmode=True)"<CR>', mode=MODE_VISUAL))
-		self.keybindings.append(Keybinding('}', '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].next(visualmode=True)"<CR>', mode=MODE_VISUAL))
+		self.keybindings.append(Keybinding('g{', Plug('OrgJumpToParentVisual', '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].parent(visualmode=True)"<CR>', mode=MODE_VISUAL), mode=MODE_VISUAL))
+		self.keybindings.append(Keybinding('{', Plug('OrgJumpToPreviousVisual', '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].previous(visualmode=True)"<CR>', mode=MODE_VISUAL), mode=MODE_VISUAL))
+		self.keybindings.append(Keybinding('}', Plug('OrgJumpToNextVisual', '<Esc>:<C-u>exe "py ORGMODE.plugins[\'Navigator\'].next(visualmode=True)"<CR>', mode=MODE_VISUAL), mode=MODE_VISUAL))
 
 		#self.keybindings.append(Keybinding("`{", ':py ORGMODE.plugins["Navigator"].previous_end(indent=True)<CR>', mode=MODE_NORMAL))
 		#self.keybindings.append(Keybinding("'{", ':py ORGMODE.plugins["Navigator"].previous_end(indent=False)<CR>', mode=MODE_NORMAL))

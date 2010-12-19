@@ -17,10 +17,39 @@ def register_keybindings(f):
 		return p
 	return r
 
+class Plug(object):
+	""" Represents a <Plug> to an abitrary command """
+
+	def __init__(self, name, command, mode=MODE_NORMAL):
+		"""
+		:name: the name of the <Plug> should be ScriptnameCommandname
+		:command: the actual command
+		"""
+		object.__init__(self)
+
+		if mode not in (MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT):
+			raise ValueError('Parameter mode not in MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT')
+		self._mode = mode
+
+		self.name = name
+		self.command = command
+		self.created = False
+
+	def __str__(self):
+		return '<Plug>%s' % self.name
+
+	def create(self):
+		if not self.created:
+			self.created = True
+			cmd = self._mode
+			if cmd == MODE_ALL:
+				cmd = ''
+			vim.command(':%snoremap %s %s' % (cmd, str(self), self.command))
+
 class Keybinding(object):
 	""" Representation of a single key binding """
 
-	def __init__(self, key, action, mode=MODE_NORMAL, options=None, remap=False, buffer_only=True, silent=True):
+	def __init__(self, key, action, mode=MODE_NORMAL, options=None, remap=True, buffer_only=True, silent=True):
 		"""
 		:key: the key(s) action is bound to
 		:action: the action triggered by key(s)
@@ -54,7 +83,7 @@ class Keybinding(object):
 
 	@property
 	def action(self):
-		return self._action
+		return str(self._action)
 
 	@property
 	def mode(self):
@@ -86,6 +115,8 @@ class Keybinding(object):
 			cmd += 'nore'
 		try:
 			vim.command(':%smap %s %s %s' % (cmd, ' '.join(self._options), self._key, self._action))
+			if isinstance(self._action, Plug):
+				self._action.create()
 		except Exception, e:
 			if ORGMODE.debug:
 				echom('Failed to register key binding %s %s' % (self._key, self._action))

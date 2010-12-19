@@ -1,6 +1,6 @@
 from orgmode import echo, echom, echoe, ORGMODE
 from orgmode.menu import Submenu, Separator, ActionEntry
-from orgmode.keybinding import Keybinding
+from orgmode.keybinding import Keybinding, Plug
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
@@ -24,6 +24,6 @@ class Example(object):
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
-		self.keybindings.append(Keybinding('keybinding', ':action'))
+		self.keybindings.append(Keybinding('keybinding', Plug('OrgAction', ':action<CR>'))
 		self.menu + ActionEntry('Action', self.keybindings[-1])
-		self.keybindings.append(Keybinding("keybinding", ':action'))
+		self.keybindings.append(Keybinding("keybinding", Plug('OrgAction', ':action<CR>'))
