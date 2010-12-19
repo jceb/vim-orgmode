@@ -1,4 +1,6 @@
-from orgmode import echo, echom, echoe, ORGMODE
+# -*- coding: utf-8 -*-
+
+from orgmode import echo, echom, echoe, ORGMODE, apply_count, repeat
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from orgmode import echo, echom, echoe, ORGMODE, apply_count, repeat
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode import settings

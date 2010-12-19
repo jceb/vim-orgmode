@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import vim
 
 from orgmode.keybinding import Keybinding, MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT

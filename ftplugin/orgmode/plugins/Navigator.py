@@ -152,7 +152,7 @@ class Navigator(object):
 		focus_heading = None
 		if not heading:
 			if direction == DIRECTION_FORWARD:
-				focus_heading = Heading.next_heading(ORGMODE.mode)
+				focus_heading = Heading.next_heading()
 			if not (heading or focus_heading):
 				if visualmode:
 					# restore visual selection when no heading was found

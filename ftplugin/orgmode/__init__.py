@@ -12,7 +12,7 @@ import orgmode.keybinding
 import orgmode.settings
 from orgmode.exceptions import PluginError
 
-__all__ = ['echo', 'echom', 'echoe', 'ORGMODE', 'MODE_STAR', 'MODE_INDENT']
+__all__ = ['echo', 'echom', 'echoe', 'ORGMODE', 'apply_count', 'repeat']
 
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
 
@@ -77,9 +77,6 @@ def echoe(message):
 	# probably some escaping is needed here
 	vim.command(':echoerr "%s"' % message)
 
-MODE_STAR   = True
-MODE_INDENT = False
-
 def indent_orgmode():
 	""" Set the indent value for the current line in the variable b:indent_level
 	Vim prerequisites:
@@ -139,14 +136,10 @@ def fold_orgmode():
 class OrgMode(object):
 	""" Vim Buffer """
 
-	def __init__(self, mode=MODE_STAR):
+	def __init__(self):
 		object.__init__(self)
-		if mode not in (MODE_STAR, MODE_INDENT):
-			raise ValueError('Parameter mode is not in (MODE_STAR, MODE_INDENT)')
-
 		self.debug = bool(int(orgmode.settings.get('org_debug', False)))
 
-		self._mode = mode
 		self.orgmenu = orgmode.menu.Submenu('&Org')
 		self._plugins = {}
 
@@ -154,10 +147,6 @@ class OrgMode(object):
 	@property
 	def plugins(self):
 		return self._plugins.copy()
-
-	@property
-	def mode(self):
-		return self._mode
 
 	@orgmode.keybinding.register_keybindings
 	@orgmode.menu.register_menu

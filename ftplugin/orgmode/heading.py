@@ -1,4 +1,4 @@
-from orgmode import MODE_STAR, MODE_INDENT
+# -*- coding: utf-8 -*-
 
 import vim
 
@@ -8,16 +8,13 @@ DIRECTION_BACKWARD = False
 class Heading(object):
 	""" Structural heading object """
 
-	def __init__(self, start, mode=MODE_STAR):
+	def __init__(self, start):
 		object.__init__(self)
 
 		self._start = start
 		self._end = None
 
-		if mode not in (MODE_STAR, MODE_INDENT):
-			raise ValueError('Parameter mode is not in (MODE_STAR, MODE_INDENT)')
-		self._mode = mode
-		self._level = Heading.identify_heading(vim.current.buffer[self.start], mode=self._mode)
+		self._level = Heading.identify_heading(vim.current.buffer[self.start])
 
 		if self.level == None:
 			raise ValueError('Line number doesn\'t contain a heading!')
@@ -36,10 +33,6 @@ class Heading(object):
 		""" Return the text of the current heading, all surrounding strings are stripped
 		"""
 		return vim.current.buffer[self.start][self.level + 1:]
-
-	@property
-	def mode(self):
-		return self._mode
 
 	@property
 	def level(self):
@@ -128,7 +121,7 @@ class Heading(object):
 			if start == None:
 				start = self.start + 1
 			while True:
-				heading = Heading.find_heading(start, mode=self._mode)
+				heading = Heading.find_heading(start)
 				if heading:
 					if heading.start == self.start:
 						break
@@ -204,7 +197,7 @@ class Heading(object):
 					heading = previous
 					previous = heading.previous_sibling
 				while True:
-					heading = Heading.find_heading(heading.start - 1, DIRECTION_BACKWARD, mode=self._mode)
+					heading = Heading.find_heading(heading.start - 1, DIRECTION_BACKWARD)
 					if heading:
 						if heading.start == self.start:
 							break
@@ -244,7 +237,7 @@ class Heading(object):
 				heading = self
 				tmp_heading = None
 				while True:
-					heading = Heading.find_heading(heading.start - 1, DIRECTION_BACKWARD, mode=self._mode)
+					heading = Heading.find_heading(heading.start - 1, DIRECTION_BACKWARD)
 					if heading:
 						if heading.start == self.start:
 							break
@@ -297,37 +290,26 @@ class Heading(object):
 	next_sibling = property(**next_sibling())
 
 	@classmethod
-	def identify_heading(cls, line, mode=MODE_STAR):
+	def identify_heading(cls, line):
 		""" Test if a certain line is a heading or not.
 
 		:line: the line to check
-		:mode: if True suppose leading asterisk, if False suppose leading space characters
 
 		:returns: level
 		"""
 		level = 0
 		if not line:
 			return None
-		if mode == MODE_STAR:
-			for i in xrange(0, len(line)):
-				if line[i] == '*':
-					level += 1
-					if line[i+1] in ('\t', ' '):
-						return level
-				else:
-					return None
-		else:
-			for i in xrange(0, len(line)):
-				if line[i] == ' ':
-					level += 1
-				elif line[i] == '*':
-					level += 1
-					if line[i+1] in ('\t', ' '):
-						return level
-					return None
+		for i in xrange(0, len(line)):
+			if line[i] == '*':
+				level += 1
+				if line[i+1] in ('\t', ' '):
+					return level
+			else:
+				return None
 
 	@classmethod
-	def find_heading(cls, start_line, direction=DIRECTION_FORWARD, mode=MODE_STAR):
+	def find_heading(cls, start_line, direction=DIRECTION_FORWARD):
 		""" Find heading in the given direction
 
 		:direction: downward == DIRECTION_FORWARD, upward == DIRECTION_BACKWARD
@@ -347,37 +329,37 @@ class Heading(object):
 		# Search heading upwards
 		if direction == DIRECTION_FORWARD:
 			while tmp_line < len_cb:
-				if Heading.identify_heading(cb[tmp_line], mode=mode) != None:
-					return Heading(tmp_line, mode=mode)
+				if Heading.identify_heading(cb[tmp_line]) != None:
+					return Heading(tmp_line)
 				tmp_line += 1
 		else:
 			while tmp_line >= 0:
-				if Heading.identify_heading(cb[tmp_line], mode=mode) != None:
-					return Heading(tmp_line, mode=mode)
+				if Heading.identify_heading(cb[tmp_line]) != None:
+					return Heading(tmp_line)
 				tmp_line -= 1
 
 	@classmethod
-	def current_heading(cls, mode=MODE_STAR):
+	def current_heading(cls):
 		""" Find the current heading (search backward) and return the related object
 
 		:returns: Heading object or None
 		"""
-		return Heading.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_BACKWARD, mode)
+		return Heading.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_BACKWARD)
 
 	@classmethod
-	def next_heading(cls, mode=MODE_STAR):
+	def next_heading(cls):
 		""" Find the next heading (search forward) and return the related object
 
 		:returns: Heading object or None
 		"""
-		return Heading.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_FORWARD, mode)
+		return Heading.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_FORWARD)
 
 	@classmethod
-	def previous_heading(cls, mode=MODE_STAR):
+	def previous_heading(cls):
 		""" Find the next heading (search forward) and return the related object
 
 		:returns: Heading object or None
 		"""
-		h = Heading.current_heading(mode=mode)
+		h = Heading.current_heading()
 		if h:
-			return Heading.find_heading(h.start - 1, DIRECTION_BACKWARD, mode)
+			return Heading.find_heading(h.start - 1, DIRECTION_BACKWARD)

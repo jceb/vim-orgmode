@@ -53,6 +53,7 @@ EVALHISTORY = []
 EVALRESULTS = {
 		'exists("g:org_debug")': 0,
 		'exists("b:org_debug")': 0,
+		'exists("*repeat#set()")': 0,
 		}
 
 def eval(cmd):
