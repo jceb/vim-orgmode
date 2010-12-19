@@ -14,9 +14,27 @@ from orgmode.exceptions import PluginError
 
 __all__ = ['echo', 'echom', 'echoe', 'ORGMODE', 'MODE_STAR', 'MODE_INDENT']
 
+REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
+
+def repeat(f):
+	"""
+	Integrate with the repeat plugin if available
+
+	The decorated function must return the name of the <Plug> command to
+	execute by the repeat plugin. 
+	"""
+	def r(*args, **kwargs):
+		res = f(*args, **kwargs)
+		if REPEAT_EXISTS and isinstance(res, basestring):
+			vim.command('silent! call repeat#set("\<Plug>%s")' % res)
+		return res
+	return r
+
 def apply_count(f):
 	"""
-	Decorator which executes function v:count or v:prevount (not implemented, yet) times
+	Decorator which executes function v:count or v:prevount (not implemented,
+	yet) times. The decorated function must return a value that evaluates to
+	True otherwise the function is not repeated.
 	"""
 	def r(*args, **kwargs):
 		count = 0

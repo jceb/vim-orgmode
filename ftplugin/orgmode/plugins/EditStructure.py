@@ -1,4 +1,4 @@
-from orgmode import echo, echom, echoe, ORGMODE, apply_count, MODE_STAR, MODE_INDENT
+from orgmode import echo, echom, echoe, ORGMODE, apply_count, repeat, MODE_STAR, MODE_INDENT
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
@@ -122,13 +122,17 @@ class EditStructure(object):
 
 		return True
 
+	@repeat
 	@apply_count
 	def demote_heading(self, mode=MODE_STAR):
-		return self._change_heading_level(-1, mode=mode)
+		if self._change_heading_level(-1, mode=mode):
+			return 'OrgDemoteHeading'
 
+	@repeat
 	@apply_count
 	def promote_heading(self, mode=MODE_STAR):
-		return self._change_heading_level(1, mode=mode)
+		if self._change_heading_level(1, mode=mode):
+			return 'OrgPromoteHeading'
 
 	#def copy_heading(self):
 	#	self._action_heading('y', Heading.current_heading())
@@ -136,8 +140,7 @@ class EditStructure(object):
 	#def delete_heading(self):
 	#	self._action_heading('d', Heading.current_heading())
 
-	@apply_count
-	def move_heading(self, direction=DIRECTION_FORWARD):
+	def _move_heading(self, direction=DIRECTION_FORWARD):
 		""" Move heading up or down
 
 		:returns: heading or None
@@ -181,7 +184,20 @@ class EditStructure(object):
 		vim.current.buffer[old_start:old_end_of_last_child] = save_next_previous_sibling
 
 		vim.current.window.cursor = (new_cursor_position, vim.current.window.cursor[1])
-		return heading
+
+		return True
+
+	@repeat
+	@apply_count
+	def move_heading_upward(self):
+		if self._move_heading(direction=DIRECTION_BACKWARD):
+			return 'OrgMoveHeadingUpward'
+
+	@repeat
+	@apply_count
+	def move_heading_downward(self):
+		if self._move_heading(direction=DIRECTION_FORWARD):
+			return 'OrgMoveHeadingDownward'
 
 	def register(self):
 		"""
@@ -195,9 +211,9 @@ class EditStructure(object):
 		self.menu + ActionEntry('&Promote Heading', self.keybindings[-1])
 		self.keybindings.append(Keybinding('<<', Plug('OrgDemoteHeading', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>')))
 		self.menu + ActionEntry('&Demote Heading', self.keybindings[-1])
-		self.keybindings.append(Keybinding('m{', Plug('OrgMoveHeadingUpward', ':py ORGMODE.plugins["EditStructure"].move_heading(False)<CR>')))
+		self.keybindings.append(Keybinding('m{', Plug('OrgMoveHeadingUpward', ':py ORGMODE.plugins["EditStructure"].move_heading_upward()<CR>')))
 		self.menu + ActionEntry('Move Subtree &up', self.keybindings[-1])
-		self.keybindings.append(Keybinding('m}', Plug('OrgMoveHeadingDownward', ':py ORGMODE.plugins["EditStructure"].move_heading(True)<CR>')))
+		self.keybindings.append(Keybinding('m}', Plug('OrgMoveHeadingDownward', ':py ORGMODE.plugins["EditStructure"].move_heading_downward()<CR>')))
 		self.menu + ActionEntry('Move Subtree &down', self.keybindings[-1])
 		#self.keybindings.append(Keybinding('y}', ':py ORGMODE.plugins["EditStructure"].copy_heading()<CR>'))
 		#self.menu + ActionEntry('Copy/yank Subtree', self.keybindings[-1])

@@ -2,7 +2,7 @@
 " @Author       : Jan Christoph Ebersbach (jceb@e-jc.de)
 " @License      : GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created      : 2010-10-03
-" @Last Modified: Sun 19. Dec 2010 14:36:34 +0100 CET
+" @Last Modified: Sun 19. Dec 2010 22:33:30 +0100 CET
 " @Revision     : 0.1
 " @vi           : ft=vim:tw=80:sw=4:ts=4
 " 
@@ -33,6 +33,12 @@ endif
 if ! exists('g:org_plugins')
 	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', 'Todo']
 endif
+
+" make sure repeat plugin is load (or not)
+try
+	call repeat#set()
+catch
+endtry
 
 " show and hide Org menu depending on the filetype
 augroup orgmode
