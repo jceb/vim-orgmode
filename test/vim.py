@@ -4,7 +4,6 @@ class VimWindow(object):
 	""" Docstring for VimWindow """
 
 	def __init__(self, test):
-		""" TODO: Fill me in """
 		object.__init__(self)
 		self._test = test
 		self.cursor = (1, 0)
@@ -51,12 +50,15 @@ class VimTest(object):
 	buffer = property(**buffer())
 
 EVALHISTORY = []
-EVALRESULTS = {}
+EVALRESULTS = {
+		'exists("g:org_debug")': 0,
+		'exists("b:org_debug")': 0,
+		}
 
 def eval(cmd):
 	""" evaluate command
 
-	:returns: TODO
+	:returns: results stored in EVALRESULTS
 	"""
 	EVALHISTORY.append(cmd)
 	return EVALRESULTS.get(cmd, None)

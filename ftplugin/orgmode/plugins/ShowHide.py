@@ -27,57 +27,58 @@ class ShowHide(object):
 		"""
 		heading = Heading.current_heading()
 		if not heading:
+			vim.eval('feedkeys("<Tab>", "n")')
 			return
+
 		if int(vim.eval('foldclosed(%d)' % heading.start_vim)) != -1:
 			# open closed fold
 			vim.command('normal %dzo' % heading.number_of_parents)
-		else:
-			cursor = vim.current.window.cursor[:]
-			found_fold = False
-			open_depth = 0
+			return
 
-			def fold_depth(h):
-				if int(vim.eval('foldclosed(%d)' % h.start_vim)) != -1:
-					return (h.number_of_parents, True)
-				else:
-					res = [h.number_of_parents + 1]
-					found = False
+		cursor = vim.current.window.cursor[:]
+		found_fold = False
+		open_depth = 0
 
-					for c in h.children:
-						d, f = fold_depth(c)
-						res.append(d)
-						found |= f
-						if found:
-							break
+		def fold_depth(h):
+			if int(vim.eval('foldclosed(%d)' % h.start_vim)) != -1:
+				return (h.number_of_parents, True)
+			else:
+				res = [h.number_of_parents + 1]
+				found = False
 
-					return (max(res), found)
+				for c in h.children:
+					d, f = fold_depth(c)
+					res.append(d)
+					found |= f
 
+				return (max(res), found)
+
+		# find deepest fold
+		open_depth, found_fold = fold_depth(heading)
+		open_depth = open_depth
+
+		def open_fold(h):
+			if h.number_of_parents <= open_depth:
+				vim.command('normal %dgg%dzo' % (h.start_vim, open_depth))
+			if h.children:
+				for c in h.children:
+					open_fold(c)
+
+		# recursively open folds
+		for child in heading.children:
 			# find deepest fold
-			open_depth, found_fold = fold_depth(heading)
-			open_depth = open_depth
+			if found_fold:
+				open_fold(child)
 
-			def open_fold(h):
-				if h.number_of_parents <= open_depth:
-					vim.command('normal %dgg%dzo' % (h.start_vim, open_depth))
-				if h.children:
-					for c in h.children:
-						open_fold(c)
+		if not found_fold:
+			vim.command('%d,%dfoldclose!' % (heading.start_vim, heading.end_of_last_child_vim))
 
-			# recursively open folds
-			for child in heading.children:
-				# find deepest fold
-				if found_fold:
-					open_fold(child)
+			if heading.number_of_parents:
+				# restore cursor position, it might have been changed by open_fold
+				vim.current.window.cursor = cursor
 
-			if not found_fold:
-				vim.command('%d,%dfoldclose!' % (heading.start_vim, heading.end_of_last_child_vim))
-
-				if heading.number_of_parents:
-					# restore cursor position, it might have been changed by open_fold
-					vim.current.window.cursor = cursor
-
-					# reopen fold again beacause the former closing of the fold closed all levels, including parents!
-					vim.command('normal %dzo' % (heading.number_of_parents, ))
+				# reopen fold again beacause the former closing of the fold closed all levels, including parents!
+				vim.command('normal %dzo' % (heading.number_of_parents, ))
 
 			# restore cursor position
 			vim.current.window.cursor = cursor

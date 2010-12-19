@@ -35,8 +35,10 @@ class ShowHideTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:orgmode_plugins")': True,
-				"g:orgmode_plugins": ['ShowHide'],
+				'exists("g:org_debug")': 0,
+				'exists("b:org_debug")': 0,
+				'exists("g:org_plugins")': True,
+				"g:org_plugins": ['ShowHide'],
 				"v:count": 0
 				}
 		if not ORGMODE.plugins.has_key('ShowHide'):
@@ -63,10 +65,156 @@ Bla Bla bla bla
   asdf sdf
 """.split('\n')
 
-	def test_toggle_folding(self):
+	def test_no_heading_toggle_folding(self):
 		vim.current.window.cursor = (1, 0)
-		self.assertEqual(self.editstructure.new_heading_below(self.mode), None)
-		self.assertEqual(vim.EVALHISTORY[-1], 'feedkeys("o", "n")')
+		self.assertEqual(self.showhide.toggle_folding(), None)
+		self.assertEqual(vim.EVALHISTORY[-1], 'feedkeys("<Tab>", "n")')
+		self.assertEqual(vim.current.window.cursor, (1, 0))
+
+	def test_toggle_folding_close_one(self):
+		vim.current.window.cursor = (13, 0)
+		vim.EVALRESULTS = {
+				'foldclosed(13)': -1,
+				}
+		self.assertEqual(self.showhide.toggle_folding(), None)
+		self.assertEqual(len(vim.CMDHISTORY), 2)
+		self.assertEqual(vim.CMDHISTORY[-2], '13,15foldclose!')
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2zo')
+		self.assertEqual(vim.current.window.cursor, (13, 0))
+
+	def test_toggle_folding_open_one(self):
+		vim.current.window.cursor = (10, 0)
+		vim.EVALRESULTS = {
+				'foldclosed(10)': 10,
+				}
+		self.assertEqual(self.showhide.toggle_folding(), None)
+		self.assertEqual(len(vim.CMDHISTORY), 1)
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 1zo')
+		self.assertEqual(vim.current.window.cursor, (10, 0))
+
+	def test_toggle_folding_close_multiple_all_open(self):
+		vim.current.window.cursor = (2, 0)
+		vim.EVALRESULTS = {
+				'foldclosed(2)': -1,
+				'foldclosed(6)': -1,
+				'foldclosed(10)': -1,
+				'foldclosed(13)': -1,
+				'foldclosed(16)': -1,
+				}
+		self.assertEqual(self.showhide.toggle_folding(), None)
+		self.assertEqual(len(vim.CMDHISTORY), 1)
+		self.assertEqual(vim.CMDHISTORY[-1], '2,16foldclose!')
+		self.assertEqual(vim.current.window.cursor, (2, 0))
+
+	def test_toggle_folding_open_multiple_all_closed(self):
+		vim.current.window.cursor = (2, 0)
+		vim.EVALRESULTS = {
+				'foldclosed(2)': 2,
+				}
+		self.assertEqual(self.showhide.toggle_folding(), None)
+		self.assertEqual(len(vim.CMDHISTORY), 1)
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 0zo')
+		self.assertEqual(vim.current.window.cursor, (2, 0))
+
+	def test_toggle_folding_open_multiple_first_level_open(self):
+		vim.current.window.cursor = (2, 0)
+		vim.EVALRESULTS = {
+				'foldclosed(2)': -1,
+				'foldclosed(6)': 6,
+				'foldclosed(10)': 10,
+				'foldclosed(13)': 13,
+				'foldclosed(16)': 16,
+				}
+		self.assertEqual(self.showhide.toggle_folding(), None)
+		self.assertEqual(len(vim.CMDHISTORY), 2)
+		self.assertEqual(vim.CMDHISTORY[-2], 'normal 6gg1zo')
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 10gg1zo')
+		self.assertEqual(vim.current.window.cursor, (2, 0))
+
+	def test_toggle_folding_open_multiple_second_level_half_open(self):
+		vim.current.window.cursor = (2, 0)
+		vim.EVALRESULTS = {
+				'foldclosed(2)': -1,
+				'foldclosed(6)': -1,
+				'foldclosed(10)': 10,
+				'foldclosed(13)': 13,
+				'foldclosed(16)': 16,
+				}
+		self.assertEqual(self.showhide.toggle_folding(), None)
+		self.assertEqual(len(vim.CMDHISTORY), 4)
+		self.assertEqual(vim.CMDHISTORY[-4], 'normal 6gg2zo')
+		self.assertEqual(vim.CMDHISTORY[-3], 'normal 10gg2zo')
+		self.assertEqual(vim.CMDHISTORY[-2], 'normal 13gg2zo')
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 16gg2zo')
+		self.assertEqual(vim.current.window.cursor, (2, 0))
+
+	def test_toggle_folding_open_multiple_other_second_level_half_open(self):
+		vim.current.window.cursor = (2, 0)
+		vim.EVALRESULTS = {
+				'foldclosed(2)': -1,
+				'foldclosed(6)': 6,
+				'foldclosed(10)': -1,
+				'foldclosed(13)': 13,
+				'foldclosed(16)': 16,
+				}
+		self.assertEqual(self.showhide.toggle_folding(), None)
+		self.assertEqual(len(vim.CMDHISTORY), 4)
+		self.assertEqual(vim.CMDHISTORY[-4], 'normal 6gg2zo')
+		self.assertEqual(vim.CMDHISTORY[-3], 'normal 10gg2zo')
+		self.assertEqual(vim.CMDHISTORY[-2], 'normal 13gg2zo')
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 16gg2zo')
+		self.assertEqual(vim.current.window.cursor, (2, 0))
+
+	def test_toggle_folding_open_multiple_third_level_half_open(self):
+		vim.current.window.cursor = (2, 0)
+		vim.EVALRESULTS = {
+				'foldclosed(2)': -1,
+				'foldclosed(6)': -1,
+				'foldclosed(10)': -1,
+				'foldclosed(13)': -1,
+				'foldclosed(16)': 16,
+				}
+		self.assertEqual(self.showhide.toggle_folding(), None)
+		self.assertEqual(len(vim.CMDHISTORY), 4)
+		self.assertEqual(vim.CMDHISTORY[-4], 'normal 6gg3zo')
+		self.assertEqual(vim.CMDHISTORY[-3], 'normal 10gg3zo')
+		self.assertEqual(vim.CMDHISTORY[-2], 'normal 13gg3zo')
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 16gg3zo')
+		self.assertEqual(vim.current.window.cursor, (2, 0))
+
+	def test_toggle_folding_open_multiple_other_third_level_half_open(self):
+		vim.current.window.cursor = (2, 0)
+		vim.EVALRESULTS = {
+				'foldclosed(2)': -1,
+				'foldclosed(6)': -1,
+				'foldclosed(10)': -1,
+				'foldclosed(13)': 13,
+				'foldclosed(16)': -1,
+				}
+		self.assertEqual(self.showhide.toggle_folding(), None)
+		self.assertEqual(len(vim.CMDHISTORY), 4)
+		self.assertEqual(vim.CMDHISTORY[-4], 'normal 6gg3zo')
+		self.assertEqual(vim.CMDHISTORY[-3], 'normal 10gg3zo')
+		self.assertEqual(vim.CMDHISTORY[-2], 'normal 13gg3zo')
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 16gg3zo')
+		self.assertEqual(vim.current.window.cursor, (2, 0))
+
+	def test_toggle_folding_open_multiple_other_third_level_half_open_second_level_half_closed(self):
+		vim.current.window.cursor = (2, 0)
+		vim.EVALRESULTS = {
+				'foldclosed(2)': -1,
+				'foldclosed(6)': 6,
+				'foldclosed(10)': -1,
+				'foldclosed(13)': 13,
+				'foldclosed(16)': -1,
+				}
+		self.assertEqual(self.showhide.toggle_folding(), None)
+		self.assertEqual(len(vim.CMDHISTORY), 4)
+		self.assertEqual(vim.CMDHISTORY[-4], 'normal 6gg3zo')
+		self.assertEqual(vim.CMDHISTORY[-3], 'normal 10gg3zo')
+		self.assertEqual(vim.CMDHISTORY[-2], 'normal 13gg3zo')
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 16gg3zo')
+		self.assertEqual(vim.current.window.cursor, (2, 0))
 
 class EditStructureTestCase(unittest.TestCase):
 	def setUp(self):
@@ -75,8 +223,10 @@ class EditStructureTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:orgmode_plugins")': True,
-				"g:orgmode_plugins": ['EditStructure'],
+				'exists("g:org_debug")': 0,
+				'exists("g:org_debug")': 0,
+				'exists("g:org_plugins")': True,
+				"g:org_plugins": ['EditStructure'],
 				"v:count": 0
 				}
 		if not ORGMODE.plugins.has_key('EditStructure'):
@@ -325,8 +475,10 @@ class EditStructureTestCaseIndent(EditStructureTestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:orgmode_plugins")': True,
-				"g:orgmode_plugins": ['EditStructure'],
+				'exists("g:org_debug")': 0,
+				'exists("g:org_debug")': 0,
+				'exists("g:org_plugins")': True,
+				"g:org_plugins": ['EditStructure'],
 				"v:count": 0
 				}
 		if not ORGMODE.plugins.has_key('EditStructure'):
@@ -359,8 +511,10 @@ class NavigatorTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:orgmode_plugins")': True,
-				"g:orgmode_plugins": [],
+				'exists("g:org_debug")': 0,
+				'exists("g:org_debug")': 0,
+				'exists("g:org_plugins")': True,
+				"g:org_plugins": [],
 				"v:count": 0
 				}
 		vim.current.buffer = """
@@ -910,8 +1064,10 @@ class HeadingTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:orgmode_plugins")': True,
-				"g:orgmode_plugins": ['Todo'],
+				'exists("g:org_debug")': 0,
+				'exists("g:org_debug")': 0,
+				'exists("g:org_plugins")': True,
+				"g:org_plugins": ['Todo'],
 				"v:count": 0
 				}
 		vim.current.buffer = """
@@ -1083,8 +1239,10 @@ class HeadingTestCaseIndent(HeadingTestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:orgmode_plugins")': True,
-				"g:orgmode_plugins": ['Todo'],
+				'exists("g:org_debug")': 0,
+				'exists("g:org_debug")': 0,
+				'exists("g:org_plugins")': True,
+				"g:org_plugins": ['Todo'],
 				"v:count": 0
 				}
 		vim.current.buffer = """
@@ -1115,8 +1273,10 @@ class MiscTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:orgmode_plugins")': True,
-				"g:orgmode_plugins": ['Todo'],
+				'exists("g:org_debug")': 0,
+				'exists("g:org_debug")': 0,
+				'exists("g:org_plugins")': True,
+				"g:org_plugins": ['Todo'],
 				"v:count": 0,
 				"v:lnum": 0
 				}

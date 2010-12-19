@@ -209,8 +209,8 @@ class OrgMode(object):
 
 ORGMODE = OrgMode()
 
-if vim.eval('exists("g:orgmode_plugins")'):
-	PLUGINS = vim.eval("g:orgmode_plugins")
+if vim.eval('exists("g:org_plugins")'):
+	PLUGINS = vim.eval("g:org_plugins")
 	if isinstance(PLUGINS, basestring):
 		ORGMODE.register_plugin(PLUGINS)
 	elif isinstance(PLUGINS, types.ListType) or \

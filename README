@@ -4,13 +4,13 @@ Information about the license are found in the file LICENSE
 
 * Todo/Done plugin
 ** implement keyboard shortcuts to select todo state
-** implement tests for toggle_todo_state
+** TODO implement tests for toggle_todo_state
 ** implement todo state triggers
 ** DONE implement multi-state workflows
 ** DONE implement todo items
 
 * ShowHide plugin
-** implement tests for toggle_folding
+** DONE implement tests for toggle_folding
 ** DONE implement show/hide plugin
 ** DONE implement TAB to cycle folding
 ** DONE implement |fold-foldtext|
@@ -31,14 +31,16 @@ Information about the license are found in the file LICENSE
 ** DONE implement promotion/demotion of headings
 
 * Dates plugin
-** implement dates
+** TODO implement dates
 ** implement a calendar
 ** implement the agenda view by using the location list
 ** implement time tracking
 
 * Misc
+** make commands repeatable by pressing .
 ** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
 ** allow the user to customize keybindings
+** remove indent mode, it's not needed!
 ** DONE disable menu instead of removing and adding it every time
 ** DONE make plugin work for more than one buffer. register menu end keybindings for each buffer
 ** DONE allow user definied settings
