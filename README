@@ -3,8 +3,8 @@ An attempt to build org-mode for vim (http://orgmode.org)
 Information about the license are found in the file LICENSE
 
 * Todo/Done plugin
-** implement keyboard shortcuts to select todo state
 ** TODO implement tests for toggle_todo_state
+** implement keyboard shortcuts to select todo state
 ** implement todo state triggers
 ** DONE implement multi-state workflows
 ** DONE implement todo items
@@ -37,10 +37,14 @@ Information about the license are found in the file LICENSE
 ** implement time tracking
 
 * Misc
-** make commands repeatable by pressing .
+** TODO make plugin keybindings/commands repeatable by pressing .
+** integrate with Narrow Region plugin
+** integrate with UTL plugin
+** generate documentation from plugin code
 ** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
 ** allow the user to customize keybindings
 ** remove indent mode, it's not needed!
+** DONE improve syntax highlighting for light backgrounds
 ** DONE disable menu instead of removing and adding it every time
 ** DONE make plugin work for more than one buffer. register menu end keybindings for each buffer
 ** DONE allow user definied settings
