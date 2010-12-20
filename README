@@ -37,6 +37,7 @@ Information about the license are found in the file LICENSE
 ** maybe change keybinding for headings to M-RET
 ** implement non-relative heading changes
 ** implement promotion/demotion of headings in visual mode, do I really need this? How do I promote/demote a single heading without subheadings?
+** DONE use vim.current.buffer[x:y] = [a, b, c] functionality
 ** DONE implement M-RET to insert new headings
 ** DONE implement moving of headings
 ** DONE add an additional empty line when adding a new heading

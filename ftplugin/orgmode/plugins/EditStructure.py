@@ -64,9 +64,7 @@ class EditStructure(object):
 				if h.parent.children[0].start == h.start:
 					level = h.parent.level + 1
 
-		tmp = ['%s ' % ('*' * level), ''] + vim.current.buffer[pos:]
-		del vim.current.buffer[pos:]
-		vim.current.buffer.append(tmp)
+		vim.current.buffer[pos:pos] = vim.current.buffer[pos:pos] + ['%s ' % ('*' * level), '']
 		vim.command('exe "normal %dgg"|startinsert!' % (pos + 1, ))
 
 		# not sure what to return here .. line number of new heading or old heading object?
@@ -109,10 +107,7 @@ class EditStructure(object):
 		# save cursor position
 		c = vim.current.window.cursor[:]
 		eolc = h.end_of_last_child_vim
-		vim_buffer = vim.current.buffer[:]
-		vim_buffer = indent(h, vim_buffer)
-		del vim.current.buffer[h.start:]
-		vim.current.buffer.append(vim_buffer[h.start:])
+		vim.current.buffer[h.start:eolc] = indent(h, vim.current.buffer[:])[h.start:eolc]
 		# indent the promoted/demoted heading
 		vim.command('normal %dggV%dgg=' % (h.start_vim, eolc))
 		# restore cursor position
