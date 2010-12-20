@@ -116,9 +116,12 @@ class Keybinding(object):
 		if not self._remap:
 			cmd += 'nore'
 		try:
-			vim.command(':%smap %s %s %s' % (cmd, ' '.join(self._options), self._key, self._action))
 			if isinstance(self._action, Plug):
 				self._action.create()
+				if not int(vim.eval('hasmapto("%s")' % (self._action, ))):
+					vim.command(':%smap %s %s %s' % (cmd, ' '.join(self._options), self._key, self._action))
+			else:
+				vim.command(':%smap %s %s %s' % (cmd, ' '.join(self._options), self._key, self._action))
 		except Exception, e:
 			if ORGMODE.debug:
 				echom('Failed to register key binding %s %s' % (self._key, self._action))

@@ -56,7 +56,7 @@ Information about the license are found in the file LICENSE
 ** integrate with UTL plugin
 ** generate documentation from plugin code, add short/long descriptions to keybindings
 ** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
-** allow the user to customize keybindings
+** DONE allow the user to customize keybindings
 ** DONE remove indent mode, it's not need!
 ** DONE make plugin keybindings/commands repeatable by pressing .
 ** DONE implement <plug> for all commands
