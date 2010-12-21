@@ -7,6 +7,8 @@ Information about the license are found in the file LICENSE
 ** Suggested plugins
    - pathogen for an easy management multiple plugins
    - repeat
+   - taglist
+   - speeddating
    - Narrow Region
    - Ultimate Text Linking
 
@@ -26,8 +28,11 @@ Information about the license are found in the file LICENSE
 ** DONE implement |fold-foldtext|
 
 * Navigator plugin
+** implement section wise movement by ]]
 ** implement count for navigator mappings in visual mode
 ** implement sparse tree. is a special folding needed?
+** DONE implement omap
+** DONE change } mapping to ]] - canceled
 ** DONE implement navigator mappings for visual mode
 ** DONE bug in function g{, it places the cursor one character too far to the right
 
@@ -57,6 +62,7 @@ Information about the license are found in the file LICENSE
 ** integrate with UTL plugin
 ** generate documentation from plugin code, add short/long descriptions to keybindings
 ** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
+** orgmode taglist integration doesn't work with txtfmt plugin
 ** DONE allow the user to customize keybindings
 ** DONE remove indent mode, it's not need!
 ** DONE make plugin keybindings/commands repeatable by pressing .

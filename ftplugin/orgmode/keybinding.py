@@ -6,6 +6,7 @@ MODE_ALL = 'a'
 MODE_NORMAL = 'n'
 MODE_VISUAL = 'v'
 MODE_INSERT = 'i'
+MODE_OPERATOR = 'o'
 
 OPTION_BUFFER_ONLY = '<buffer>'
 OPTION_SLIENT = '<silent>'
@@ -29,8 +30,8 @@ class Plug(object):
 		"""
 		object.__init__(self)
 
-		if mode not in (MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT):
-			raise ValueError('Parameter mode not in MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT')
+		if mode not in (MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT, MODE_OPERATOR):
+			raise ValueError('Parameter mode not in MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT, MODE_OPERATOR')
 		self._mode = mode
 
 		self.name = name
@@ -63,8 +64,8 @@ class Keybinding(object):
 		object.__init__(self)
 		self._key = key
 		self._action = action
-		if mode not in (MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT):
-			raise ValueError('Parameter mode not in MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT')
+		if mode not in (MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT, MODE_OPERATOR):
+			raise ValueError('Parameter mode not in MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT, MODE_OPERATOR')
 		self._mode = mode
 		self._options = options
 		if self._options == None:
