@@ -28,7 +28,7 @@ Information about the license are found in the file LICENSE
 ** DONE implement |fold-foldtext|
 
 * Navigator plugin
-** implement tests for ]]
+** TODO implement tests for ]]
 ** implement count for navigator mappings in visual mode
 ** implement sparse tree. is a special folding needed?
 ** DONE implement section wise movement (skip children) by ]]
@@ -39,10 +39,12 @@ Information about the license are found in the file LICENSE
 
 * EditStructure plugin
 ** TODO implement tests for move heading
-** TODO implement other paragraph motions, e.g. d}, c{, dap, cip, this should also work for a whole heading with subheadings
+** TODO implement tests for indenting a single heading
+** TODO implement other paragraph motions, e.g. dap, cip
 ** maybe change keybinding for headings to M-RET
 ** implement non-relative heading changes
-** implement promotion/demotion of headings in visual mode, do I really need this? How do I promote/demote a single heading without subheadings?
+** DONE implement promotion/demotion of headings in visual mode, do I really need this? How do I promote/demote a single heading without subheadings?
+** DONE implement other paragraph motions, e.g. d}, c{, this should also work for a whole heading with subheadings
 ** DONE use vim.current.buffer[x:y] = [a, b, c] functionality
 ** DONE implement M-RET to insert new headings
 ** DONE implement moving of headings
@@ -61,9 +63,10 @@ Information about the license are found in the file LICENSE
 ** TODO add descriptions to settings
 ** integrate with Narrow Region plugin
 ** integrate with UTL plugin
+** integrate with YankRing plugin
 ** generate documentation from plugin code, add short/long descriptions to keybindings
 ** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
-** orgmode taglist integration doesn't work with txtfmt plugin
+** orgmode taglist integration doesn't work with txtfmt plugin: setf txt.txtfmt
 ** DONE allow the user to customize keybindings
 ** DONE remove indent mode, it's not need!
 ** DONE make plugin keybindings/commands repeatable by pressing .

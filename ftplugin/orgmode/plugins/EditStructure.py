@@ -54,13 +54,24 @@ class EditStructure(object):
 	def new_heading_above(self):
 		return self.new_heading(False)
 
-	def _change_heading_level(self, level, relative=True):
+	def _change_heading_level(self, level, including_children=True):
+		"""
+		Change level of heading realtively with or without including children.
+		"""
 		h = Heading.current_heading()
-		if not h or h.start_vim != vim.current.window.cursor[0]:
-			if (relative and level > 0) or (not relative and level > h.level):
-				vim.eval('feedkeys(">>", "n")')
+		if not h:
+			# TODO figure out the actually pressed keybinding and feed these
+			# keys instead of making keys up like this
+			if level > 0:
+				if including_children:
+					vim.eval('feedkeys(">]]", "n")')
+				else:
+					vim.eval('feedkeys(">}", "n")')
 			else:
-				vim.eval('feedkeys("<<", "n")')
+				if including_children:
+					vim.eval('feedkeys("<]]", "n")')
+				else:
+					vim.eval('feedkeys("<}", "n")')
 			# return True because otherwise apply_count will not work
 			return True
 
@@ -72,22 +83,23 @@ class EditStructure(object):
 		if (h.level + level) < 1:
 			level = h.level - 1
 
-		def indent(heading, _buffer):
+		def indent(heading, ic):
 			if not heading:
-				return _buffer
+				return
+			end_vim = heading.end_vim
 			# strip level and add new level
-			_buffer[heading.start] = '%s%s' % ('*' * (heading.level + level), _buffer[heading.start][heading.level:])
+			vim.current.buffer[heading.start] = '%s%s' % ('*' * (heading.level + level), \
+					vim.current.buffer[heading.start][heading.level:])
 
-			for child in heading.children:
-				_buffer = indent(child, _buffer)
-			return _buffer
+			if ic:
+				for child in heading.children:
+					end_vim = indent(child, ic)
+			return end_vim
 
 		# save cursor position
 		c = vim.current.window.cursor[:]
-		eolc = h.end_of_last_child_vim
-		vim.current.buffer[h.start:eolc] = indent(h, vim.current.buffer[:])[h.start:eolc]
 		# indent the promoted/demoted heading
-		vim.command('normal %dggV%dgg=' % (h.start_vim, eolc))
+		vim.command('normal %dggV%dgg=' % (h.start_vim, indent(h, including_children)))
 		# restore cursor position
 		vim.current.window.cursor = (c[0], c[1] + level)
 
@@ -95,14 +107,18 @@ class EditStructure(object):
 
 	@repeat
 	@apply_count
-	def demote_heading(self):
-		if self._change_heading_level(-1):
+	def demote_heading(self, including_children=True):
+		if self._change_heading_level(-1, including_children=including_children):
+			if including_children:
+				return 'OrgDemoteSubtree'
 			return 'OrgDemoteHeading'
 
 	@repeat
 	@apply_count
-	def promote_heading(self):
-		if self._change_heading_level(1):
+	def promote_heading(self, including_children=True):
+		if self._change_heading_level(1, including_children=including_children):
+			if including_children:
+				return 'OrgPromoteSubtree'
 			return 'OrgPromoteHeading'
 
 	#def copy_heading(self):
@@ -181,9 +197,9 @@ class EditStructure(object):
 
 		self.menu + Separator()
 
-		self.keybindings.append(Keybinding('m{', Plug('OrgMoveHeadingUpward', ':py ORGMODE.plugins["EditStructure"].move_heading_upward()<CR>')))
+		self.keybindings.append(Keybinding('m[[', Plug('OrgMoveHeadingUpward', ':py ORGMODE.plugins["EditStructure"].move_heading_upward()<CR>')))
 		self.menu + ActionEntry('Move Subtree &Up', self.keybindings[-1])
-		self.keybindings.append(Keybinding('m}', Plug('OrgMoveHeadingDownward', ':py ORGMODE.plugins["EditStructure"].move_heading_downward()<CR>')))
+		self.keybindings.append(Keybinding('m]]', Plug('OrgMoveHeadingDownward', ':py ORGMODE.plugins["EditStructure"].move_heading_downward()<CR>')))
 		self.menu + ActionEntry('Move Subtree &Down', self.keybindings[-1])
 
 		self.menu + Separator()
@@ -194,7 +210,11 @@ class EditStructure(object):
 
 		self.menu + Separator()
 
-		self.keybindings.append(Keybinding('>>', Plug('OrgPromoteSubtree', ':py ORGMODE.plugins["EditStructure"].promote_heading()<CR>')))
+		self.keybindings.append(Keybinding('>}', Plug('OrgPromoteHeading', ':py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False)<CR>')))
+		self.menu + ActionEntry('&Promote Heading', self.keybindings[-1])
+		self.keybindings.append(Keybinding('>]]', Plug('OrgPromoteSubtree', ':py ORGMODE.plugins["EditStructure"].promote_heading()<CR>')))
 		self.menu + ActionEntry('&Promote Subtree', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<<', Plug('OrgDemoteSubtree', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>')))
+		self.keybindings.append(Keybinding('<{', Plug('OrgDemoteHeading', ':py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False)<CR>')))
+		self.menu + ActionEntry('&Demote Heading', self.keybindings[-1])
+		self.keybindings.append(Keybinding('<[[', Plug('OrgDemoteSubtree', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>')))
 		self.menu + ActionEntry('&Demote Subtree', self.keybindings[-1])
