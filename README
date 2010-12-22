@@ -28,9 +28,10 @@ Information about the license are found in the file LICENSE
 ** DONE implement |fold-foldtext|
 
 * Navigator plugin
-** implement section wise movement by ]]
+** implement tests for ]]
 ** implement count for navigator mappings in visual mode
 ** implement sparse tree. is a special folding needed?
+** DONE implement section wise movement (skip children) by ]]
 ** DONE implement omap
 ** DONE change } mapping to ]] - canceled
 ** DONE implement navigator mappings for visual mode
