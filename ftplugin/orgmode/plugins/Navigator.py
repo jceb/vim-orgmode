@@ -196,7 +196,7 @@ class Navigator(object):
 
 		noheadingfound = False
 		if not focus_heading:
-			if mode == 'visual':
+			if mode in ('visual', 'operator'):
 				# the cursor seems to be on the last or first heading of this
 				# document and performes another next/previous-operation
 				focus_heading = heading
@@ -211,7 +211,10 @@ class Navigator(object):
 		if mode == 'visual':
 			self._change_visual_selection(current_heading, focus_heading, mode, direction=direction, noheadingfound=noheadingfound)
 		elif mode == 'operator':
-			vim.current.window.cursor = (focus_heading.start_vim, 0)
+			if direction == DIRECTION_FORWARD and vim.current.window.cursor[0] >= focus_heading.start_vim:
+				vim.current.window.cursor = (focus_heading.end_vim, len(vim.current.buffer[focus_heading.end]))
+			else:
+				vim.current.window.cursor = (focus_heading.start_vim, 0)
 		else:
 			vim.current.window.cursor = (focus_heading.start_vim, focus_heading.level + 1)
 		if noheadingfound:
@@ -247,9 +250,9 @@ class Navigator(object):
 		self.keybindings.append(Keybinding('}', Plug('OrgJumpToNextVisual', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].next(mode="visual")<CR>', mode=MODE_VISUAL), mode=MODE_VISUAL))
 
 		# operator-pending mode
-		self.keybindings.append(Keybinding('g{', Plug('OrgJumpToParentOperator', ':py ORGMODE.plugins["Navigator"].parent(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
-		self.keybindings.append(Keybinding('{', Plug('OrgJumpToPreviousOperator', ':py ORGMODE.plugins["Navigator"].previous(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
-		self.keybindings.append(Keybinding('}', Plug('OrgJumpToNextOperator', ':py ORGMODE.plugins["Navigator"].next(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding('g{', Plug('OrgJumpToParentOperator', ':<C-u>py ORGMODE.plugins["Navigator"].parent(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding('{', Plug('OrgJumpToPreviousOperator', ':<C-u>py ORGMODE.plugins["Navigator"].previous(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding('}', Plug('OrgJumpToNextOperator', ':<C-u>py ORGMODE.plugins["Navigator"].next(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
 
 		# section wise movement (skip children)
 		# normal mode
@@ -263,5 +266,5 @@ class Navigator(object):
 		self.keybindings.append(Keybinding(']]', Plug('OrgJumpToNextSkipChildrenVisual', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].next(mode="visual", skip_children=True)<CR>', mode=MODE_VISUAL), mode=MODE_VISUAL))
 
 		# operator-pending mode
-		self.keybindings.append(Keybinding('[[', Plug('OrgJumpToPreviousSkipChildrenOperator', ':py ORGMODE.plugins["Navigator"].previous(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
-		self.keybindings.append(Keybinding(']]', Plug('OrgJumpToNextSkipChildrenOperator', ':py ORGMODE.plugins["Navigator"].next(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding('[[', Plug('OrgJumpToPreviousSkipChildrenOperator', ':<C-u>py ORGMODE.plugins["Navigator"].previous(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding(']]', Plug('OrgJumpToNextSkipChildrenOperator', ':<C-u>py ORGMODE.plugins["Navigator"].next(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
