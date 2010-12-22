@@ -21,28 +21,6 @@ class EditStructure(object):
 		# bindings should be put in this variable
 		self.keybindings = []
 
-	#def _action_heading(self, action, heading):
-	#	if not heading:
-	#		echom('Heading not found.')
-	#		return
-
-	#	if action not in ('y', 'd'):
-	#		echoe('Action not in  y(ank) or d(elete).')
-	#		return
-
-	#	end = '$'
-	#	h = heading
-	#	while h:
-	#		if h.next_sibling:
-	#			end = h.next_sibling.start
-	#			break
-	#		elif h.level == 1:
-	#			break
-	#		elif h.parent:
-	#			h = h.parent
-
-	#	vim.command(':%s,%s%s' % (heading.start_vim, end, action))
-
 	def new_heading(self, below=True):
 		h = Heading.current_heading()
 		if not h or h.start_vim != vim.current.window.cursor[0]:
@@ -200,15 +178,23 @@ class EditStructure(object):
 		self.menu + ActionEntry('New Heading &below', self.keybindings[-1])
 		self.keybindings.append(Keybinding('O', Plug('OrgNewHeadingAbove', ':py ORGMODE.plugins["EditStructure"].new_heading_above()<CR>')))
 		self.menu + ActionEntry('New Heading &above', self.keybindings[-1])
-		self.keybindings.append(Keybinding('>>', Plug('OrgPromoteHeading', ':py ORGMODE.plugins["EditStructure"].promote_heading()<CR>')))
-		self.menu + ActionEntry('&Promote Heading', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<<', Plug('OrgDemoteHeading', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>')))
-		self.menu + ActionEntry('&Demote Heading', self.keybindings[-1])
+
+		self.menu + Separator()
+
 		self.keybindings.append(Keybinding('m{', Plug('OrgMoveHeadingUpward', ':py ORGMODE.plugins["EditStructure"].move_heading_upward()<CR>')))
-		self.menu + ActionEntry('Move Subtree &up', self.keybindings[-1])
+		self.menu + ActionEntry('Move Subtree &Up', self.keybindings[-1])
 		self.keybindings.append(Keybinding('m}', Plug('OrgMoveHeadingDownward', ':py ORGMODE.plugins["EditStructure"].move_heading_downward()<CR>')))
-		self.menu + ActionEntry('Move Subtree &down', self.keybindings[-1])
-		#self.keybindings.append(Keybinding('y}', ':py ORGMODE.plugins["EditStructure"].copy_heading()<CR>'))
-		#self.menu + ActionEntry('Copy/yank Subtree', self.keybindings[-1])
-		#self.keybindings.append(Keybinding('d}', ':py ORGMODE.plugins["EditStructure"].delete_heading()<CR>'))
-		#self.menu + ActionEntry('Delete Subtree', self.keybindings[-1])
+		self.menu + ActionEntry('Move Subtree &Down', self.keybindings[-1])
+
+		self.menu + Separator()
+
+		self.menu + ActionEntry('&Copy Subtree', 'y]]', 'y]]')
+		self.menu + ActionEntry('C&ut Subtree', 'd]]', 'd]]')
+		self.menu + ActionEntry('&Paste Subtree', 'p', 'p')
+
+		self.menu + Separator()
+
+		self.keybindings.append(Keybinding('>>', Plug('OrgPromoteSubtree', ':py ORGMODE.plugins["EditStructure"].promote_heading()<CR>')))
+		self.menu + ActionEntry('&Promote Subtree', self.keybindings[-1])
+		self.keybindings.append(Keybinding('<<', Plug('OrgDemoteSubtree', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>')))
+		self.menu + ActionEntry('&Demote Subtree', self.keybindings[-1])
