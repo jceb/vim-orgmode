@@ -59,6 +59,7 @@ Information about the license are found in the file LICENSE
 ** implement time tracking
 
 * Misc
+** TODO Create vimball http://vim.wikia.com/wiki/Using_VimBall_with_%27Make%27
 ** TODO implements settings as part of the plugin
 ** TODO add descriptions to settings
 ** integrate with Narrow Region plugin

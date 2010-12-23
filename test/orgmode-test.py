@@ -270,8 +270,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 6gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[4], 'Bla bla')
 		self.assertEqual(vim.current.buffer[5], '** ')
-		self.assertEqual(vim.current.buffer[6], '')
-		self.assertEqual(vim.current.buffer[7], '** Überschrift 1.1')
+		self.assertEqual(vim.current.buffer[6], '** Überschrift 1.1')
 
 	def test_new_heading_below_in_the_middle(self):
 		vim.current.window.cursor = (10, 0)
@@ -279,8 +278,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 13gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[11], '')
 		self.assertEqual(vim.current.buffer[12], '**** ')
-		self.assertEqual(vim.current.buffer[13], '')
-		self.assertEqual(vim.current.buffer[14], '**** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[13], '**** Überschrift 1.2.1.falsch')
 
 	def test_new_heading_below_in_the_middle2(self):
 		vim.current.window.cursor = (13, 0)
@@ -288,8 +286,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 16gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[14], 'Bla Bla bla bla')
 		self.assertEqual(vim.current.buffer[15], '**** ')
-		self.assertEqual(vim.current.buffer[16], '')
-		self.assertEqual(vim.current.buffer[17], '*** Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[16], '*** Überschrift 1.2.1')
 
 	def test_new_heading_below_in_the_middle3(self):
 		vim.current.window.cursor = (16, 0)
@@ -297,8 +294,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 17gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[15], '*** Überschrift 1.2.1')
 		self.assertEqual(vim.current.buffer[16], '*** ')
-		self.assertEqual(vim.current.buffer[17], '')
-		self.assertEqual(vim.current.buffer[18], '* Überschrift 2')
+		self.assertEqual(vim.current.buffer[17], '* Überschrift 2')
 
 	def test_new_heading_below_at_the_end(self):
 		vim.current.window.cursor = (18, 0)
@@ -306,8 +302,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 21gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[19], '')
 		self.assertEqual(vim.current.buffer[20], '* ')
-		self.assertEqual(vim.current.buffer[21], '')
-		self.assertEqual(len(vim.current.buffer), 22)
+		self.assertEqual(len(vim.current.buffer), 21)
 
 	def test_new_heading_above(self):
 		vim.current.window.cursor = (2, 0)
@@ -315,8 +310,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 2gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[0], '')
 		self.assertEqual(vim.current.buffer[1], '* ')
-		self.assertEqual(vim.current.buffer[2], '')
-		self.assertEqual(vim.current.buffer[3], '* Überschrift 1')
+		self.assertEqual(vim.current.buffer[2], '* Überschrift 1')
 
 	def test_new_heading_above_in_the_middle(self):
 		vim.current.window.cursor = (10, 0)
@@ -324,8 +318,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 10gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[8], 'Bla Bla bla')
 		self.assertEqual(vim.current.buffer[9], '** ')
-		self.assertEqual(vim.current.buffer[10], '')
-		self.assertEqual(vim.current.buffer[11], '** Überschrift 1.2')
+		self.assertEqual(vim.current.buffer[10], '** Überschrift 1.2')
 
 	def test_new_heading_above_in_the_middle2(self):
 		vim.current.window.cursor = (13, 0)
@@ -333,8 +326,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 13gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[11], '')
 		self.assertEqual(vim.current.buffer[12], '*** ')
-		self.assertEqual(vim.current.buffer[13], '')
-		self.assertEqual(vim.current.buffer[14], '**** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[13], '**** Überschrift 1.2.1.falsch')
 
 	def test_new_heading_above_in_the_middle3(self):
 		vim.current.window.cursor = (16, 0)
@@ -342,8 +334,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 16gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[14], 'Bla Bla bla bla')
 		self.assertEqual(vim.current.buffer[15], '*** ')
-		self.assertEqual(vim.current.buffer[16], '')
-		self.assertEqual(vim.current.buffer[17], '*** Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[16], '*** Überschrift 1.2.1')
 
 	def test_new_heading_above_at_the_end(self):
 		vim.current.window.cursor = (18, 0)
@@ -351,8 +342,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 18gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[16], '* Überschrift 2')
 		self.assertEqual(vim.current.buffer[17], '* ')
-		self.assertEqual(vim.current.buffer[18], '')
-		self.assertEqual(vim.current.buffer[19], '* Überschrift 3')
+		self.assertEqual(vim.current.buffer[18], '* Überschrift 3')
 
 	def test_promote_heading(self):
 		vim.current.window.cursor = (13, 0)
