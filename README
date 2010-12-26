@@ -28,6 +28,8 @@ Information about the license are found in the file LICENSE
 ** DONE implement |fold-foldtext|
 
 * Navigator plugin
+** TODO impelement repeat for text-object operators
+** TODO implement other paragraph and block text-object operators, e.g. dap, cip, dab, cib
 ** TODO implement tests for ]]
 ** implement count for navigator mappings in visual mode
 ** implement sparse tree. is a special folding needed?
@@ -40,7 +42,6 @@ Information about the license are found in the file LICENSE
 * EditStructure plugin
 ** TODO implement tests for move heading
 ** TODO implement tests for indenting a single heading
-** TODO implement other paragraph motions, e.g. dap, cip
 ** maybe change keybinding for headings to M-RET
 ** implement non-relative heading changes
 ** DONE implement promotion/demotion of headings in visual mode, do I really need this? How do I promote/demote a single heading without subheadings?
@@ -59,6 +60,7 @@ Information about the license are found in the file LICENSE
 ** implement time tracking
 
 * Misc
+** integrate v:operator
 ** TODO Create vimball http://vim.wikia.com/wiki/Using_VimBall_with_%27Make%27
 ** TODO implements settings as part of the plugin
 ** TODO add descriptions to settings

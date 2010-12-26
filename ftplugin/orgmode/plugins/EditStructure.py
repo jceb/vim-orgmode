@@ -208,8 +208,8 @@ class EditStructure(object):
 
 		self.menu + Separator()
 
-		self.menu + ActionEntry('&Copy Subtree', 'y]]', 'y]]')
-		self.menu + ActionEntry('C&ut Subtree', 'd]]', 'd]]')
+		self.menu + ActionEntry('&Copy Subtree', 'yab', 'yab')
+		self.menu + ActionEntry('C&ut Subtree', 'dab', 'dab')
 		self.menu + ActionEntry('&Paste Subtree', 'p', 'p')
 
 		self.menu + Separator()

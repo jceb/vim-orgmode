@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echo, ORGMODE, apply_count
+from orgmode import echo, ORGMODE, apply_count, repeat
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_OPERATOR, Plug
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
@@ -235,6 +235,42 @@ class Navigator(object):
 		"""
 		return self._focus_heading(mode, direction=DIRECTION_FORWARD, skip_children=skip_children)
 
+	#@repeat
+	@apply_count
+	def inner_heading(self, mode, skip_children=False):
+		"""
+		Focus next heading
+		"""
+		heading = Heading.current_heading()
+		if heading:
+			end = heading.end_vim
+			move_one_character_back = 'h'
+			if skip_children:
+				end = heading.end_of_last_child_vim
+			if not vim.current.buffer[end - 1]:
+				end -= 1
+				move_one_character_back = ''
+			vim.command('normal %dgg%dlv%dgg$%s' % (heading.start_vim, heading.level + 1, end, move_one_character_back))
+			if skip_children:
+				return 'OrgInnerBlockOperator'
+			return 'OrgInnerParagraphOperator'
+
+	#@repeat
+	@apply_count
+	def a_heading(self, mode, skip_children=False):
+		"""
+		Focus next heading
+		"""
+		heading = Heading.current_heading()
+		if heading:
+			end = heading.end_vim
+			if skip_children:
+				end = heading.end_of_last_child_vim
+			vim.command('normal %dggV%dgg' % (heading.start_vim, end))
+			if skip_children:
+				return 'OrgABlockOperator'
+			return 'OrgAParagraphOperator'
+
 	def register(self):
 		# normal mode
 		self.keybindings.append(Keybinding('g{', Plug('OrgJumpToParentNormal', ':py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>')))
@@ -254,6 +290,9 @@ class Navigator(object):
 		self.keybindings.append(Keybinding('{', Plug('OrgJumpToPreviousOperator', ':<C-u>py ORGMODE.plugins["Navigator"].previous(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
 		self.keybindings.append(Keybinding('}', Plug('OrgJumpToNextOperator', ':<C-u>py ORGMODE.plugins["Navigator"].next(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
 
+		self.keybindings.append(Keybinding('ip', Plug('OrgInnerParagraphOperator', ':<C-u>py ORGMODE.plugins["Navigator"].inner_heading(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding('ap', Plug('OrgAParagraphOperator', ':<C-u>py ORGMODE.plugins["Navigator"].a_heading(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+
 		# section wise movement (skip children)
 		# normal mode
 		self.keybindings.append(Keybinding('[[', Plug('OrgJumpToPreviousSkipChildrenNormal', ':py ORGMODE.plugins["Navigator"].previous(mode="normal", skip_children=True)<CR>')))
@@ -268,3 +307,6 @@ class Navigator(object):
 		# operator-pending mode
 		self.keybindings.append(Keybinding('[[', Plug('OrgJumpToPreviousSkipChildrenOperator', ':<C-u>py ORGMODE.plugins["Navigator"].previous(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
 		self.keybindings.append(Keybinding(']]', Plug('OrgJumpToNextSkipChildrenOperator', ':<C-u>py ORGMODE.plugins["Navigator"].next(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+
+		self.keybindings.append(Keybinding('ib', Plug('OrgInnerBlockOperator', ':<C-u>py ORGMODE.plugins["Navigator"].inner_heading(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding('ab', Plug('OrgABlockOperator', ':<C-u>py ORGMODE.plugins["Navigator"].a_heading(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
