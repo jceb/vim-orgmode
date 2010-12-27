@@ -60,6 +60,8 @@ Information about the license are found in the file LICENSE
 ** implement time tracking
 
 * Misc
+** Figure out a way how to get the keys the user pressed to activate a mapping so that feedkeys can be used properly
+** Make use of maparg() and mapcheck()
 ** integrate v:operator
 ** TODO Create vimball http://vim.wikia.com/wiki/Using_VimBall_with_%27Make%27
 ** TODO implements settings as part of the plugin

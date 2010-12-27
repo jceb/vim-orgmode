@@ -281,17 +281,17 @@ class Navigator(object):
 		self.menu + ActionEntry('&Next', self.keybindings[-1])
 
 		# visual mode
-		self.keybindings.append(Keybinding('g{', Plug('OrgJumpToParentVisual', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].parent(mode="visual")<CR>', mode=MODE_VISUAL), mode=MODE_VISUAL))
-		self.keybindings.append(Keybinding('{', Plug('OrgJumpToPreviousVisual', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].previous(mode="visual")<CR>', mode=MODE_VISUAL), mode=MODE_VISUAL))
-		self.keybindings.append(Keybinding('}', Plug('OrgJumpToNextVisual', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].next(mode="visual")<CR>', mode=MODE_VISUAL), mode=MODE_VISUAL))
+		self.keybindings.append(Keybinding('g{', Plug('OrgJumpToParentVisual', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].parent(mode="visual")<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding('{', Plug('OrgJumpToPreviousVisual', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].previous(mode="visual")<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding('}', Plug('OrgJumpToNextVisual', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].next(mode="visual")<CR>', mode=MODE_VISUAL)))
 
 		# operator-pending mode
-		self.keybindings.append(Keybinding('g{', Plug('OrgJumpToParentOperator', ':<C-u>py ORGMODE.plugins["Navigator"].parent(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
-		self.keybindings.append(Keybinding('{', Plug('OrgJumpToPreviousOperator', ':<C-u>py ORGMODE.plugins["Navigator"].previous(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
-		self.keybindings.append(Keybinding('}', Plug('OrgJumpToNextOperator', ':<C-u>py ORGMODE.plugins["Navigator"].next(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding('g{', Plug('OrgJumpToParentOperator', ':<C-u>py ORGMODE.plugins["Navigator"].parent(mode="operator")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('{', Plug('OrgJumpToPreviousOperator', ':<C-u>py ORGMODE.plugins["Navigator"].previous(mode="operator")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('}', Plug('OrgJumpToNextOperator', ':<C-u>py ORGMODE.plugins["Navigator"].next(mode="operator")<CR>', mode=MODE_OPERATOR)))
 
-		self.keybindings.append(Keybinding('ip', Plug('OrgInnerParagraphOperator', ':<C-u>py ORGMODE.plugins["Navigator"].inner_heading(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
-		self.keybindings.append(Keybinding('ap', Plug('OrgAParagraphOperator', ':<C-u>py ORGMODE.plugins["Navigator"].a_heading(mode="operator")<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding('ip', Plug('OrgInnerParagraphOperator', ':<C-u>py ORGMODE.plugins["Navigator"].inner_heading(mode="operator")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('ap', Plug('OrgAParagraphOperator', ':<C-u>py ORGMODE.plugins["Navigator"].a_heading(mode="operator")<CR>', mode=MODE_OPERATOR)))
 
 		# section wise movement (skip children)
 		# normal mode
@@ -301,12 +301,12 @@ class Navigator(object):
 		self.menu + ActionEntry('Pre&vious Same Level', self.keybindings[-1])
 
 		# visual mode
-		self.keybindings.append(Keybinding('[[', Plug('OrgJumpToPreviousSkipChildrenVisual', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].previous(mode="visual", skip_children=True)<CR>', mode=MODE_VISUAL), mode=MODE_VISUAL))
-		self.keybindings.append(Keybinding(']]', Plug('OrgJumpToNextSkipChildrenVisual', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].next(mode="visual", skip_children=True)<CR>', mode=MODE_VISUAL), mode=MODE_VISUAL))
+		self.keybindings.append(Keybinding('[[', Plug('OrgJumpToPreviousSkipChildrenVisual', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].previous(mode="visual", skip_children=True)<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(']]', Plug('OrgJumpToNextSkipChildrenVisual', '<Esc>:<C-u>py ORGMODE.plugins["Navigator"].next(mode="visual", skip_children=True)<CR>', mode=MODE_VISUAL)))
 
 		# operator-pending mode
-		self.keybindings.append(Keybinding('[[', Plug('OrgJumpToPreviousSkipChildrenOperator', ':<C-u>py ORGMODE.plugins["Navigator"].previous(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
-		self.keybindings.append(Keybinding(']]', Plug('OrgJumpToNextSkipChildrenOperator', ':<C-u>py ORGMODE.plugins["Navigator"].next(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding('[[', Plug('OrgJumpToPreviousSkipChildrenOperator', ':<C-u>py ORGMODE.plugins["Navigator"].previous(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding(']]', Plug('OrgJumpToNextSkipChildrenOperator', ':<C-u>py ORGMODE.plugins["Navigator"].next(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
 
-		self.keybindings.append(Keybinding('ib', Plug('OrgInnerBlockOperator', ':<C-u>py ORGMODE.plugins["Navigator"].inner_heading(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
-		self.keybindings.append(Keybinding('ab', Plug('OrgABlockOperator', ':<C-u>py ORGMODE.plugins["Navigator"].a_heading(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR), mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding('ib', Plug('OrgInnerBlockOperator', ':<C-u>py ORGMODE.plugins["Navigator"].inner_heading(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('ab', Plug('OrgABlockOperator', ':<C-u>py ORGMODE.plugins["Navigator"].a_heading(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))

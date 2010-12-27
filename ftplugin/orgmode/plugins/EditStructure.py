@@ -2,7 +2,7 @@
 
 from orgmode import echo, echom, echoe, ORGMODE, apply_count, repeat
 from orgmode.menu import Submenu, Separator, ActionEntry
-from orgmode.keybinding import Keybinding, Plug
+from orgmode.keybinding import Keybinding, Plug, MODE_INSERT, MODE_NORMAL
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
@@ -122,8 +122,8 @@ class EditStructure(object):
 	def promote_heading(self, including_children=True):
 		if self._change_heading_level(1, including_children=including_children):
 			if including_children:
-				return 'OrgPromoteSubtree'
-			return 'OrgPromoteHeading'
+				return 'OrgPromoteSubtreeNormal'
+			return 'OrgPromoteHeadingNormal'
 
 	#def copy_heading(self):
 	#	self._action_heading('y', Heading.current_heading())
@@ -194,9 +194,9 @@ class EditStructure(object):
 		"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		self.keybindings.append(Keybinding('o', Plug('OrgNewHeadingBelow', ':py ORGMODE.plugins["EditStructure"].new_heading_below()<CR>')))
+		self.keybindings.append(Keybinding('<CR>', Plug('OrgNewHeadingBelow', ':py ORGMODE.plugins["EditStructure"].new_heading_below()<CR>')))
 		self.menu + ActionEntry('New Heading &below', self.keybindings[-1])
-		self.keybindings.append(Keybinding('O', Plug('OrgNewHeadingAbove', ':py ORGMODE.plugins["EditStructure"].new_heading_above()<CR>')))
+		self.keybindings.append(Keybinding('<S-CR>', Plug('OrgNewHeadingAbove', ':py ORGMODE.plugins["EditStructure"].new_heading_above()<CR>')))
 		self.menu + ActionEntry('New Heading &above', self.keybindings[-1])
 
 		self.menu + Separator()
@@ -214,11 +214,28 @@ class EditStructure(object):
 
 		self.menu + Separator()
 
-		self.keybindings.append(Keybinding('>}', Plug('OrgPromoteHeading', ':py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False)<CR>')))
+		self.keybindings.append(Keybinding('>}', Plug('OrgPromoteHeadingNormal', ':py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False)<CR>')))
 		self.menu + ActionEntry('&Promote Heading', self.keybindings[-1])
-		self.keybindings.append(Keybinding('>]]', Plug('OrgPromoteSubtree', ':py ORGMODE.plugins["EditStructure"].promote_heading()<CR>')))
+		self.keybindings.append(Keybinding('>>', '<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('>ap', '<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('>ip', '<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
+
+		self.keybindings.append(Keybinding('>]]', Plug('OrgPromoteSubtreeNormal', ':py ORGMODE.plugins["EditStructure"].promote_heading()<CR>')))
 		self.menu + ActionEntry('&Promote Subtree', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<{', Plug('OrgDemoteHeading', ':py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False)<CR>')))
+		self.keybindings.append(Keybinding('>ab', '<Plug>OrgPromoteSubtreeNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('>ib', '<Plug>OrgPromoteSubtreeNormal', mode=MODE_NORMAL))
+
+		self.keybindings.append(Keybinding('<{', Plug('OrgDemoteHeadingNormal', ':py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False)<CR>')))
 		self.menu + ActionEntry('&Demote Heading', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<[[', Plug('OrgDemoteSubtree', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>')))
+		self.keybindings.append(Keybinding('<<', '<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('<ap', '<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('<ip', '<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
+
+		self.keybindings.append(Keybinding('<[[', Plug('OrgDemoteSubtreeNormal', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>')))
 		self.menu + ActionEntry('&Demote Subtree', self.keybindings[-1])
+		self.keybindings.append(Keybinding('<ab', '<Plug>OrgDemoteSubtreeNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('<ib', '<Plug>OrgDemoteSubtreeNormal', mode=MODE_NORMAL))
+
+		# other keybindings
+		self.keybindings.append(Keybinding('<C-t>', Plug('OrgPromoteHeadingInsert', '<C-o>:py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False)<CR>', mode=MODE_INSERT)))
+		self.keybindings.append(Keybinding('<C-d>', Plug('OrgDemoteHeadingInsert', '<C-o>:py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False)<CR>', mode=MODE_INSERT)))
