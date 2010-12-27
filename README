@@ -60,18 +60,18 @@ Information about the license are found in the file LICENSE
 ** implement time tracking
 
 * Misc
-** Figure out a way how to get the keys the user pressed to activate a mapping so that feedkeys can be used properly
-** Make use of maparg() and mapcheck()
+** Figure out a way to get the keys the user pressed to activate a mapping so that feedkeys can be used properly
 ** integrate v:operator
-** TODO Create vimball http://vim.wikia.com/wiki/Using_VimBall_with_%27Make%27
-** TODO implements settings as part of the plugin
+** TODO implement settings as part of the plugin
 ** TODO add descriptions to settings
 ** integrate with Narrow Region plugin
 ** integrate with UTL plugin
 ** integrate with YankRing plugin
+** Make use of maparg() and mapcheck()
 ** generate documentation from plugin code, add short/long descriptions to keybindings
 ** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
 ** orgmode taglist integration doesn't work with txtfmt plugin: setf txt.txtfmt
+** DONE Create vimball http://vim.wikia.com/wiki/Using_VimBall_with_%27Make%27
 ** DONE allow the user to customize keybindings
 ** DONE remove indent mode, it's not need!
 ** DONE make plugin keybindings/commands repeatable by pressing .
