@@ -49,10 +49,14 @@ class Plug(object):
 				cmd = ''
 			vim.command(':%snoremap %s %s' % (cmd, str(self), self.command))
 
+	@property
+	def mode(self):
+		return self._mode
+
 class Keybinding(object):
 	""" Representation of a single key binding """
 
-	def __init__(self, key, action, mode=MODE_NORMAL, options=None, remap=True, buffer_only=True, silent=True):
+	def __init__(self, key, action, mode=None, options=None, remap=True, buffer_only=True, silent=True):
 		"""
 		:key: the key(s) action is bound to
 		:action: the action triggered by key(s)
@@ -64,6 +68,11 @@ class Keybinding(object):
 		object.__init__(self)
 		self._key = key
 		self._action = action
+
+		# grab mode from plug if not set otherwise
+		if isinstance(self._action, Plug) and not mode:
+			mode = self._action.mode
+
 		if mode not in (MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT, MODE_OPERATOR):
 			raise ValueError('Parameter mode not in MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT, MODE_OPERATOR')
 		self._mode = mode
@@ -79,7 +88,7 @@ class Keybinding(object):
 
 		if self._silent and OPTION_SLIENT not in self._options:
 			self._options.append(OPTION_SLIENT)
-	
+
 	@property
 	def key(self):
 		return self._key
@@ -117,11 +126,14 @@ class Keybinding(object):
 		if not self._remap:
 			cmd += 'nore'
 		try:
+			create_mapping = True
 			if isinstance(self._action, Plug):
+				# create plug
 				self._action.create()
-				if not int(vim.eval('hasmapto("%s")' % (self._action, ))):
-					vim.command(':%smap %s %s %s' % (cmd, ' '.join(self._options), self._key, self._action))
-			else:
+				if int(vim.eval('hasmapto("%s")' % (self._action, ))):
+					create_mapping = False
+
+			if create_mapping:
 				vim.command(':%smap %s %s %s' % (cmd, ' '.join(self._options), self._key, self._action))
 		except Exception, e:
 			if ORGMODE.debug:
