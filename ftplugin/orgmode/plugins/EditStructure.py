@@ -54,22 +54,26 @@ class EditStructure(object):
 	def new_heading_above(self):
 		return self.new_heading(False)
 
-	def _change_heading_level(self, level, including_children=True):
+	def _change_heading_level(self, level, including_children=True, on_heading=False):
 		"""
 		Change level of heading realtively with or without including children.
 		"""
 		h = Heading.current_heading()
-		if not h:
+		if not h or on_heading and h.start_vim != vim.current.window.cursor[0]:
 			# TODO figure out the actually pressed keybinding and feed these
 			# keys instead of making keys up like this
 			if level > 0:
 				if including_children:
 					vim.eval('feedkeys(">]]", "n")')
+				elif on_heading:
+					vim.eval('feedkeys(">>", "n")')
 				else:
 					vim.eval('feedkeys(">}", "n")')
 			else:
 				if including_children:
 					vim.eval('feedkeys("<]]", "n")')
+				elif on_heading:
+					vim.eval('feedkeys("<<", "n")')
 				else:
 					vim.eval('feedkeys("<}", "n")')
 			# return True because otherwise apply_count will not work
@@ -111,25 +115,19 @@ class EditStructure(object):
 
 	@repeat
 	@apply_count
-	def demote_heading(self, including_children=True):
-		if self._change_heading_level(-1, including_children=including_children):
+	def demote_heading(self, including_children=True, on_heading=False):
+		if self._change_heading_level(-1, including_children=including_children, on_heading=on_heading):
 			if including_children:
 				return 'OrgDemoteSubtree'
 			return 'OrgDemoteHeading'
 
 	@repeat
 	@apply_count
-	def promote_heading(self, including_children=True):
-		if self._change_heading_level(1, including_children=including_children):
+	def promote_heading(self, including_children=True, on_heading=False):
+		if self._change_heading_level(1, including_children=including_children, on_heading=on_heading):
 			if including_children:
 				return 'OrgPromoteSubtreeNormal'
 			return 'OrgPromoteHeadingNormal'
-
-	#def copy_heading(self):
-	#	self._action_heading('y', Heading.current_heading())
-
-	#def delete_heading(self):
-	#	self._action_heading('d', Heading.current_heading())
 
 	def _move_heading(self, direction=DIRECTION_FORWARD):
 		""" Move heading up or down
@@ -216,7 +214,7 @@ class EditStructure(object):
 
 		self.keybindings.append(Keybinding('>}', Plug('OrgPromoteHeadingNormal', ':py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False)<CR>')))
 		self.menu + ActionEntry('&Promote Heading', self.keybindings[-1])
-		self.keybindings.append(Keybinding('>>', '<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('>>', Plug('OrgPromoteOnHeadingNormal', ':py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False, on_heading=True)<CR>')))
 		self.keybindings.append(Keybinding('>ap', '<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
 		self.keybindings.append(Keybinding('>ip', '<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
 
@@ -227,7 +225,7 @@ class EditStructure(object):
 
 		self.keybindings.append(Keybinding('<{', Plug('OrgDemoteHeadingNormal', ':py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False)<CR>')))
 		self.menu + ActionEntry('&Demote Heading', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<<', '<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('<<', Plug('OrgDemoteOnHeadingNormal', ':py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False, on_heading=True)<CR>')))
 		self.keybindings.append(Keybinding('<ap', '<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
 		self.keybindings.append(Keybinding('<ip', '<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
 
