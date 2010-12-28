@@ -235,5 +235,5 @@ class EditStructure(object):
 		self.keybindings.append(Keybinding('<ib', '<Plug>OrgDemoteSubtreeNormal', mode=MODE_NORMAL))
 
 		# other keybindings
-		self.keybindings.append(Keybinding('<C-t>', Plug('OrgPromoteHeadingInsert', '<C-o>:py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False)<CR>', mode=MODE_INSERT)))
-		self.keybindings.append(Keybinding('<C-d>', Plug('OrgDemoteHeadingInsert', '<C-o>:py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False)<CR>', mode=MODE_INSERT)))
+		self.keybindings.append(Keybinding('<C-t>', Plug('OrgPromoteHeadingInsert', '<C-o>:py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False, on_heading=True)<CR>', mode=MODE_INSERT)))
+		self.keybindings.append(Keybinding('<C-d>', Plug('OrgDemoteHeadingInsert', '<C-o>:py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False, on_heading=True)<CR>', mode=MODE_INSERT)))
