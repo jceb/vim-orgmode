@@ -21,7 +21,8 @@ Information about the license are found in the file LICENSE
 ** DONE implement todo items
 
 * ShowHide plugin
-** TODO make fast access keys for different fold levels customizable
+** DONE implement keybindings to in/decrease foldlevel
+** DONE make fast access keys for different fold levels customizable
 ** DONE implement fast access keys for different fold levels
 ** DONE implement count for toggle folding
 ** DONE implement tests for toggle_folding

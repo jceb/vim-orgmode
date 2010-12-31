@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from orgmode import settings
 from orgmode import echo, echom, echoe, ORGMODE, apply_count
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_NORMAL
@@ -98,5 +99,10 @@ class ShowHide(object):
 		self.keybindings.append(Keybinding('<Tab>', Plug('OrgToggleFolding', ':py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>')))
 		self.menu + ActionEntry('&Cycle Visibility', self.keybindings[-1])
 
+		settings.set('org_show_hide_leader', ',')
+		leader = settings.get('org_show_hide_leader', ',')
+
+		self.keybindings.append(Keybinding('%s,' % (leader, ), ':exe ":set fdl=". (&fdl - 1)<CR>', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('%s.' % (leader, ), ':exe ":set fdl=". (&fdl + 1)<CR>', mode=MODE_NORMAL))
 		for i in xrange(0, 10):
-			self.keybindings.append(Keybinding(',%d' % i, 'zM:set fdl=%d<CR>' % i, mode=MODE_NORMAL))
+			self.keybindings.append(Keybinding('%s%d' % (leader, i), 'zM:set fdl=%d<CR>' % i, mode=MODE_NORMAL))
