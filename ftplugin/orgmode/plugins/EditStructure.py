@@ -21,38 +21,56 @@ class EditStructure(object):
 		# bindings should be put in this variable
 		self.keybindings = []
 
-	def new_heading(self, below=True):
+	def new_heading(self, below=None, insert_mode=False, end_of_last_child=False):
 		h = Heading.current_heading()
-		if not h or h.start_vim != vim.current.window.cursor[0]:
-			if below:
-				vim.eval('feedkeys("\\<C-CR>", "n")')
-			else:
-				vim.eval('feedkeys("\\<S-CR>", "n")')
+		cursor = vim.current.window.cursor[:]
+		if not h:
+			pos = cursor[0] - 1
+			tmp = vim.current.buffer[pos]
+			del vim.current.buffer[pos]
+			vim.current.buffer[pos:pos] = ['%s %s' % ('*', tmp.lstrip())]
+			vim.current.window.cursor = (pos + 1, cursor[1] + 1 + 1)
 			return
 
-		if below:
-			pos = h.end_vim
-			level = h.level
-			if h.children:
-				level = h.children[0].level
-		else:
-			pos = h.start
-			level = h.level
-			if h.parent:
-				if h.parent.children[0].start == h.start:
-					level = h.parent.level + 1
+		# it's weird but this is the behavior of original orgmode
+		if below == None:
+			below = cursor[1] != 0 or end_of_last_child
 
-		vim.current.buffer[pos:pos] = vim.current.buffer[pos:pos] + ['%s ' % ('*' * level)]
-		vim.command('exe "normal %dgg"|startinsert!' % (pos + 1, ))
+		if below:
+			if end_of_last_child:
+				pos = h.end_of_last_child_vim
+			else:
+				pos = h.end_vim
+			level = h.level
+		else:
+			pos = h.start_vim - 1
+			level = h.level
+
+		# if cursor is currently on a heading, insert parts of it into the
+		# newly created heading
+		if  insert_mode and not end_of_last_child and cursor[0] == h.start_vim:
+			if cursor[1] > h.level:
+				tmp1 = vim.current.buffer[cursor[0] - 1][:cursor[1]]
+				tmp2 = vim.current.buffer[cursor[0] - 1][cursor[1]:]
+				vim.current.buffer[cursor[0] - 1] = tmp1
+			else:
+				tmp2 = ''
+			if below:
+				vim.current.buffer[cursor[0]:cursor[0]] = ['%s %s' % ('*' * level, tmp2.lstrip())]
+				vim.current.window.cursor = (cursor[0] + 1, level + 1)
+			else:
+				# this can only happen at column 0
+				vim.current.buffer[cursor[0] - 1:cursor[0] - 1] = ['%s ' % ('*' * level, )]
+				vim.current.window.cursor = (cursor[0], level + 1)
+		elif insert_mode and not below and not end_of_last_child:
+			vim.current.buffer[cursor[0] - 1] = '%s %s' % ('*' * level, vim.current.buffer[cursor[0] - 1].lstrip())
+			vim.current.window.cursor = (cursor[0], cursor[1] + level + 1)
+		else:
+			vim.current.buffer[pos:pos] = vim.current.buffer[pos:pos] + ['%s ' % ('*' * level, )]
+			vim.command('exe "normal %dgg"|startinsert!' % (pos + 1, ))
 
 		# not sure what to return here .. line number of new heading or old heading object?
 		return h
-
-	def new_heading_below(self):
-		return self.new_heading(True)
-
-	def new_heading_above(self):
-		return self.new_heading(False)
 
 	def _change_heading_level(self, level, including_children=True, on_heading=False):
 		"""
@@ -192,10 +210,16 @@ class EditStructure(object):
 		"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		self.keybindings.append(Keybinding('<C-CR>', Plug('OrgNewHeadingBelow', ':py ORGMODE.plugins["EditStructure"].new_heading_below()<CR>')))
-		self.menu + ActionEntry('New Heading &below', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<S-CR>', Plug('OrgNewHeadingAbove', ':py ORGMODE.plugins["EditStructure"].new_heading_above()<CR>')))
+		self.keybindings.append(Keybinding('<C-S-CR>', Plug('OrgNewHeadingAboveNormal', ':py ORGMODE.plugins["EditStructure"].new_heading(below=False)<CR>')))
 		self.menu + ActionEntry('New Heading &above', self.keybindings[-1])
+		self.keybindings.append(Keybinding('<S-CR>', Plug('OrgNewHeadingBelowNormal', ':py ORGMODE.plugins["EditStructure"].new_heading(below=True)<CR>')))
+		self.menu + ActionEntry('New Heading &below', self.keybindings[-1])
+		self.keybindings.append(Keybinding('<C-CR>', Plug('OrgNewHeadingBelowAfterChildrenNormal', ':py ORGMODE.plugins["EditStructure"].new_heading(below=True, end_of_last_child=True)<CR>')))
+		self.menu + ActionEntry('New Heading below, after &children', self.keybindings[-1])
+
+		self.keybindings.append(Keybinding('<C-S-CR>', Plug('OrgNewHeadingAboveInsert', '<C-o>:<C-u>py ORGMODE.plugins["EditStructure"].new_heading(below=False, insert_mode=True)<CR>', mode=MODE_INSERT)))
+		self.keybindings.append(Keybinding('<S-CR>', Plug('OrgNewHeadingBelowInsert', '<C-o>:<C-u>py ORGMODE.plugins["EditStructure"].new_heading(insert_mode=True)<CR>', mode=MODE_INSERT)))
+		self.keybindings.append(Keybinding('<C-CR>', Plug('OrgNewHeadingBelowAfterChildrenInsert', '<C-o>:<C-u>py ORGMODE.plugins["EditStructure"].new_heading(insert_mode=True, end_of_last_child=True)<CR>', mode=MODE_INSERT)))
 
 		self.menu + Separator()
 

@@ -4,13 +4,32 @@ Information about the license are found in the file LICENSE
 
 * Installation
 
-** Suggested plugins
-   - pathogen for an easy management multiple plugins
-   - repeat
-   - taglist
-   - speeddating
-   - Narrow Region
-   - Ultimate Text Linking
+** From .vba file
+   Open the file in vim and run the command ":so %". The plugin is than
+   installed into your .vim directory.
+
+   In case you want to install the plugin into a specific directory when
+   you are using pathogen, e.g. $HOME/.vim/bundle/orgmode, then add this
+   directory as the first one to the runtimepath and execute ":so %" as
+   described.
+
+   :set rtp=$HOME/.vim/bundle/orgmode,&rtp
+
+** From git checkout
+   Copy the directories ftdetect, ftplugin, indent and syntax to your
+   $HOME/.vim directory or the bundle directory in case you are using
+   pathogen.
+
+* Usage
+  vim-orgmode aims to be clone of the original orgmode for Emacs. TODO
+
+* Suggested plugins
+  - pathogen for an easy management multiple plugins
+  - repeat
+  - taglist
+  - speeddating
+  - Narrow Region
+  - Ultimate Text Linking
 
 * Todo/Done plugin
 ** TODO implement tests for toggle_todo_state
@@ -45,8 +64,9 @@ Information about the license are found in the file LICENSE
 * EditStructure plugin
 ** TODO implement tests for move heading
 ** TODO implement tests for indenting a single heading
-** maybe change keybinding for headings to M-RET
 ** implement non-relative heading changes
+** DONE implement a closer behavior of M-RET to orginal orgmode
+** DONE maybe change keybinding for headings to M-RET
 ** DONE implement promotion/demotion of headings in visual mode, do I really need this? How do I promote/demote a single heading without subheadings?
 ** DONE implement other paragraph motions, e.g. d}, c{, this should also work for a whole heading with subheadings
 ** DONE use vim.current.buffer[x:y] = [a, b, c] functionality

@@ -27,7 +27,7 @@ try:
 		def r(*args, **kwargs):
 			res = f(*args, **kwargs)
 			if REPEAT_EXISTS and isinstance(res, basestring):
-				vim.command('silent! call repeat#set("\<Plug>%s")' % res)
+				vim.command('silent! call repeat#set("\\<Plug>%s")' % res)
 			return res
 		return r
 
