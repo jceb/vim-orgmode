@@ -14,6 +14,7 @@ Information about the license are found in the file LICENSE
    described.
 
    :set rtp=$HOME/.vim/bundle/orgmode,&rtp
+   :so %
 
 ** From git checkout
    Copy the directories ftdetect, ftplugin, indent and syntax to your
@@ -21,96 +22,241 @@ Information about the license are found in the file LICENSE
    pathogen.
 
 * Usage
-  vim-orgmode aims to be clone of the original orgmode for Emacs. TODO
+  vim-orgmode aims to be clone of the original orgmode for Emacs. Since
+  Emacs is not vim the clone is not aiming for 100% compatibility.
+  Especially in terms of the keybindings there will be major
+  differences!
+
+  You'll definitively enjoy the modal interface, this where vim's
+  strength is. Almost all keybindings for orgmode work only in normal
+  and visual mode where as in insert mode just a few are available.
+
+  To start vim-orgmode open a file with the extension .org. An
+  additional menu "Org" is shown that gives an overview of the
+  implemented functionality and the keybindings.
 
 * Suggested plugins
-  - pathogen for an easy management multiple plugins
-  - repeat
-  - taglist
-  - speeddating
-  - Narrow Region
-  - Ultimate Text Linking
+  - pathogen, for an easy management of multiple plugins, (http://www.vim.org/scripts/script.php?script_id=2332)
+  - repeat (http://www.vim.org/scripts/script.php?script_id=2136)
+  - taglist (http://www.vim.org/scripts/script.php?script_id=273)
+  - speeddating (http://www.vim.org/scripts/script.php?script_id=2120)
+  - Narrow Region (http://www.vim.org/scripts/script.php?script_id=3075)
+  - Ultimate Text Linking (http://www.vim.org/scripts/script.php?script_id=293)
 
-* Todo/Done plugin
-** TODO implement tests for toggle_todo_state
-** implement keyboard shortcuts to select todo state
-** implement switching to next/previous todo state list
-** implement todo state triggers
-** DONE implement multi-state workflows
-** DONE implement todo items
+* Development
 
-* ShowHide plugin
-** DONE implement keybindings to in/decrease foldlevel
-** DONE make fast access keys for different fold levels customizable
-** DONE implement fast access keys for different fold levels
-** DONE implement count for toggle folding
-** DONE implement tests for toggle_folding
-** DONE implement show/hide plugin
-** DONE implement TAB to cycle folding
-** DONE implement |fold-foldtext|
+** Building Vimball
+   orgmode.vba is a Vimball archive containing all files that are needed
+   by the plugin. It's installable, see Installation.
 
-* Navigator plugin
-** TODO impelement repeat for text-object operators
-** TODO implement other paragraph and block text-object operators, e.g. dap, cip, dab, cib
-** TODO implement tests for ]]
-** implement count for navigator mappings in visual mode
-** implement sparse tree. is a special folding needed?
-** DONE implement section wise movement (skip children) by ]]
-** DONE implement omap
-** DONE change } mapping to ]] - canceled
-** DONE implement navigator mappings for visual mode
-** DONE bug in function g{, it places the cursor one character too far to the right
+   To build orgmode.vba.gz just run make in the root folder of this
+   plugin.
 
-* EditStructure plugin
-** TODO implement tests for move heading
-** TODO implement tests for indenting a single heading
-** implement non-relative heading changes
-** DONE implement a closer behavior of M-RET to orginal orgmode
-** DONE maybe change keybinding for headings to M-RET
-** DONE implement promotion/demotion of headings in visual mode, do I really need this? How do I promote/demote a single heading without subheadings?
-** DONE implement other paragraph motions, e.g. d}, c{, this should also work for a whole heading with subheadings
-** DONE use vim.current.buffer[x:y] = [a, b, c] functionality
-** DONE implement M-RET to insert new headings
-** DONE implement moving of headings
-** DONE add an additional empty line when adding a new heading
-** DONE implement promotion and demotion for space indented files
-** DONE implement promotion/demotion of headings
+** Source code
 
-* Dates plugin
-** TODO implement dates
-** implement a calendar
-** implement the agenda view by using the location list
-** implement time tracking
+*** Files and folders
+	build_vim - Build file for the Vimball
+	ftdetect/ - Filetype detection for orgmode files
+	ftplugin/ - Home of the main part of the plugin
+	ftplugin/orgmode/ - Home for all Python code related to the plugin
+	ftplugin/orgmode/plugins - Home for all orgmode plugins
+	indent/ - Indentation for orgmode files
+	LICENSE - License Information
+	Makefile - Build file for the Vimball
+	README - This file
+	syntax/ - Syntax highlighting
+	test/ - Tests to verify the consistency and correctness of the plugin
 
-* Misc
-** Figure out a way to get the keys the user pressed to activate a mapping so that feedkeys can be used properly
-** integrate v:operator
-** TODO implement settings as part of the plugin
-** TODO add descriptions to settings
-** integrate with Narrow Region plugin
-** integrate with UTL plugin
-** integrate with YankRing plugin
-** Make use of maparg() and mapcheck()
-** generate documentation from plugin code, add short/long descriptions to keybindings
-** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
-** orgmode taglist integration doesn't work with txtfmt plugin: setf txt.txtfmt
-** DONE Create vimball http://vim.wikia.com/wiki/Using_VimBall_with_%27Make%27
-** DONE allow the user to customize keybindings
-** DONE remove indent mode, it's not need!
-** DONE make plugin keybindings/commands repeatable by pressing .
-** DONE implement <plug> for all commands
-** DONE improve syntax highlighting for light backgrounds
-** DONE disable menu instead of removing and adding it every time
-** DONE make plugin work for more than one buffer. register menu end keybindings for each buffer
-** DONE allow user definied settings
-** DONE implement implement indentation
-** DONE implement ctags to make browsing bigger files easy
-** DONE implement org-menu
-** DONE implement key registration
-** DONE bug in indentation function something goes wrong with mixed heading levels
-** DONE bug in indentation function it appears to be really slow
-** DONE add tests for indentation and and folding
-** DONE improve tests for Heading.end_of_last_child
-** DONE add tests for Heading.end_of_last_child
+*** Structure
+	The majority of the source code is stored in folder
+	ftplugin/orgmode. This is where the actual functionality of the
+	plugin is located.
 
-vi: ft=org:tw=72:sw=4:ts=4
+	I choose to implement vim-orgmode mainly in Python. I hope this will
+	ease the implementation especially with the functionality of the
+	Python standard library at hand.
+
+	Right below the directory ftplugin/orgmode the basic implementation
+	of vim-orgmode is found. This basic functionality provides
+	everything for higher level implementations that modify the buffer,
+	provide a menu and keybindings to the user and everything else that
+	is needed.
+
+	Below the directory ftplugin/orgmode/plugins the plugins are
+	located. Every plugin must provide a class equal to its filename
+	with the .py-extension. An example for a plugin can be found in file
+	ftplugin/orgmode/plugins/Example.py.
+
+	Every plugin must be enabled by the user by setting the
+	g:org_plugins variable. By default all shipped plugins are enabled.
+	Example:
+
+	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure']
+
+*** Writing a plugin
+	To write a plugin:
+	1. copy file ftplugin/orgmode/plugins/Example.py to
+	   ftplugin/orgmode/plugins/YourPlugin.py
+	2. Change class name to "YourPlugin"
+	3. Set the menu name, it doesn't need to match the filename anymore,
+	   e.g. "Your Plugin"
+	4. Prepare keybindings in function register by defining a proper
+	   action and a key this action should be mapped to. For further
+	   information refer to section Keybindings.
+	5. Register your plugin:
+	   let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', 'YourPlugin']
+	6. Implement YourPlugin
+
+*** Keybindings
+	Keybindings alias mappings are described very well in the vim
+	documentation, see |map-modes|. vim-orgmode tries to make it easy
+	for the developer to register new keybindings, make them
+	customizable and provide menu entries so that the user can access
+	the functionality like in original orgmode.
+
+	This is done by providing three classes: Keybinding, Plug and ActionEntry
+
+**** Keybinding
+	 This is the basic class that encapsulates a single keybinding
+	 consisting of a key/mapping and an action. Several options can be
+	 set when creating the object to specify the mode and all kinds of
+	 other things.
+
+	 If a Plug is given instead of an action string the Plug is bound to
+	 the key. All relevant data is read from the Plug, e.g. name, mode
+	 aso.
+
+***** Example
+	  Map g{ to moving to parent heading in normal mode:
+
+	  Keybinding('g{', ':py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>', mode=MODE_NORMAL)
+	  vim -> :nmap g{ :py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>
+
+	  Map g{ to moving to parent heading in normal mode by using a Plug:
+
+	  Keybinding('g{', Plug('OrgJumpToParentNormal', ':py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>'))
+	  vim -> :nnoremap <Plug>OrgJumpToParentNormal :py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>
+	  vim -> :nmap g{ <Plug>OrgJumpToParentNormal
+
+**** Plug
+	 A Plug is a unique keybinding that can not be executed by pressing
+	 any key. This makes it a special Keybinding that takes a name and
+	 an action to create an object. A plug normally goes together with a
+	 regular Keybinding to bind the Plug to a key.
+
+	 This special behavior is needed to ensure that keybindings are
+	 customizable by the user. If the user creates a keybinding to a
+	 Plug the Keybinding object makes sure that the users keybinding is
+	 used and the keybinding specified by the plugin is not used.
+
+***** Example
+	  Map g{ to moving to parent heading in normal mode by using a Plug:
+
+	  Keybinding('g{', Plug('OrgJumpToParentNormal', ':py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>'))
+	  vim -> :nnoremap <Plug>OrgJumpToParentNormal :py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>
+	  vim -> :nmap g{ <Plug>OrgJumpToParentNormal
+
+**** ActionEntry
+	 An ActionEntry makes Keybindings accessible by the vim menu. It
+	 takes a description and a Keybinding object and builds a menu entry
+	 from this. The resulting object can be added to a Submenu object by
+	 using the + operator.
+
+***** Example
+	  Map g{ to moving to parent heading in normal mode by using a Plug:
+
+	  k = Keybinding('g{', Plug('OrgJumpToParentNormal', ':py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>'))
+	  vim -> :nnoremap <Plug>OrgJumpToParentNormal :py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>
+	  vim -> :nmap g{ <Plug>OrgJumpToParentNormal
+
+	  menu + ActionEntry('&Up', k)
+	  vim -> :nmenu &Org.&Naviagte Headings.&Up<Tab>g{ <Plug>OrgJumpToParentNormal
+
+* Todos
+
+** Todo/Done plugin
+*** TODO implement tests for toggle_todo_state
+*** implement keyboard shortcuts to select todo state
+*** implement switching to next/previous todo state list
+*** implement todo state triggers
+*** DONE implement multi-state workflows
+*** DONE implement todo items
+
+** ShowHide plugin
+*** DONE implement keybindings to in/decrease foldlevel
+*** DONE make fast access keys for different fold levels customizable
+*** DONE implement fast access keys for different fold levels
+*** DONE implement count for toggle folding
+*** DONE implement tests for toggle_folding
+*** DONE implement show/hide plugin
+*** DONE implement TAB to cycle folding
+*** DONE implement |fold-foldtext|
+
+** Navigator plugin
+*** TODO impelement repeat for text-object operators
+*** TODO implement other paragraph and block text-object operators, e.g. dap, cip, dab, cib
+*** TODO implement tests for ]]
+*** implement count for navigator mappings in visual mode
+*** implement sparse tree. is a special folding needed?
+*** DONE implement section wise movement (skip children) by ]]
+*** DONE implement omap
+*** DONE change } mapping to ]] - canceled
+*** DONE implement navigator mappings for visual mode
+*** DONE bug in function g{, it places the cursor one character too far to the right
+
+** EditStructure plugin
+*** TODO implement tests for move heading
+*** TODO implement tests for indenting a single heading
+*** implement non-relative heading changes
+*** DONE implement a closer behavior of M-RET to orginal orgmode
+*** DONE maybe change keybinding for headings to M-RET
+*** DONE implement promotion/demotion of headings in visual mode, do I really need this? How do I promote/demote a single heading without subheadings?
+*** DONE implement other paragraph motions, e.g. d}, c{, this should also work for a whole heading with subheadings
+*** DONE use vim.current.buffer[x:y] = [a, b, c] functionality
+*** DONE implement M-RET to insert new headings
+*** DONE implement moving of headings
+*** DONE add an additional empty line when adding a new heading
+*** DONE implement promotion and demotion for space indented files
+*** DONE implement promotion/demotion of headings
+
+** Dates plugin
+*** TODO implement dates
+*** implement a calendar
+*** implement the agenda view by using the location list
+*** implement time tracking
+
+** Misc
+*** TODO focus more on building text-objects for all major changes
+*** TODO implement settings as part of the plugin
+*** TODO add descriptions to settings
+*** Figure out a way to get the keys the user pressed to activate a mapping so that feedkeys can be used properly
+*** integrate v:operator
+*** integrate with Narrow Region plugin
+*** integrate with UTL plugin
+*** integrate with YankRing plugin
+*** Make use of maparg() and mapcheck()
+*** generate documentation from plugin code, add short/long descriptions to keybindings
+*** write general documentation
+*** make a video about vim-orgmode
+*** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
+*** orgmode taglist integration doesn't work with txtfmt plugin: setf txt.txtfmt
+*** DONE Create vimball http://vim.wikia.com/wiki/Using_VimBall_with_%27Make%27
+*** DONE allow the user to customize keybindings
+*** DONE remove indent mode, it's not need!
+*** DONE make plugin keybindings/commands repeatable by pressing .
+*** DONE implement <plug> for all commands
+*** DONE improve syntax highlighting for light backgrounds
+*** DONE disable menu instead of removing and adding it every time
+*** DONE make plugin work for more than one buffer. register menu end keybindings for each buffer
+*** DONE allow user definied settings
+*** DONE implement implement indentation
+*** DONE implement ctags to make browsing bigger files easy
+*** DONE implement org-menu
+*** DONE implement key registration
+*** DONE bug in indentation function something goes wrong with mixed heading levels
+*** DONE bug in indentation function it appears to be really slow
+*** DONE add tests for indentation and and folding
+*** DONE improve tests for Heading.end_of_last_child
+*** DONE add tests for Heading.end_of_last_child
+
+	vi: ft=org:tw=72:sw=4:ts=4
