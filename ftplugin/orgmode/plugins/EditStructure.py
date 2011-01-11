@@ -103,7 +103,7 @@ class EditStructure(object):
 
 		# reduce level of demotion to a minimum heading level of 1
 		if (h.level + level) < 1:
-			level = h.level - 1
+			level = 1
 
 		def indent(heading, ic):
 			if not heading:
