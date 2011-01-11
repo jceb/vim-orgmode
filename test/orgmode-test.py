@@ -39,6 +39,8 @@ class ShowHideTestCase(unittest.TestCase):
 				'exists("b:org_debug")': 0,
 				'exists("g:org_plugins")': True,
 				'exists("*repeat#set()")': 0,
+				'exists("b:org_show_hide_leader")': 0,
+				'exists("g:org_show_hide_leader")': 0,
 				"g:org_plugins": ['ShowHide'],
 				"v:count": 0
 				}
@@ -256,33 +258,35 @@ Bla Bla bla bla
 	
 	def test_new_heading_below_normal_behavior(self):
 		vim.current.window.cursor = (1, 0)
-		self.assertEqual(self.editstructure.new_heading_below(), None)
-		self.assertEqual(vim.EVALHISTORY[-1], 'feedkeys("o", "n")')
+		self.assertEqual(self.editstructure.new_heading(below=True), None)
+		self.assertEqual(vim.current.buffer[0], '* ')
+		self.assertEqual(vim.current.buffer[1], '* Überschrift 1')
 
 	def test_new_heading_above_normal_behavior(self):
 		vim.current.window.cursor = (1, 0)
-		self.assertEqual(self.editstructure.new_heading_above(), None)
-		self.assertEqual(vim.EVALHISTORY[-1], 'feedkeys("O", "n")')
+		self.assertEqual(self.editstructure.new_heading(below=False), None)
+		self.assertEqual(vim.current.buffer[0], '* ')
+		self.assertEqual(vim.current.buffer[1], '* Überschrift 1')
 
 	def test_new_heading_below(self):
 		vim.current.window.cursor = (2, 0)
-		self.assertNotEqual(self.editstructure.new_heading_below(), None)
+		self.assertNotEqual(self.editstructure.new_heading(below=True), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 6gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[4], 'Bla bla')
-		self.assertEqual(vim.current.buffer[5], '** ')
+		self.assertEqual(vim.current.buffer[5], '* ')
 		self.assertEqual(vim.current.buffer[6], '** Überschrift 1.1')
 
 	def test_new_heading_below_in_the_middle(self):
 		vim.current.window.cursor = (10, 0)
-		self.assertNotEqual(self.editstructure.new_heading_below(), None)
+		self.assertNotEqual(self.editstructure.new_heading(below=True), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 13gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[11], '')
-		self.assertEqual(vim.current.buffer[12], '**** ')
+		self.assertEqual(vim.current.buffer[12], '** ')
 		self.assertEqual(vim.current.buffer[13], '**** Überschrift 1.2.1.falsch')
 
 	def test_new_heading_below_in_the_middle2(self):
 		vim.current.window.cursor = (13, 0)
-		self.assertNotEqual(self.editstructure.new_heading_below(), None)
+		self.assertNotEqual(self.editstructure.new_heading(below=True), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 16gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[14], 'Bla Bla bla bla')
 		self.assertEqual(vim.current.buffer[15], '**** ')
@@ -290,7 +294,7 @@ Bla Bla bla bla
 
 	def test_new_heading_below_in_the_middle3(self):
 		vim.current.window.cursor = (16, 0)
-		self.assertNotEqual(self.editstructure.new_heading_below(), None)
+		self.assertNotEqual(self.editstructure.new_heading(below=True), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 17gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[15], '*** Überschrift 1.2.1')
 		self.assertEqual(vim.current.buffer[16], '*** ')
@@ -298,7 +302,7 @@ Bla Bla bla bla
 
 	def test_new_heading_below_at_the_end(self):
 		vim.current.window.cursor = (18, 0)
-		self.assertNotEqual(self.editstructure.new_heading_below(), None)
+		self.assertNotEqual(self.editstructure.new_heading(below=True), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 21gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[19], '')
 		self.assertEqual(vim.current.buffer[20], '* ')
@@ -306,7 +310,7 @@ Bla Bla bla bla
 
 	def test_new_heading_above(self):
 		vim.current.window.cursor = (2, 0)
-		self.assertNotEqual(self.editstructure.new_heading_above(), None)
+		self.assertNotEqual(self.editstructure.new_heading(below=False), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 2gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[0], '')
 		self.assertEqual(vim.current.buffer[1], '* ')
@@ -314,7 +318,7 @@ Bla Bla bla bla
 
 	def test_new_heading_above_in_the_middle(self):
 		vim.current.window.cursor = (10, 0)
-		self.assertNotEqual(self.editstructure.new_heading_above(), None)
+		self.assertNotEqual(self.editstructure.new_heading(below=False), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 10gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[8], 'Bla Bla bla')
 		self.assertEqual(vim.current.buffer[9], '** ')
@@ -322,15 +326,15 @@ Bla Bla bla bla
 
 	def test_new_heading_above_in_the_middle2(self):
 		vim.current.window.cursor = (13, 0)
-		self.assertNotEqual(self.editstructure.new_heading_above(), None)
+		self.assertNotEqual(self.editstructure.new_heading(below=False), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 13gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[11], '')
-		self.assertEqual(vim.current.buffer[12], '*** ')
+		self.assertEqual(vim.current.buffer[12], '**** ')
 		self.assertEqual(vim.current.buffer[13], '**** Überschrift 1.2.1.falsch')
 
 	def test_new_heading_above_in_the_middle3(self):
 		vim.current.window.cursor = (16, 0)
-		self.assertNotEqual(self.editstructure.new_heading_above(), None)
+		self.assertNotEqual(self.editstructure.new_heading(below=False), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 16gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[14], 'Bla Bla bla bla')
 		self.assertEqual(vim.current.buffer[15], '*** ')
@@ -338,7 +342,7 @@ Bla Bla bla bla
 
 	def test_new_heading_above_at_the_end(self):
 		vim.current.window.cursor = (18, 0)
-		self.assertNotEqual(self.editstructure.new_heading_above(), None)
+		self.assertNotEqual(self.editstructure.new_heading(below=False), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 18gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[16], '* Überschrift 2')
 		self.assertEqual(vim.current.buffer[17], '* ')
