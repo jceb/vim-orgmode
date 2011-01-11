@@ -54,6 +54,8 @@ EVALRESULTS = {
 		'exists("g:org_debug")': 0,
 		'exists("b:org_debug")': 0,
 		'exists("*repeat#set()")': 0,
+		'exists("b:org_plugins")': 0,
+		'exists("g:org_plugins")': 0,
 		}
 
 def eval(cmd):

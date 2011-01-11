@@ -37,11 +37,9 @@ class ShowHideTestCase(unittest.TestCase):
 		vim.EVALRESULTS = {
 				'exists("g:org_debug")': 0,
 				'exists("b:org_debug")': 0,
-				'exists("g:org_plugins")': True,
 				'exists("*repeat#set()")': 0,
 				'exists("b:org_show_hide_leader")': 0,
 				'exists("g:org_show_hide_leader")': 0,
-				"g:org_plugins": ['ShowHide'],
 				"v:count": 0
 				}
 		if not ORGMODE.plugins.has_key('ShowHide'):
@@ -227,9 +225,7 @@ class EditStructureTestCase(unittest.TestCase):
 		vim.EVALRESULTS = {
 				'exists("g:org_debug")': 0,
 				'exists("g:org_debug")': 0,
-				'exists("g:org_plugins")': True,
 				'exists("*repeat#set()")': 0,
-				"g:org_plugins": ['EditStructure'],
 				"v:count": 0
 				}
 		if not ORGMODE.plugins.has_key('EditStructure'):
@@ -445,9 +441,7 @@ class NavigatorTestCase(unittest.TestCase):
 		vim.EVALRESULTS = {
 				'exists("g:org_debug")': 0,
 				'exists("g:org_debug")': 0,
-				'exists("g:org_plugins")': True,
 				'exists("*repeat#set()")': 0,
-				"g:org_plugins": [],
 				"v:count": 0,
 				}
 		vim.current.buffer = """
@@ -998,9 +992,7 @@ class HeadingTestCase(unittest.TestCase):
 		vim.EVALRESULTS = {
 				'exists("g:org_debug")': 0,
 				'exists("g:org_debug")': 0,
-				'exists("g:org_plugins")': True,
 				'exists("*repeat#set()")': 0,
-				"g:org_plugins": ['Todo'],
 				"v:count": 0
 				}
 		vim.current.buffer = """
@@ -1172,9 +1164,7 @@ class MiscTestCase(unittest.TestCase):
 		vim.EVALRESULTS = {
 				'exists("g:org_debug")': 0,
 				'exists("g:org_debug")': 0,
-				'exists("g:org_plugins")': True,
 				'exists("*repeat#set()")': 0,
-				"g:org_plugins": ['Todo'],
 				"v:count": 0,
 				"v:lnum": 0
 				}

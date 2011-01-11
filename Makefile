@@ -1,6 +1,6 @@
 PLUGIN = orgmode
 
-${PLUGIN}.vba.gz: test
+${PLUGIN}.vba.gz: test clean
 	echo README > files
 	echo LICENSE >> files
 	find . -type f -name \*.py -o -type f -name \*.vim | sed -e 's/^\.\///' | grep -v '^test\/' | grep -v Example.py >> files
