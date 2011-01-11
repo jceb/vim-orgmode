@@ -312,6 +312,7 @@ class Heading(object):
 	def find_heading(cls, start_line, direction=DIRECTION_FORWARD):
 		""" Find heading in the given direction
 
+		:start_line: start line in python list format
 		:direction: downward == DIRECTION_FORWARD, upward == DIRECTION_BACKWARD
 
 		:returns: line in buffer or None
@@ -329,13 +330,13 @@ class Heading(object):
 		# Search heading upwards
 		if direction == DIRECTION_FORWARD:
 			while tmp_line < len_cb:
-				if Heading.identify_heading(cb[tmp_line]) != None:
-					return Heading(tmp_line)
+				if cls.identify_heading(cb[tmp_line]) != None:
+					return cls(tmp_line)
 				tmp_line += 1
 		else:
 			while tmp_line >= 0:
-				if Heading.identify_heading(cb[tmp_line]) != None:
-					return Heading(tmp_line)
+				if cls.identify_heading(cb[tmp_line]) != None:
+					return cls(tmp_line)
 				tmp_line -= 1
 
 	@classmethod
@@ -344,7 +345,7 @@ class Heading(object):
 
 		:returns: Heading object or None
 		"""
-		return Heading.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_BACKWARD)
+		return cls.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_BACKWARD)
 
 	@classmethod
 	def next_heading(cls):
@@ -352,7 +353,7 @@ class Heading(object):
 
 		:returns: Heading object or None
 		"""
-		return Heading.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_FORWARD)
+		return cls.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_FORWARD)
 
 	@classmethod
 	def previous_heading(cls):
@@ -360,6 +361,16 @@ class Heading(object):
 
 		:returns: Heading object or None
 		"""
-		h = Heading.current_heading()
+		h = cls.current_heading()
 		if h:
-			return Heading.find_heading(h.start - 1, DIRECTION_BACKWARD)
+			return cls.find_heading(h.start - 1, DIRECTION_BACKWARD)
+
+	@classmethod
+	def all_headings(cls):
+		""" Returns an iterator object which returns all headings of the
+		current file
+		"""
+		h = cls.find_heading(0, DIRECTION_FORWARD)
+		while h:
+			yield h
+			h = cls.find_heading(h.start + 1, DIRECTION_FORWARD)

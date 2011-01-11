@@ -219,6 +219,11 @@ Information about the license are found in the file LICENSE
 *** DONE implement promotion and demotion for space indented files
 *** DONE implement promotion/demotion of headings
 
+** TagsProperties plugin
+*** implement completion
+*** implement tests
+*** DONE implement plugin
+
 ** Dates plugin
 *** TODO implement dates
 *** implement a calendar

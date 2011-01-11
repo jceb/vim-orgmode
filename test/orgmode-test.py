@@ -29,6 +29,52 @@ def set_visual_selection(visualmode, line_start, line_end, col_start=1, col_end=
 	else:
 		vim.current.window.cursor = (line_end, col_end)
 
+class TagsPropertiesTestCase(unittest.TestCase):
+	def setUp(self):
+		vim.CMDHISTORY = []
+		vim.CMDRESULTS = {}
+		vim.EVALHISTORY = []
+		vim.EVALRESULTS = {
+				'exists("g:org_debug")': 0,
+				'exists("b:org_debug")': 0,
+				'exists("*repeat#set()")': 0,
+				'exists("b:org_tags_properties_leader")': 0,
+				'exists("g:org_tags_properties_leader")': 0,
+				'exists("g:org_tags_column")': 0,
+				'exists("b:org_tags_column")': 0,
+				"v:count": 0
+				}
+		if not ORGMODE.plugins.has_key('TagsProperties'):
+			ORGMODE.register_plugin('TagsProperties')
+		self.showhide = ORGMODE.plugins['TagsProperties']
+		vim.current.buffer = """
+* Überschrift 1
+Text 1
+
+Bla bla
+** Überschrift 1.1
+Text 2
+
+Bla Bla bla
+** Überschrift 1.2
+Text 3
+
+**** Überschrift 1.2.1.falsch
+
+Bla Bla bla bla
+*** Überschrift 1.2.1
+* Überschrift 2
+* Überschrift 3
+  asdf sdf
+""".split('\n')
+
+	def test_new_property(self):
+	    """ TODO: Docstring for test_new_property 
+	
+	    :returns: TODO
+	    """
+	    pass
+
 class ShowHideTestCase(unittest.TestCase):
 	def setUp(self):
 		vim.CMDHISTORY = []
