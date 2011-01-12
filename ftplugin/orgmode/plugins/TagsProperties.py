@@ -14,7 +14,7 @@ class HeadingTags(Heading):
 	def __init__(self, *args, **kwargs):
 		Heading.__init__(self, *args, **kwargs)
 		self._tags = None
-	
+
 	def tags():
 		""" Tags """
 		def fget(self):
@@ -50,7 +50,7 @@ class HeadingTags(Heading):
 				tags = ':%s:' % (':'.join(value))
 
 				tag_column = int(settings.get('org_tags_column', '78'))
-				
+
 				if self.level + 1 + len(text) + spaces + len(tags) < tag_column:
 					len_heading = self.level + 1 + len(text)
 					tmp_spaces = int(vim.eval('&ts')) - divmod(len_heading, int(vim.eval('&ts')))[1]
@@ -66,6 +66,43 @@ class HeadingTags(Heading):
 			self._tags = value
 		return locals()
 	tags = property(**tags())
+
+	@classmethod
+	def complete_tags(cls):
+		""" build a list of tags and store it in variable b:org_tag_completion
+		"""
+		heading = cls.current_heading()
+		if not heading:
+			return
+
+		leading_portion = vim.eval('a:ArgLead')
+		cursor = int(vim.eval('a:CursorPos'))
+
+		# extract currently completed tag
+		idx = leading_portion.rfind(':', 0, cursor)
+		if idx == -1:
+			idx = 0
+
+		current_tag = leading_portion[idx: cursor].lstrip(':')
+		head = leading_portion[:idx + 1]
+		tail = leading_portion[cursor:]
+
+		# extract all tags of the current file
+		all_tags = set()
+		for h in cls.all_headings():
+			for t in h.tags:
+				all_tags.add(t)
+
+		ignorecase = bool(int(settings.get('org_tags_complete_ignorecase', '1')))
+		possible_tags = []
+		for t in all_tags:
+			if ignorecase:
+				if t.lower().startswith(current_tag.lower()):
+					possible_tags.append(t)
+			elif t.startswith(current_tag):
+				possible_tags.append(t)
+
+		vim.command('let b:org_complete_tags = [%s]' % ', '.join(['"%s%s:%s"' % (head, i, tail) for i in possible_tags]))
 
 class TagsProperties(object):
 	""" TagsProperties plugin """
@@ -92,7 +129,7 @@ class TagsProperties(object):
 		# retrieve tags
 		res = None
 		if heading.tags:
-			res = vim.eval('input("Tags: ", ":%s:")' % ':'.join(heading.tags))
+			res = vim.eval('input("Tags: ", ":%s:", "customlist,Org_complete_tags")' % ':'.join(heading.tags))
 		else:
 			res = vim.eval('input("Tags: ", "", "customlist,Org_complete_tags")')
 
@@ -114,8 +151,24 @@ class TagsProperties(object):
 		# an Action menu entry which binds "keybinding" to action ":action"
 		settings.set('org_tags_column', '78')
 
+		settings.set('org_tags_complete_ignorecase', '1')
+
 		settings.set('org_tags_properties_leader', ',')
 		leader = settings.get('org_tags_properties_leader', ',')
 
 		self.keybindings.append(Keybinding('%st' % leader, Plug('OrgSetTags', ':py ORGMODE.plugins["TagsProperties"].set_tags()<CR>')))
 		self.menu + ActionEntry('Set &Tags', self.keybindings[-1])
+
+		vim.command("""function Org_complete_tags(ArgLead, CmdLine, CursorPos)
+python << EOF
+from orgmode.plugins.TagsProperties import HeadingTags
+HeadingTags.complete_tags()
+EOF
+if exists('b:org_complete_tags')
+	let tmp = b:org_complete_tags
+	unlet b:org_complete_tags
+	return tmp
+else
+	return []
+endif
+endfunction""")

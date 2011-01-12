@@ -220,8 +220,8 @@ Information about the license are found in the file LICENSE
 *** DONE implement promotion/demotion of headings
 
 ** TagsProperties plugin
-*** implement completion
 *** implement tests
+*** DONE implement completion
 *** DONE implement plugin
 *** DONE error when only a tag is on a line
 *** DONE error when pressing <Esc> while editing tags
