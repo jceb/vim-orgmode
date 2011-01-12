@@ -22,7 +22,7 @@ EOF
 		let tmp = b:indent_level
 		unlet b:indent_level
 		return tmp
-	else:
+	else
 		return -1
 	endif
 endfunction
@@ -36,7 +36,7 @@ EOF
 		let tmp = b:fold_expr
 		unlet b:fold_expr
 		return tmp
-	else:
+	else
 		return -1
 	endif
 endfunction
