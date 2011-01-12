@@ -93,7 +93,7 @@ class HeadingTags(Heading):
 			for t in h.tags:
 				all_tags.add(t)
 
-		ignorecase = bool(int(settings.get('org_tags_complete_ignorecase', '1')))
+		ignorecase = bool(int(settings.get('org_tags_completion_ignorecase', '1')))
 		possible_tags = []
 		for t in all_tags:
 			if ignorecase:
@@ -151,7 +151,7 @@ class TagsProperties(object):
 		# an Action menu entry which binds "keybinding" to action ":action"
 		settings.set('org_tags_column', '78')
 
-		settings.set('org_tags_complete_ignorecase', '1')
+		settings.set('org_tags_completion_ignorecase', '1')
 
 		settings.set('org_tags_properties_leader', ',')
 		leader = settings.get('org_tags_properties_leader', ',')

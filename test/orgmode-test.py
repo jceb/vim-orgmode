@@ -42,6 +42,8 @@ class TagsPropertiesTestCase(unittest.TestCase):
 				'exists("g:org_tags_properties_leader")': 0,
 				'exists("g:org_tags_column")': 0,
 				'exists("b:org_tags_column")': 0,
+				'exists("b:org_tags_completion_ignorecase")': 0,
+				'exists("g:org_tags_completion_ignorecase")': 0,
 				"v:count": 0
 				}
 		if not ORGMODE.plugins.has_key('TagsProperties'):
