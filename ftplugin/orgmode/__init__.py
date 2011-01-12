@@ -104,7 +104,16 @@ def fold_text():
 		line = int(vim.eval('v:foldstart'))
 		heading = Heading.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 		if heading:
-			vim.command('let b:foldtext = "%s... "' % (heading))
+			str_heading = str(heading)
+			ts = int(vim.eval('&ts'))
+			idx = str_heading.find('\t')
+			if idx != -1:
+				tabs, spaces = divmod(idx, ts)
+
+				str_heading = str_heading.replace('\t', ' '*(ts - spaces), 1)
+				str_heading = str_heading.replace('\t', ' '*ts)
+
+			vim.command('let b:foldtext = "%s... "' % (str_heading))
 	except Exception, e:
 		pass
 

@@ -40,9 +40,10 @@ class HeadingTags(Heading):
 					# remove tags
 					vim.current.buffer[self.start] = '%s %s' % ('*'*self.level, self.text[:idx].strip())
 			else:
-				text = self.text.strip()
+				text = self.text
 				if self.tags:
-					text = text[:idx].strip()
+					text = text[:idx]
+				text = text.strip()
 
 				tabs = 0
 				spaces = 2
@@ -51,8 +52,13 @@ class HeadingTags(Heading):
 				tag_column = int(settings.get('org_tags_column', '78'))
 				
 				if self.level + 1 + len(text) + spaces + len(tags) < tag_column:
-					tabs, spaces = divmod(tag_column - (self.level + 1 + len(text) + len(tags)),
-							int(vim.eval('&sw')))
+					len_heading = self.level + 1 + len(text)
+					tmp_spaces = int(vim.eval('&ts')) - divmod(len_heading, int(vim.eval('&ts')))[1]
+
+					tabs, spaces = divmod(tag_column - (len_heading + tmp_spaces + len(tags)), int(vim.eval('&ts')))
+
+					if tmp_spaces:
+						tabs += 1
 
 				# add tags
 				vim.current.buffer[self.start] = '%s %s%s%s%s' % ('*'*self.level, text, '\t'*tabs, ' '*spaces, tags)
@@ -84,7 +90,19 @@ class TagsProperties(object):
 			return
 
 		# retrieve tags
-		tags = vim.eval('input("Tags: ", ":%s:")' % ':'.join(heading.tags)).strip().strip(':').split(':')
+		res = None
+		if heading.tags:
+			res = vim.eval('input("Tags: ", ":%s:")' % ':'.join(heading.tags))
+		else:
+			res = vim.eval('input("Tags: ", "", "customlist,Org_complete_tags")')
+
+		if res == None:
+			# user pressed <Esc> abort any further processing
+			return
+
+		tags = res.strip().strip(':').split(':')
+
+
 		heading.tags = tags
 
 		return 'OrgSetTags'
