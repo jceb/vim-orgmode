@@ -221,6 +221,7 @@ Information about the license are found in the file LICENSE
 
 ** TagsProperties plugin
 *** implement tests
+*** DONE update tags when editing heading
 *** DONE implement completion
 *** DONE implement plugin
 *** DONE error when only a tag is on a line

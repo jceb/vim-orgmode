@@ -146,6 +146,17 @@ class TagsProperties(object):
 
 		return 'OrgSetTags'
 
+	def update_tags(self):
+		"""
+		Updates tags when user finishes editing a heading
+		"""
+		heading = HeadingTags.current_heading()
+		if not heading:
+			return
+
+		if vim.current.window.cursor[0] == heading.start_vim:
+			heading.tags = heading.tags
+
 	def register(self):
 		"""
 		Registration of plugin. Key bindings and other initialization should be done.
@@ -174,3 +185,9 @@ else
 	return []
 endif
 endfunction""")
+
+		# this is for all org files opened after this file
+		vim.command("au FileType org :au InsertLeave <buffer> :py ORGMODE.plugins['TagsProperties'].update_tags()")
+
+		# this is for the current file
+		vim.command("au InsertLeave <buffer> :py ORGMODE.plugins['TagsProperties'].update_tags()")
