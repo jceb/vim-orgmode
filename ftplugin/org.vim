@@ -2,7 +2,7 @@
 " @Author       : Jan Christoph Ebersbach (jceb@e-jc.de)
 " @License      : GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created      : 2010-10-03
-" @Last Modified: Tue 11. Jan 2011 22:45:01 +0100 CET
+" @Last Modified: Di 25. Jan 2011 12:17:12 +0100 CET
 " @Revision     : 0.1
 " @vi           : ft=vim:tw=80:sw=4:ts=4
 " 
@@ -18,6 +18,7 @@ if has('python') && exists("g:loaded_org") && ! exists("b:loaded_org")
 	" default emacs settings
 	setlocal shiftwidth=8
 	setlocal tabstop=8
+	setlocal comments-=s1:/*,mb:*,ex:*/
 endif
 
 " load plugin just once
@@ -29,6 +30,7 @@ let g:loaded_org = 1
 " default emacs settings
 setlocal shiftwidth=8
 setlocal tabstop=8
+setlocal comments-=s1:/*,mb:*,ex:*/
 
 " display error message if python is not available
 if ! has('python')
