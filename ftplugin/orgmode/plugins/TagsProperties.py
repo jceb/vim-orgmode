@@ -79,13 +79,15 @@ class HeadingTags(Heading):
 		cursor = int(vim.eval('a:CursorPos'))
 
 		# extract currently completed tag
-		idx = leading_portion.rfind(':', 0, cursor)
-		if idx == -1:
+		idx_orig = leading_portion.rfind(':', 0, cursor)
+		if idx_orig == -1:
 			idx = 0
+		else:
+			idx = idx_orig
 
 		current_tag = leading_portion[idx: cursor].lstrip(':')
 		head = leading_portion[:idx + 1]
-		if not idx:
+		if idx_orig == -1:
 			head = ''
 		tail = leading_portion[cursor:]
 
@@ -139,10 +141,8 @@ class TagsProperties(object):
 			# user pressed <Esc> abort any further processing
 			return
 
-		tags = res.strip().strip(':').split(':')
-
-
-		heading.tags = tags
+		# remove empty tags
+		heading.tags = filter(lambda x: x.strip() != '', res.strip().strip(':').split(':'))
 
 		return 'OrgSetTags'
 

@@ -221,6 +221,8 @@ Information about the license are found in the file LICENSE
 
 ** TagsProperties plugin
 *** implement tests
+*** DONE remove empty tags
+*** DONE preserve leading colon (:) at the first character
 *** DONE update tags when editing heading
 *** DONE implement completion
 *** DONE implement plugin
@@ -269,4 +271,4 @@ Information about the license are found in the file LICENSE
 *** DONE improve tests for Heading.end_of_last_child
 *** DONE add tests for Heading.end_of_last_child
 
-	vi: ft=org:tw=72:sw=4:ts=4
+	vi: ft=org:tw=72
