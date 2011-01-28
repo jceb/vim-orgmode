@@ -187,13 +187,13 @@ class OrgMode(object):
 			return
 
 		if not module:
-			echom('Plugin not found: %s\n')
+			echom('Plugin not found: %s')
 			return
 
 		try:
 			module = imp.load_module(plugin, *module)
 			if not hasattr(module, plugin):
-				echoe('Unable to activate plugin: %s' % plugin)
+				echoe('Unable to find plugin: %s' % plugin)
 				if self.debug:
 					raise PluginError('Unable to find class %s' % plugin)
 				return
@@ -206,8 +206,8 @@ class OrgMode(object):
 		except Exception, e:
 			echoe('Unable to activate plugin: %s' % plugin)
 			if self.debug:
-				raise e
-			return
+				import traceback
+				echoe(traceback.format_exc())
 
 	def register_keybindings(self):
 		@orgmode.keybinding.register_keybindings
