@@ -303,7 +303,7 @@ class Heading(object):
 		for i in xrange(0, len(line)):
 			if line[i] == '*':
 				level += 1
-				if line[i+1] in ('\t', ' '):
+				if len(line) > (i + 1) and line[i+1] in ('\t', ' '):
 					return level
 			else:
 				return None

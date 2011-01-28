@@ -253,12 +253,13 @@ Information about the license are found in the file LICENSE
 *** integrate with Narrow Region plugin
 *** integrate with UTL plugin
 *** integrate with YankRing plugin
-*** Make use of maparg() and mapcheck()
+*** make use of maparg() and mapcheck()
 *** generate documentation from plugin code, add short/long descriptions to keybindings
 *** write general documentation
 *** make a video about vim-orgmode
 *** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
 *** orgmode taglist integration doesn't work with txtfmt plugin: setf txt.txtfmt
+*** DONE fix issue in recognizing a heading
 *** DONE change behavior of I and ^ on a heading to jump to the first character of the title
 *** DONE introduce general org_leader variable
 *** DONE fix vba issue with empty files
