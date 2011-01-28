@@ -43,6 +43,31 @@ Information about the license are found in the file LICENSE
   additional menu "Org" is shown that gives an overview of the
   implemented functionality and the keybindings.
 
+** Text objects
+   Vim offers a mighty feature called text-objects. A text-object is
+   bound to a certain character sequence that can be used in combination
+   with all kinds of editing and selection tasks. vim-orgmode offers the
+   following text-objects:
+
+   ih - inner heading, referring to the current heading excluding the heading level characters (*)
+   ah - a heading, referring to the current heading including everything
+   it - inner subtree, starting with the current heading
+   at - a subtree, starting with the current heading
+   oh - inner outer heading, referring to the parent
+   ot - inner outer heading, including subtree, referring to the parent
+   oH - a outer heading
+   oT - a outer subtree
+
+   Movement commands can also be used for editing like text-objects:
+
+   g{ - execute command from current position to the beginning of the parent heading
+   { - execute command from current position to the beginning of the current heading
+   } - execute command from current position to the end of the current heading
+   [[ - execute command from current position to the beginning of the previous heading sibling
+   ]] - execute command from current position to the end of the next heading sibling
+
+   For further information please read :h text-objects-changed
+
 * Suggested plugins
   - pathogen, for an easy management of multiple plugins, (http://www.vim.org/scripts/script.php?script_id=2332)
   - repeat (http://www.vim.org/scripts/script.php?script_id=2136)
@@ -201,11 +226,11 @@ Information about the license are found in the file LICENSE
 *** DONE implement |fold-foldtext|
 
 ** Navigator plugin
-*** TODO impelement repeat for text-object operators
 *** TODO implement other paragraph and block text-object operators, e.g. dap, cip, dab, cib
 *** TODO implement tests for ]]
 *** implement count for navigator mappings in visual mode
 *** implement sparse tree. is a special folding needed?
+*** DONE impelement repeat for text-object operators
 *** DONE implement section wise movement (skip children) by ]]
 *** DONE implement omap
 *** DONE change } mapping to ]] - canceled

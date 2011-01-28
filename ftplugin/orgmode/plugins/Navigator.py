@@ -235,7 +235,7 @@ class Navigator(object):
 		"""
 		return self._focus_heading(mode, direction=DIRECTION_FORWARD, skip_children=skip_children)
 
-	#@repeat
+	@repeat
 	@apply_count
 	def inner_heading(self, mode, skip_children=False):
 		"""
@@ -252,10 +252,10 @@ class Navigator(object):
 				move_one_character_back = ''
 			vim.command('normal %dgg%dlv%dgg$%s' % (heading.start_vim, heading.level + 1, end, move_one_character_back))
 			if skip_children:
-				return 'OrgInnerBlockOperator'
-			return 'OrgInnerParagraphOperator'
+				return 'OrgInnerTreeOperator'
+			return 'OrgInnerHeadingOperator'
 
-	#@repeat
+	@repeat
 	@apply_count
 	def a_heading(self, mode, skip_children=False):
 		"""
@@ -268,8 +268,46 @@ class Navigator(object):
 				end = heading.end_of_last_child_vim
 			vim.command('normal %dggV%dgg' % (heading.start_vim, end))
 			if skip_children:
-				return 'OrgABlockOperator'
-			return 'OrgAParagraphOperator'
+				return 'OrgATreeOperator'
+			return 'OrgAHeadingOperator'
+
+	@repeat
+	@apply_count
+	def outer_heading(self, mode, skip_children=False):
+		"""
+		Focus outher heading
+		"""
+		heading = Heading.current_heading()
+		if heading:
+			h = heading if not heading.parent else heading.parent
+			end = h.end_vim
+			move_one_character_back = 'h'
+			if skip_children:
+				end = h.end_of_last_child_vim
+			if not vim.current.buffer[end - 1]:
+				end -= 1
+				move_one_character_back = ''
+			vim.command('normal %dgg%dlv%dgg$%s' % (h.start_vim, h.level + 1, end, move_one_character_back))
+			if skip_children:
+				return 'OrgOuterTreeOperator'
+			return 'OrgOuterHeadingOperator'
+
+	@repeat
+	@apply_count
+	def a_outer_heading(self, mode, skip_children=False):
+		"""
+		Focus outher heading
+		"""
+		heading = Heading.current_heading()
+		if heading:
+			h = heading if not heading.parent else heading.parent
+			end = h.end_vim
+			if skip_children:
+				end = h.end_of_last_child_vim
+			vim.command('normal %dggV%dgg' % (h.start_vim, end))
+			if skip_children:
+				return 'OrgAOuterTreeOperator'
+			return 'OrgAOuterHeadingOperator'
 
 	def register(self):
 		# normal mode
@@ -290,8 +328,10 @@ class Navigator(object):
 		self.keybindings.append(Keybinding('{', Plug('OrgJumpToPreviousOperator', ':<C-u>py ORGMODE.plugins["Navigator"].previous(mode="operator")<CR>', mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding('}', Plug('OrgJumpToNextOperator', ':<C-u>py ORGMODE.plugins["Navigator"].next(mode="operator")<CR>', mode=MODE_OPERATOR)))
 
-		self.keybindings.append(Keybinding('ip', Plug('OrgInnerParagraphOperator', ':<C-u>py ORGMODE.plugins["Navigator"].inner_heading(mode="operator")<CR>', mode=MODE_OPERATOR)))
-		self.keybindings.append(Keybinding('ap', Plug('OrgAParagraphOperator', ':<C-u>py ORGMODE.plugins["Navigator"].a_heading(mode="operator")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('ih', Plug('OrgInnerHeadingOperator', ':<C-u>py ORGMODE.plugins["Navigator"].inner_heading(mode="operator")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('ah', Plug('OrgAHeadingOperator', ':<C-u>py ORGMODE.plugins["Navigator"].a_heading(mode="operator")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('oh', Plug('OrgOuterHeadingOperator', ':<C-u>py ORGMODE.plugins["Navigator"].outer_heading(mode="operator")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('oH', Plug('OrgAOuterHeadingOperator', ':<C-u>py ORGMODE.plugins["Navigator"].a_outer_heading(mode="operator")<CR>', mode=MODE_OPERATOR)))
 
 		# section wise movement (skip children)
 		# normal mode
@@ -308,5 +348,7 @@ class Navigator(object):
 		self.keybindings.append(Keybinding('[[', Plug('OrgJumpToPreviousSkipChildrenOperator', ':<C-u>py ORGMODE.plugins["Navigator"].previous(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding(']]', Plug('OrgJumpToNextSkipChildrenOperator', ':<C-u>py ORGMODE.plugins["Navigator"].next(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
 
-		self.keybindings.append(Keybinding('ib', Plug('OrgInnerBlockOperator', ':<C-u>py ORGMODE.plugins["Navigator"].inner_heading(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
-		self.keybindings.append(Keybinding('ab', Plug('OrgABlockOperator', ':<C-u>py ORGMODE.plugins["Navigator"].a_heading(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('it', Plug('OrgInnerTreeOperator', ':<C-u>py ORGMODE.plugins["Navigator"].inner_heading(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('at', Plug('OrgATreeOperator', ':<C-u>py ORGMODE.plugins["Navigator"].a_heading(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('ot', Plug('OrgOuterTreeOperator', ':<C-u>py ORGMODE.plugins["Navigator"].outer_heading(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('oT', Plug('OrgAOuterTreeOperator', ':<C-u>py ORGMODE.plugins["Navigator"].a_outer_heading(mode="operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))

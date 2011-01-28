@@ -230,33 +230,38 @@ class EditStructure(object):
 
 		self.menu + Separator()
 
-		self.menu + ActionEntry('&Copy Subtree', 'yab', 'yab')
-		self.menu + ActionEntry('C&ut Subtree', 'dab', 'dab')
+		self.menu + ActionEntry('&Copy Heading', 'yah', 'yah')
+		self.menu + ActionEntry('C&ut Heading', 'dah', 'dah')
+
+		self.menu + Separator()
+
+		self.menu + ActionEntry('&Copy Subtree', 'yat', 'yat')
+		self.menu + ActionEntry('C&ut Subtree', 'dat', 'dat')
 		self.menu + ActionEntry('&Paste Subtree', 'p', 'p')
 
 		self.menu + Separator()
 
-		self.keybindings.append(Keybinding('>ap', Plug('OrgPromoteHeadingNormal', ':py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False)<CR>')))
+		self.keybindings.append(Keybinding('>ah', Plug('OrgPromoteHeadingNormal', ':py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False)<CR>')))
 		self.menu + ActionEntry('&Promote Heading', self.keybindings[-1])
 		self.keybindings.append(Keybinding('>>', Plug('OrgPromoteOnHeadingNormal', ':py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False, on_heading=True)<CR>')))
 		self.keybindings.append(Keybinding('>}', '<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
-		self.keybindings.append(Keybinding('>ip', '<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('>ih', '<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
 
-		self.keybindings.append(Keybinding('>ab', Plug('OrgPromoteSubtreeNormal', ':py ORGMODE.plugins["EditStructure"].promote_heading()<CR>')))
+		self.keybindings.append(Keybinding('>at', Plug('OrgPromoteSubtreeNormal', ':py ORGMODE.plugins["EditStructure"].promote_heading()<CR>')))
 		self.menu + ActionEntry('&Promote Subtree', self.keybindings[-1])
 		self.keybindings.append(Keybinding('>]]', '<Plug>OrgPromoteSubtreeNormal', mode=MODE_NORMAL))
-		self.keybindings.append(Keybinding('>ib', '<Plug>OrgPromoteSubtreeNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('>it', '<Plug>OrgPromoteSubtreeNormal', mode=MODE_NORMAL))
 
-		self.keybindings.append(Keybinding('<ap', Plug('OrgDemoteHeadingNormal', ':py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False)<CR>')))
+		self.keybindings.append(Keybinding('<ah', Plug('OrgDemoteHeadingNormal', ':py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False)<CR>')))
 		self.menu + ActionEntry('&Demote Heading', self.keybindings[-1])
 		self.keybindings.append(Keybinding('<<', Plug('OrgDemoteOnHeadingNormal', ':py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False, on_heading=True)<CR>')))
 		self.keybindings.append(Keybinding('<{', '<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
-		self.keybindings.append(Keybinding('<ip', '<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('<ih', '<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
 
-		self.keybindings.append(Keybinding('<ab', Plug('OrgDemoteSubtreeNormal', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>')))
+		self.keybindings.append(Keybinding('<at', Plug('OrgDemoteSubtreeNormal', ':py ORGMODE.plugins["EditStructure"].demote_heading()<CR>')))
 		self.menu + ActionEntry('&Demote Subtree', self.keybindings[-1])
 		self.keybindings.append(Keybinding('<[[', '<Plug>OrgDemoteSubtreeNormal', mode=MODE_NORMAL))
-		self.keybindings.append(Keybinding('<ib', '<Plug>OrgDemoteSubtreeNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding('<it', '<Plug>OrgDemoteSubtreeNormal', mode=MODE_NORMAL))
 
 		# other keybindings
 		self.keybindings.append(Keybinding('<C-t>', Plug('OrgPromoteOnHeadingInsert', '<C-o>:py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False, on_heading=True)<CR>', mode=MODE_INSERT)))

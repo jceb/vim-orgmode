@@ -12,8 +12,6 @@ import orgmode.keybinding
 import orgmode.settings
 from orgmode.exceptions import PluginError
 
-__all__ = ['echo', 'echom', 'echoe', 'ORGMODE', 'apply_count', 'repeat']
-
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
 
 def repeat(f):
@@ -26,6 +24,8 @@ def repeat(f):
 	def r(*args, **kwargs):
 		res = f(*args, **kwargs)
 		if REPEAT_EXISTS and isinstance(res, basestring):
+			import time
+			print res, time.time()
 			vim.command('silent! call repeat#set("\\<Plug>%s")' % res)
 		return res
 	return r
