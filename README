@@ -4,6 +4,14 @@ Information about the license are found in the file LICENSE
 
 * Installation
 
+** Prerequisites
+   Add the following lines to your .vimrc file to ensure that plugins
+   are loaded properly:
+
+	filetype on
+	filetype plugin on
+	filetype indent on
+
 ** From .vba file
    Open the file in vim and run the command ":so %". The plugin is than
    installed into your .vim directory.
