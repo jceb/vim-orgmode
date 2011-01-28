@@ -106,7 +106,10 @@ class Todo(object):
 		"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		self.keybindings.append(Keybinding('^', Plug('OrgToggleTodoToggle', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>')))
+		settings.set('org_leader', ',')
+		leader = settings.get('org_leader', ',')
+
+		self.keybindings.append(Keybinding('%sd' % leader, Plug('OrgToggleTodoToggle', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>')))
 		self.menu + ActionEntry('&TODO/DONE/-', self.keybindings[-1])
 		submenu = self.menu + Submenu('Select &keyword')
 		self.keybindings.append(Keybinding('<S-Right>', Plug('OrgToggleTodoForward', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>')))

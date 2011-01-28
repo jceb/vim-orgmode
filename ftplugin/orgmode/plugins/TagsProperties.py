@@ -166,8 +166,8 @@ class TagsProperties(object):
 
 		settings.set('org_tags_completion_ignorecase', '0')
 
-		settings.set('org_tags_properties_leader', ',')
-		leader = settings.get('org_tags_properties_leader', ',')
+		settings.set('org_leader', ',')
+		leader = settings.get('org_leader', ',')
 
 		self.keybindings.append(Keybinding('%st' % leader, Plug('OrgSetTags', ':py ORGMODE.plugins["TagsProperties"].set_tags()<CR>')))
 		self.menu + ActionEntry('Set &Tags', self.keybindings[-1])

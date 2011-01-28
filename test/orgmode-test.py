@@ -38,8 +38,8 @@ class TagsPropertiesTestCase(unittest.TestCase):
 				'exists("g:org_debug")': 0,
 				'exists("b:org_debug")': 0,
 				'exists("*repeat#set()")': 0,
-				'exists("b:org_tags_properties_leader")': 0,
-				'exists("g:org_tags_properties_leader")': 0,
+				'exists("b:org_leader")': 0,
+				'exists("g:org_leader")': 0,
 				'exists("g:org_tags_column")': 0,
 				'exists("b:org_tags_column")': 0,
 				'exists("b:org_tags_completion_ignorecase")': 0,
@@ -86,8 +86,8 @@ class ShowHideTestCase(unittest.TestCase):
 				'exists("g:org_debug")': 0,
 				'exists("b:org_debug")': 0,
 				'exists("*repeat#set()")': 0,
-				'exists("b:org_show_hide_leader")': 0,
-				'exists("g:org_show_hide_leader")': 0,
+				'exists("b:org_leader")': 0,
+				'exists("g:org_leader")': 0,
 				"v:count": 0
 				}
 		if not ORGMODE.plugins.has_key('ShowHide'):
