@@ -26,5 +26,5 @@ class Example(object):
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
-		self.keybindings.append(Keybinding('keybinding', Plug('OrgAction', ':ORGMODE.plugins["Example"].action()<CR>'))
+		self.keybindings.append(Keybinding('keybinding', Plug('OrgAction', ':silent! py ORGMODE.plugins["Example"].action()<CR>'))
 		self.menu + ActionEntry('&Action', self.keybindings[-1])

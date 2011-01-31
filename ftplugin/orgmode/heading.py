@@ -312,10 +312,10 @@ class Heading(object):
 	def find_heading(cls, start_line, direction=DIRECTION_FORWARD):
 		""" Find heading in the given direction
 
-		:start_line: start line in python list format
+		:start_line: start line, counting from 0
 		:direction: downward == DIRECTION_FORWARD, upward == DIRECTION_BACKWARD
 
-		:returns: line in buffer or None
+		:returns: Heading object or None
 		"""
 		cb = vim.current.buffer
 		len_cb = len(cb)

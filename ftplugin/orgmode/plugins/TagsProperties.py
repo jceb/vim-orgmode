@@ -187,7 +187,7 @@ endif
 endfunction""")
 
 		# this is for all org files opened after this file
-		vim.command("au FileType org :au InsertLeave <buffer> :py ORGMODE.plugins['TagsProperties'].update_tags()")
+		vim.command("au FileType org :au InsertLeave <buffer> :silent! py ORGMODE.plugins['TagsProperties'].update_tags()")
 
 		# this is for the current file
-		vim.command("au InsertLeave <buffer> :py ORGMODE.plugins['TagsProperties'].update_tags()")
+		vim.command("au InsertLeave <buffer> :silent! py ORGMODE.plugins['TagsProperties'].update_tags()")
