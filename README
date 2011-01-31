@@ -53,10 +53,10 @@ Information about the license are found in the file LICENSE
    ah - a heading, referring to the current heading including everything
    it - inner subtree, starting with the current heading
    at - a subtree, starting with the current heading
-   oh - inner outer heading, referring to the parent
-   ot - inner outer heading, including subtree, referring to the parent
-   oH - a outer heading
-   oT - a outer subtree
+   Oh - inner outer heading, referring to the parent
+   Ot - inner outer heading, including subtree, referring to the parent
+   OH - a outer heading
+   OT - a outer subtree
 
    Movement commands can also be used for editing like text-objects:
 
@@ -226,6 +226,7 @@ Information about the license are found in the file LICENSE
 *** DONE implement |fold-foldtext|
 
 ** Navigator plugin
+*** implement mappings for visual and operator mode in a better way
 *** TODO implement other paragraph and block text-object operators, e.g. dap, cip, dab, cib
 *** TODO implement tests for ]]
 *** implement count for navigator mappings in visual mode
@@ -270,7 +271,6 @@ Information about the license are found in the file LICENSE
 
 ** Misc
 *** multibyte characters in foldtext shorten displayed string
-*** TODO focus more on building text-objects for all major changes
 *** TODO implement settings as part of the plugin
 *** TODO add descriptions to settings
 *** Figure out a way to get the keys the user pressed to activate a mapping so that feedkeys can be used properly
@@ -284,6 +284,8 @@ Information about the license are found in the file LICENSE
 *** make a video about vim-orgmode
 *** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
 *** orgmode taglist integration doesn't work with txtfmt plugin: setf txt.txtfmt
+*** DONE extract general text-objects from Navigator plugin and move them to Misc plugin
+*** DONE focus more on building text-objects for all major changes
 *** DONE fix issue in recognizing a heading
 *** DONE change behavior of I and ^ on a heading to jump to the first character of the title
 *** DONE introduce general org_leader variable
