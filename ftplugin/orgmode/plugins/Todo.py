@@ -109,12 +109,12 @@ class Todo(object):
 		settings.set('org_leader', ',')
 		leader = settings.get('org_leader', ',')
 
-		self.keybindings.append(Keybinding('%sd' % leader, Plug('OrgToggleTodoToggle', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>')))
+		self.keybindings.append(Keybinding('%sd' % leader, Plug('OrgToggleTodoToggle', ':silent! py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>')))
 		self.menu + ActionEntry('&TODO/DONE/-', self.keybindings[-1])
 		submenu = self.menu + Submenu('Select &keyword')
-		self.keybindings.append(Keybinding('<S-Right>', Plug('OrgToggleTodoForward', ':py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>')))
+		self.keybindings.append(Keybinding('<S-Right>', Plug('OrgToggleTodoForward', ':silent! py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>')))
 		submenu + ActionEntry('&Next keyword', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<S-Left>', Plug('OrgToggleTodoBackward', ':py ORGMODE.plugins["Todo"].toggle_todo_state(False)<CR>')))
+		self.keybindings.append(Keybinding('<S-Left>', Plug('OrgToggleTodoBackward', ':silent! py ORGMODE.plugins["Todo"].toggle_todo_state(False)<CR>')))
 		submenu + ActionEntry('&Previous keyword', self.keybindings[-1])
 
 		settings.set('org_todo_keywords', ['TODO', '|', 'DONE'])
