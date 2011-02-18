@@ -18,12 +18,6 @@ syntax match Tags +\s*:\S*:\s*$+
 hi Tags guifg=pink
 syntax match Dates +<\d\d\d\d-\d\d-\d\d.\{-1,}>+
 hi Dates guifg=magenta
-syntax match stars +\*\+\*+me=e-1 contained
-if &background == 'light'
-	hi stars guifg=#888888
-else
-	hi stars guifg=#444444
-endif
 syntax match NEXT '\* \zsNEXT' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
 syntax match CANCELED '\* \zsCANCELED' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
 syntax match TODO '\* \zsTODO' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
