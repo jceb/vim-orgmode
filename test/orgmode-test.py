@@ -405,6 +405,18 @@ Bla Bla bla bla
 		self.assertEqual(vim.current.buffer[15], '*** Überschrift 1.2.1')
 		self.assertEqual(vim.current.window.cursor, (13, 1))
 
+	def test_promote_last_heading(self):
+		vim.current.buffer = """
+* Überschrift 2
+* Überschrift 3""".split('\n')
+		vim.current.window.cursor = (3, 0)
+		h = Heading.current_heading()
+		self.assertNotEqual(self.editstructure.promote_heading(), None)
+		self.assertEqual(h.end, 2)
+		self.assertFalse(vim.CMDHISTORY)
+		self.assertEqual(vim.current.buffer[2], '** Überschrift 3')
+		self.assertEqual(vim.current.window.cursor, (3, 1))
+
 	def test_demote_heading(self):
 		vim.current.window.cursor = (13, 0)
 		self.assertNotEqual(self.editstructure.demote_heading(), None)
@@ -519,9 +531,9 @@ Bla Bla bla bla
 
 	def test_movement(self):
 		# test movement outside any heading
-		vim.current.window.cursor = (0, 0)
+		vim.current.window.cursor = (1, 0)
 		self.navigator.previous(mode='normal')
-		self.assertEqual(vim.current.window.cursor, (0, 0))
+		self.assertEqual(vim.current.window.cursor, (1, 0))
 		self.navigator.next(mode='normal')
 		self.assertEqual(vim.current.window.cursor, (2, 2))
 
@@ -1076,7 +1088,7 @@ Bla Bla bla bla
 		h = Heading.current_heading()
 		self.assertEqual(h, None)
 
-		vim.current.window.cursor = (999, 0)
+		vim.current.window.cursor = (20, 0)
 		h = Heading.current_heading()
 		self.assertNotEqual(h, None)
 		self.assertEqual(h.level, 1)
@@ -1084,6 +1096,10 @@ Bla Bla bla bla
 		self.assertEqual(h.parent, None)
 		self.assertEqual(h.next_sibling, None)
 		self.assertEqual(len(h.children), 0)
+
+		vim.current.window.cursor = (999, 0)
+		h = Heading.current_heading()
+		self.assertEqual(h, None)
 
 	def test_heading_start_and_end(self):
 		# test heading start and end
@@ -1132,6 +1148,16 @@ Bla Bla bla bla
 		self.assertEqual(h.start, 1)
 		self.assertEqual(h.end, 3)
 		self.assertEqual(h.end_of_last_child, 7)
+
+		vim.current.buffer = """
+* Überschrift 2
+* Überschrift 3""".split('\n')
+		vim.current.window.cursor = (3, 0)
+		h = Heading.current_heading()
+		self.assertNotEqual(h, None)
+		self.assertEqual(h.end, 2)
+		self.assertEqual(h.end_of_last_child, 2)
+		self.assertEqual(h.text, 'Überschrift 3')
 
 	def test_first_heading(self):
 		# test first heading
@@ -1189,9 +1215,8 @@ Bla Bla bla bla
 		self.assertNotEqual(h.parent, None)
 		self.assertEqual(h.parent.start, 9)
 
-		vim.current.window.cursor = (77, 0)
+		vim.current.window.cursor = (20, 0)
 		h = Heading.current_heading()
-
 		self.assertNotEqual(h, None)
 		self.assertEqual(h.level, 1)
 		self.assertNotEqual(h.previous_sibling, None)
@@ -1199,6 +1224,10 @@ Bla Bla bla bla
 		self.assertNotEqual(h.previous_sibling.previous_sibling, None)
 		self.assertEqual(h.previous_sibling.previous_sibling.level, 1)
 		self.assertEqual(h.previous_sibling.previous_sibling.previous_sibling, None)
+
+		vim.current.window.cursor = (77, 0)
+		h = Heading.current_heading()
+		self.assertEqual(h, None)
 
 		# test heading extractor
 		#self.assertEqual(h.heading, 'Überschrift 1')

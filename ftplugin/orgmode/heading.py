@@ -115,6 +115,8 @@ class Heading(object):
 	#last_child = property(**last_child())
 
 	def iterchildren(self):
+		if self.start + 1 == len(vim.current.buffer):
+			raise StopIteration()
 		if self._first_child == None:
 			last_child = None
 			start = self._end
@@ -312,7 +314,7 @@ class Heading(object):
 	def find_heading(cls, start_line, direction=DIRECTION_FORWARD):
 		""" Find heading in the given direction
 
-		:start_line: start line, counting from 0
+		:start_line: start line, counting from 0 (in vim you start counting from 1, don't forget)
 		:direction: downward == DIRECTION_FORWARD, upward == DIRECTION_BACKWARD
 
 		:returns: Heading object or None
@@ -320,11 +322,8 @@ class Heading(object):
 		cb = vim.current.buffer
 		len_cb = len(cb)
 
-		if start_line < 0:
-			start_line = 0
-
-		if start_line >= len_cb:
-			start_line = len_cb - 1
+		if start_line < 0 or start_line > len_cb:
+			return
 
 		tmp_line = start_line
 		# Search heading upwards

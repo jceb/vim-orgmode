@@ -284,6 +284,7 @@ Information about the license are found in the file LICENSE
 *** make a video about vim-orgmode
 *** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
 *** orgmode taglist integration doesn't work with txtfmt plugin: setf txt.txtfmt
+*** DONE fix issue with exceeded buffer boundaries
 *** DONE extract general text-objects from Navigator plugin and move them to Misc plugin
 *** DONE focus more on building text-objects for all major changes
 *** DONE fix issue in recognizing a heading

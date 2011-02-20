@@ -125,7 +125,9 @@ class EditStructure(object):
 		# figure out the end of the last child before changing anything within the vim buffer
 		h.end_of_last_child
 		# indent the promoted/demoted heading
-		vim.command('normal %dggV%dgg=' % (h.start_vim, indent(h, including_children)))
+		tmp = indent(h, including_children)
+		if tmp != h.start_vim:
+			vim.command('normal %dggV%dgg=' % (h.start_vim, tmp))
 		# restore cursor position
 		vim.current.window.cursor = (c[0], c[1] + level)
 
