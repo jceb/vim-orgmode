@@ -2,7 +2,7 @@
 
 from orgmode import echo, echom, echoe, ORGMODE, apply_count, repeat
 from orgmode.menu import Submenu, Separator, ActionEntry
-from orgmode.keybinding import Keybinding, Plug
+from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 from orgmode import settings
 
@@ -49,16 +49,20 @@ class HeadingTags(Heading):
 				spaces = 2
 				tags = ':%s:' % (':'.join(value))
 
-				tag_column = int(settings.get('org_tags_column', '78'))
+				tag_column = int(settings.get('org_tags_column', '77'))
 
-				if self.level + 1 + len(text) + spaces + len(tags) < tag_column:
-					len_heading = self.level + 1 + len(text)
-					tmp_spaces = int(vim.eval('&ts')) - divmod(len_heading, int(vim.eval('&ts')))[1]
+				len_heading = self.level + 1 + len(text)
+				if len_heading + spaces + len(tags) < tag_column:
+					ts = int(vim.eval('&ts'))
+					tmp_spaces =  ts - divmod(len_heading, ts)[1]
 
-					tabs, spaces = divmod(tag_column - (len_heading + tmp_spaces + len(tags)), int(vim.eval('&ts')))
+					if len_heading + tmp_spaces + len(tags) < tag_column:
+						tabs, spaces = divmod(tag_column - (len_heading + tmp_spaces + len(tags)), ts)
 
-					if tmp_spaces:
-						tabs += 1
+						if tmp_spaces:
+							tabs += 1
+					else:
+						spaces = tag_column - (len_heading + len(tags))
 
 				# add tags
 				vim.current.buffer[self.start] = '%s %s%s%s%s' % ('*'*self.level, text.encode('utf-8'), '\t'*tabs, ' '*spaces, tags)
@@ -122,6 +126,9 @@ class TagsProperties(object):
 		# bindings should be put in this variable
 		self.keybindings = []
 
+		# commands for this plugin
+		self.commands = []
+
 	@repeat
 	def set_tags(self):
 		""" Set tags for current heading
@@ -157,12 +164,20 @@ class TagsProperties(object):
 		if vim.current.window.cursor[0] == heading.start_vim:
 			heading.tags = heading.tags
 
+	def realign_tags(self):
+		"""
+		Updates tags when user finishes editing a heading
+		"""
+		for h in HeadingTags.all_headings():
+			if h.tags:
+				h.tags = h.tags
+
 	def register(self):
 		"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
-		settings.set('org_tags_column', '78')
+		settings.set('org_tags_column', '77')
 
 		settings.set('org_tags_completion_ignorecase', '0')
 
@@ -172,6 +187,9 @@ class TagsProperties(object):
 		self.keybindings.append(Keybinding('%st' % leader, Plug('OrgSetTags', ':py ORGMODE.plugins["TagsProperties"].set_tags()<CR>')))
 		self.menu + ActionEntry('Set &Tags', self.keybindings[-1])
 
+		self.commands.append(Command('OrgTagsRealign', ":py ORGMODE.plugins['TagsProperties'].realign_tags()"))
+
+		# workaround to align tags when user is leaving insert mode
 		vim.command("""function Org_complete_tags(ArgLead, CmdLine, CursorPos)
 python << EOF
 from orgmode.plugins.TagsProperties import HeadingTags

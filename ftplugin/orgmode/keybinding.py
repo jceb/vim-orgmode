@@ -11,14 +11,72 @@ MODE_OPERATOR = 'o'
 OPTION_BUFFER_ONLY = '<buffer>'
 OPTION_SLIENT = '<silent>'
 
-def register_keybindings(f):
+def _register(f, name):
 	def r(*args, **kwargs):
 		p = f(*args, **kwargs)
-		if hasattr(p, 'keybindings') and isinstance(p.keybindings, list):
-			for k in p.keybindings:
-				k.create()
+		if hasattr(p, name) and isinstance(getattr(p, name), list):
+			for i in getattr(p, name):
+				i.create()
 		return p
 	return r
+
+def register_keybindings(f):
+	return _register(f, 'keybindings')
+
+def register_commands(f):
+	return _register(f, 'commands')
+
+class Command(object):
+	""" A vim command """
+
+	def __init__(self, name, command, arguments='0', complete=None, overwrite_exisiting=False):
+		"""
+		:name:		The name of command, first character must be uppercase
+		:command:	The actual command that is executed
+		:arguments:	See :h :command-nargs, only the arguments need to be specified
+		:complete:	See :h :command-completion, only the completion arguments need to be specified
+		"""
+		object.__init__(self)
+		
+		self._name                = name
+		self._command             = command
+		self._arguments           = arguments
+		self._complete            = complete
+		self._overwrite_exisiting = overwrite_exisiting
+	
+	def __str__(self):
+		return ':%s<CR>' % self.name
+
+	@property
+	def name(self):
+		return self._name
+
+	@property
+	def command(self):
+		return self._command
+
+	@property
+	def arguments(self):
+		return self._arguments
+
+	@property
+	def complete(self):
+		return self._complete
+
+	@property
+	def overwrite_exisiting(self):
+		return self._overwrite_exisiting
+
+	def create(self):
+		""" Register/create the command
+		"""
+		vim.command(':command%(overwrite)s -nargs=%(arguments)s %(complete)s %(name)s %(command)s' %
+				{'overwrite': '!' if self.overwrite_exisiting else '',
+					'arguments': self.arguments,
+					'complete': '-complete=%s' % self.complete if self.complete else '',
+					'name': self.name,
+					'command': self.command}
+				)
 
 class Plug(object):
 	""" Represents a <Plug> to an abitrary command """
@@ -132,6 +190,9 @@ class Keybinding(object):
 				self._action.create()
 				if int(vim.eval('hasmapto("%s")' % (self._action, ))):
 					create_mapping = False
+			if isinstance(self._action, Command):
+				# create command
+				self._action.create()
 
 			if create_mapping:
 				vim.command(':%smap %s %s %s' % (cmd, ' '.join(self._options), self._key, self._action))

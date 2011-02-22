@@ -255,6 +255,10 @@ Information about the license are found in the file LICENSE
 
 ** TagsProperties plugin
 *** implement tests
+*** DONE implement command to realign all tags
+*** DONE issues with the positioning of tags, some include one whitespace too much
+*** DONE orgmode tags column is 77 not 78
+*** DONE multibyte characters in foldtext shorten displayed string
 *** DONE remove empty tags
 *** DONE preserve leading colon (:) at the first character
 *** DONE update tags when editing heading
@@ -270,8 +274,9 @@ Information about the license are found in the file LICENSE
 *** implement time tracking
 
 ** Misc
-*** TODO implement settings as part of the plugin
-*** TODO add descriptions to settings
+*** TODO implement repeat for text-objects
+*** implement settings as part of the plugin
+*** add descriptions to settings
 *** Figure out a way to get the keys the user pressed to activate a mapping so that feedkeys can be used properly
 *** integrate v:operator
 *** integrate with Narrow Region plugin
@@ -279,10 +284,11 @@ Information about the license are found in the file LICENSE
 *** integrate with YankRing plugin
 *** make use of maparg() and mapcheck()
 *** generate documentation from plugin code, add short/long descriptions to keybindings
-*** write general documentation
 *** make a video about vim-orgmode
 *** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
 *** orgmode taglist integration doesn't work with txtfmt plugin: setf txt.txtfmt
+*** DONE implement commands
+*** DONE write general documentation
 *** DONE multibyte characters in foldtext shorten displayed string
 *** DONE fix issue with exceeded buffer boundaries
 *** DONE extract general text-objects from Navigator plugin and move them to Misc plugin

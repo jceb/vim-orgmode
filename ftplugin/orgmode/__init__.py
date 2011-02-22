@@ -156,6 +156,7 @@ class OrgMode(object):
 		return self._plugins.copy()
 
 	@orgmode.keybinding.register_keybindings
+	@orgmode.keybinding.register_commands
 	@orgmode.menu.register_menu
 	def register_plugin(self, plugin):
 		if not isinstance(plugin, basestring):
@@ -239,6 +240,6 @@ if PLUGINS:
 				ORGMODE.register_plugin(p)
 			except Exception, e:
 				import traceback
-				traceback.print_exception()
+				traceback.print_exc()
 else:
 	echoe('orgmode: No plugins registered.')
