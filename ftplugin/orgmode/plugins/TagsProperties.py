@@ -31,16 +31,16 @@ class HeadingTags(Heading):
 			:value:	list of tags, the empty list deletes all tags
 			"""
 			# find beginning of tags
-			idx = self.text.rfind(' ')
-			idx2 = self.text.rfind('\t')
+			text = self.text.decode('utf-8')
+			idx = text.rfind(' ')
+			idx2 = text.rfind('\t')
 			idx = idx if idx > idx2 else idx2
 
 			if not value:
 				if self.tags:
 					# remove tags
-					vim.current.buffer[self.start] = '%s %s' % ('*'*self.level, self.text[:idx].strip())
+					vim.current.buffer[self.start] = '%s %s' % ('*'*self.level, text[:idx].strip().encode('utf-8'))
 			else:
-				text = self.text
 				if self.tags:
 					text = text[:idx]
 				text = text.strip()
@@ -61,7 +61,7 @@ class HeadingTags(Heading):
 						tabs += 1
 
 				# add tags
-				vim.current.buffer[self.start] = '%s %s%s%s%s' % ('*'*self.level, text, '\t'*tabs, ' '*spaces, tags)
+				vim.current.buffer[self.start] = '%s %s%s%s%s' % ('*'*self.level, text.encode('utf-8'), '\t'*tabs, ' '*spaces, tags)
 
 			self._tags = value
 		return locals()

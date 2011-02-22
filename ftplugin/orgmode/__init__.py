@@ -24,8 +24,6 @@ def repeat(f):
 	def r(*args, **kwargs):
 		res = f(*args, **kwargs)
 		if REPEAT_EXISTS and isinstance(res, basestring):
-			import time
-			print res, time.time()
 			vim.command('silent! call repeat#set("\\<Plug>%s")' % res)
 		return res
 	return r
@@ -104,7 +102,7 @@ def fold_text():
 		line = int(vim.eval('v:foldstart'))
 		heading = Heading.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 		if heading:
-			str_heading = str(heading)
+			str_heading = str(heading).decode('utf-8')
 			ts = int(vim.eval('&ts'))
 			idx = str_heading.find('\t')
 			if idx != -1:
@@ -113,7 +111,7 @@ def fold_text():
 				str_heading = str_heading.replace('\t', ' '*(ts - spaces), 1)
 				str_heading = str_heading.replace('\t', ' '*ts)
 
-			vim.command('let b:foldtext = "%s... "' % (str_heading))
+			vim.command('let b:foldtext = "%s... "' % (str_heading.encode('utf-8')))
 	except Exception, e:
 		pass
 

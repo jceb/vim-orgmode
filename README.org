@@ -270,7 +270,6 @@ Information about the license are found in the file LICENSE
 *** implement time tracking
 
 ** Misc
-*** multibyte characters in foldtext shorten displayed string
 *** TODO implement settings as part of the plugin
 *** TODO add descriptions to settings
 *** Figure out a way to get the keys the user pressed to activate a mapping so that feedkeys can be used properly
@@ -284,6 +283,7 @@ Information about the license are found in the file LICENSE
 *** make a video about vim-orgmode
 *** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
 *** orgmode taglist integration doesn't work with txtfmt plugin: setf txt.txtfmt
+*** DONE multibyte characters in foldtext shorten displayed string
 *** DONE fix issue with exceeded buffer boundaries
 *** DONE extract general text-objects from Navigator plugin and move them to Misc plugin
 *** DONE focus more on building text-objects for all major changes
