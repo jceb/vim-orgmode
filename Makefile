@@ -1,16 +1,33 @@
 PLUGIN = orgmode
 
-${PLUGIN}.vba.gz: test clean
-	echo README > files
-	echo LICENSE >> files
-	find . -type f -name \*.py -o -type f -name \*.vim | sed -e 's/^\.\///' | grep -v '^test\/' | grep -v Example.py >> files
-	vim --cmd 'let g:plugin_name="${PLUGIN}"' -s build_vim
-	gzip ${PLUGIN}.vba
+PREFIX = /usr/local
+VIMDIR = $(PREFIX)/share/vim
 
-test: test/orgmode-test.py
+all: build
+
+build:
+
+install:
+	for i in indent ftdetect ftplugin syntax; do \
+		find $$i -type f -name \*.py -o -type f -name \*.vim | while read f; do \
+			install -m 0644 -D $$f $(DESTDIR)$(VIMDIR)/$$f; \
+		done; \
+	done
+
+check: test/orgmode-test.py
 	cd test && python orgmode-test.py
 
 clean:
-	@rm -f ${PLUGIN}.vba.gz files
+	@rm -rf ${PLUGIN}.vba.gz tmp
 
-.PHONY: test clean
+${PLUGIN}.vba.gz: check
+	$(MAKE) DESTDIR=$(PWD)/tmp VIMDIR= install
+	echo $(PWD)
+	find tmp -type f | sed -e 's/^tmp\/// '> tmp/files
+	cp build_vim tmp
+	cd tmp && vim --cmd 'let g:plugin_name="${PLUGIN}"' -s build_vim && gzip ${PLUGIN}.vba
+	mv tmp/$@ .
+
+vba: ${PLUGIN}.vba.gz
+
+.PHONY: all build check install clean vba
