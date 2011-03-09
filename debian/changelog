@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-2) unstable; urgency=low
+
+  * correct filename of PluginExample.py (closes: #3)
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Wed, 09 Mar 2011 22:02:49 +0100
+
 vim-orgmode (0.1.0-1) unstable; urgency=low
 
   * Initial release.
