@@ -83,7 +83,8 @@ class Hyperlinks(object):
 
 			cursor = vim.current.window.cursor
 			cl = vim.current.buffer[cursor[0] - 1]
-			vim.current.buffer[cursor[0] - 1] = ''.join((cl[:cursor[1]], '[[%s%s]]' % (uri, description), cl[cursor[1]:]))
+			# append link after the current cursor position
+			vim.current.buffer[cursor[0] - 1] = ''.join((cl[:cursor[1] + 1], '[[%s%s]]' % (uri, description), cl[cursor[1] + 1:]))
 		except:
 			import traceback
 			traceback.print_exc()
@@ -93,7 +94,6 @@ class Hyperlinks(object):
 		"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		# an Action menu entry which binds "keybinding" to action ":action"
 		self.commands.append(Command('OrgHyperlinkFollow', ':py ORGMODE.plugins["Hyperlinks"].follow()'))
 		self.keybindings.append(Keybinding('gl', Plug('OrgHyperlinkFollow', self.commands[-1])))
 		self.menu + ActionEntry('&Follow Link', self.keybindings[-1])
@@ -103,6 +103,27 @@ class Hyperlinks(object):
 		self.menu + ActionEntry('&Copy Link', self.keybindings[-1])
 
 		self.commands.append(Command('OrgHyperlinkInsert', ':py ORGMODE.plugins["Hyperlinks"].insert(<args>)', arguments='*'))
-		#self.keybindings.append(Keybinding('gyl', Plug('OrgHyperlinkInsert', self.commands[-1])))
-		#self.menu + ActionEntry('&Copy Link', self.keybindings[-1])
-		self.menu + ActionEntry('&Insert Link', self.commands[-1])
+		self.keybindings.append(Keybinding('gil', Plug('OrgHyperlinkInsert', self.commands[-1])))
+		self.menu + ActionEntry('&Insert Link', self.keybindings[-1])
+
+		self.menu + Separator()
+
+		# find next link
+		self.commands.append(Command('OrgHyperlinkNextLink', ":if search('\[\{2}\zs[^][]*\(\]\[[^][]*\)\?\ze\]\{2}', 's') == 0 | echo 'No further link found.' | endif"))
+		self.keybindings.append(Keybinding('gn', Plug('OrgHyperlinkNextLink', self.commands[-1])))
+		self.menu + ActionEntry('&Next Link', self.keybindings[-1])
+
+		# find previous link
+		self.commands.append(Command('OrgHyperlinkPreviousLink', ":if search('\[\{2}\zs[^][]*\(\]\[[^][]*\)\?\ze\]\{2}', 'bs') == 0 | echo 'No further link found.' | endif"))
+		self.keybindings.append(Keybinding('go', Plug('OrgHyperlinkPreviousLink', self.commands[-1])))
+		self.menu + ActionEntry('&Previous Link', self.keybindings[-1])
+
+		self.menu + Separator()
+
+		# Descriptive Links
+		self.commands.append(Command('OrgHyperlinkDescriptiveLinks', ':setlocal cole=2'))
+		self.menu + ActionEntry('&Descriptive Links', self.commands[-1])
+
+		# Literal Links
+		self.commands.append(Command('OrgHyperlinkLiteralLinks', ':setlocal cole=0'))
+		self.menu + ActionEntry('&Literal Links', self.commands[-1])
