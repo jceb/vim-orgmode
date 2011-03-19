@@ -40,7 +40,11 @@ class Hyperlinks(object):
 
 		# if the cursor is on the last bracket, it's not recognized as a hyperlink
 		start = line.rfind('[[', 0, cursor[1])
+		if start == -1:
+			start = line.rfind('[[', 0, cursor[1] + 2)
 		end = line.find(']]', cursor[1])
+		if end == -1:
+			end = line.find(']]', cursor[1] - 1)
 
 		# extract link
 		if start != -1 and end != -1:
@@ -94,36 +98,34 @@ class Hyperlinks(object):
 			if description == None and link['description'] != None:
 				description = link['description']
 
-		try:
-			if uri == None:
-				uri = vim.eval('input("Link: ")')
-			elif link:
-				uri = vim.eval('input("Link: ", "%s")' % link['uri'])
-
-			if description == None:
-				description = vim.eval('input("Description: ")')
-			elif link:
-				description = vim.eval('input("Description: ", "%s")' % link['description'])
-
-			cursor = vim.current.window.cursor
-			cl = vim.current.buffer[cursor[0] - 1]
-			head = cl[:cursor[1]] if not link else cl[:link['start']]
-			tail = cl[cursor[1]:] if not link else cl[link['end']:]
-
-			separator = ''
-			if description:
-				separator = ']['
-			vim.current.buffer[cursor[0] - 1] = ''.join((head, '[[%s%s%s]]' % (uri, separator, description), tail))
-		except:
-			import traceback
-			traceback.print_exc()
+		if uri == None:
+			uri = vim.eval('input("Link: ")')
+		elif link:
+			uri = vim.eval('input("Link: ", "%s")' % link['uri'])
+		if uri == None:
 			return
+
+		if description == None:
+			description = vim.eval('input("Description: ")')
+		elif link:
+			description = vim.eval('input("Description: ", "%s")' % link['description'])
+		if description == None:
+			return
+
+		cursor = vim.current.window.cursor
+		cl = vim.current.buffer[cursor[0] - 1]
+		head = cl[:cursor[1] + 1] if not link else cl[:link['start']]
+		tail = cl[cursor[1] + 1:] if not link else cl[link['end']:]
+
+		separator = ''
+		if description:
+			separator = ']['
+		vim.current.buffer[cursor[0] - 1] = ''.join((head, '[[%s%s%s]]' % (uri, separator, description), tail))
 
 	def register(self):
 		"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		# an Action menu entry which binds "keybinding" to action ":action"
 		self.commands.append(Command('OrgHyperlinkFollow', ':py ORGMODE.plugins["Hyperlinks"].follow()'))
 		self.keybindings.append(Keybinding('gl', Plug('OrgHyperlinkFollow', self.commands[-1])))
 		self.menu + ActionEntry('&Follow Link', self.keybindings[-1])
@@ -132,6 +134,28 @@ class Hyperlinks(object):
 		self.keybindings.append(Keybinding('gyl', Plug('OrgHyperlinkCopy', self.commands[-1])))
 		self.menu + ActionEntry('&Copy Link', self.keybindings[-1])
 
-		self.commands.append(Command('OrgHyperlinkInsert', ':py ORGMODE.plugins["Hyperlinks"].insert(<f-args>)', arguments='*'))
+		self.commands.append(Command('OrgHyperlinkInsert', ':py ORGMODE.plugins["Hyperlinks"].insert(<args>)', arguments='*'))
 		self.keybindings.append(Keybinding('gil', Plug('OrgHyperlinkInsert', self.commands[-1])))
 		self.menu + ActionEntry('&Insert Link', self.keybindings[-1])
+
+		self.menu + Separator()
+
+		# find next link
+		self.commands.append(Command('OrgHyperlinkNextLink', ":if search('\[\{2}\zs[^][]*\(\]\[[^][]*\)\?\ze\]\{2}', 's') == 0 | echo 'No further link found.' | endif"))
+		self.keybindings.append(Keybinding('gn', Plug('OrgHyperlinkNextLink', self.commands[-1])))
+		self.menu + ActionEntry('&Next Link', self.keybindings[-1])
+
+		# find previous link
+		self.commands.append(Command('OrgHyperlinkPreviousLink', ":if search('\[\{2}\zs[^][]*\(\]\[[^][]*\)\?\ze\]\{2}', 'bs') == 0 | echo 'No further link found.' | endif"))
+		self.keybindings.append(Keybinding('go', Plug('OrgHyperlinkPreviousLink', self.commands[-1])))
+		self.menu + ActionEntry('&Previous Link', self.keybindings[-1])
+
+		self.menu + Separator()
+
+		# Descriptive Links
+		self.commands.append(Command('OrgHyperlinkDescriptiveLinks', ':setlocal cole=2'))
+		self.menu + ActionEntry('&Descriptive Links', self.commands[-1])
+
+		# Literal Links
+		self.commands.append(Command('OrgHyperlinkLiteralLinks', ':setlocal cole=0'))
+		self.menu + ActionEntry('&Literal Links', self.commands[-1])
