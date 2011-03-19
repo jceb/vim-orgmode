@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-4) unstable; urgency=low
+
+  * implement Hyperlinks plugin (closes: #11)
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 20 Mar 2011 00:07:04 +0100
+
 vim-orgmode (0.1.0-3) unstable; urgency=low
 
   * fix syntax issue in PluginExample.py
