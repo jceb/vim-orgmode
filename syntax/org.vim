@@ -44,6 +44,7 @@ syntax match T1 +^\t*:.*$+ contains=tcolon,url
 syntax match T2 +^\t*;.*$+ contains=tcolon,url
 syntax match T3 +^\t*|.*$+ contains=tcolon,url
 syntax match T4 +^\t*>.*$+ contains=tcolon,url
+
 hi T1 guifg=#00ee00
 hi T2 guifg=#ffff33
 hi T3 guifg=#99cc33
@@ -155,3 +156,11 @@ else
 	hi NEXT guifg=Cyan gui=bold ctermfg=Cyan cterm=bold
 	hi DONE guifg=Green gui=bold guibg=NONE ctermfg=Green cterm=bold ctermbg=NONE
 endif
+
+" Hyperlinks
+syntax match hyperlink	"\[\{2}[^][]*\(\]\[[^][]*\)\?\]\{2}" contains=hyperlinkBracketsLeft,hyperlinkURL,hyperlinkBracketsRight containedin=ALL
+syntax match hyperlinkBracketsLeft		contained "\[\{2}" conceal
+syntax match hyperlinkURL				contained "[^][]*\]\[" conceal
+syntax match hyperlinkBracketsRight		contained "\]\{2}" conceal
+
+hi link hyperlink Underlined

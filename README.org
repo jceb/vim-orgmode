@@ -273,6 +273,11 @@ Information about the license are found in the file LICENSE
 *** implement the agenda view by using the location list
 *** implement time tracking
 
+** Hyperlinks plugin
+*** DONE implement hyperlinks plugin
+*** DONE integrate with Universal Text Linking plugin
+*** DONE implement edit functionality
+
 ** Misc
 *** TODO implement repeat for text-objects
 *** implement settings as part of the plugin
