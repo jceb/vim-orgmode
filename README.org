@@ -274,6 +274,13 @@ Information about the license are found in the file LICENSE
 *** implement time tracking
 
 ** Hyperlinks plugin
+*** TODO impelement tests
+*** implement [[http://orgmode.org/guide/Internal-links.html#Internal-links][Internal-links]] and [[http://orgmode.org/guide/Targeted-links.html#Targeted-links][Targeted-links]]
+*** implement better support for [[http://orgmode.org/guide/External-links.html#External-links][External-links]]
+*** implement [[http://orgmode.org/guide/Handling-links.html#Handling-links][Store a link to the current location]]
+*** implement mouse interaction for links
+*** DONE fix empty links creation
+*** DONE fix passing of function arguments
 *** DONE implement hyperlinks plugin
 *** DONE integrate with Universal Text Linking plugin
 *** DONE implement edit functionality

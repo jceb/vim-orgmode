@@ -1,3 +1,11 @@
+vim-orgmode (0.1.0-5) unstable; urgency=low
+
+  * fix passing of function arguments
+  * fix empty links creation
+  * update todos for Hyperlinks plugin
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Mon, 21 Mar 2011 12:35:14 +0100
+
 vim-orgmode (0.1.0-4) unstable; urgency=low
 
   * implement Hyperlinks plugin (closes: #11)

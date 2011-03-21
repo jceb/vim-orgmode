@@ -120,7 +120,11 @@ class Hyperlinks(object):
 		separator = ''
 		if description:
 			separator = ']['
-		vim.current.buffer[cursor[0] - 1] = ''.join((head, '[[%s%s%s]]' % (uri, separator, description), tail))
+
+		if uri or description:
+			vim.current.buffer[cursor[0] - 1] = ''.join((head, '[[%s%s%s]]' % (uri, separator, description), tail))
+		elif link:
+			vim.current.buffer[cursor[0] - 1] = ''.join((head, tail))
 
 	def register(self):
 		"""
@@ -134,7 +138,7 @@ class Hyperlinks(object):
 		self.keybindings.append(Keybinding('gyl', Plug('OrgHyperlinkCopy', self.commands[-1])))
 		self.menu + ActionEntry('&Copy Link', self.keybindings[-1])
 
-		self.commands.append(Command('OrgHyperlinkInsert', ':py ORGMODE.plugins["Hyperlinks"].insert(<args>)', arguments='*'))
+		self.commands.append(Command('OrgHyperlinkInsert', ':py ORGMODE.plugins["Hyperlinks"].insert(<f-args>)', arguments='*'))
 		self.keybindings.append(Keybinding('gil', Plug('OrgHyperlinkInsert', self.commands[-1])))
 		self.menu + ActionEntry('&Insert Link', self.keybindings[-1])
 
