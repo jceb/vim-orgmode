@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echo, ORGMODE, apply_count, repeat
+from orgmode import echo, ORGMODE, apply_count
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_OPERATOR, Plug
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
@@ -15,8 +15,9 @@ class Navigator(object):
 		self.menu = ORGMODE.orgmenu + Submenu('&Navigate Headings')
 		self.keybindings = []
 
+	@classmethod
 	@apply_count
-	def parent(self, mode):
+	def parent(cls, mode):
 		"""
 		Focus parent heading
 
@@ -38,13 +39,15 @@ class Navigator(object):
 			return
 
 		if mode == 'visual':
-			self._change_visual_selection(heading, heading.parent, mode, direction=DIRECTION_BACKWARD, parent=True)
+			cls._change_visual_selection(heading, heading.parent, mode, direction=DIRECTION_BACKWARD, parent=True)
 		else:
 			vim.current.window.cursor = (heading.parent.start_vim, heading.parent.level + 1)
 		return heading.parent
 
 
-	def _change_visual_selection(self, current_heading, heading, mode, direction=DIRECTION_FORWARD, noheadingfound=False, parent=False):
+	@classmethod
+	def _change_visual_selection(cls, current_heading, heading, mode, direction=DIRECTION_FORWARD, noheadingfound=False, parent=False):
+		# TODO mode is not used, why that??
 		current = vim.current.window.cursor[0]
 		line_start, col_start = [ int(i) for i in vim.eval('getpos("\'<")')[1:3] ]
 		line_end, col_end = [ int(i) for i in vim.eval('getpos("\'>")')[1:3] ]
@@ -139,7 +142,8 @@ class Navigator(object):
 		vim.command('normal %dgg%s%s%dgg%s%s' % \
 				(line_start, move_col_start, vim.eval('visualmode()'), line_end, move_col_end, swap))
 
-	def _focus_heading(self, mode, direction=DIRECTION_FORWARD, skip_children=False):
+	@classmethod
+	def _focus_heading(cls, mode, direction=DIRECTION_FORWARD, skip_children=False):
 		"""
 		Focus next or previous heading in the given direction
 
@@ -209,7 +213,7 @@ class Navigator(object):
 				return
 
 		if mode == 'visual':
-			self._change_visual_selection(current_heading, focus_heading, mode, direction=direction, noheadingfound=noheadingfound)
+			cls._change_visual_selection(current_heading, focus_heading, mode, direction=direction, noheadingfound=noheadingfound)
 		elif mode == 'operator':
 			if direction == DIRECTION_FORWARD and vim.current.window.cursor[0] >= focus_heading.start_vim:
 				vim.current.window.cursor = (focus_heading.end_vim, len(vim.current.buffer[focus_heading.end]))
@@ -221,19 +225,21 @@ class Navigator(object):
 			return
 		return focus_heading
 
+	@classmethod
 	@apply_count
-	def previous(self, mode, skip_children=False):
+	def previous(cls, mode, skip_children=False):
 		"""
 		Focus previous heading
 		"""
-		return self._focus_heading(mode, direction=DIRECTION_BACKWARD, skip_children=skip_children)
+		return cls._focus_heading(mode, direction=DIRECTION_BACKWARD, skip_children=skip_children)
 
+	@classmethod
 	@apply_count
-	def next(self, mode, skip_children=False):
+	def next(cls, mode, skip_children=False):
 		"""
 		Focus next heading
 		"""
-		return self._focus_heading(mode, direction=DIRECTION_FORWARD, skip_children=skip_children)
+		return cls._focus_heading(mode, direction=DIRECTION_FORWARD, skip_children=skip_children)
 
 	def register(self):
 		# normal mode

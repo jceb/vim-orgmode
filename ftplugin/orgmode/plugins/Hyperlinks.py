@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echo, echom, echoe, ORGMODE, apply_count, repeat
+from orgmode import echom, ORGMODE
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
-from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
 import re
@@ -56,7 +55,8 @@ class Hyperlinks(object):
 				res.update(match.groupdict())
 			return res
 
-	def follow(self, action='openLink', visual=''):
+	@classmethod
+	def follow(cls, action='openLink', visual=''):
 		""" Follow hyperlink. If called on a regular string UTL determines the
 		outcome. Normally a file with that name will be opened.
 
@@ -82,7 +82,8 @@ class Hyperlinks(object):
 			# call UTL and let it decide what to do
 			vim.command('Utl %s %s' % (action, visual))
 
-	def insert(self, uri=None, description=None):
+	@classmethod
+	def insert(cls, uri=None, description=None):
 		""" Inserts a hyperlink. If no arguments are provided, an interactive
 		query will be started.
 		

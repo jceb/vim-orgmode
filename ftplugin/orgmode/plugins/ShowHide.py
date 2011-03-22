@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from orgmode import settings
-from orgmode import echo, echom, echoe, ORGMODE, apply_count
-from orgmode.menu import Submenu, Separator, ActionEntry
+from orgmode import ORGMODE, apply_count
+from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_NORMAL
-from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode.heading import Heading
 
 import vim
 
@@ -22,8 +22,9 @@ class ShowHide(object):
 		# bindings should be put in this variable
 		self.keybindings = []
 	
+	@classmethod
 	@apply_count
-	def toggle_folding(self):
+	def toggle_folding(cls):
 		""" Toggle folding similar to the way orgmode does
 
 		This is just a convenience function, don't hesitate to use the z*

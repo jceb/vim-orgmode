@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echo, echom, echoe, ORGMODE, apply_count, repeat
-from orgmode.menu import Submenu, Separator, ActionEntry
+from orgmode import ORGMODE, apply_count
+from orgmode.menu import Submenu
 from orgmode.keybinding import Keybinding, Plug, MODE_VISUAL, MODE_OPERATOR
-from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode.heading import Heading, DIRECTION_BACKWARD
 
 import vim
 
@@ -21,7 +21,8 @@ class Misc(object):
 		# bindings should be put in this variable
 		self.keybindings = []
 	
-	def jump_to_first_character(self):
+	@classmethod
+	def jump_to_first_character(cls):
 		heading = Heading.current_heading()
 		if not heading:
 			vim.eval('feedkeys("^", "n")')
@@ -29,7 +30,8 @@ class Misc(object):
 
 		vim.current.window.cursor = (vim.current.window.cursor[0], heading.level + 1)
 
-	def edit_at_first_character(self):
+	@classmethod
+	def edit_at_first_character(cls):
 		heading = Heading.current_heading()
 		if not heading:
 			vim.eval('feedkeys("I", "n")')
@@ -40,7 +42,8 @@ class Misc(object):
 
 	#@repeat
 	@apply_count
-	def i_heading(self, mode='visual', selection='inner', skip_children=False):
+	@classmethod
+	def i_heading(cls, mode='visual', selection='inner', skip_children=False):
 		"""
 		inner heading text object
 		"""
@@ -103,7 +106,8 @@ class Misc(object):
 
 	#@repeat
 	@apply_count
-	def a_heading(self, selection='inner', skip_children=False):
+	@classmethod
+	def a_heading(cls, selection='inner', skip_children=False):
 		"""
 		a heading text object
 		"""

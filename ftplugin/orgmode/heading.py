@@ -105,14 +105,14 @@ class Heading(object):
 	#	return locals()
 	#first_child = property(**first_child())
 
-	#def last_child():
-	#	"""The RW property last_child"""
-	#	def fget(self):
-	#		return self._last_child
-	#	def fset(self, value):
-	#		self._last_child = value
-	#	return locals()
-	#last_child = property(**last_child())
+	def last_child():
+		"""The RW property last_child"""
+		def fget(self):
+			return self._last_child
+		def fset(self, value):
+			self._last_child = value
+		return locals()
+	last_child = property(**last_child())
 
 	def iterchildren(self):
 		if self.start + 1 == len(vim.current.buffer):
@@ -219,7 +219,6 @@ class Heading(object):
 
 		def fset(self, parent):
 			raise 'not implemented'
-			self._parent = parent
 
 		return locals()
 	parent = property(**parent())
@@ -271,7 +270,6 @@ class Heading(object):
 
 		def fset(self, previous_sibling):
 			raise 'not implemented'
-			self._previous_sibling = previous_sibling
 
 		return locals()
 	previous_sibling = property(**previous_sibling())
@@ -286,7 +284,6 @@ class Heading(object):
 
 		def fset(self, next_sibling):
 			raise 'not implemented'
-			self._next_sibling = next_sibling
 
 		return locals()
 	next_sibling = property(**next_sibling())

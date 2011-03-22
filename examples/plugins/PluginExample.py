@@ -23,7 +23,15 @@ class Example(object):
 
 		# commands for this plugin
 		self.commands = []
-	
+
+	@classmethod
+	def action(cls):
+		""" Some kind of action
+
+		:returns: TODO
+		"""
+		pass
+
 	def register(self):
 		"""
 		Registration of plugin. Key bindings and other initialization should be done.

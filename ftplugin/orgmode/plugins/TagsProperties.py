@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echo, echom, echoe, ORGMODE, apply_count, repeat
-from orgmode.menu import Submenu, Separator, ActionEntry
+from orgmode import ORGMODE, repeat
+from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
-from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode.heading import Heading
 from orgmode import settings
 
 import vim
@@ -129,8 +129,9 @@ class TagsProperties(object):
 		# commands for this plugin
 		self.commands = []
 
+	@classmethod
 	@repeat
-	def set_tags(self):
+	def set_tags(cls):
 		""" Set tags for current heading
 		"""
 		heading = HeadingTags.current_heading()
@@ -153,7 +154,8 @@ class TagsProperties(object):
 
 		return 'OrgSetTags'
 
-	def update_tags(self):
+	@classmethod
+	def update_tags(cls):
 		"""
 		Updates tags when user finishes editing a heading
 		"""
@@ -164,7 +166,8 @@ class TagsProperties(object):
 		if vim.current.window.cursor[0] == heading.start_vim:
 			heading.tags = heading.tags
 
-	def realign_tags(self):
+	@classmethod
+	def realign_tags(cls):
 		"""
 		Updates tags when user finishes editing a heading
 		"""

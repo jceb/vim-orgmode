@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echo, echom, echoe, ORGMODE, apply_count, repeat
+from orgmode import ORGMODE, apply_count, repeat
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_INSERT, MODE_NORMAL
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
@@ -21,7 +21,8 @@ class EditStructure(object):
 		# bindings should be put in this variable
 		self.keybindings = []
 
-	def new_heading(self, below=None, insert_mode=False, end_of_last_child=False):
+	@classmethod
+	def new_heading(cls, below=None, insert_mode=False, end_of_last_child=False):
 		h = Heading.current_heading()
 		cursor = vim.current.window.cursor[:]
 		if not h:
@@ -72,7 +73,8 @@ class EditStructure(object):
 		# not sure what to return here .. line number of new heading or old heading object?
 		return h
 
-	def _change_heading_level(self, level, including_children=True, on_heading=False):
+	@classmethod
+	def _change_heading_level(cls, level, including_children=True, on_heading=False):
 		"""
 		Change level of heading realtively with or without including children.
 		"""
@@ -133,23 +135,26 @@ class EditStructure(object):
 
 		return True
 
+	@classmethod
 	@repeat
 	@apply_count
-	def demote_heading(self, including_children=True, on_heading=False):
-		if self._change_heading_level(-1, including_children=including_children, on_heading=on_heading):
+	def demote_heading(cls, including_children=True, on_heading=False):
+		if cls._change_heading_level(-1, including_children=including_children, on_heading=on_heading):
 			if including_children:
 				return 'OrgDemoteSubtree'
 			return 'OrgDemoteHeading'
 
+	@classmethod
 	@repeat
 	@apply_count
-	def promote_heading(self, including_children=True, on_heading=False):
-		if self._change_heading_level(1, including_children=including_children, on_heading=on_heading):
+	def promote_heading(cls, including_children=True, on_heading=False):
+		if cls._change_heading_level(1, including_children=including_children, on_heading=on_heading):
 			if including_children:
 				return 'OrgPromoteSubtreeNormal'
 			return 'OrgPromoteHeadingNormal'
 
-	def _move_heading(self, direction=DIRECTION_FORWARD):
+	@classmethod
+	def _move_heading(cls, direction=DIRECTION_FORWARD):
 		""" Move heading up or down
 
 		:returns: heading or None
@@ -196,16 +201,18 @@ class EditStructure(object):
 
 		return True
 
+	@classmethod
 	@repeat
 	@apply_count
-	def move_heading_upward(self):
-		if self._move_heading(direction=DIRECTION_BACKWARD):
+	def move_heading_upward(cls):
+		if cls._move_heading(direction=DIRECTION_BACKWARD):
 			return 'OrgMoveHeadingUpward'
 
+	@classmethod
 	@repeat
 	@apply_count
-	def move_heading_downward(self):
-		if self._move_heading(direction=DIRECTION_FORWARD):
+	def move_heading_downward(cls):
+		if cls._move_heading(direction=DIRECTION_FORWARD):
 			return 'OrgMoveHeadingDownward'
 
 	def register(self):

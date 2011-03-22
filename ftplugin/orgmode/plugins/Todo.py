@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echo, echom, echoe, ORGMODE, apply_count, repeat
-from orgmode.menu import Submenu, Separator, ActionEntry
+from orgmode import echom, ORGMODE, apply_count, repeat
+from orgmode.menu import Submenu, ActionEntry
 from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
@@ -22,9 +22,10 @@ class Todo(object):
 		# bindings should be put in this variable
 		self.keybindings = []
 
+	@classmethod
 	@repeat
 	@apply_count
-	def toggle_todo_state(self, direction=DIRECTION_FORWARD):
+	def toggle_todo_state(cls, direction=DIRECTION_FORWARD):
 		""" Toggle state of TODO item
 
 		:returns: The changed heading

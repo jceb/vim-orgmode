@@ -232,7 +232,7 @@ if PLUGINS:
 			ORGMODE.register_plugin(PLUGINS)
 		except Exception, e:
 			import traceback
-			traceback.print_exception()
+			traceback.print_exc()
 	elif isinstance(PLUGINS, types.ListType) or \
 			isinstance(PLUGINS, types.TupleType):
 		for p in PLUGINS:
