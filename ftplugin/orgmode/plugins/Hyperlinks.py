@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echom, ORGMODE
+from orgmode import echom, ORGMODE, update_tags_alignment
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
 
@@ -83,6 +83,7 @@ class Hyperlinks(object):
 			vim.command('Utl %s %s' % (action, visual))
 
 	@classmethod
+	@update_tags_alignment
 	def insert(cls, uri=None, description=None):
 		""" Inserts a hyperlink. If no arguments are provided, an interactive
 		query will be started.

@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-8) unstable; urgency=low
+
+  * make edit tasks update tags alignment
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 22 Mar 2011 22:28:59 +0100
+
 vim-orgmode (0.1.0-7) unstable; urgency=low
 
   * clean up of unused imports

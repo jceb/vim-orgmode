@@ -14,6 +14,18 @@ from orgmode.exceptions import PluginError
 
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
 
+def update_tags_alignment(f):
+	"""
+	Update tags alignment
+	"""
+	def r(*args, **kwargs):
+		res = f(*args, **kwargs)
+		from plugins.TagsProperties import TagsProperties
+		TagsProperties.update_tags()
+
+		return res
+	return r
+
 def repeat(f):
 	"""
 	Integrate with the repeat plugin if available

@@ -281,7 +281,6 @@ Information about the license are found in the file LICENSE
 *** DONE bug in function g{, it places the cursor one character too far to the right
 
 ** EditStructure plugin
-*** make edit tasks update tags position
 *** indentation with C-t,C-d doesn't work when not on a heading
 *** TODO implement tests for move heading
 *** TODO implement tests for indenting a single heading
@@ -299,6 +298,7 @@ Information about the license are found in the file LICENSE
 
 ** TagsProperties plugin
 *** implement tests
+*** DONE make edit tasks update tags position
 *** DONE implement command to realign all tags
 *** DONE issues with the positioning of tags, some include one whitespace too much
 *** DONE orgmode tags column is 77 not 78
