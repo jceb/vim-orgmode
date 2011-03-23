@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import ORGMODE, apply_count, repeat, update_tags_alignment
+from orgmode import ORGMODE, apply_count, repeat, update_tag_alignment
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_INSERT, MODE_NORMAL
 from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
@@ -136,7 +136,7 @@ class EditStructure(object):
 		return True
 
 	@classmethod
-	@update_tags_alignment
+	@update_tag_alignment
 	@repeat
 	@apply_count
 	def demote_heading(cls, including_children=True, on_heading=False):
@@ -146,7 +146,7 @@ class EditStructure(object):
 			return 'OrgDemoteHeading'
 
 	@classmethod
-	@update_tags_alignment
+	@update_tag_alignment
 	@repeat
 	@apply_count
 	def promote_heading(cls, including_children=True, on_heading=False):

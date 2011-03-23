@@ -14,9 +14,9 @@ from orgmode.exceptions import PluginError
 
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
 
-def update_tags_alignment(f):
+def update_tag_alignment(f):
 	"""
-	Update tags alignment
+	Update tag alignment, dependency to TagsProperties plugin!
 	"""
 	def r(*args, **kwargs):
 		res = f(*args, **kwargs)

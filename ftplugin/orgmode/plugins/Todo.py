@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echom, ORGMODE, apply_count, repeat, update_tags_alignment
+from orgmode import echom, ORGMODE, apply_count, repeat, update_tag_alignment
 from orgmode.menu import Submenu, ActionEntry
 from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
@@ -23,7 +23,7 @@ class Todo(object):
 		self.keybindings = []
 
 	@classmethod
-	@update_tags_alignment
+	@update_tag_alignment
 	@repeat
 	@apply_count
 	def toggle_todo_state(cls, direction=DIRECTION_FORWARD):
