@@ -322,20 +322,24 @@ Information about the license are found in the file LICENSE
 *** implement Record DONE time
 
 ** Hyperlinks plugin
-*** TODO impelement tests
 *** implement [[http://orgmode.org/guide/Internal-links.html#Internal-links][Internal-links]] and [[http://orgmode.org/guide/Targeted-links.html#Targeted-links][Targeted-links]]
+*** implement mouse interaction for links
+*** impelement tests
 *** implement better support for [[http://orgmode.org/guide/External-links.html#External-links][External-links]]
 *** implement [[http://orgmode.org/guide/Handling-links.html#Handling-links][Store a link to the current location]]
-*** implement mouse interaction for links
 *** DONE fix empty links creation
 *** DONE fix passing of function arguments
 *** DONE implement hyperlinks plugin
 *** DONE integrate with Universal Text Linking plugin
 *** DONE implement edit functionality
 
+** Export
+*** implement export functionality, I think of something like asciidoc
+
 ** Misc
+*** remove dependency to vim to make the plugin generaly usable
 *** implement functionality of [[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html][Orgmode 5 Minutes Tutorial]]
-*** TODO implement repeat for text-objects
+*** implement repeat for text-objects
 *** implement settings as part of the plugin
 *** add descriptions to settings
 *** Figure out a way to get the keys the user pressed to activate a mapping so that feedkeys can be used properly

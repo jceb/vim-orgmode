@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-12) unstable; urgency=low
+
+  * update todos
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 28 Mar 2011 00:07:37 +0200
+
 vim-orgmode (0.1.0-11) unstable; urgency=low
 
   * move initialization to start method
