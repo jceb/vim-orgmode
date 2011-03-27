@@ -31,7 +31,7 @@ def repeat(f):
 	Integrate with the repeat plugin if available
 
 	The decorated function must return the name of the <Plug> command to
-	execute by the repeat plugin. 
+	execute by the repeat plugin.
 	"""
 	def r(*args, **kwargs):
 		res = f(*args, **kwargs)
@@ -234,24 +234,29 @@ class OrgMode(object):
 	def unregister_menu(self):
 		vim.command('silent! aunmenu Org')
 
-ORGMODE = OrgMode()
+	def start(self):
+		""" Start orgmode and load all requested plugins
+		"""
+		plugins = orgmode.settings.get("org_plugins")
 
-PLUGINS = orgmode.settings.get("org_plugins")
+		if not plugins:
+			echoe('orgmode: No plugins registered.')
 
-if PLUGINS:
-	if isinstance(PLUGINS, basestring):
-		try:
-			ORGMODE.register_plugin(PLUGINS)
-		except Exception, e:
-			import traceback
-			traceback.print_exc()
-	elif isinstance(PLUGINS, types.ListType) or \
-			isinstance(PLUGINS, types.TupleType):
-		for p in PLUGINS:
+		if isinstance(plugins, basestring):
 			try:
-				ORGMODE.register_plugin(p)
+				self.register_plugin(plugins)
 			except Exception, e:
 				import traceback
 				traceback.print_exc()
-else:
-	echoe('orgmode: No plugins registered.')
+		elif isinstance(plugins, types.ListType) or \
+				isinstance(plugins, types.TupleType):
+			for p in plugins:
+				try:
+					self.register_plugin(p)
+				except Exception, e:
+					import traceback
+					traceback.print_exc()
+
+		return plugins
+
+ORGMODE = OrgMode()
