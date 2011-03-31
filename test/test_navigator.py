@@ -12,15 +12,19 @@ START = True
 END = False
 
 
-def set_visual_selection(visualmode, line_start, line_end, col_start=1, col_end=1, cursor_pos=START):
+def set_visual_selection(visualmode, line_start, line_end, col_start=1,
+        col_end=1, cursor_pos=START):
+
 	if visualmode not in ('', 'V', 'v'):
 		raise ValueError('Illegal value for visualmode, must be in , V, v')
 
 	vim.EVALRESULTS['visualmode()'] = visualmode
 
 	# getpos results [bufnum, lnum, col, off]
-	vim.EVALRESULTS['getpos("\'<")'] = ('', '%d' % line_start, '%d' % col_start, '')
-	vim.EVALRESULTS['getpos("\'>")'] = ('', '%d' % line_end, '%d' % col_end, '')
+	vim.EVALRESULTS['getpos("\'<")'] = ('', '%d' % line_start, '%d' %
+			col_start, '')
+	vim.EVALRESULTS['getpos("\'>")'] = ('', '%d' % line_end, '%d' %
+			col_end, '')
 	if cursor_pos == START:
 		vim.current.window.cursor = (line_start, col_start)
 	else:
@@ -59,7 +63,7 @@ Bla Bla bla bla
   asdf sdf
 """.split('\n')
 
-		if not ORGMODE.plugins.has_key('Navigator'):
+		if not 'Navigator' in ORGMODE.plugins:
 			ORGMODE.register_plugin('Navigator')
 		self.navigator = ORGMODE.plugins['Navigator']
 
