@@ -1,4 +1,4 @@
-An attempt to build org-mode for vim (http://orgmode.org)
+An attempt to build org-mode for vim [[http://orgmode.org][orgmode]].
 
 Information about the license are found in the file LICENSE
 
@@ -95,12 +95,12 @@ Information about the license are found in the file LICENSE
    For further information please read :h text-objects-changed
 
 * Suggested plugins
-  - pathogen, for an easy management of multiple plugins, (http://www.vim.org/scripts/script.php?script_id=2332)
-  - repeat (http://www.vim.org/scripts/script.php?script_id=2136)
-  - taglist (http://www.vim.org/scripts/script.php?script_id=273)
-  - speeddating (http://www.vim.org/scripts/script.php?script_id=2120)
-  - Narrow Region (http://www.vim.org/scripts/script.php?script_id=3075)
-  - Universal Text Linking (http://www.vim.org/scripts/script.php?script_id=293)
+  - [[http:/www.vim.org/scripts/script.php?script_id=2332][pathogen]] for an easy management of multiple plugins.
+  - [[http://www.vim.org/scripts/script.php?script_id=2136][repeat]] to repeat some actions that would not be repeatable otherwise.
+  - [[http://www.vim.org/scripts/script.php?script_id=273][taglist]] to get an structural overview over files.
+  - [[http://www.vim.org/scripts/script.php?script_id=2120][speeddating]] to in-/decrease dates the vim way: (C-a) C-x.
+  - [[http://www.vim.org/scripts/script.php?script_id=3075][Narrow Region]] to have emacs Narrow Region feature.
+  - [[http://www.vim.org/scripts/script.php?script_id=293][Universal Text Linking]] to have 'clickable' links to other resources (files, urls, etc.).
 
 * Development
 
