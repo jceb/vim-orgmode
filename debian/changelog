@@ -1,3 +1,16 @@
+vim-orgmode (0.1.0-10) unstable; urgency=low
+
+  * fix problem with the order of decorators (@classmethod must be first)
+  * remove silence from
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Thu, 24 Mar 2011 17:36:55 +0100
+
+vim-orgmode (0.1.0-9) unstable; urgency=low
+
+  * rename update_tag_alignment
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Wed, 23 Mar 2011 19:40:44 +0100
+
 vim-orgmode (0.1.0-8) unstable; urgency=low
 
   * make edit tasks update tags alignment

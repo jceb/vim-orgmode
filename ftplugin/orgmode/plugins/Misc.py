@@ -8,7 +8,7 @@ from orgmode.heading import Heading, DIRECTION_BACKWARD
 import vim
 
 class Misc(object):
-	""" Example plugin """
+	""" Miscellaneous functionality """
 
 	def __init__(self):
 		""" Initialize plugin """
@@ -41,8 +41,8 @@ class Misc(object):
 		vim.command('startinsert')
 
 	#@repeat
-	@apply_count
 	@classmethod
+	@apply_count
 	def i_heading(cls, mode='visual', selection='inner', skip_children=False):
 		"""
 		inner heading text object
@@ -105,8 +105,8 @@ class Misc(object):
 			vim.command('normal! gv')
 
 	#@repeat
-	@apply_count
 	@classmethod
+	@apply_count
 	def a_heading(cls, selection='inner', skip_children=False):
 		"""
 		a heading text object
@@ -146,22 +146,22 @@ class Misc(object):
 		self.keybindings.append(Keybinding('^', Plug('OrgJumpToFirstCharacter', ':py ORGMODE.plugins["Misc"].jump_to_first_character()<CR>')))
 		self.keybindings.append(Keybinding('I', Plug('OrgEditAtFirstCharacter', ':py ORGMODE.plugins["Misc"].edit_at_first_character()<CR>')))
 
-		self.keybindings.append(Keybinding('ih', Plug('OrgInnerHeadingVisual', '<Esc>:<C-u>silent! py ORGMODE.plugins["Misc"].i_heading()<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding('ah', Plug('OrgAInnerHeadingVisual', '<Esc>:<C-u>silent! py ORGMODE.plugins["Misc"].a_heading()<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding('Oh', Plug('OrgOuterHeadingVisual', '<Esc>:<C-u>silent! py ORGMODE.plugins["Misc"].i_heading(selection="outer")<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding('OH', Plug('OrgAOuterHeadingVisual', '<Esc>:<C-u>silent! py ORGMODE.plugins["Misc"].a_heading(selection="outer")<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding('ih', Plug('OrgInnerHeadingVisual', '<Esc>:<C-u>py ORGMODE.plugins["Misc"].i_heading()<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding('ah', Plug('OrgAInnerHeadingVisual', '<Esc>:<C-u>py ORGMODE.plugins["Misc"].a_heading()<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding('Oh', Plug('OrgOuterHeadingVisual', '<Esc>:<C-u>py ORGMODE.plugins["Misc"].i_heading(selection="outer")<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding('OH', Plug('OrgAOuterHeadingVisual', '<Esc>:<C-u>py ORGMODE.plugins["Misc"].a_heading(selection="outer")<CR>', mode=MODE_VISUAL)))
 
-		self.keybindings.append(Keybinding('ih', Plug('OrgInnerHeadingOperator', ':<C-u>silent! py ORGMODE.plugins["Misc"].i_heading(mode="operator")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('ih', Plug('OrgInnerHeadingOperator', ':<C-u>py ORGMODE.plugins["Misc"].i_heading(mode="operator")<CR>', mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding('ah', ':normal Vah<CR>', mode=MODE_OPERATOR))
-		self.keybindings.append(Keybinding('Oh', Plug('OrgOuterHeadingOperator', ':<C-u>silent! py ORGMODE.plugins["Misc"].i_heading(mode="operator", selection="outer")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('Oh', Plug('OrgOuterHeadingOperator', ':<C-u>py ORGMODE.plugins["Misc"].i_heading(mode="operator", selection="outer")<CR>', mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding('OH', ':normal VOH<CR>', mode=MODE_OPERATOR))
 
-		self.keybindings.append(Keybinding('it', Plug('OrgInnerTreeVisual', '<Esc>:<C-u>silent! py ORGMODE.plugins["Misc"].i_heading(skip_children=True)<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding('at', Plug('OrgAInnerTreeVisual', '<Esc>:<C-u>silent! py ORGMODE.plugins["Misc"].a_heading(skip_children=True)<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding('Ot', Plug('OrgOuterTreeVisual', '<Esc>:<C-u>silent! py ORGMODE.plugins["Misc"].i_heading(selection="outer", skip_children=True)<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding('OT', Plug('OrgAOuterTreeVisual', '<Esc>:<C-u>silent! py ORGMODE.plugins["Misc"].a_heading(selection="outer", skip_children=True)<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding('it', Plug('OrgInnerTreeVisual', '<Esc>:<C-u>py ORGMODE.plugins["Misc"].i_heading(skip_children=True)<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding('at', Plug('OrgAInnerTreeVisual', '<Esc>:<C-u>py ORGMODE.plugins["Misc"].a_heading(skip_children=True)<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding('Ot', Plug('OrgOuterTreeVisual', '<Esc>:<C-u>py ORGMODE.plugins["Misc"].i_heading(selection="outer", skip_children=True)<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding('OT', Plug('OrgAOuterTreeVisual', '<Esc>:<C-u>py ORGMODE.plugins["Misc"].a_heading(selection="outer", skip_children=True)<CR>', mode=MODE_VISUAL)))
 
 		self.keybindings.append(Keybinding('it', Plug('OrgInnerTreeOperator', ':<C-u>py ORGMODE.plugins["Misc"].i_heading(mode="operator")<CR>', mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding('at', ':normal Vat<CR>', mode=MODE_OPERATOR))
-		self.keybindings.append(Keybinding('Ot', Plug('OrgOuterTreeOperator', ':<C-u>silent! py ORGMODE.plugins["Misc"].i_heading(mode="operator", selection="outer", skip_children=True)<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding('Ot', Plug('OrgOuterTreeOperator', ':<C-u>py ORGMODE.plugins["Misc"].i_heading(mode="operator", selection="outer", skip_children=True)<CR>', mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding('OT', ':normal VOT<CR>', mode=MODE_OPERATOR))
