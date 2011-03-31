@@ -8,7 +8,6 @@ sys.path.append('../ftplugin')
 import vim
 
 from orgmode import indent_orgmode, fold_orgmode, ORGMODE
-from orgmode.heading import Heading
 
 
 ORGMODE.start()
@@ -17,20 +16,6 @@ ORGMODE.debug = True
 START = True
 END = False
 
-
-def set_visual_selection(visualmode, line_start, line_end, col_start=1, col_end=1, cursor_pos=START):
-	if visualmode not in ('', 'V', 'v'):
-		raise ValueError('Illegal value for visualmode, must be in , V, v')
-
-	vim.EVALRESULTS['visualmode()'] = visualmode
-
-	# getpos results [bufnum, lnum, col, off]
-	vim.EVALRESULTS['getpos("\'<")'] = ('', '%d' % line_start, '%d' % col_start, '')
-	vim.EVALRESULTS['getpos("\'>")'] = ('', '%d' % line_end, '%d' % col_end, '')
-	if cursor_pos == START:
-		vim.current.window.cursor = (line_start, col_start)
-	else:
-		vim.current.window.cursor = (line_end, col_end)
 
 class TagsPropertiesTestCase(unittest.TestCase):
 	def setUp(self):
@@ -47,9 +32,8 @@ class TagsPropertiesTestCase(unittest.TestCase):
 				'exists("b:org_tags_column")': 0,
 				'exists("b:org_tags_completion_ignorecase")': 0,
 				'exists("g:org_tags_completion_ignorecase")': 0,
-				"v:count": 0
-				}
-		if not ORGMODE.plugins.has_key('TagsProperties'):
+				"v:count": 0}
+		if not 'TagsProperties' in ORGMODE.plugins:
 			ORGMODE.register_plugin('TagsProperties')
 		self.showhide = ORGMODE.plugins['TagsProperties']
 		vim.current.buffer = """
@@ -74,13 +58,11 @@ Bla Bla bla bla
 """.split('\n')
 
 	def test_new_property(self):
-	    """ TODO: Docstring for test_new_property
+		""" TODO: Docstring for test_new_property
 
 	    :returns: TODO
 	    """
-	    pass
-
-
+		pass
 
 
 class MiscTestCase(unittest.TestCase):
@@ -93,8 +75,7 @@ class MiscTestCase(unittest.TestCase):
 				'exists("g:org_debug")': 0,
 				'exists("*repeat#set()")': 0,
 				"v:count": 0,
-				"v:lnum": 0
-				}
+				"v:lnum": 0}
 		vim.current.buffer = """
 * Überschrift 1
 Text 1
@@ -222,7 +203,3 @@ Bla Bla bla bla
 
 if __name__ == '__main__':
 	unittest.main()
-	#tests = unittest.TestSuite()
-	#tests.addTest(HeadingTestCase())
-	#tests.addTest(NavigatorTestCase())
-	#tests.run()
