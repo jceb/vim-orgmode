@@ -10,7 +10,6 @@ import vim
 from orgmode import indent_orgmode, fold_orgmode, ORGMODE
 
 
-ORGMODE.start()
 ORGMODE.debug = True
 
 START = True
