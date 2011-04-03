@@ -250,7 +250,7 @@ Information about the license are found in the file LICENSE
 * Todos
 
 ** Todo/Done plugin
-*** TODO implement tests for toggle_todo_state
+*** DONE implement tests for toggle_todo_state
 *** implement keyboard shortcuts to select todo state
 *** implement switching to next/previous todo state list
 *** implement todo state triggers
