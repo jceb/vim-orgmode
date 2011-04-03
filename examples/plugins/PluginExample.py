@@ -7,8 +7,13 @@ from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
 
+
 class Example(object):
-	""" Example plugin """
+	"""
+	Example plugin.
+
+	TODO: Extend this doc!
+	"""
 
 	def __init__(self):
 		""" Initialize plugin """
@@ -26,7 +31,8 @@ class Example(object):
 
 	@classmethod
 	def action(cls):
-		""" Some kind of action
+		"""
+		Some kind of action.
 
 		:returns: TODO
 		"""
@@ -34,9 +40,15 @@ class Example(object):
 
 	def register(self):
 		"""
-		Registration of plugin. Key bindings and other initialization should be done.
+		Registration of the plugin.
+
+		Key bindings and other initialization should be done here.
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
-		self.commands.append(Command('OrgActionCommand', ':py ORGMODE.plugins["Example"].action()'))
-		self.keybindings.append(Keybinding('keybinding', Plug('OrgAction', self.commands[-1])))
+		self.commands.append(Command('OrgActionCommand',
+				':py ORGMODE.plugins["Example"].action()'))
+		self.keybindings.append(Keybinding('keybinding',
+				Plug('OrgAction', self.commands[-1])))
 		self.menu + ActionEntry('&Action', self.keybindings[-1])
+
+# vim: set noexpandtab:
