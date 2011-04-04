@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 import unittest
 import sys
 sys.path.append('../ftplugin')
@@ -8,7 +7,6 @@ sys.path.append('../ftplugin')
 import vim
 
 from orgmode.heading import Heading
-
 
 class HeadingTestCase(unittest.TestCase):
 	def setUp(self):
@@ -198,3 +196,6 @@ Bla Bla bla bla
 		# test heading extractor
 		#self.assertEqual(h.heading, 'Überschrift 1')
 		#self.assertEqual(h.text, 'Text 1\n\nBla bla')
+
+def suite():
+	return unittest.TestLoader().loadTestsFromTestCase(HeadingTestCase)

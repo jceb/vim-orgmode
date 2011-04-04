@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 import unittest
 import sys
 sys.path.append('../ftplugin')
@@ -8,7 +7,6 @@ sys.path.append('../ftplugin')
 import vim
 
 from orgmode import ORGMODE
-
 
 class ShowHideTestCase(unittest.TestCase):
 	def setUp(self):
@@ -196,3 +194,6 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-2], 'normal 13gg3zo')
 		self.assertEqual(vim.CMDHISTORY[-1], 'normal 16gg3zo')
 		self.assertEqual(vim.current.window.cursor, (2, 0))
+
+def suite():
+	return unittest.TestLoader().loadTestsFromTestCase(ShowHideTestCase)

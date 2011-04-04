@@ -11,7 +11,6 @@ from orgmode import ORGMODE
 START = True
 END = False
 
-
 def set_visual_selection(visualmode, line_start, line_end, col_start=1,
         col_end=1, cursor_pos=START):
 
@@ -581,3 +580,6 @@ Bla Bla bla bla
 		set_visual_selection('V', 8, 14, cursor_pos=END)
 		self.navigator.parent(mode='visual')
 		self.assertEqual(vim.CMDHISTORY[-1], 'normal 8ggV12gg')
+
+def suite():
+	return unittest.TestLoader().loadTestsFromTestCase(NavigatorTestCase)
