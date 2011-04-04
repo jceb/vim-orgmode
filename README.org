@@ -302,6 +302,7 @@ Information about the license are found in the file LICENSE
 
 ** TagsProperties plugin
 *** implement tests
+*** DONE move tags functionaly to global Heading class
 *** DONE make edit tasks update tags position
 *** DONE implement command to realign all tags
 *** DONE issues with the positioning of tags, some include one whitespace too much
@@ -337,11 +338,16 @@ Information about the license are found in the file LICENSE
 *** DONE integrate with Universal Text Linking plugin
 *** DONE implement edit functionality
 
-** Export
-*** implement export functionality, I think of something like asciidoc
+** liborgmode/export
+*** build a general library for parsing orgmode files
+    I think of something general like asciidoc
+*** remove dependency to vim to make the plugin generaly usable
+*** implement a more general object structure
+    It should consist of a Document class implementing access to the
+    current vim buffer or just a normal file. The Document also contains
+    subdocuments and Headings. This would loosen the dependency to vim.
 
 ** Misc
-*** remove dependency to vim to make the plugin generaly usable
 *** implement functionality of [[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html][Orgmode 5 Minutes Tutorial]]
 *** implement repeat for text-objects
 *** implement settings as part of the plugin

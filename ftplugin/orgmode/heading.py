@@ -2,6 +2,8 @@
 
 import vim
 
+from orgmode import settings
+
 DIRECTION_FORWARD  = True
 DIRECTION_BACKWARD = False
 
@@ -24,6 +26,7 @@ class Heading(object):
 		self._next_sibling = None
 		self._first_child = None
 		self._last_child = None
+		self._tags = None
 
 	def __str__(self):
 		return vim.current.buffer[self.start]
@@ -370,3 +373,59 @@ class Heading(object):
 		while h:
 			yield h
 			h = cls.find_heading(h.start + 1, DIRECTION_FORWARD)
+
+	def tags():
+		""" Tags """
+		def fget(self):
+			if self._tags == None:
+				text = self.text.split()
+				if not text or len(text[-1]) <= 2 or text[-1][0] != ':' or text[-1][-1] != ':':
+					self._tags = []
+				else:
+					self._tags = [ x for x in text[-1].split(':') if x ]
+			return self._tags
+
+		def fset(self, value):
+			"""
+			:value:	list of tags, the empty list deletes all tags
+			"""
+			# find beginning of tags
+			text = self.text.decode('utf-8')
+			idx = text.rfind(' ')
+			idx2 = text.rfind('\t')
+			idx = idx if idx > idx2 else idx2
+
+			if not value:
+				if self.tags:
+					# remove tags
+					vim.current.buffer[self.start] = '%s %s' % ('*'*self.level, text[:idx].strip().encode('utf-8'))
+			else:
+				if self.tags:
+					text = text[:idx]
+				text = text.strip()
+
+				tabs = 0
+				spaces = 2
+				tags = ':%s:' % (':'.join(value))
+
+				tag_column = int(settings.get('org_tags_column', '77'))
+
+				len_heading = self.level + 1 + len(text)
+				if len_heading + spaces + len(tags) < tag_column:
+					ts = int(vim.eval('&ts'))
+					tmp_spaces =  ts - divmod(len_heading, ts)[1]
+
+					if len_heading + tmp_spaces + len(tags) < tag_column:
+						tabs, spaces = divmod(tag_column - (len_heading + tmp_spaces + len(tags)), ts)
+
+						if tmp_spaces:
+							tabs += 1
+					else:
+						spaces = tag_column - (len_heading + len(tags))
+
+				# add tags
+				vim.current.buffer[self.start] = '%s %s%s%s%s' % ('*'*self.level, text.encode('utf-8'), '\t'*tabs, ' '*spaces, tags)
+
+			self._tags = value
+		return locals()
+	tags = property(**tags())

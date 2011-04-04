@@ -8,74 +8,28 @@ from orgmode import settings
 
 import vim
 
-class HeadingTags(Heading):
-	""" Heading with Tags functionality """
+class TagsProperties(object):
+	""" TagsProperties plugin """
 
-	def __init__(self, *args, **kwargs):
-		Heading.__init__(self, *args, **kwargs)
-		self._tags = None
+	def __init__(self):
+		""" Initialize plugin """
+		object.__init__(self)
+		# menu entries this plugin should create
+		self.menu = ORGMODE.orgmenu + Submenu('&TAGS and Properties')
 
-	def tags():
-		""" Tags """
-		def fget(self):
-			if self._tags == None:
-				text = self.text.split()
-				if not text or len(text[-1]) <= 2 or text[-1][0] != ':' or text[-1][-1] != ':':
-					self._tags = []
-				else:
-					self._tags = [ x for x in text[-1].split(':') if x ]
-			return self._tags
+		# key bindings for this plugin
+		# key bindings are also registered through the menu so only additional
+		# bindings should be put in this variable
+		self.keybindings = []
 
-		def fset(self, value):
-			"""
-			:value:	list of tags, the empty list deletes all tags
-			"""
-			# find beginning of tags
-			text = self.text.decode('utf-8')
-			idx = text.rfind(' ')
-			idx2 = text.rfind('\t')
-			idx = idx if idx > idx2 else idx2
-
-			if not value:
-				if self.tags:
-					# remove tags
-					vim.current.buffer[self.start] = '%s %s' % ('*'*self.level, text[:idx].strip().encode('utf-8'))
-			else:
-				if self.tags:
-					text = text[:idx]
-				text = text.strip()
-
-				tabs = 0
-				spaces = 2
-				tags = ':%s:' % (':'.join(value))
-
-				tag_column = int(settings.get('org_tags_column', '77'))
-
-				len_heading = self.level + 1 + len(text)
-				if len_heading + spaces + len(tags) < tag_column:
-					ts = int(vim.eval('&ts'))
-					tmp_spaces =  ts - divmod(len_heading, ts)[1]
-
-					if len_heading + tmp_spaces + len(tags) < tag_column:
-						tabs, spaces = divmod(tag_column - (len_heading + tmp_spaces + len(tags)), ts)
-
-						if tmp_spaces:
-							tabs += 1
-					else:
-						spaces = tag_column - (len_heading + len(tags))
-
-				# add tags
-				vim.current.buffer[self.start] = '%s %s%s%s%s' % ('*'*self.level, text.encode('utf-8'), '\t'*tabs, ' '*spaces, tags)
-
-			self._tags = value
-		return locals()
-	tags = property(**tags())
+		# commands for this plugin
+		self.commands = []
 
 	@classmethod
 	def complete_tags(cls):
 		""" build a list of tags and store it in variable b:org_tag_completion
 		"""
-		heading = cls.current_heading()
+		heading = Heading.current_heading()
 		if not heading:
 			return
 
@@ -97,12 +51,13 @@ class HeadingTags(Heading):
 
 		# extract all tags of the current file
 		all_tags = set()
-		for h in cls.all_headings():
+		for h in Heading.all_headings():
 			for t in h.tags:
 				all_tags.add(t)
 
 		ignorecase = bool(int(settings.get('org_tags_completion_ignorecase', '0')))
 		possible_tags = []
+		current_tags = heading.tags
 		for t in all_tags:
 			if ignorecase:
 				if t.lower().startswith(current_tag.lower()):
@@ -112,29 +67,12 @@ class HeadingTags(Heading):
 
 		vim.command('let b:org_complete_tags = [%s]' % ', '.join(['"%s%s:%s"' % (head, i, tail) for i in possible_tags]))
 
-class TagsProperties(object):
-	""" TagsProperties plugin """
-
-	def __init__(self):
-		""" Initialize plugin """
-		object.__init__(self)
-		# menu entries this plugin should create
-		self.menu = ORGMODE.orgmenu + Submenu('&TAGS and Properties')
-
-		# key bindings for this plugin
-		# key bindings are also registered through the menu so only additional
-		# bindings should be put in this variable
-		self.keybindings = []
-
-		# commands for this plugin
-		self.commands = []
-
 	@classmethod
 	@repeat
 	def set_tags(cls):
 		""" Set tags for current heading
 		"""
-		heading = HeadingTags.current_heading()
+		heading = Heading.current_heading()
 		if not heading:
 			return
 
@@ -155,11 +93,11 @@ class TagsProperties(object):
 		return 'OrgSetTags'
 
 	@classmethod
-	def update_tags(cls):
+	def realign_tags(cls):
 		"""
-		Updates tags when user finishes editing a heading
+		Updates tags when user finished editing a heading
 		"""
-		heading = HeadingTags.current_heading()
+		heading = Heading.current_heading()
 		if not heading:
 			return
 
@@ -167,11 +105,11 @@ class TagsProperties(object):
 			heading.tags = heading.tags
 
 	@classmethod
-	def realign_tags(cls):
+	def realign_all_tags(cls):
 		"""
 		Updates tags when user finishes editing a heading
 		"""
-		for h in HeadingTags.all_headings():
+		for h in Heading.all_headings():
 			if h.tags:
 				h.tags = h.tags
 
@@ -190,13 +128,12 @@ class TagsProperties(object):
 		self.keybindings.append(Keybinding('%st' % leader, Plug('OrgSetTags', ':py ORGMODE.plugins["TagsProperties"].set_tags()<CR>')))
 		self.menu + ActionEntry('Set &Tags', self.keybindings[-1])
 
-		self.commands.append(Command('OrgTagsRealign', ":py ORGMODE.plugins['TagsProperties'].realign_tags()"))
+		self.commands.append(Command('OrgTagsRealign', ":py ORGMODE.plugins['TagsProperties'].realign_all_tags()"))
 
 		# workaround to align tags when user is leaving insert mode
 		vim.command("""function Org_complete_tags(ArgLead, CmdLine, CursorPos)
 python << EOF
-from orgmode.plugins.TagsProperties import HeadingTags
-HeadingTags.complete_tags()
+ORGMODE.plugins['TagsProperties'].complete_tags()
 EOF
 if exists('b:org_complete_tags')
 	let tmp = b:org_complete_tags
@@ -208,7 +145,7 @@ endif
 endfunction""")
 
 		# this is for all org files opened after this file
-		vim.command("au FileType org :au InsertLeave <buffer> :silent! py ORGMODE.plugins['TagsProperties'].update_tags()")
+		vim.command("au FileType org :au InsertLeave <buffer> :py ORGMODE.plugins['TagsProperties'].realign_tags()")
 
 		# this is for the current file
-		vim.command("au InsertLeave <buffer> :silent! py ORGMODE.plugins['TagsProperties'].update_tags()")
+		vim.command("au InsertLeave <buffer> :py ORGMODE.plugins['TagsProperties'].realign_tags()")

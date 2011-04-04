@@ -13,15 +13,21 @@ import orgmode.settings
 from orgmode.exceptions import PluginError
 
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
+TAGSPROPERTIES_EXISTS = False
 
-def update_tag_alignment(f):
+def realign_tags(f):
 	"""
 	Update tag alignment, dependency to TagsProperties plugin!
 	"""
 	def r(*args, **kwargs):
+		global TAGSPROPERTIES_EXISTS
 		res = f(*args, **kwargs)
-		from plugins.TagsProperties import TagsProperties
-		TagsProperties.update_tags()
+
+		if not TAGSPROPERTIES_EXISTS and 'TagsProperties' in ORGMODE.plugins:
+			TAGSPROPERTIES_EXISTS = True
+
+		if TAGSPROPERTIES_EXISTS:
+			ORGMODE.plugins['TagsProperties'].realign_tags()
 
 		return res
 	return r
