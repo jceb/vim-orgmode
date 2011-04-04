@@ -100,10 +100,10 @@ def indent_orgmode():
 
 	:returns: None
 	"""
-	from orgmode.heading import Heading, DIRECTION_BACKWARD
+	from orgmode.heading import Document, DIRECTION_BACKWARD
 	try:
 		line = int(vim.eval('v:lnum'))
-		heading = Heading.find_heading(line - 1, direction=DIRECTION_BACKWARD)
+		heading = Document.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 		if heading and line != heading.start + 1:
 			vim.command('let b:indent_level = %d' % (heading.level + 1))
 	except Exception, e:
@@ -115,10 +115,10 @@ def fold_text():
 
 	:returns: None
 	"""
-	from orgmode.heading import Heading, DIRECTION_BACKWARD
+	from orgmode.heading import Document, DIRECTION_BACKWARD
 	try:
 		line = int(vim.eval('v:foldstart'))
-		heading = Heading.find_heading(line - 1, direction=DIRECTION_BACKWARD)
+		heading = Document.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 		if heading:
 			str_heading = str(heading).decode('utf-8')
 			ts = int(vim.eval('&ts'))
@@ -141,10 +141,10 @@ def fold_orgmode():
 
 	:returns: None
 	"""
-	from orgmode.heading import Heading, DIRECTION_BACKWARD
+	from orgmode.heading import Document, DIRECTION_BACKWARD
 	try:
 		line = int(vim.eval('v:lnum'))
-		heading = Heading.find_heading(line - 1, direction=DIRECTION_BACKWARD)
+		heading = Document.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 		if heading:
 			if line == heading.start_vim:
 				vim.command('let b:fold_expr = ">%d"' % heading.level)

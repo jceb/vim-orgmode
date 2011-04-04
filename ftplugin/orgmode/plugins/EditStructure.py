@@ -3,7 +3,7 @@
 from orgmode import ORGMODE, apply_count, repeat, realign_tags
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_INSERT, MODE_NORMAL
-from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode.heading import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
 
@@ -23,7 +23,7 @@ class EditStructure(object):
 
 	@classmethod
 	def new_heading(cls, below=None, insert_mode=False, end_of_last_child=False):
-		h = Heading.current_heading()
+		h = Document.current_heading()
 		cursor = vim.current.window.cursor[:]
 		if not h:
 			pos = cursor[0] - 1
@@ -78,7 +78,7 @@ class EditStructure(object):
 		"""
 		Change level of heading realtively with or without including children.
 		"""
-		h = Heading.current_heading()
+		h = Document.current_heading()
 		if not h or on_heading and h.start_vim != vim.current.window.cursor[0]:
 			# TODO figure out the actually pressed keybinding and feed these
 			# keys instead of making keys up like this
@@ -161,7 +161,7 @@ class EditStructure(object):
 
 		:returns: heading or None
 		"""
-		heading = Heading.current_heading()
+		heading = Document.current_heading()
 		if not heading or \
 				direction == DIRECTION_FORWARD and not heading.next_sibling or \
 				direction == DIRECTION_BACKWARD and not heading.previous_sibling:

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echom, ORGMODE, apply_count, repeat, update_tag_alignment
+from orgmode import echom, ORGMODE, apply_count, repeat, realign_tags
 from orgmode.menu import Submenu, ActionEntry
 from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
-from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode.heading import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
 
@@ -23,7 +23,7 @@ class Todo(object):
 		self.keybindings = []
 
 	@classmethod
-	@update_tag_alignment
+	@realign_tags
 	@repeat
 	@apply_count
 	def toggle_todo_state(cls, direction=DIRECTION_FORWARD):
@@ -31,7 +31,7 @@ class Todo(object):
 
 		:returns: The changed heading
 	    """
-		heading = Heading.current_heading()
+		heading = Document.current_heading()
 		if not heading or vim.current.window.cursor[0] != heading.start_vim:
 			vim.eval('feedkeys("^", "n")')
 			return

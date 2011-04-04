@@ -3,7 +3,7 @@
 from orgmode import ORGMODE, repeat
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
-from orgmode.heading import Heading
+from orgmode.heading import Document
 from orgmode import settings
 
 import vim
@@ -29,7 +29,7 @@ class TagsProperties(object):
 	def complete_tags(cls):
 		""" build a list of tags and store it in variable b:org_tag_completion
 		"""
-		heading = Heading.current_heading()
+		heading = Document.current_heading()
 		if not heading:
 			return
 
@@ -51,7 +51,7 @@ class TagsProperties(object):
 
 		# extract all tags of the current file
 		all_tags = set()
-		for h in Heading.all_headings():
+		for h in Document.headings():
 			for t in h.tags:
 				all_tags.add(t)
 
@@ -72,7 +72,7 @@ class TagsProperties(object):
 	def set_tags(cls):
 		""" Set tags for current heading
 		"""
-		heading = Heading.current_heading()
+		heading = Document.current_heading()
 		if not heading:
 			return
 
@@ -97,7 +97,7 @@ class TagsProperties(object):
 		"""
 		Updates tags when user finished editing a heading
 		"""
-		heading = Heading.current_heading()
+		heading = Document.current_heading()
 		if not heading:
 			return
 
@@ -109,7 +109,7 @@ class TagsProperties(object):
 		"""
 		Updates tags when user finishes editing a heading
 		"""
-		for h in Heading.all_headings():
+		for h in Document.headings():
 			if h.tags:
 				h.tags = h.tags
 

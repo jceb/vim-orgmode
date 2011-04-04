@@ -3,7 +3,7 @@
 from orgmode import echo, ORGMODE, apply_count
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_OPERATOR, Plug
-from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode.heading import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
 
@@ -23,7 +23,7 @@ class Navigator(object):
 
 		:returns: parent heading or None
 		"""
-		heading = Heading.current_heading()
+		heading = Document.current_heading()
 		if not heading:
 			if mode == 'visual':
 				vim.command('normal gv')
@@ -150,12 +150,12 @@ class Navigator(object):
 		:direction: True for next heading, False for previous heading
 		:returns: next heading or None
 		"""
-		current_heading = Heading.current_heading()
+		current_heading = Document.current_heading()
 		heading = current_heading
 		focus_heading = None
 		if not heading:
 			if direction == DIRECTION_FORWARD:
-				focus_heading = Heading.next_heading()
+				focus_heading = Document.next_heading()
 			if not (heading or focus_heading):
 				if mode == 'visual':
 					# restore visual selection when no heading was found

@@ -3,7 +3,7 @@
 from orgmode import ORGMODE, apply_count
 from orgmode.menu import Submenu
 from orgmode.keybinding import Keybinding, Plug, MODE_VISUAL, MODE_OPERATOR
-from orgmode.heading import Heading, DIRECTION_BACKWARD
+from orgmode.heading import Document, DIRECTION_BACKWARD
 
 import vim
 
@@ -23,7 +23,7 @@ class Misc(object):
 	
 	@classmethod
 	def jump_to_first_character(cls):
-		heading = Heading.current_heading()
+		heading = Document.current_heading()
 		if not heading:
 			vim.eval('feedkeys("^", "n")')
 			return
@@ -32,7 +32,7 @@ class Misc(object):
 
 	@classmethod
 	def edit_at_first_character(cls):
-		heading = Heading.current_heading()
+		heading = Document.current_heading()
 		if not heading:
 			vim.eval('feedkeys("I", "n")')
 			return
@@ -47,7 +47,7 @@ class Misc(object):
 		"""
 		inner heading text object
 		"""
-		heading = Heading.current_heading()
+		heading = Document.current_heading()
 		if heading:
 			if selection != 'inner':
 				heading = heading if not heading.parent else heading.parent
@@ -77,7 +77,7 @@ class Misc(object):
 			swap_cursor = 'o' if vim.current.window.cursor[0] == line_start else ''
 
 			if selection == 'inner' and vim.current.window.cursor[0] != line_start:
-				h = Heading.find_heading(line_start - 1, DIRECTION_BACKWARD)
+				h = Document.find_heading(line_start - 1, DIRECTION_BACKWARD)
 				if h:
 					heading = h
 
@@ -111,7 +111,7 @@ class Misc(object):
 		"""
 		a heading text object
 		"""
-		heading = Heading.current_heading()
+		heading = Document.current_heading()
 		if heading:
 			if selection != 'inner':
 				heading = heading if not heading.parent else heading.parent

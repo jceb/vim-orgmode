@@ -7,7 +7,7 @@ sys.path.append('../ftplugin')
 import vim
 
 from orgmode import ORGMODE
-from orgmode.heading import Heading
+from orgmode.heading import Document
 
 
 class EditStructureTestCase(unittest.TestCase):
@@ -154,7 +154,7 @@ Bla Bla bla bla
 * Überschrift 2
 * Überschrift 3""".split('\n')
 		vim.current.window.cursor = (3, 0)
-		h = Heading.current_heading()
+		h = Document.current_heading()
 		self.assertNotEqual(self.editstructure.promote_heading(), None)
 		self.assertEqual(h.end, 2)
 		self.assertFalse(vim.CMDHISTORY)

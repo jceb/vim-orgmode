@@ -10,8 +10,10 @@ DIRECTION_BACKWARD = False
 class Heading(object):
 	""" Structural heading object """
 
-	def __init__(self, start):
+	def __init__(self, start, document):
 		object.__init__(self)
+
+		self._document = document
 
 		self._start = start
 		self._end = None
@@ -27,9 +29,29 @@ class Heading(object):
 		self._first_child = None
 		self._last_child = None
 		self._tags = None
+		self._todo = None
 
 	def __str__(self):
 		return vim.current.buffer[self.start]
+
+	@classmethod
+	def identify_heading(cls, line):
+		""" Test if a certain line is a heading or not.
+
+		:line: the line to check
+
+		:returns: level
+		"""
+		level = 0
+		if not line:
+			return None
+		for i in xrange(0, len(line)):
+			if line[i] == '*':
+				level += 1
+				if len(line) > (i + 1) and line[i+1] in ('\t', ' '):
+					return level
+			else:
+				return None
 
 	@property
 	def text(self):
@@ -126,7 +148,7 @@ class Heading(object):
 			if start == None:
 				start = self.start + 1
 			while True:
-				heading = Heading.find_heading(start)
+				heading = self._document.find_heading(start)
 				if heading:
 					if heading.start == self.start:
 						break
@@ -202,7 +224,7 @@ class Heading(object):
 					heading = previous
 					previous = heading.previous_sibling
 				while True:
-					heading = Heading.find_heading(heading.start - 1, DIRECTION_BACKWARD)
+					heading = self._document.find_heading(heading.start - 1, DIRECTION_BACKWARD)
 					if heading:
 						if heading.start == self.start:
 							break
@@ -241,7 +263,7 @@ class Heading(object):
 				heading = self
 				tmp_heading = None
 				while True:
-					heading = Heading.find_heading(heading.start - 1, DIRECTION_BACKWARD)
+					heading = self._document.find_heading(heading.start - 1, DIRECTION_BACKWARD)
 					if heading:
 						if heading.start == self.start:
 							break
@@ -290,89 +312,6 @@ class Heading(object):
 
 		return locals()
 	next_sibling = property(**next_sibling())
-
-	@classmethod
-	def identify_heading(cls, line):
-		""" Test if a certain line is a heading or not.
-
-		:line: the line to check
-
-		:returns: level
-		"""
-		level = 0
-		if not line:
-			return None
-		for i in xrange(0, len(line)):
-			if line[i] == '*':
-				level += 1
-				if len(line) > (i + 1) and line[i+1] in ('\t', ' '):
-					return level
-			else:
-				return None
-
-	@classmethod
-	def find_heading(cls, start_line, direction=DIRECTION_FORWARD):
-		""" Find heading in the given direction
-
-		:start_line: start line, counting from 0 (in vim you start counting from 1, don't forget)
-		:direction: downward == DIRECTION_FORWARD, upward == DIRECTION_BACKWARD
-
-		:returns: Heading object or None
-		"""
-		cb = vim.current.buffer
-		len_cb = len(cb)
-
-		if start_line < 0 or start_line > len_cb:
-			return
-
-		tmp_line = start_line
-		# Search heading upwards
-		if direction == DIRECTION_FORWARD:
-			while tmp_line < len_cb:
-				if cls.identify_heading(cb[tmp_line]) != None:
-					return cls(tmp_line)
-				tmp_line += 1
-		else:
-			while tmp_line >= 0:
-				if cls.identify_heading(cb[tmp_line]) != None:
-					return cls(tmp_line)
-				tmp_line -= 1
-
-	@classmethod
-	def current_heading(cls):
-		""" Find the current heading (search backward) and return the related object
-
-		:returns: Heading object or None
-		"""
-		return cls.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_BACKWARD)
-
-	@classmethod
-	def next_heading(cls):
-		""" Find the next heading (search forward) and return the related object
-
-		:returns: Heading object or None
-		"""
-		return cls.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_FORWARD)
-
-	@classmethod
-	def previous_heading(cls):
-		""" Find the next heading (search forward) and return the related object
-
-		:returns: Heading object or None
-		"""
-		h = cls.current_heading()
-		if h:
-			return cls.find_heading(h.start - 1, DIRECTION_BACKWARD)
-
-	@classmethod
-	def all_headings(cls):
-		""" Returns an iterator object which returns all headings of the
-		current file
-		"""
-		h = cls.find_heading(0, DIRECTION_FORWARD)
-		while h:
-			yield h
-			h = cls.find_heading(h.start + 1, DIRECTION_FORWARD)
 
 	def tags():
 		""" Tags """
@@ -429,3 +368,84 @@ class Heading(object):
 			self._tags = value
 		return locals()
 	tags = property(**tags())
+
+	def todo():
+		"""Set and get todo state """
+		def fget(self):
+			# extract todo state from heading
+			return self._todo
+		def fset(self, value):
+			# update todo state
+			self._todo = value
+		return locals()
+	todo = property(**todo())
+
+class Document(object):
+	""" Representation of the whole org-mode document/file """
+
+	def __init__(self):
+		object.__init__(self)
+
+	@classmethod
+	def find_heading(cls, start_line, direction=DIRECTION_FORWARD, heading=Heading):
+		""" Find heading in the given direction
+
+		:start_line: start line, counting from 0 (in vim you start counting from 1, don't forget)
+		:direction: downward == DIRECTION_FORWARD, upward == DIRECTION_BACKWARD
+
+		:returns: Heading object or None
+		"""
+		cb = vim.current.buffer
+		len_cb = len(cb)
+
+		if start_line < 0 or start_line > len_cb:
+			return
+
+		tmp_line = start_line
+		# Search heading upwards
+		if direction == DIRECTION_FORWARD:
+			while tmp_line < len_cb:
+				if heading.identify_heading(cb[tmp_line]) != None:
+					return heading(tmp_line, cls)
+				tmp_line += 1
+		else:
+			while tmp_line >= 0:
+				if heading.identify_heading(cb[tmp_line]) != None:
+					return heading(tmp_line, cls)
+				tmp_line -= 1
+
+	@classmethod
+	def current_heading(cls, heading=Heading):
+		""" Find the current heading (search backward) and return the related object
+
+		:returns: Heading object or None
+		"""
+		return cls.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_BACKWARD, heading=heading)
+
+	@classmethod
+	def next_heading(cls, heading=Heading):
+		""" Find the next heading (search forward) and return the related object
+
+		:returns: Heading object or None
+		"""
+		return cls.find_heading(vim.current.window.cursor[0] - 1, DIRECTION_FORWARD, heading=heading)
+
+	@classmethod
+	def previous_heading(cls, heading=Heading):
+		""" Find the next heading (search forward) and return the related object
+
+		:returns: Heading object or None
+		"""
+		h = cls.current_heading(heading=heading)
+		if h:
+			return cls.find_heading(h.start - 1, DIRECTION_BACKWARD, heading=heading)
+
+	@classmethod
+	def headings(cls, heading=Heading):
+		""" Returns an iterator object which returns all headings of the
+		current file
+		"""
+		h = cls.find_heading(0, DIRECTION_FORWARD, heading=heading)
+		while h:
+			yield h
+			h = cls.find_heading(h.start + 1, DIRECTION_FORWARD, heading=heading)

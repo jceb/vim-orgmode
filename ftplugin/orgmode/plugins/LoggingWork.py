@@ -3,7 +3,7 @@
 from orgmode import echo, echom, echoe, ORGMODE, apply_count, repeat
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
-from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode.heading import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
 

@@ -342,7 +342,8 @@ Information about the license are found in the file LICENSE
 *** build a general library for parsing orgmode files
     I think of something general like asciidoc
 *** remove dependency to vim to make the plugin generaly usable
-*** implement a more general object structure
+*** turn Document.heading into a method/property and make it writable
+*** DONE implement a more general object structure
     It should consist of a Document class implementing access to the
     current vim buffer or just a normal file. The Document also contains
     subdocuments and Headings. This would loosen the dependency to vim.

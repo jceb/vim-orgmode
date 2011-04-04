@@ -4,7 +4,7 @@ from orgmode import settings
 from orgmode import ORGMODE, apply_count
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_NORMAL
-from orgmode.heading import Heading
+from orgmode.heading import Document
 
 import vim
 
@@ -30,7 +30,7 @@ class ShowHide(object):
 		This is just a convenience function, don't hesitate to use the z*
 		keybindings vim offers to deal with folding!
 		"""
-		heading = Heading.current_heading()
+		heading = Document.current_heading()
 		if not heading:
 			vim.eval('feedkeys("<Tab>", "n")')
 			return
