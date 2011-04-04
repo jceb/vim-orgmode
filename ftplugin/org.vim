@@ -2,7 +2,7 @@
 " @Author       : Jan Christoph Ebersbach (jceb@e-jc.de)
 " @License      : GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created      : 2010-10-03
-" @Last Modified: Tue 22. Mar 2011 22:31:58 +0100 CET
+" @Last Modified: Mon 04. Apr 2011 21:01:07 +0200 CEST
 " @Revision     : 0.1
 " @vi           : ft=vim:tw=80:sw=4:ts=4
 " 
@@ -62,6 +62,7 @@ for p in vim.eval("&runtimepath").split(','):
       break
 
 from orgmode import ORGMODE
+ORGMODE.start()
 EOF
 
 " ******************** Taglist integration ********************

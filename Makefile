@@ -14,8 +14,8 @@ install:
 		done; \
 	done
 
-check: test/orgmode-test.py
-	cd test && python orgmode-test.py
+check: test/run_tests.py
+	cd test && python run_tests.py
 
 clean:
 	@rm -rf ${PLUGIN}.vba.gz tmp

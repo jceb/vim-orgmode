@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class VimWindow(object):
 	""" Docstring for VimWindow """
 
@@ -7,14 +8,16 @@ class VimWindow(object):
 		object.__init__(self)
 		self._test = test
 		self.cursor = (1, 0)
-	
+
 	def buffer():
 		def fget(self):
 			return self._test.buffer
+
 		def fset(self, value):
 			self._test.buffer = value
 		return locals()
 	buffer = property(**buffer())
+
 
 class VimBuffer(list):
 	def __init__(self, iterable=None):
@@ -22,7 +25,7 @@ class VimBuffer(list):
 			list.__init__(self, iterable)
 		else:
 			list.__init__(self)
-	
+
 	def append(self, o):
 		"""
 		mimic the specific behavior of vim.current.buffer
@@ -33,6 +36,7 @@ class VimBuffer(list):
 		else:
 			list.append(self, o)
 
+
 class VimTest(object):
 	""" Replacement for vim API """
 
@@ -40,14 +44,16 @@ class VimTest(object):
 		object.__init__(self)
 		self._buffer = VimBuffer()
 		self.window = VimWindow(self)
-	
+
 	def buffer():
 		def fget(self):
 			return self._buffer
+
 		def fset(self, value):
 			self._buffer = VimBuffer(value)
 		return locals()
 	buffer = property(**buffer())
+
 
 EVALHISTORY = []
 EVALRESULTS = {
@@ -58,6 +64,7 @@ EVALRESULTS = {
 		'exists("g:org_plugins")': 0,
 		}
 
+
 def eval(cmd):
 	""" evaluate command
 
@@ -66,10 +73,14 @@ def eval(cmd):
 	EVALHISTORY.append(cmd)
 	return EVALRESULTS.get(cmd, None)
 
+
 CMDHISTORY = []
 CMDRESULTS = {}
+
+
 def command(cmd):
 	CMDHISTORY.append(cmd)
 	return CMDRESULTS.get(cmd, None)
+
 
 current = VimTest()
