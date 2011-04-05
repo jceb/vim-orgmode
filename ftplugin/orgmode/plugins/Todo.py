@@ -9,7 +9,22 @@ from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 import vim
 
 class Todo(object):
-	""" Todo plugin """
+	"""
+	Todo plugin.
+
+	Taken from orgmode.org:
+
+	You can use TODO keywords to indicate different sequential states in the
+	process of working on an item, for example:
+
+	["TODO", "FEEDBACK", "VERIFY", "|", "DONE", "DELEGATED"]
+
+	The vertical bar separates the TODO keywords (states that need action) from
+	the DONE states (which need no further action). If you don't provide the
+	separator bar, the last state is used as the DONE state. With this setup,
+	the command ``,d`` will cycle an entry from TODO to FEEDBACK, then to
+	VERIFY, and finally to DONE and DELEGATED.
+	"""
 
 	def __init__(self):
 		""" Initialize plugin """
@@ -21,6 +36,20 @@ class Todo(object):
 		# key bindings are also registered through the menu so only additional
 		# bindings should be put in this variable
 		self.keybindings = []
+
+	@classmethod
+	def _get_states(cls):
+		"""
+		"""
+		states = settings.get('org_todo_keywords', [])
+		print states
+		print states[-1]
+		print len(states)
+		if not '|' in states:
+			return states[:-1], [states[-1]]
+		else:
+			seperator = [i for i, state in enumerate(states) if '|' == state][0]
+			return states[0:seperator], states[seperator+1:]
 
 	@classmethod
 	@update_tag_alignment
@@ -37,7 +66,8 @@ class Todo(object):
 			return
 
 		states = settings.get('org_todo_keywords', [])
-
+		print (str(heading))
+		print states, type(states)
 		current_state = ''
 		rest = ''
 		if heading.text.find(' ') != -1:
@@ -120,3 +150,5 @@ class Todo(object):
 		submenu + ActionEntry('&Previous keyword', self.keybindings[-1])
 
 		settings.set('org_todo_keywords', ['TODO', '|', 'DONE'])
+
+# vim: set noexpandtab
