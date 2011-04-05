@@ -42,14 +42,11 @@ class Todo(object):
 		"""
 		"""
 		states = settings.get('org_todo_keywords', [])
-		print states
-		print states[-1]
-		print len(states)
 		if not '|' in states:
 			return states[:-1], [states[-1]]
 		else:
-			seperator = [i for i, state in enumerate(states) if '|' == state][0]
-			return states[0:seperator], states[seperator+1:]
+			seperator_pos = states.index('|')
+			return states[0:seperator_pos], states[seperator_pos+1:]
 
 	@classmethod
 	@update_tag_alignment
@@ -66,8 +63,6 @@ class Todo(object):
 			return
 
 		states = settings.get('org_todo_keywords', [])
-		print (str(heading))
-		print states, type(states)
 		current_state = ''
 		rest = ''
 		if heading.text.find(' ') != -1:

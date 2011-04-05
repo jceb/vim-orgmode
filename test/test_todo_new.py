@@ -11,11 +11,6 @@ from orgmode.plugins.Todo import Todo
 class TodoNewTestCase(unittest.TestCase):
 
 	def setUp(self):
-		# register todo plugin
-		# why does it work without this?
-		#if not 'Todo' in ORGMODE.plugins:
-			#ORGMODE.register_plugin('Todo')
-
 		# set content of the buffer
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
@@ -33,47 +28,63 @@ class TodoNewTestCase(unittest.TestCase):
 		"""The last element in the todostates shouold be used as DONE-state when no sperator is given"""
 		vim.EVALRESULTS['g:org_todo_keywords'] = ['TODO', 'DONE']
 		states_todo, states_done = Todo._get_states()
-		self.assertEqual(states_todo, ['TODO'])
-		self.assertEqual(states_done, ['DONE'])
+		expected_todo, expected_done = ['TODO'], ['DONE']
+		self.assertEqual(states_todo, expected_todo)
+		self.assertEqual(states_done, expected_done)
 
 		vim.EVALRESULTS['g:org_todo_keywords'] = ['TODO', 'INPROGRESS', 'DONE']
 		states_todo, states_done = Todo._get_states()
-		self.assertEqual(states_todo, ['TODO', 'INPROGRESS'])
-		self.assertEqual(states_done, ['DONE'])
+		expected_todo = ['TODO', 'INPROGRESS']
+		expected_done = ['DONE']
+		self.assertEqual(states_todo, expected_todo)
+		self.assertEqual(states_done, expected_done)
 
 		vim.EVALRESULTS['g:org_todo_keywords'] = ['TODO', 'INPROGRESS',
 				'DUMMY', 'DONE']
 		states_todo, states_done = Todo._get_states()
-		self.assertEqual(states_todo, ['TODO', 'INPROGRESS', 'DUMMY'])
-		self.assertEqual(states_done, ['DONE'])
+		expected_todo  = ['TODO', 'INPROGRESS', 'DUMMY']
+		expected_done = ['DONE']
+		self.assertEqual(states_todo, expected_todo)
+		self.assertEqual(states_done, expected_done)
 
 	def test_get_states_with_seperator(self):
 		vim.EVALRESULTS['g:org_todo_keywords'] = ['TODO', '|', 'DONE']
 		states_todo, states_done = Todo._get_states()
-		self.assertEqual(states_todo, ['TODO'])
-		self.assertEqual(states_done, ['DONE'])
+		expected_todo = ['TODO']
+		expected_done = ['DONE']
+		self.assertEqual(states_todo, expected_todo)
+		self.assertEqual(states_done, expected_done)
 
 		vim.EVALRESULTS['g:org_todo_keywords'] = ['TODO', 'INPROGRESS', '|',
 				'DONE']
 		states_todo, states_done = Todo._get_states()
-		self.assertEqual(states_todo, ['TODO', 'INPROGRESS'])
-		self.assertEqual(states_done, ['DONE'])
+		expected_todo = ['TODO', 'INPROGRESS']
+		expected_done = ['DONE']
+		self.assertEqual(states_todo, expected_todo)
+		self.assertEqual(states_done, expected_done)
 
 		vim.EVALRESULTS['g:org_todo_keywords'] = ['TODO', 'INPROGRESS',
 				'DUMMY', '|',  'DONE']
 		states_todo, states_done = Todo._get_states()
-		self.assertEqual(states_todo, ['TODO', 'INPROGRESS', 'DUMMY'])
-		self.assertEqual(states_done, ['DONE'])
+		expected_todo = ['TODO', 'INPROGRESS', 'DUMMY']
+		expected_done = ['DONE']
+		self.assertEqual(states_todo, expected_todo)
+		self.assertEqual(states_done, expected_done)
 
 		vim.EVALRESULTS['g:org_todo_keywords'] = ['TODO', 'INPROGRESS',
 				'DUMMY', '|', 'DELEGATED', 'DONE']
 		states_todo, states_done = Todo._get_states()
-		self.assertEqual(states_todo, ['TODO', 'INPROGRESS', 'DUMMY'])
-		self.assertEqual(states_done, ['DELEGATED', 'DONE'])
+		expected_todo =['TODO', 'INPROGRESS', 'DUMMY']
+		expected_done = ['DELEGATED', 'DONE']
+		self.assertEqual(states_todo, expected_todo)
+		self.assertEqual(states_done, expected_done)
 
 		vim.EVALRESULTS['g:org_todo_keywords'] = ['TODO', '|', 'DONEX',
 				'DUMMY', 'DELEGATED', 'DONE']
 		states_todo, states_done = Todo._get_states()
-		self.assertEqual(states_todo, ['TODO'])
-		self.assertEqual(states_done, ['DONEX', 'DUMMY', 'DELEGATED', 'DONE'])
+		expected_todo = ['TODO']
+		expected_done = ['DONEX', 'DUMMY', 'DELEGATED', 'DONE']
+		self.assertEqual(states_todo, expected_todo)
+		self.assertEqual(states_done, expected_done)
+
 # vim: set noexpandtab
