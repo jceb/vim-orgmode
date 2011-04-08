@@ -40,6 +40,7 @@ class Todo(object):
 	@classmethod
 	def _get_states(cls):
 		"""
+		Return the next states divided in TODO states and DONE states.
 		"""
 		states = settings.get('org_todo_keywords', [])
 		if not '|' in states:
@@ -47,6 +48,28 @@ class Todo(object):
 		else:
 			seperator_pos = states.index('|')
 			return states[0:seperator_pos], states[seperator_pos+1:]
+
+	@classmethod
+	def _get_next_state(cls, current_state, all_states,
+			direction=DIRECTION_FORWARD):
+		"""
+		Return the next state as string, or NONE if the next state is no state.
+		"""
+		if not current_state in all_states:
+			if direction == DIRECTION_FORWARD:
+				return all_states[0]
+			else:
+				return all_states[-1]
+		else:
+			current_pos = all_states.index(current_state)
+			if direction == DIRECTION_FORWARD:
+				next_pos = current_pos + 1
+			else:
+				next_pos = current_pos - 1
+
+			if next_pos < 0 or next_pos >= len(all_states):
+				return None
+			return all_states[next_pos]
 
 	@classmethod
 	@update_tag_alignment
@@ -146,4 +169,4 @@ class Todo(object):
 
 		settings.set('org_todo_keywords', ['TODO', '|', 'DONE'])
 
-# vim: set noexpandtab
+# vim: set noexpandtab:
