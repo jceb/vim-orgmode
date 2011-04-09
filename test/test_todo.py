@@ -29,6 +29,9 @@ class TodoTestCase(unittest.TestCase):
 *** Text 2
 * Text 1
 ** Text 1
+   some text that is
+   no heading
+
 """.split('\n')
 
 	# toggle
@@ -115,6 +118,21 @@ class TodoTestCase(unittest.TestCase):
 
 		Todo.toggle_todo_state()
 		self.assertEqual(vim.current.buffer[1], '* Heading 1')
+
+	def test_toggle_todo_with_cursor_in_text_not_heading(self):
+		# nothing should happen
+		vim.current.window.cursor = (7, 0)
+		Todo.toggle_todo_state()
+		self.assertEqual(vim.current.buffer[5], '** TODO Text 1')
+		self.assertEqual(vim.current.window.cursor, (7, 0))
+
+		Todo.toggle_todo_state()
+		self.assertEqual(vim.current.buffer[5], '** DONE Text 1')
+		self.assertEqual(vim.current.window.cursor, (7, 0))
+
+		Todo.toggle_todo_state()
+		self.assertEqual(vim.current.buffer[5], '** Text 1')
+		self.assertEqual(vim.current.window.cursor, (7, 0))
 
 	# get_current_state
 	def test_get_current_state(self):

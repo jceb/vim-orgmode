@@ -101,7 +101,7 @@ class Todo(object):
 
 		# get heading
 		heading = Heading.current_heading()
-		if not heading or lineno != heading.start_vim:
+		if not heading:
 			vim.eval('feedkeys("^", "n")')
 			return
 
@@ -125,14 +125,16 @@ class Todo(object):
 			new_heading = ' '.join(('*' * heading.level, new_state, rest))
 		vim.current.buffer[heading.start] = new_heading
 
-		# move cursor along with the inserted state
-		if current_state is None:
-			offset = len(new_state)
-		elif new_state is None:
-			offset = -len(current_state)
-		else:
-			offset = len(current_state) - len(new_state)
-		vim.current.window.cursor = (lineno, colno + offset)
+		# move cursor along with the inserted state only when current position
+		# is in the heading; otherwite do nothing
+		if heading.start_vim == lineno:
+			if current_state is None:
+				offset = len(new_state)
+			elif new_state is None:
+				offset = -len(current_state)
+			else:
+				offset = len(current_state) - len(new_state)
+			vim.current.window.cursor = (lineno, colno + offset)
 
 		# plug
 		plug = 'OrgToggleTodoForward'
