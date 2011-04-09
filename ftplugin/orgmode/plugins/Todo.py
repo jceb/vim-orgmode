@@ -8,11 +8,12 @@ from orgmode.heading import Heading, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
 
+
 class Todo(object):
 	"""
 	Todo plugin.
 
-	Taken from orgmode.org:
+	Description taken from orgmode.org:
 
 	You can use TODO keywords to indicate different sequential states in the
 	process of working on an item, for example:
@@ -47,7 +48,23 @@ class Todo(object):
 			return states[:-1], [states[-1]]
 		else:
 			seperator_pos = states.index('|')
-			return states[0:seperator_pos], states[seperator_pos+1:]
+			return states[0:seperator_pos], states[seperator_pos + 1:]
+
+	@classmethod
+	def _split_heading(self, heading_text, all_states):
+		"""
+		Split the heading in 'current_state' and 'rest'.
+
+		Return tuple of state and rest.
+		state is None if it is not in current_state.
+		"""
+		if heading_text == '' or heading_text is None:
+			return None, ''
+		result = heading_text.split(' ')
+		if result[0] in all_states:
+			return result[0], ' '.join(result[1:])
+		else:
+			return None, heading_text
 
 	@classmethod
 	def _get_next_state(cls, current_state, all_states,
@@ -79,77 +96,48 @@ class Todo(object):
 		""" Toggle state of TODO item
 
 		:returns: The changed heading
-	    """
+		"""
+		lineno, colno = vim.current.window.cursor
+
+		# get heading
 		heading = Heading.current_heading()
-		if not heading or vim.current.window.cursor[0] != heading.start_vim:
+		if not heading or lineno != heading.start_vim:
 			vim.eval('feedkeys("^", "n")')
 			return
 
-		states = settings.get('org_todo_keywords', [])
-		current_state = ''
-		rest = ''
-		if heading.text.find(' ') != -1:
-			current_state, rest = heading.text.split(' ', 1)
-		else:
-			rest = heading.text
-
-		action_states = []
-		done_states = []
-
-		if states and isinstance(states[0], list):
-			found_list = False
-			for state_list in states:
-				if state_list and current_state in state_list or not current_state:
-					states = state_list
-					found_list = True
-					break
-			if not found_list:
-				states = states[0]
-
-		if '|' not in states:
-			action_states = states
-		else:
-			state_sep = states.index('|')
-			action_states = states[:state_sep]
-			done_states = filter(lambda x: x != '|', states[state_sep + 1:])
-			done_states.append('')
-
-		states = action_states + done_states
-
-		if len(states) < 2:
+		# get todo states
+		todo_states, done_states = Todo._get_states()
+		all_states = todo_states + done_states
+		if len(all_states) < 2:
 			echom('No todo keywords configured.')
 			return
 
-		new_state = states[0]
-		if direction == DIRECTION_BACKWARD:
-			new_state = states[-2]
+		# current_state and rest of heading
+		current_state, rest = Todo._split_heading(heading.text, all_states)
 
-		if current_state != '|' and current_state in states:
-			# advance to next/previous state
-			if direction == DIRECTION_FORWARD:
-				new_state = states[(states.index(current_state) + 1) % len(states)]
-			else:
-				new_state = states[(states.index(current_state) + len(states) - 1) % len(states)]
-		else:
-			rest = ' '.join((current_state, rest))
-			current_state = ''
+		# get new state
+		new_state = Todo._get_next_state(current_state, all_states, direction)
 
+		# set new headline
 		if not new_state:
-			vim.current.buffer[heading.start] = ' '.join(('*' * heading.level, rest))
+			new_heading = ' '.join(('*' * heading.level, rest))
 		else:
-			vim.current.buffer[heading.start] = ' '.join(('*' * heading.level, new_state, rest))
+			new_heading = ' '.join(('*' * heading.level, new_state, rest))
+		vim.current.buffer[heading.start] = new_heading
 
 		# move cursor along with the inserted state
-		if vim.current.window.cursor[1] > (heading.level + len(current_state)):
-			extra = 1 if not current_state else -1 if not new_state else 0
-			vim.current.window.cursor = (vim.current.window.cursor[0], vim.current.window.cursor[1] + len(new_state) - len(current_state) + extra)
-		elif vim.current.window.cursor[1] > heading.level:
-			vim.current.window.cursor = (vim.current.window.cursor[0], heading.level)
+		if current_state is None:
+			offset = len(new_state)
+		elif new_state is None:
+			offset = -len(current_state)
+		else:
+			offset = len(current_state) - len(new_state)
+		vim.current.window.cursor = (lineno, colno + offset)
 
+		# plug
 		plug = 'OrgToggleTodoForward'
 		if direction == DIRECTION_BACKWARD:
 			plug = 'OrgToggleTodoBackward'
-
 		return plug
 
 	def register(self):
@@ -159,12 +147,18 @@ class Todo(object):
 		settings.set('org_leader', ',')
 		leader = settings.get('org_leader', ',')
 
-		self.keybindings.append(Keybinding('%sd' % leader, Plug('OrgToggleTodoToggle', ':silent! py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>')))
+		self.keybindings.append(Keybinding('%sd' % leader, Plug(
+			'OrgToggleTodoToggle',
+			':silent! py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>')))
 		self.menu + ActionEntry('&TODO/DONE/-', self.keybindings[-1])
 		submenu = self.menu + Submenu('Select &keyword')
-		self.keybindings.append(Keybinding('<S-Right>', Plug('OrgToggleTodoForward', ':silent! py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>')))
+		self.keybindings.append(Keybinding('<S-Right>', Plug(
+			'OrgToggleTodoForward',
+			':silent! py ORGMODE.plugins["Todo"].toggle_todo_state()<CR>')))
 		submenu + ActionEntry('&Next keyword', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<S-Left>', Plug('OrgToggleTodoBackward', ':silent! py ORGMODE.plugins["Todo"].toggle_todo_state(False)<CR>')))
+		self.keybindings.append(Keybinding('<S-Left>', Plug(
+			'OrgToggleTodoBackward',
+			':silent! py ORGMODE.plugins["Todo"].toggle_todo_state(False)<CR>')))
 		submenu + ActionEntry('&Previous keyword', self.keybindings[-1])
 
 		settings.set('org_todo_keywords', ['TODO', '|', 'DONE'])
