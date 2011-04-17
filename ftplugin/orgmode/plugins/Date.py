@@ -7,6 +7,7 @@ from orgmode.keybinding import Keybinding, Plug
 
 import vim
 
+from orgmode import echom
 from datetime import date
 #import re
 
@@ -15,13 +16,18 @@ class Date(object):
 	"""
 	Handles all date and timestamp related tasks.
 
-	TODO: extend functionality.
-	TODO: adjust 'speeddating' settings to match orgmodes dates. The weekday
-	      is ignored currently.
+	TODO: extend functionality (calendar, repetitions, ranges). See
+	      http://orgmode.org/guide/Dates-and-Times.html#Dates-and-Times
 	"""
 
 	date_regex = r"<[A-z]\w\w \d\d\d\d-\d\d-\d\d>"
 	datetime_regex = r"<[A-z]\w\w \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d>"
+
+	# set speeddating format that is compatible with orgmode
+	if int(vim.eval('exists(":SpeedDatingFormat")')):
+		vim.command(':1SpeedDatingFormat %Y-%m-%d %a')
+	else:
+		echom('Speeddating plugin not installed. Please install it.')
 
 	def __init__(self):
 		""" Initialize plugin """
