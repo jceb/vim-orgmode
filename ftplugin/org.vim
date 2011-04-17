@@ -35,7 +35,7 @@ endif
 
 " general setting plugins that should be loaded and their order
 if ! exists('g:org_plugins') && ! exists('b:org_plugins')
-	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Misc']
+	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Misc']
 endif
 
 " make sure repeat plugin is load (or not)
