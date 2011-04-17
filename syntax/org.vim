@@ -14,16 +14,28 @@ command! ChangeSyn  call <SID>SynStars(b:levelstars)
 
 syntax match Properties +^\s*:\s*\S\{-1,}\s*:+
 hi Properties guifg=pink
+
 syntax match Tags +\s*:\S*:\s*$+
 hi Tags guifg=pink
+
+" Dates and Timestamps
 syntax match Dates +<\d\d\d\d-\d\d-\d\d.\{-1,}>+
+syntax match DatesInHead +<\d\d\d\d-\d\d-\d\d.\{-1,}>+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
+syntax match DatesInactive +\[\d\d\d\d-\d\d-\d\d.\{-1,}\]+
+syntax match DatesInactiveInHead +\[\d\d\d\d-\d\d-\d\d.\{-1,}\]+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
+
 hi Dates guifg=magenta
+hi DatesInHead guifg=magenta
+hi DatesInactive guifg=gray
+hi DatesInactiveInHead guifg=gray
+
 syntax match stars +\*\+\*+me=e-1 contained
 if &background == 'light'
 	hi stars guifg=#888888
 else
 	hi stars guifg=#444444
 endif
+
 syntax match NEXT '\* \zsNEXT' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
 syntax match CANCELED '\* \zsCANCELED' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
 syntax match TODO '\* \zsTODO' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
@@ -31,6 +43,7 @@ syntax match STARTED '\* \zsSTARTED' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8
 syntax match DONE '\* \zsDONE' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
 "syntax match source '^#+\(begin\|end\)_src.*$' contained
 "hi source gui=underline
+
 syntax match OL1 +^\(*\)\{1}\s.*+ contains=stars
 syntax match OL2 +^\(*\)\{2}\s.*+ contains=stars
 syntax match OL3 +^\(*\)\{3}\s.*+ contains=stars
