@@ -19,15 +19,19 @@ syntax match Tags +\s*:\S*:\s*$+
 hi Tags guifg=pink
 
 " Dates and Timestamps
-syntax match Dates +<\d\d\d\d-\d\d-\d\d.\{-1,}>+
-syntax match DatesInHead +<\d\d\d\d-\d\d-\d\d.\{-1,}>+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
-syntax match DatesInactive +\[\d\d\d\d-\d\d-\d\d.\{-1,}\]+
-syntax match DatesInactiveInHead +\[\d\d\d\d-\d\d-\d\d.\{-1,}\]+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
+" <2011-04-22 Fri> and <2011-04-22 Fri +1d>
+syntax match Dates +<\d\d\d\d-\d\d-\d\d \w\w\w\( .\d\+[dwmy]\)\?>+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
+" <2011-04-22 Fri 12:12> and <2011-04-22 Fri 12:12>
+syntax match Dates +<\d\d\d\d-\d\d-\d\d \w\w\w \d\d:\d\d\( .\d\+[dwmy]\)\?>+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
+" <2011-04-22 Fri 12:12-13:14> and  <2011-04-22 Fri 12:12-13:14 +4w>
+syntax match Dates +<\d\d\d\d-\d\d-\d\d \w\w\w \d\d:\d\d-\d\d:\d\d\( .\d\+[dwmy]\)\?>+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
+" <2004-08-23 Mon>--<2004-08-26 Thu>
+syntax match Dates +<\d\d\d\d-\d\d-\d\d \w\w\w>--<\d\d\d\d-\d\d-\d\d \w\w\w>+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
+" inactive
+syntax match DatesInactive +\[\d\d\d\d-\d\d-\d\d.\{-1,}\]+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
 
 hi Dates guifg=magenta
-hi DatesInHead guifg=magenta
 hi DatesInactive guifg=gray
-hi DatesInactiveInHead guifg=gray
 
 syntax match stars +\*\+\*+me=e-1 contained
 if &background == 'light'
