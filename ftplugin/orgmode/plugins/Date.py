@@ -9,7 +9,7 @@ import vim
 
 from orgmode import echom
 from datetime import date
-#import re
+from datetime import timedelta
 
 
 class Date(object):
@@ -50,14 +50,53 @@ class Date(object):
 
 		TODO: show fancy calendar to pick the date from.
 		"""
-		if active:
-			timestamp = '<%s>' % date.today().strftime('%Y-%m-%d %a')
+		today = date.today()
+		msg = ' '.join(['Insert Date:', today.strftime('%Y-%m-%d %a'), '| Change date'])
+		change = Date.get_user_input(msg)
+		echom(change)
+
+		# check possible time modifications
+		td = None
+		if change.startswith('+'):
+			try:
+				if change.endswith('d'):
+					td = timedelta(days=int(change[1:-1]))
+				elif change.endswith('w'):
+					td = timedelta(weeks=int(change[1:-1]))
+			except:
+				echom("Use integers to indicate the duration.")
+				return
+
+		# format
+		if td:
+			newdate = (today + td).strftime('%Y-%m-%d %a')
 		else:
-			timestamp = '[%s]' % date.today().strftime('%Y-%m-%d %a')
-		row, col = vim.current.window.cursor
+			newdate = today.strftime('%Y-%m-%d %a')
+		timestamp = '<%s>' % newdate if active else '[%s]' % newdate
+
+		Date.insert_at_cursor(timestamp)
+
+	@staticmethod
+	def insert_at_cursor(text):
+		"""Insert text at the position of the cursor."""
+		# TODO: Move to __init__
+		col = vim.current.window.cursor[1]
 		line = vim.current.line
-		new_line = line[:col] + timestamp + line[col:]
+		new_line = line[:col] + text + line[col:]
 		vim.current.line = new_line
+
+	@staticmethod
+	def get_user_input(message):
+		"""Print the message and take input from the user.
+		Return the input from the user.
+
+		TODO: move to __init__ or somewhere else where it makes more sense.
+		"""
+		vim.command('call inputsave()')
+		vim.command("let user_input = input('" + message + ": ')")
+		vim.command('call inputrestore()')
+		return vim.eval('user_input')
+
 
 	def register(self):
 		"""
