@@ -21,11 +21,12 @@ class Date(object):
 	"""
 
 	date_regex = r"<[A-z]\w\w \d\d\d\d-\d\d-\d\d>"
-	datetime_regex = r"<[A-z]\w\w \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d>"
+	datetime_regex = r"<[A-z]\w\w \d\d\d\d-\d\d-\d\d \d\d:\d\d>"
 
 	# set speeddating format that is compatible with orgmode
 	if int(vim.eval('exists(":SpeedDatingFormat")')):
 		vim.command(':1SpeedDatingFormat %Y-%m-%d %a')
+		vim.command(':1SpeedDatingFormat %Y-%m-%d %a %H:%M')
 	else:
 		echom('Speeddating plugin not installed. Please install it.')
 
