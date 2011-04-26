@@ -17,8 +17,9 @@ install:
 check: test/run_tests.py
 	cd test && python run_tests.py
 
-clean:
+clean: documentation
 	@rm -rf ${PLUGIN}.vba.gz tmp
+	cd $^ && $(MAKE) $@
 
 ${PLUGIN}.vba.gz: check
 	$(MAKE) DESTDIR=$(PWD)/tmp VIMDIR= install
@@ -30,4 +31,7 @@ ${PLUGIN}.vba.gz: check
 
 vba: ${PLUGIN}.vba.gz
 
-.PHONY: all build check install clean vba
+docs: documentation
+	cd $^ && $(MAKE)
+
+.PHONY: all build check install clean vba docs
