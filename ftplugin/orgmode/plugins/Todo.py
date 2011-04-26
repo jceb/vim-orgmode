@@ -98,9 +98,10 @@ class Todo(object):
 		:returns: The changed heading
 		"""
 		lineno, colno = vim.current.window.cursor
+
 		# get heading
 		heading = Document.current_heading()
-		if not heading or vim.current.window.cursor[0] != heading.start_vim:
+		if not heading:
 			vim.eval('feedkeys("^", "n")')
 			return
 

@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-14) unstable; urgency=low
+
+  * merge todo_refactoring from sotte
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 26 Apr 2011 21:16:19 +0900
+
 vim-orgmode (0.1.0-13) unstable; urgency=low
 
   * add documentation in form of a diagram describing the functionality of
