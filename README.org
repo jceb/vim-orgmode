@@ -251,7 +251,7 @@ Information about the license are found in the file LICENSE
 
 ** Todo/Done plugin
 *** DONE implement tests for toggle_todo_state
-*** TODO toggle_todo does not work when the cursor is in text (not heading)
+*** DONE toggle_todo does not work when the cursor is in text (not heading)
     Emacs toggles the todo state for the corresponding heading when the cursor
     is in the description text of the heading. vim-orgmode does not do that
     yet.
