@@ -4,7 +4,7 @@ from orgmode import echom, ORGMODE, apply_count, repeat, realign_tags
 from orgmode.menu import Submenu, ActionEntry
 from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
-from orgmode.heading import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode.liborgmode import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
 

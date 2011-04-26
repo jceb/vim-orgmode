@@ -6,7 +6,7 @@ sys.path.append('../ftplugin')
 
 import vim
 
-from orgmode.heading import Document
+from orgmode.liborgmode import Document
 
 class HeadingTestCase(unittest.TestCase):
 	def setUp(self):

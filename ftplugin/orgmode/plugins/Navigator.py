@@ -3,7 +3,7 @@
 from orgmode import echo, ORGMODE, apply_count
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_OPERATOR, Plug
-from orgmode.heading import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode.liborgmode import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
 

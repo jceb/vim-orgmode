@@ -7,7 +7,7 @@ sys.path.append('../ftplugin')
 import vim
 
 from orgmode import ORGMODE
-from orgmode.heading import Document
+from orgmode.liborgmode import Document
 
 
 class EditStructureTestCase(unittest.TestCase):

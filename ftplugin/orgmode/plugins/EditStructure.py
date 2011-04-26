@@ -3,7 +3,7 @@
 from orgmode import ORGMODE, apply_count, repeat, realign_tags
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_INSERT, MODE_NORMAL
-from orgmode.heading import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode.liborgmode import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
 

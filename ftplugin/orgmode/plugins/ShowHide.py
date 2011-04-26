@@ -4,7 +4,7 @@ from orgmode import settings
 from orgmode import ORGMODE, apply_count
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_NORMAL
-from orgmode.heading import Document
+from orgmode.liborgmode import Document
 
 import vim
 

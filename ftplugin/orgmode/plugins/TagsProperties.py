@@ -3,7 +3,7 @@
 from orgmode import ORGMODE, repeat
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
-from orgmode.heading import Document
+from orgmode.liborgmode import Document
 from orgmode import settings
 
 import vim

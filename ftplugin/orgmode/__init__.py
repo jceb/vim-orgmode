@@ -100,7 +100,7 @@ def indent_orgmode():
 
 	:returns: None
 	"""
-	from orgmode.heading import Document, DIRECTION_BACKWARD
+	from orgmode.liborgmode import Document, DIRECTION_BACKWARD
 	try:
 		line = int(vim.eval('v:lnum'))
 		heading = Document.find_heading(line - 1, direction=DIRECTION_BACKWARD)
@@ -115,7 +115,7 @@ def fold_text():
 
 	:returns: None
 	"""
-	from orgmode.heading import Document, DIRECTION_BACKWARD
+	from orgmode.liborgmode import Document, DIRECTION_BACKWARD
 	try:
 		line = int(vim.eval('v:foldstart'))
 		heading = Document.find_heading(line - 1, direction=DIRECTION_BACKWARD)
@@ -141,7 +141,7 @@ def fold_orgmode():
 
 	:returns: None
 	"""
-	from orgmode.heading import Document, DIRECTION_BACKWARD
+	from orgmode.liborgmode import Document, DIRECTION_BACKWARD
 	try:
 		line = int(vim.eval('v:lnum'))
 		heading = Document.find_heading(line - 1, direction=DIRECTION_BACKWARD)
