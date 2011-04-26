@@ -38,6 +38,11 @@ if ! exists('g:org_plugins') && ! exists('b:org_plugins')
 	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'LoggingWork', 'Misc']
 endif
 
+if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_highlight_leading_stars')
+	let g:org_syntax_highlight_leading_stars = 1
+endif
+
+
 " make sure repeat plugin is load (or not)
 try
 	call repeat#set()

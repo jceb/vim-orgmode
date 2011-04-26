@@ -1,3 +1,10 @@
+vim-orgmode (0.1.0-15) unstable; urgency=low
+
+  * add variable g:org_syntax_highlight_leading_stars to customize
+  	highlighting of leading stars
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 26 Apr 2011 21:30:31 +0900
+
 vim-orgmode (0.1.0-14) unstable; urgency=low
 
   * merge todo_refactoring from sotte

@@ -18,6 +18,16 @@ syntax match Tags +\s*:\S*:\s*$+
 hi Tags guifg=pink
 syntax match Dates +<\d\d\d\d-\d\d-\d\d.\{-1,}>+
 hi Dates guifg=magenta
+
+if (exists('g:org_syntax_highlight_leading_stars') && g:org_syntax_highlight_leading_stars == 1) || (exists('b:org_syntax_highlight_leading_stars') && b:org_syntax_highlight_leading_stars == 1)
+	syntax match stars +\*\+\*+me=e-1 contained
+	if &background == 'light'
+		hi stars guifg=#888888
+	else
+		hi stars guifg=#444444
+	endif
+endif
+
 syntax match NEXT '\* \zsNEXT' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
 syntax match CANCELED '\* \zsCANCELED' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
 syntax match TODO '\* \zsTODO' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
