@@ -48,6 +48,10 @@ class Date(object):
 
 	@classmethod
 	def _modify_time(cls, startdate, modifier):
+		"""Modify the given startdate according to modifier. Return the new time.
+
+		See http://orgmode.org/manual/The-date_002ftime-prompt.html#The-date_002ftime-prompt
+		"""
 		if modifier is None:
 			return startdate
 
@@ -56,9 +60,40 @@ class Date(object):
 		match = re. search(date_regex, modifier)
 		if match:
 			year, month, day =  match.groups()
-			print match.groups()
 			t = date(int(year), int(month), int(day))
 			return t
+
+		# check abbreviated date, seperated with '-'
+		date_regex = "(\d{1,2})-(\d+)-(\d+)"
+		match = re. search(date_regex, modifier)
+		if match:
+			year, month, day =  match.groups()
+			t = date(2000+int(year), int(month), int(day))
+			return t
+
+		# check abbreviated date, seperated with '/'
+		# month/day/year
+		date_regex = "(\d{1,2})/(\d+)/(\d+)"
+		match = re. search(date_regex, modifier)
+		if match:
+			month, day, year =  match.groups()
+			t = date(2000+int(year), int(month), int(day))
+			return t
+
+		# check day
+		date_regex = "^(\d{1,2})$"
+		match = re. search(date_regex, modifier)
+		if match:
+			newday, =  match.groups()
+			newday =  int(newday)
+			if newday > startdate.day:
+				newdate = date(startdate.year, startdate.month, newday)
+			else:
+				# TODO: DIRTY, fix this
+				#       this does NOT cover all edge cases
+				newdate = startdate + timedelta(days=28)
+				newdate = date(newdate.year, newdate.month, newday)
+			return newdate
 
 		# check for days modifier
 		match = re.search('\+(\d*)d', modifier)
@@ -95,26 +130,13 @@ class Date(object):
 		"""
 		today = date.today()
 		msg = ''.join(['Insert Date: ', today.strftime('%Y-%m-%d %a'), ' | Change date'])
-		change = Date.get_user_input(msg)
-		echom(change)
+		modifier = Date.get_user_input(msg)
+		echom(modifier)
 
-		# check possible time modifications
-		td = None
-		if change.startswith('+'):
-			try:
-				if change.endswith('d'):
-					td = timedelta(days=int(change[1:-1]))
-				elif change.endswith('w'):
-					td = timedelta(weeks=int(change[1:-1]))
-			except:
-				echom("Use integers to indicate the duration.")
-				return
+		newdate = cls._modify_time(today, modifier)
 
 		# format
-		if td:
-			newdate = (today + td).strftime('%Y-%m-%d %a')
-		else:
-			newdate = today.strftime('%Y-%m-%d %a')
+		newdate = newdate.strftime('%Y-%m-%d %a')
 		timestamp = '<%s>' % newdate if active else '[%s]' % newdate
 
 		Date.insert_at_cursor(timestamp)

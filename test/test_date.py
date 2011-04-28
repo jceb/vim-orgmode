@@ -72,6 +72,33 @@ class DateTestCase(unittest.TestCase):
 		expected = date(2015, 3, 12)
 		self.assertEquals(expected, res)
 
+	def test_modify_time_with_abbreviated_dates(self):
+		# use ``d`` instead of ``self.d`` in order to use the same date as in
+		# the orgmode documentation:
+		# http://orgmode.org/manual/The-date_002ftime-prompt.html#The-date_002ftime-prompt
+		d = date(2006, 6, 13)
+		test_data = [
+				('3-2-5', date(2003, 2, 05)),
+				('12-2-28', date(2012, 2, 28)),
+				('2/5/3', date(2003, 02, 05)),
+				('14', date(2006, 06, 14)),
+				('12', date(2006, 07, 12)),
+				#('2/5', date(2007, 02, 05))
+#Fri            nearest Friday (default date or later)
+     #sep 15         2006-09-15
+     #feb 15         2007-02-15
+     #sep 12 9       2009-09-12
+     #12:45          2006-06-13 12:45
+     #22 sept 0:34   2006-09-22 0:34
+     #w4             ISO week for of the current year 2006
+     #2012 w4 fri    Friday of ISO week 4 in 2012
+     #2012-w04-5     Same as above
+				]
+
+		for modifier, expected in test_data:
+			self.assertEquals(expected, Date._modify_time(d, modifier))
+
+
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(DateTestCase)
 
