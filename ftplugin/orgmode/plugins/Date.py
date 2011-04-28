@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
-
-from orgmode import ORGMODE
-from orgmode import settings
-from orgmode.menu import Submenu, ActionEntry
-from orgmode.keybinding import Keybinding, Plug
+import re
+from datetime import timedelta, date
 
 import vim
-
-from orgmode import echom
-from datetime import date
-from datetime import timedelta
+from orgmode import ORGMODE, settings, echom
+from orgmode.keybinding import Keybinding, Plug
+from orgmode.menu import Submenu, ActionEntry
 
 
 class Date(object):
@@ -20,15 +16,21 @@ class Date(object):
 	      http://orgmode.org/guide/Dates-and-Times.html#Dates-and-Times
 	"""
 
-	date_regex = r"<[A-z]\w\w \d\d\d\d-\d\d-\d\d>"
-	datetime_regex = r"<[A-z]\w\w \d\d\d\d-\d\d-\d\d \d\d:\d\d>"
+	date_regex = r"\d\d\d\d-\d\d-\d\d"
+	datetime_regex = r"[A-Z]\w\w \d\d\d\d-\d\d-\d\d \d\d:\d\d>"
+
+
 
 	# set speeddating format that is compatible with orgmode
-	if int(vim.eval('exists(":SpeedDatingFormat")')):
-		vim.command(':1SpeedDatingFormat %Y-%m-%d %a')
-		vim.command(':1SpeedDatingFormat %Y-%m-%d %a %H:%M')
-	else:
+	try:
+		if int(vim.eval('exists(":SpeedDatingFormat")')):
+			vim.command(':1SpeedDatingFormat %Y-%m-%d %a')
+			vim.command(':1SpeedDatingFormat %Y-%m-%d %a %H:%M')
+		else:
+			echom('Speeddating plugin not installed. Please install it.')
+	except:
 		echom('Speeddating plugin not installed. Please install it.')
+
 
 	def __init__(self):
 		""" Initialize plugin """
@@ -45,6 +47,46 @@ class Date(object):
 		self.commands = []
 
 	@classmethod
+	def _modify_time(cls, startdate, modifier):
+		if modifier is None:
+			return startdate
+
+		# check real date
+		date_regex = r"(\d\d\d\d)-(\d\d)-(\d\d)"
+		match = re. search(date_regex, modifier)
+		if match:
+			year, month, day =  match.groups()
+			print match.groups()
+			t = date(int(year), int(month), int(day))
+			return t
+
+		# check for days modifier
+		match = re.search('\+(\d*)d', modifier)
+		if match:
+			days = int(match.groups()[0])
+			return startdate + timedelta(days=days)
+
+		# check for week modifier
+		match = re.search('\+(\d+)w', modifier)
+		if match:
+			weeks = int(match.groups()[0])
+			return startdate + timedelta(weeks=weeks)
+
+		# check for week modifier
+		match = re.search('\+(\d+)m', modifier)
+		if match:
+			months = int(match.groups()[0])
+			return date(startdate.year, startdate.month + months, startdate.day)
+
+		# check for year modifier
+		match = re.search('\+(\d*)y', modifier)
+		if match:
+			years = int(match.groups()[0])
+			return date(startdate.year + years, startdate.month, startdate.day)
+
+		return startdate
+
+	@classmethod
 	def insert_timestamp(cls, active=True):
 		"""
 		Insert a timestamp (today) at the cursor position.
@@ -52,7 +94,7 @@ class Date(object):
 		TODO: show fancy calendar to pick the date from.
 		"""
 		today = date.today()
-		msg = ' '.join(['Insert Date:', today.strftime('%Y-%m-%d %a'), '| Change date'])
+		msg = ''.join(['Insert Date: ', today.strftime('%Y-%m-%d %a'), ' | Change date'])
 		change = Date.get_user_input(msg)
 		echom(change)
 
