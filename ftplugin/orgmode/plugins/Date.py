@@ -3,7 +3,7 @@ import re
 from datetime import timedelta, date
 
 import vim
-from orgmode import ORGMODE, settings, echom
+from orgmode import ORGMODE, settings, echom, insert_at_cursor, get_user_input
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry
 
@@ -19,8 +19,6 @@ class Date(object):
 	date_regex = r"\d\d\d\d-\d\d-\d\d"
 	datetime_regex = r"[A-Z]\w\w \d\d\d\d-\d\d-\d\d \d\d:\d\d>"
 
-
-
 	# set speeddating format that is compatible with orgmode
 	try:
 		if int(vim.eval('exists(":SpeedDatingFormat")')):
@@ -30,7 +28,6 @@ class Date(object):
 			echom('Speeddating plugin not installed. Please install it.')
 	except:
 		echom('Speeddating plugin not installed. Please install it.')
-
 
 	def __init__(self):
 		""" Initialize plugin """
@@ -130,7 +127,7 @@ class Date(object):
 		"""
 		today = date.today()
 		msg = ''.join(['Insert Date: ', today.strftime('%Y-%m-%d %a'), ' | Change date'])
-		modifier = Date.get_user_input(msg)
+		modifier = get_user_input(msg)
 		echom(modifier)
 
 		newdate = cls._modify_time(today, modifier)
@@ -139,29 +136,7 @@ class Date(object):
 		newdate = newdate.strftime('%Y-%m-%d %a')
 		timestamp = '<%s>' % newdate if active else '[%s]' % newdate
 
-		Date.insert_at_cursor(timestamp)
-
-	@staticmethod
-	def insert_at_cursor(text):
-		"""Insert text at the position of the cursor."""
-		# TODO: Move to __init__
-		col = vim.current.window.cursor[1]
-		line = vim.current.line
-		new_line = line[:col] + text + line[col:]
-		vim.current.line = new_line
-
-	@staticmethod
-	def get_user_input(message):
-		"""Print the message and take input from the user.
-		Return the input from the user.
-
-		TODO: move to __init__ or somewhere else where it makes more sense.
-		"""
-		vim.command('call inputsave()')
-		vim.command("let user_input = input('" + message + ": ')")
-		vim.command('call inputrestore()')
-		return vim.eval('user_input')
-
+		insert_at_cursor(timestamp)
 
 	def register(self):
 		"""
