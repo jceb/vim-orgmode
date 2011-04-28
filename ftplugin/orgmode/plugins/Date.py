@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
 
 import vim
 from orgmode import ORGMODE, settings, echom, insert_at_cursor, get_user_input
@@ -18,6 +18,9 @@ class Date(object):
 
 	date_regex = r"\d\d\d\d-\d\d-\d\d"
 	datetime_regex = r"[A-Z]\w\w \d\d\d\d-\d\d-\d\d \d\d:\d\d>"
+
+	month_mapping = {'jan': 1, 'feb':2, 'mar':3, 'apr':4, 'mai':5, 'jun':6,
+			'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12}
 
 	# set speeddating format that is compatible with orgmode
 	try:
@@ -77,6 +80,30 @@ class Date(object):
 			t = date(2000 + int(year), int(month), int(day))
 			return t
 
+		# check abbreviated date, seperated with '/'
+		# month/day
+		date_regex = "(\d{1,2})/(\d{1,2})"
+		match = re. search(date_regex, modifier)
+		if match:
+			month, day = match.groups()
+			newdate = date(startdate.year, int(month), int(day))
+			# date should be always in the future
+			if newdate < startdate:
+				newdate = date(startdate.year+1, int(month), int(day))
+			return newdate
+
+		# check full date, seperated with 'space'
+		# month day year
+		# 'sep 12 9' --> 2009 9 12
+		date_regex = "(\w\w\w) (\d{1,2}) (\d{1,2})"
+		match = re. search(date_regex, modifier)
+		if match:
+			gr = match.groups()
+			day = int(gr[1])
+			month = int(cls.month_mapping[gr[0]])
+			year = 2000 + int(gr[2])
+			return date(year, int(month), int(day))
+
 		# check days as integers
 		date_regex = "^(\d{1,2})$"
 		match = re. search(date_regex, modifier)
@@ -102,7 +129,29 @@ class Date(object):
 			# use next weeks weekday if current weekday is the same as modifier
 			if diff == 0:
 				diff = 7
+
 			return startdate + timedelta(days=diff)
+
+		# check for month day
+		modifier_lc = modifier.lower()
+		match = re.search('(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec) (\d{1,2})',
+				modifier_lc)
+		if match:
+			month = cls.month_mapping[match.groups()[0]]
+			day = int(match.groups()[1])
+
+			newdate = date(startdate.year, int(month), int(day))
+			# date should be always in the future
+			if newdate < startdate:
+				newdate = date(startdate.year+1, int(month), int(day))
+			return newdate
+
+		# check for time: HH:MM
+		# '12:45' --> datetime(2006,06,13, 12,45))
+		match = re.search('(\d{1,2}):(\d\d)', modifier)
+		if match:
+			return datetime(startdate.year, startdate.month, startdate.day,
+					int(match.groups()[0]), int(match.groups()[1]))
 
 		# check for days modifier
 		match = re.search('\+(\d*)d', modifier)
