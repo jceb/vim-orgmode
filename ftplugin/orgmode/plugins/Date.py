@@ -13,7 +13,7 @@ class Date(object):
 	Handles all date and timestamp related tasks.
 
 	TODO: extend functionality (calendar, repetitions, ranges). See
-	      http://orgmode.org/guide/Dates-and-Times.html#Dates-and-Times
+			http://orgmode.org/guide/Dates-and-Times.html#Dates-and-Times
 	"""
 
 	date_regex = r"\d\d\d\d-\d\d-\d\d"
@@ -56,7 +56,7 @@ class Date(object):
 		date_regex = r"(\d\d\d\d)-(\d\d)-(\d\d)"
 		match = re. search(date_regex, modifier)
 		if match:
-			year, month, day =  match.groups()
+			year, month, day = match.groups()
 			t = date(int(year), int(month), int(day))
 			return t
 
@@ -64,8 +64,8 @@ class Date(object):
 		date_regex = "(\d{1,2})-(\d+)-(\d+)"
 		match = re. search(date_regex, modifier)
 		if match:
-			year, month, day =  match.groups()
-			t = date(2000+int(year), int(month), int(day))
+			year, month, day = match.groups()
+			t = date(2000 + int(year), int(month), int(day))
 			return t
 
 		# check abbreviated date, seperated with '/'
@@ -73,16 +73,16 @@ class Date(object):
 		date_regex = "(\d{1,2})/(\d+)/(\d+)"
 		match = re. search(date_regex, modifier)
 		if match:
-			month, day, year =  match.groups()
-			t = date(2000+int(year), int(month), int(day))
+			month, day, year = match.groups()
+			t = date(2000 + int(year), int(month), int(day))
 			return t
 
 		# check day
 		date_regex = "^(\d{1,2})$"
 		match = re. search(date_regex, modifier)
 		if match:
-			newday, =  match.groups()
-			newday =  int(newday)
+			newday, = match.groups()
+			newday = int(newday)
 			if newday > startdate.day:
 				newdate = date(startdate.year, startdate.month, newday)
 			else:
@@ -126,7 +126,8 @@ class Date(object):
 		TODO: show fancy calendar to pick the date from.
 		"""
 		today = date.today()
-		msg = ''.join(['Insert Date: ', today.strftime('%Y-%m-%d %a'), ' | Change date'])
+		msg = ''.join(['Insert Date: ', today.strftime('%Y-%m-%d %a'),
+				' | Change date'])
 		modifier = get_user_input(msg)
 		echom(modifier)
 
@@ -153,7 +154,8 @@ class Date(object):
 		self.menu + ActionEntry('Timestamp', self.keybindings[-1])
 
 		self.keybindings.append(Keybinding('%sti' % leader,
-				Plug('OrgDateInsertTimestampInactive', ':py ORGMODE.plugins["Date"].insert_timestamp(False)<CR>')))
+				Plug('OrgDateInsertTimestampInactive',
+					':py ORGMODE.plugins["Date"].insert_timestamp(False)<CR>')))
 		self.menu + ActionEntry('Timestamp (inactive)', self.keybindings[-1])
 
 # vim: set noexpandtab:
