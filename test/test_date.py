@@ -28,8 +28,7 @@ class DateTestCase(unittest.TestCase):
 				('+7d', date(2011, 5, 29)),
 				('+9d', date(2011, 5, 31)),
 				('+10d', date(2011, 6, 1)),
-				('7d', self.d)  # wrong format: plus is missing
-				]
+				('7d', self.d)]  # wrong format: plus is missing
 
 		for modifier, expected in test_data:
 			self.assertEquals(expected, Date._modify_time(self.d, modifier))
@@ -71,6 +70,24 @@ class DateTestCase(unittest.TestCase):
 		res = Date._modify_time(self.d, '2015-03-12')
 		expected = date(2015, 3, 12)
 		self.assertEquals(expected, res)
+
+	def test_modify_time_with_given_weekday(self):
+		# use custom day instead of self.d to ease testing
+		cust_day = date(2011, 5, 25)  # it's a Wednesday
+		#print cust_day.weekday()  # 2
+		test_data = [('Thu', date(2011, 5, 26)),
+				('thu', date(2011, 5, 26)),
+				('tHU', date(2011, 5, 26)),
+				('THU', date(2011, 5, 26)),
+				('Fri', date(2011, 5, 27)),
+				('sat', date(2011, 5, 28)),
+				('sun', date(2011, 5, 29)),
+				('mon', date(2011, 5, 30)),
+				('tue', date(2011, 5, 31)),
+				('wed', date(2011, 6, 1))]
+
+		for modifier, expected in test_data:
+			self.assertEquals(expected, Date._modify_time(cust_day, modifier))
 
 	def test_modify_time_with_abbreviated_dates(self):
 		# use ``d`` instead of ``self.d`` in order to use the same date as in

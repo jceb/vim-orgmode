@@ -77,7 +77,7 @@ class Date(object):
 			t = date(2000 + int(year), int(month), int(day))
 			return t
 
-		# check day
+		# check days as integers
 		date_regex = "^(\d{1,2})$"
 		match = re. search(date_regex, modifier)
 		if match:
@@ -91,6 +91,18 @@ class Date(object):
 				newdate = startdate + timedelta(days=28)
 				newdate = date(newdate.year, newdate.month, newday)
 			return newdate
+
+		# check for full days: Mon, Tue, Wed, Thu, Fri, Sat, Sun
+		modifier_lc = modifier.lower()
+		match = re.search('mon|tue|wed|thu|fri|sat|sun', modifier_lc)
+		if match:
+			weekday_mapping = {'mon': 0, 'tue': 1, 'wed': 2, 'thu': 3,
+					'fri': 4, 'sat': 5, 'sun': 6}
+			diff = (weekday_mapping[modifier_lc] - startdate.weekday()) % 7
+			# use next weeks weekday if current weekday is the same as modifier
+			if diff == 0:
+				diff = 7
+			return startdate + timedelta(days=diff)
 
 		# check for days modifier
 		match = re.search('\+(\d*)d', modifier)
