@@ -13,6 +13,7 @@ from orgmode.plugins.Date import Date
 class DateTestCase(unittest.TestCase):
 	"""Tests all the functionality of the Date plugin.
 
+	Also see:
 	http://orgmode.org/manual/The-date_002ftime-prompt.html#The-date_002ftime-prompt
 	"""
 
@@ -66,7 +67,7 @@ class DateTestCase(unittest.TestCase):
 		for modifier, expected in test_data:
 			self.assertEquals(expected, Date._modify_time(self.d, modifier))
 
-	def test_modify_time_with_real_dates(self):
+	def test_modify_time_with_full_dates(self):
 		res = Date._modify_time(self.d, '2011-01-12')
 		expected = date(2011, 1, 12)
 		self.assertEquals(expected, res)
@@ -113,7 +114,9 @@ class DateTestCase(unittest.TestCase):
 				('1:05', datetime(2006, 06, 13, 1, 5)),]
 
 		for modifier, expected in test_data:
-			self.assertEquals(expected, Date._modify_time(cust_date, modifier))
+			res = Date._modify_time(cust_date, modifier)
+			self.assertTrue(isinstance(res, datetime))
+			self.assertEquals(expected, res)
 
 	def test_modify_time_with_full_dates(self):
 		cust_date = date(2006, 6, 13)

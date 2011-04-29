@@ -195,7 +195,10 @@ class Date(object):
 		newdate = cls._modify_time(today, modifier)
 
 		# format
-		newdate = newdate.strftime('%Y-%m-%d %a')
+		if isinstance(newdate, datetime):
+			newdate = newdate.strftime('%Y-%m-%d %a %H:%M')
+		else:
+			newdate = newdate.strftime('%Y-%m-%d %a')
 		timestamp = '<%s>' % newdate if active else '[%s]' % newdate
 
 		insert_at_cursor(timestamp)
