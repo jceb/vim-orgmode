@@ -25,6 +25,11 @@ class DateTestCase(unittest.TestCase):
 		res = Date._modify_time(self.d, None)
 		self.assertEquals(self.d, res)
 
+	def test_modify_time_with_dot(self):
+		# no modification should happen
+		res = Date._modify_time(self.d, '.')
+		self.assertEquals(self.d, res)
+
 	def test_modify_time_with_given_relative_days(self):
 		# modifier and expected result
 		test_data = [('+0d', self.d),
