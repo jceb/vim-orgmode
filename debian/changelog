@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-18) unstable; urgency=low
+
+  * install -D doesn't work on BSD based systems; migrate commands to install -d
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 02 May 2011 15:41:17 +0900
+
 vim-orgmode (0.1.0-17) unstable; urgency=low
 
   * merge date-plugin from sotte

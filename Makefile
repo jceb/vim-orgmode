@@ -10,7 +10,8 @@ build:
 install:
 	for i in indent ftdetect ftplugin syntax; do \
 		find $$i -type f -name \*.py -o -type f -name \*.vim | while read f; do \
-			install -m 0644 -D $$f $(DESTDIR)$(VIMDIR)/$$f; \
+			install -m 0755 -d $(DESTDIR)$(VIMDIR); \
+			install -m 0644 $$f $(DESTDIR)$(VIMDIR)/$$f; \
 		done; \
 	done
 

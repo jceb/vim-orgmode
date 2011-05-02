@@ -367,6 +367,8 @@ Information about the license are found in the file LICENSE
 *** make a video about vim-orgmode
 *** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
 *** orgmode taglist integration doesn't work with txtfmt plugin: setf txt.txtfmt
+*** in original Org-mode keybindings perform different actions based on the context! This functionality should be integrated in vim-orgmode as well
+*** DONE install -D doesn't work on BSD based systems; migrate commands to install -d
 *** DONE add support for debian package management
 *** DONE add changelog like in debian
 *** DONE implement commands
