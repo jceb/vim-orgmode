@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-17) unstable; urgency=low
+
+  * merge date-plugin from sotte
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 02 May 2011 15:40:40 +0900
+
 vim-orgmode (0.1.0-16) unstable; urgency=low
 
   * rename heading.py to liborgmode.py
