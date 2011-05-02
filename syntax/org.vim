@@ -14,10 +14,24 @@ command! ChangeSyn  call <SID>SynStars(b:levelstars)
 
 syntax match Properties +^\s*:\s*\S\{-1,}\s*:+
 hi Properties guifg=pink
+
 syntax match Tags +\s*:\S*:\s*$+
 hi Tags guifg=pink
-syntax match Dates +<\d\d\d\d-\d\d-\d\d.\{-1,}>+
+
+" Dates and Timestamps
+" <2011-04-22 Fri> and <2011-04-22 Fri +1d>
+syntax match Dates +<\d\d\d\d-\d\d-\d\d \w\w\w\( .\d\+[dwmy]\)\?>+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
+" <2011-04-22 Fri 12:12> and <2011-04-22 Fri 12:12>
+syntax match Dates +<\d\d\d\d-\d\d-\d\d \w\w\w \d\d:\d\d\( .\d\+[dwmy]\)\?>+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
+" <2011-04-22 Fri 12:12-13:14> and  <2011-04-22 Fri 12:12-13:14 +4w>
+syntax match Dates +<\d\d\d\d-\d\d-\d\d \w\w\w \d\d:\d\d-\d\d:\d\d\( .\d\+[dwmy]\)\?>+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
+" <2004-08-23 Mon>--<2004-08-26 Thu>
+syntax match Dates +<\d\d\d\d-\d\d-\d\d \w\w\w>--<\d\d\d\d-\d\d-\d\d \w\w\w>+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
+" inactive
+syntax match DatesInactive +\[\d\d\d\d-\d\d-\d\d.\{-1,}\]+ containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
+
 hi Dates guifg=magenta
+hi DatesInactive guifg=gray
 
 if (exists('g:org_syntax_highlight_leading_stars') && g:org_syntax_highlight_leading_stars == 1) || (exists('b:org_syntax_highlight_leading_stars') && b:org_syntax_highlight_leading_stars == 1)
 	syntax match stars +\*\+\*+me=e-1 contained
@@ -35,6 +49,7 @@ syntax match STARTED '\* \zsSTARTED' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8
 syntax match DONE '\* \zsDONE' containedin=OL1,OL2,OL3,OL4,OL5,OL6,OL7,OL8,OL9
 "syntax match source '^#+\(begin\|end\)_src.*$' contained
 "hi source gui=underline
+
 syntax match OL1 +^\(*\)\{1}\s.*+ contains=stars
 syntax match OL2 +^\(*\)\{2}\s.*+ contains=stars
 syntax match OL3 +^\(*\)\{3}\s.*+ contains=stars

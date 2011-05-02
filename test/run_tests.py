@@ -8,6 +8,7 @@ import test_navigator
 import test_show_hide
 import test_tags_properties
 import test_todo
+import test_date
 
 import unittest
 
@@ -19,6 +20,7 @@ if __name__ == '__main__':
 		test_navigator.suite(),
 		test_show_hide.suite(),
 		test_tags_properties.suite(),
+		test_date.suite(),
 		test_todo.suite()])
 	runner = unittest.TextTestRunner()
 	runner.run(tests)

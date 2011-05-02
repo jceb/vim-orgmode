@@ -93,6 +93,28 @@ def echoe(message):
 	# probably some escaping is needed here
 	vim.command(':echoerr "%s"' % message)
 
+def insert_at_cursor(text, move=True):
+    """Insert text at the position of the cursor.
+
+    If move==True move the cursor with the inserted text.
+    """
+    row, col = vim.current.window.cursor
+    line = vim.current.line
+    new_line = line[:col] + text + line[col:]
+    vim.current.line = new_line
+    if move:
+        vim.current.window.cursor = (row, col + len(text))
+
+
+def get_user_input(message):
+    """Print the message and take input from the user.
+    Return the input.
+    """
+    vim.command('call inputsave()')
+    vim.command("let user_input = input('" + message + ": ')")
+    vim.command('call inputrestore()')
+    return vim.eval('user_input')
+
 def indent_orgmode():
 	""" Set the indent value for the current line in the variable b:indent_level
 	Vim prerequisites:

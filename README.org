@@ -317,9 +317,12 @@ Information about the license are found in the file LICENSE
 *** DONE error when pressing <Esc> while editing tags
 
 ** Dates plugin
-*** TODO implement dates
-*** implement a calendar
-*** implement the agenda view by using the location list
+*** DONE implement active dates
+*** DONE implement intive dates
+*** DONE promt to insert dates
+*** DONE integrate speeddating plugin
+*** TODO implement a calendar
+*** TODO implement the agenda view by using the location list
 *** implement time tracking
 
 ** Logging plugin
