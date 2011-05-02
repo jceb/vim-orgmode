@@ -349,6 +349,7 @@ Information about the license are found in the file LICENSE
     subdocuments and Headings. This would loosen the dependency to vim.
 
 ** Misc
+*** reimplement syntax file (the current version is from hsitz)
 *** implement functionality of [[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html][Orgmode 5 Minutes Tutorial]]
 *** implement repeat for text-objects
 *** implement settings as part of the plugin
