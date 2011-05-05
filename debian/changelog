@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-21) unstable; urgency=low
+
+  * use functionality of UserList in MultiPurposeList
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Thu, 05 May 2011 20:13:26 +0900
+
 vim-orgmode (0.1.0-20) unstable; urgency=low
 
   * update README

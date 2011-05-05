@@ -30,46 +30,33 @@ class MultiPurposeList(UserList):
 			self._on_change()
 
 	def __setitem__(self, i, item):
-		self.data[i] = item
-		self._changed()
-
-	def __setslice__(self, i, j, other):
-		i = max(i, 0); j = max(j, 0)
-		if isinstance(other, self.__class__):
-			self.data[i:j] = other.data
-		elif isinstance(other, type(self.data)):
-			self.data[i:j] = other
-		else:
-			self.data[i:j] = list(other)
-
+		UserList.__setitem__(self, i, item)
 		self._changed()
 
 	def __delitem__(self, i):
-		del self.data[i]
+		UserList.__delitem__(self, i)
+		self._changed()
+
+	def __setslice__(self, i, j, other):
+		UserList.__setslice__(self, i, j, other)
 		self._changed()
 
 	def __delslice__(self, i, j):
-		i = max(i, 0); j = max(j, 0)
-		del self.data[i:j]
+		UserList.__delslice__(self, i, j)
 		self._changed()
 
 	def __iadd__(self, other):
-		if isinstance(other, self.__class__):
-			self.data += other.data
-		elif isinstance(other, type(self.data)):
-			self.data += other
-		else:
-			self.data += list(other)
+		res = UserList.__iadd__(self, other)
 		self._changed()
-		return self
+		return res
 
 	def __imul__(self, n):
-		self.data *= n
+		res = UserList.__imul__(self, n)
 		self._changed()
-		return self
+		return res
 
 	def append(self, item):
-		self.data.append(item)
+		UserList.append(self, item)
 		self._changed()
 
 	def insert(self, i, item):
@@ -84,18 +71,15 @@ class MultiPurposeList(UserList):
 		self.__delitem__(self.data.index(item))
 
 	def reverse(self):
-		self.data.reverse()
+		UserList.reverse(self)
 		self._changed()
 
 	def sort(self, *args, **kwds):
-		self.data.sort(*args, **kwds)
+		UserList.sort(self, *args, **kwds)
 		self._changed()
 
 	def extend(self, other):
-		if isinstance(other, self.__class__):
-			self.data.extend(other.data)
-		else:
-			self.data.extend(other)
+		UserList.extend(self, other)
 		self._changed()
 
 class HeadingList(MultiPurposeList):
