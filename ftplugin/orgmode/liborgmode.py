@@ -92,14 +92,14 @@ class HeadingList(MultiPurposeList):
 	See documenatation of MultiPurposeList for more information.
 	"""
 	def __init__(self, obj, initlist=None):
+		# it's not necessary to register a on_change hook because the heading
+		# list will itself take care of marking headings dirty or adding
+		# headings to the deleted headings list
+		MultiPurposeList.__init__(self)
+
 		self._obj = obj
 		if not (isinstance(obj, Document) or self.__class__.is_heading(obj)):
 			raise ValueError('A Heading List must be linked to a Document or Heading object!')
-		d = self._get_document()
-		if d:
-			MultiPurposeList.__init__(self, on_change=d.set_dirty)
-		else:
-			MultiPurposeList.__init__(self)
 
 		# initialization must be done here, because
 		# self._document is not initialized when the
@@ -143,8 +143,6 @@ class HeadingList(MultiPurposeList):
 			d = self._get_document()
 			if item._document != d:
 				item._document = d
-				if d:
-					item.children._on_change = d.set_dirty
 			if not children:
 				if d == self._obj:
 					# self._obj is a Document
@@ -256,12 +254,13 @@ class Heading(object):
 		"""
 		object.__init__(self)
 
-		self._document   = document
-		self._parent     = None
-		self._dirty      = False
-		self._orig_len   = len(data) if data else 0
-		self._orig_start = orig_start
-		self._body       = MultiPurposeList(initlist=data[1:] if data else [], on_change=self.set_dirty)
+		self._document      = document
+		self._parent        = None
+		self._dirty_heading = False
+		self._dirty_body    = False
+		self._orig_len      = len(data) if data else 0
+		self._orig_start    = orig_start
+		self._body          = MultiPurposeList(initlist = data[1:] if data else [], on_change=self.set_dirty_body)
 		self._level, self._title, self._tags, self._todo = self.__class__.parse_title(data[0] if data else '')
 
 		self._children  = HeadingList(self)
@@ -335,13 +334,33 @@ class Heading(object):
 	def set_dirty(self):
 		""" Mark the heading dirty so that it will be rewritten when saving the
 		document """
-		self._dirty = True
+		self._dirty_heading = True
+		self._dirty_body = True
+
+	def set_dirty_heading(self):
+		""" Mark the heading dirty so that it will be rewritten when saving the
+		document """
+		self._dirty_heading = True
+
+	def set_dirty_body(self):
+		""" Mark the heading dirty so that it will be rewritten when saving the
+		document """
+		self._dirty_body = True
 
 	@property
 	def is_dirty(self):
 		""" Return True if the heading is marked dirty """
-		return self._dirty
+		return self._dirty_heading or self._dirty_body
 
+	@property
+	def is_dirty_heading(self):
+		""" Return True if the heading is marked dirty """
+		return self._dirty_heading
+
+	@property
+	def is_dirty_body(self):
+		""" Return True if the heading is marked dirty """
+		return self._dirty_body
 
 	def title():
 		""" Access to the title of the heading """
@@ -352,7 +371,7 @@ class Heading(object):
 				self._title = value
 			else:
 				self._title = str(value)
-			self.set_dirty()
+			self.set_dirty_heading()
 		return locals()
 	title = property(**title())
 
@@ -362,7 +381,7 @@ class Heading(object):
 			return self._level
 		def fset(self, value):
 			self._level = int(value)
-			self.set_dirty()
+			self.set_dirty_heading()
 		return locals()
 	level = property(**level())
 
@@ -564,12 +583,12 @@ class Document(object):
 		object.__init__(self)
 
 		# is a list - only the Document methods should work with this list!
-		self._content          = None
-		self._dirty            = False
-		self._meta_information = MultiPurposeList(on_change=self.set_dirty)
+		self._content                   = None
+		self._dirty_meta_information     = False
+		self._meta_information          = MultiPurposeList(on_change = self.set_dirty_meta_information)
 		self._orig_meta_information_len = None
-		self._headings         = HeadingList(self)
-		self._deleted_headings = []
+		self._headings                  = HeadingList(self)
+		self._deleted_headings          = []
 
 	def _init_dom(self):
 		""" Initialize all headings in document - build DOM
@@ -640,7 +659,7 @@ class Document(object):
 				self._meta_information[:] = value
 			elif type(value) in (unicode, str):
 				self._meta_information[:] = value.split('\n')
-			self.set_dirty()
+			self.set_dirty_meta_information()
 		return locals()
 	meta_information = property(**meta_information())
 
@@ -660,8 +679,8 @@ class Document(object):
 		"""
 		raise NotImplementedError('Abstract method, please use concrete impelementation!')
 
-	def set_dirty(self):
-		self._dirty = True
+	def set_dirty_meta_information(self):
+		self._dirty_meta_information = True
 
 	@property
 	def is_dirty(self):
@@ -671,8 +690,11 @@ class Document(object):
 
 		:returns:	 Return True if document contains unsaved changes.
 		"""
-		if self._dirty == True:
-			return self._dirty
+		if self.is_dirty_meta_information:
+			return True
+
+		if self._deleted_headings:
+			return True
 
 		if not self.headings:
 			return False
@@ -685,6 +707,10 @@ class Document(object):
 					return True
 
 		return False
+
+	@property
+	def is_dirty_meta_information(self):
+		return self._dirty_meta_information
 
 	def all_headings(self):
 		""" Iterate over all headings of the current document in serialized

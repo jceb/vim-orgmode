@@ -42,7 +42,7 @@ Bla Bla bla bla
 """.split('\n')
 		self.document = VimBuffer()
 
-	def test_meta_information(self):
+	def test_meta_information_assign_directly(self):
 		# read meta information from document
 		self.assertEqual('\n'.join(self.document.meta_information), '#Meta information\n#more meta information')
 		self.assertEqual(self.document.is_dirty, False)
@@ -52,32 +52,42 @@ Bla Bla bla bla
 		self.document.meta_information[0] = '#More or less meta information'
 		self.assertEqual('\n'.join(self.document.meta_information), '#More or less meta information\n#more meta information')
 		self.assertEqual(self.document.is_dirty, True)
+		self.assertEqual(self.document.is_dirty_meta_information, True)
 		self.assertEqual(self.document.headings[0].start, 2)
 
+	def test_meta_information_assign_string(self):
 		# assign a single line string
 		self.document.meta_information = '#Less meta information'
 		self.assertEqual('\n'.join(self.document.meta_information), '#Less meta information')
 		self.assertEqual(self.document.is_dirty, True)
+		self.assertEqual(self.document.is_dirty_meta_information, True)
 		self.assertEqual(self.document.headings[0].start, 1)
 
+	def test_meta_information_assign_multi_line_string(self):
 		# assign a multi line string
 		self.document.meta_information = '#Less meta information\n#lesser information'
 		self.assertEqual('\n'.join(self.document.meta_information), '#Less meta information\n#lesser information')
 		self.assertEqual(self.document.is_dirty, True)
+		self.assertEqual(self.document.is_dirty_meta_information, True)
 		self.assertEqual(self.document.headings[0].start, 2)
 
+	def test_meta_information_assign_one_element_array(self):
 		# assign a single element array of strings
 		self.document.meta_information = '#More or less meta information'.split('\n')
 		self.assertEqual('\n'.join(self.document.meta_information), '#More or less meta information')
 		self.assertEqual(self.document.is_dirty, True)
+		self.assertEqual(self.document.is_dirty_meta_information, True)
 		self.assertEqual(self.document.headings[0].start, 1)
 
+	def test_meta_information_assign_multi_element_array(self):
 		# assign a multi element array of strings
 		self.document.meta_information = '#More or less meta information\n#lesser information'.split('\n')
 		self.assertEqual('\n'.join(self.document.meta_information), '#More or less meta information\n#lesser information')
 		self.assertEqual(self.document.is_dirty, True)
+		self.assertEqual(self.document.is_dirty_meta_information, True)
 		self.assertEqual(self.document.headings[0].start, 2)
 
+	def test_meta_information_read_no_meta_information(self):
 		vim.current.buffer = """* Überschrift 1
 Text 1
 
@@ -110,12 +120,14 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0].start, 2)
 		self.assertEqual(self.document.is_dirty, True)
 
+	def test_meta_information_assign_empty_array(self):
 		# assign an empty array as meta information
 		self.document.meta_information = []
 		self.assertEqual(self.document.meta_information, [])
 		self.assertEqual(self.document.headings[0].start, 0)
 		self.assertEqual(self.document.is_dirty, True)
 
+	def test_meta_information_assign_empty_string(self):
 		# assign an empty string as meta information
 		self.document.meta_information = ''
 		self.assertEqual(self.document.meta_information, [''])
@@ -184,10 +196,13 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0]._orig_start, 0)
 		self.assertEqual(VimBuffer().meta_information, [])
 
-	def test_write_changed_title_and_body(self):
+	def test_write_changed_title(self):
 		# write a changed title
 		self.document.headings[0].title = 'Heading 1'
 		self.assertEqual(self.document.is_dirty, True)
+		self.assertEqual(self.document.is_dirty_meta_information, False)
+		self.assertEqual(self.document.headings[0].is_dirty_body, False)
+		self.assertEqual(self.document.headings[0].is_dirty_heading, True)
 		self.assertEqual(self.document.headings[0].title, 'Heading 1')
 		self.assertEqual(self.document.headings[0].end, 5)
 		self.assertEqual(len(self.document.headings[0]), 4)
@@ -206,10 +221,14 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0].children[0]._orig_start, 6)
 		self.assertEqual(VimBuffer().headings[0].title, 'Heading 1')
 
+	def test_write_changed_body(self):
 		# write a changed body
 		self.assertEqual(self.document.headings[0].end, 5)
 		self.document.headings[0].body[0] = 'Another text'
 		self.assertEqual(self.document.is_dirty, True)
+		self.assertEqual(self.document.is_dirty_meta_information, False)
+		self.assertEqual(self.document.headings[0].is_dirty_body, True)
+		self.assertEqual(self.document.headings[0].is_dirty_heading, False)
 		self.assertEqual(self.document.headings[0].end, 5)
 		self.assertEqual(len(self.document.headings[0]), 4)
 		self.assertEqual(self.document.headings[0]._orig_start, 2)
@@ -228,9 +247,13 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0].children[0]._orig_start, 6)
 		self.assertEqual(VimBuffer().headings[0].body, ['Another text', '', 'Bla bla'])
 
+	def test_write_shortened_body(self):
 		# write a shortened body
 		self.document.headings[0].body = 'Another text'
 		self.assertEqual(self.document.is_dirty, True)
+		self.assertEqual(self.document.is_dirty_meta_information, False)
+		self.assertEqual(self.document.headings[0].is_dirty_body, True)
+		self.assertEqual(self.document.headings[0].is_dirty_heading, False)
 		self.assertEqual(self.document.headings[0].end, 3)
 		self.assertEqual(len(self.document.headings[0]), 2)
 		self.assertEqual(self.document.headings[0]._orig_start, 2)
@@ -249,15 +272,19 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0].children[0]._orig_start, 4)
 		self.assertEqual(VimBuffer().headings[0].body, ['Another text'])
 
+	def test_write_lengthened_body(self):
 		# write a lengthened body
 		self.document.headings[0].body = ['Another text', 'more', 'and more', 'and more']
 		self.assertEqual(self.document.is_dirty, True)
+		self.assertEqual(self.document.is_dirty_meta_information, False)
+		self.assertEqual(self.document.headings[0].is_dirty_body, True)
+		self.assertEqual(self.document.headings[0].is_dirty_heading, False)
 		self.assertEqual(self.document.headings[0].end, 6)
 		self.assertEqual(len(self.document.headings[0]), 5)
 		self.assertEqual(self.document.headings[0]._orig_start, 2)
-		self.assertEqual(self.document.headings[0]._orig_len, 2)
+		self.assertEqual(self.document.headings[0]._orig_len, 4)
 		self.assertEqual(self.document.headings[0].children[0].start, 7)
-		self.assertEqual(self.document.headings[0].children[0]._orig_start, 4)
+		self.assertEqual(self.document.headings[0].children[0]._orig_start, 6)
 		self.assertEqual(self.document.headings[0].body, ['Another text', 'more', 'and more', 'and more'])
 
 		self.assertEqual(self.document.write(), True)

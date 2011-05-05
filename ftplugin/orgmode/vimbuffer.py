@@ -42,10 +42,11 @@ class VimBuffer(Document):
 			return False
 
 		# write meta information
-		if self._dirty == True:
+		if self.is_dirty_meta_information:
 			meta_end = 0 if self._orig_meta_information_len == None else self._orig_meta_information_len
 			self._content[:meta_end] = self._meta_information
-			self._orig_meta_information_len = None
+			self._orig_meta_information_len = len(self._meta_information)
+			self._dirty_meta_information = False
 
 		# remove deleted headings
 		already_deleted = []
@@ -62,12 +63,17 @@ class VimBuffer(Document):
 		for h in self.all_headings():
 			if h.is_dirty:
 				if h._orig_start != None:
-					# this is a heading that needs to be replaced
-					self._content[h.start:h.start + h._orig_len] = [str(h)] + h.body
+					# this is a heading that existed before and was changed. It
+					# needs to be replaced
+					if h.is_dirty_heading:
+						self._content[h.start:h.start + 1] = [str(h)]
+					if h.is_dirty_body:
+						self._content[h.start + 1:h.start + h._orig_len] = h.body
 				else:
-					# this is a heading that needs to be inserted
+					# this is a new heading. It needs to be inserted
 					self._content[h.start:h.start] = [str(h)] + h.body
-				h._dirty = False
+				h._dirty_heading = False
+				h._dirty_body = False
 			# for all headings the length and start offset needs to be updated
 			h._orig_start = h.start
 			h._orig_len = len(h)

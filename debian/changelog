@@ -1,3 +1,10 @@
+vim-orgmode (0.1.0-22) unstable; urgency=low
+
+  * distinguish between heading and body changes
+  * make writing the VimBuffer more efficient
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Thu, 05 May 2011 21:03:28 +0900
+
 vim-orgmode (0.1.0-21) unstable; urgency=low
 
   * use functionality of UserList in MultiPurposeList
