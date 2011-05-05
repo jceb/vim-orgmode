@@ -535,7 +535,8 @@ Bla Bla bla bla
 		h.title = 'Test heading'
 		h.body = 'Text, text\nmore text'
 		self.assertEqual(h.start, None)
-		self.document.headings += h
+		#self.document.headings += h
+		self.document.headings.append(h)
 		self.assertEqual(h.start, 21)
 		self.assertEqual(self.document.is_dirty, True)
 		self.assertEqual(len(self.document.headings), 4)
@@ -636,6 +637,85 @@ Bla Bla bla bla
 		self.assertEqual(len(d.headings[1].children), 0)
 		self.assertEqual(d.headings[0].children[1].children[-1].title, 'Überschrift 1.2.1')
 		self.assertEqual(d.headings[0].children[1].children[-1].start, 17)
+
+	def test_write_replace_multiple_headings_with_one_heading(self):
+		# replace subheadings by a list of newly created headings (one item)
+		self.assertEqual(len(self.document.headings), 3)
+		h = Heading()
+		h.title = 'Test heading'
+		h.level = 3
+		h.body = 'Text, text\nmore text\nanother text'
+
+		self.assertEqual(h.start, None)
+		self.assertEqual(len(self.document.headings[0].children[1].children), 2)
+		self.document.headings[0].children[1].children[:] = h
+		self.assertEqual(h.start, 13)
+		self.assertEqual(self.document.is_dirty, True)
+		self.assertEqual(self.document.headings[0].children[1].is_dirty, False)
+		self.assertEqual(len(self.document.headings), 3)
+		self.assertEqual(len(self.document.headings[0].children[1].children), 1)
+
+		self.assertEqual(self.document.write(), True)
+		self.assertEqual(self.document.is_dirty, False)
+		self.assertEqual(self.document.headings[0].children[1].title, 'Überschrift 1.2')
+		self.assertEqual(self.document.headings[0].children[1].children[0].title, 'Test heading')
+		self.assertEqual(self.document.headings[0].children[1].children[0].start, 13)
+
+		# sanity check
+		d = VimBuffer()
+		self.assertEqual(len(d.headings[0].children[1].children), 1)
+		self.assertEqual(d.headings[0].children[1].title, 'Überschrift 1.2')
+		self.assertEqual(d.headings[0].children[1].children[0].title, 'Test heading')
+		self.assertEqual(d.headings[0].children[1].children[0].start, 13)
+
+	def test_write_replace_multiple_headings_with_a_multiple_heading_structure(self):
+		# replace subheadings by a list of newly created headings (multiple items)
+		self.assertEqual(len(self.document.headings), 3)
+		h = Heading()
+		h.title = 'Test heading'
+		h.level = 3
+		h.body = 'Text, text\nmore text\nanother text'
+		h1 = Heading()
+		h1.title = 'another heading'
+		h1.level = 4
+		h1.body = 'This\nIs\nJust more\ntext'
+		h.children.append(h1)
+		h2 = Heading()
+		h2.title = 'yet another heading'
+		h2.level = 3
+		h2.body = 'This\nis less text'
+
+		self.assertEqual(h.start, None)
+		self.document.headings[0].children[1].children[:] = (h, h2)
+		self.assertEqual(h.start, 13)
+		self.assertEqual(h1.start, 17)
+		self.assertEqual(h2.start, 22)
+		self.assertEqual(self.document.is_dirty, True)
+		self.assertEqual(self.document.headings[0].children[1].is_dirty, False)
+		self.assertEqual(len(self.document.headings), 3)
+		self.assertEqual(len(self.document.headings[0].children[1].children), 2)
+		self.assertEqual(len(self.document.headings[0].children[1].children[0].children), 1)
+		self.assertEqual(len(self.document.headings[0].children[1].children[1].children), 0)
+
+		self.assertEqual(self.document.write(), True)
+		self.assertEqual(self.document.is_dirty, False)
+		self.assertEqual(self.document.headings[0].children[1].title, 'Überschrift 1.2')
+		self.assertEqual(self.document.headings[0].children[1].children[0].title, 'Test heading')
+		self.assertEqual(self.document.headings[0].children[1].children[0].children[0].title, 'another heading')
+		self.assertEqual(self.document.headings[0].children[1].children[1].title, 'yet another heading')
+		self.assertEqual(self.document.headings[0].children[1].children[0].start, 13)
+		self.assertEqual(self.document.headings[0].children[1].children[0].children[0].start, 17)
+		self.assertEqual(self.document.headings[0].children[1].children[1].start, 22)
+
+		# sanity check
+		d = VimBuffer()
+		self.assertEqual(d.headings[0].children[1].title, 'Überschrift 1.2')
+		self.assertEqual(d.headings[0].children[1].children[0].title, 'Test heading')
+		self.assertEqual(d.headings[0].children[1].children[0].children[0].title, 'another heading')
+		self.assertEqual(d.headings[0].children[1].children[1].title, 'yet another heading')
+		self.assertEqual(d.headings[0].children[1].children[0].start, 13)
+		self.assertEqual(d.headings[0].children[1].children[0].children[0].start, 17)
+		self.assertEqual(d.headings[0].children[1].children[1].start, 22)
 
 	def test_dom(self):
 		self.assertEqual(len(self.document.headings), 3)

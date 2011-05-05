@@ -699,12 +699,9 @@ class Document(object):
 		if not self.headings:
 			return False
 
-		for h in self.headings:
+		for h in self.all_headings():
 			if h.is_dirty:
 				return True
-			for child in h.children:
-				if child.is_dirty:
-					return True
 
 		return False
 

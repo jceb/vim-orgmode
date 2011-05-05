@@ -1,3 +1,11 @@
+vim-orgmode (0.1.0-23) unstable; urgency=low
+
+  * make Document.is_dirty function test all headings not just the first two
+  	levels
+  * add more tests for replacing headings
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Thu, 05 May 2011 21:37:27 +0900
+
 vim-orgmode (0.1.0-22) unstable; urgency=low
 
   * distinguish between heading and body changes
