@@ -250,14 +250,14 @@ Information about the license are found in the file LICENSE
 * Todos
 
 ** Todo/Done plugin
+*** implement keyboard shortcuts to select todo state
+*** implement switching to next/previous todo state list
+*** implement todo state triggers
 *** DONE implement tests for toggle_todo_state
 *** DONE toggle_todo does not work when the cursor is in text (not heading)
     Emacs toggles the todo state for the corresponding heading when the cursor
     is in the description text of the heading. vim-orgmode does not do that
     yet.
-*** implement keyboard shortcuts to select todo state
-*** implement switching to next/previous todo state list
-*** implement todo state triggers
 *** DONE implement multi-state workflows
 *** DONE implement todo items
 
@@ -272,9 +272,9 @@ Information about the license are found in the file LICENSE
 *** DONE implement |fold-foldtext|
 
 ** Navigator plugin
-*** implement mappings for visual and operator mode in a better way
 *** TODO implement other paragraph and block text-object operators, e.g. dap, cip, dab, cib
 *** TODO implement tests for ]]
+*** implement mappings for visual and operator mode in a better way
 *** implement count for navigator mappings in visual mode
 *** implement sparse tree. is a special folding needed?
 *** DONE impelement repeat for text-object operators
@@ -285,9 +285,9 @@ Information about the license are found in the file LICENSE
 *** DONE bug in function g{, it places the cursor one character too far to the right
 
 ** EditStructure plugin
-*** indentation with C-t,C-d doesn't work when not on a heading
 *** TODO implement tests for move heading
 *** TODO implement tests for indenting a single heading
+*** indentation with C-t,C-d doesn't work when not on a heading
 *** implement non-relative heading changes
 *** DONE implement a closer behavior of M-RET to orginal orgmode
 *** DONE maybe change keybinding for headings to M-RET
@@ -317,24 +317,24 @@ Information about the license are found in the file LICENSE
 *** DONE error when pressing <Esc> while editing tags
 
 ** Dates plugin
+*** TODO implement a calendar
+*** TODO implement the agenda view by using the location list
 *** DONE implement active dates
 *** DONE implement intive dates
 *** DONE promt to insert dates
 *** DONE integrate speeddating plugin
-*** TODO implement a calendar
-*** TODO implement the agenda view by using the location list
-*** implement time tracking
 
-** Logging plugin
+** Logging/time tracking plugin
 *** implement logging plugin
 *** implement Record DONE time
 
 ** Hyperlinks plugin
 *** implement [[http://orgmode.org/guide/Internal-links.html#Internal-links][Internal-links]] and [[http://orgmode.org/guide/Targeted-links.html#Targeted-links][Targeted-links]]
 *** implement mouse interaction for links
-*** impelement tests
+*** implement tests
 *** implement better support for [[http://orgmode.org/guide/External-links.html#External-links][External-links]]
 *** implement [[http://orgmode.org/guide/Handling-links.html#Handling-links][Store a link to the current location]]
+*** DONE integrate with UTL plugin
 *** DONE fix empty links creation
 *** DONE fix passing of function arguments
 *** DONE implement hyperlinks plugin
@@ -351,23 +351,31 @@ Information about the license are found in the file LICENSE
     current vim buffer or just a normal file. The Document also contains
     subdocuments and Headings. This would loosen the dependency to vim.
 
+** Documentation
+*** add descriptions to settings
+    the goal is to automatically generate most parts of the documentation
+*** generate documentation from plugin code, add short/long descriptions to keybindings
+
 ** Misc
+*** convert all strings to unicode
+*** autocommand for removing Org menu breaks other plugins
 *** reimplement syntax file (the current version is from hsitz)
 *** implement functionality of [[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html][Orgmode 5 Minutes Tutorial]]
 *** implement repeat for text-objects
 *** implement settings as part of the plugin
-*** add descriptions to settings
-*** Figure out a way to get the keys the user pressed to activate a mapping so that feedkeys can be used properly
+*** figure out a way to get the keys the user pressed to activate a mapping so that feedkeys can be used properly
 *** integrate v:operator
-*** integrate with Narrow Region plugin
-*** integrate with UTL plugin
-*** integrate with YankRing plugin
 *** make use of maparg() and mapcheck()
-*** generate documentation from plugin code, add short/long descriptions to keybindings
 *** make a video about vim-orgmode
 *** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
 *** orgmode taglist integration doesn't work with txtfmt plugin: setf txt.txtfmt
+*** add support for tagbar plugin
+    tagbar is a reimplementation of the taglist plugin
 *** in original Org-mode keybindings perform different actions based on the context! This functionality should be integrated in vim-orgmode as well
+*** DONE integrate with YankRing plugin
+    actually I think there is not very much that needs to be integrated - it just works
+*** DONE integrate with Narrow Region plugin
+    actually I think there is not very much that needs to be integrated - it just works
 *** DONE install -D doesn't work on BSD based systems; migrate commands to install -d
 *** DONE add support for debian package management
 *** DONE add changelog like in debian
