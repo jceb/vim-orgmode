@@ -121,12 +121,12 @@ class HeadingList(MultiPurposeList):
 		Serialize headings so that all subheadings are also marked for deletion
 		"""
 		if not self._get_document():
-			# heading has not been associated yet
+			# HeadingList has not been associated yet
 			return
 
 		if type(item) in (HeadingList, tuple, list):
 			for i in item:
-				self._add_to_deleted_headings(i.children)
+				self._add_to_deleted_headings(i)
 		else:
 			self._get_document()._deleted_headings.append(item)
 			self._add_to_deleted_headings(item.children)
@@ -158,7 +158,7 @@ class HeadingList(MultiPurposeList):
 			raise ValueError('Item is not a heading!')
 		if item in self.data:
 			raise ValueError('Heading is already part of this list!')
-		self._add_to_deleted_headings(item)
+		self._add_to_deleted_headings(self[i])
 
 		self._associate_heading(item)
 		MultiPurposeList.__setitem__(self, i, item)
@@ -170,9 +170,9 @@ class HeadingList(MultiPurposeList):
 		for item in o:
 			if not self.__class__.is_heading(item):
 				raise ValueError('List contains items that are not a heading!')
-		self._associate_heading(o)
 		i = max(i, 0); j = max(j, 0)
 		self._add_to_deleted_headings(self.data[i:j])
+		self._associate_heading(o)
 		MultiPurposeList.__setslice__(self, i, j, o)
 
 	def __delitem__(self, i):
@@ -253,8 +253,6 @@ class Heading(object):
 		:body:		Body of the heading
 		"""
 		object.__init__(self)
-
-		#self._level, self._title, self._tags, self._todo = self.__class__.parse_title(data[0] if data else '')
 
 		self._document      = None
 		self._parent        = None
@@ -350,7 +348,7 @@ class Heading(object):
 		h = cls()
 		h.level, h.todo, h.title, h.tags = parse_title(data[0])
 		h.body = data[1:]
-		if orig_start:
+		if orig_start != None:
 			h._dirty_heading = False
 			h._dirty_body    = False
 			h._orig_start    = orig_start
