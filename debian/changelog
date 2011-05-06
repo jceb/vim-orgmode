@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-27) unstable; urgency=low
+
+  * update README
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 06 May 2011 21:40:48 +0900
+
 vim-orgmode (0.1.0-26) unstable; urgency=low
 
   * add load method to documents for initializing the DOM

@@ -301,7 +301,8 @@ Information about the license are found in the file LICENSE
 *** DONE implement promotion/demotion of headings
 
 ** TagsProperties plugin
-*** implement tests
+*** DONE implement tests
+    Tests for tags have been implemented in test_vimbuffer.py
 *** DONE move tags functionaly to global Heading class
 *** DONE make edit tasks update tags position
 *** DONE implement command to realign all tags
@@ -341,11 +342,20 @@ Information about the license are found in the file LICENSE
 *** DONE integrate with Universal Text Linking plugin
 *** DONE implement edit functionality
 
-** liborgmode/export
-*** build a general library for parsing orgmode files
+** liborgmode
+*** move HeadingList._associate_heading to Heading and Document
+*** add support for easily changing a heading's level
+*** throw exception when adding a heading to the DOM with a lower level than the parent
+*** throw exception when decreasing a heading's level below or equal to the parent's level
+*** add support for specific TODO states/allow no other states
+    I'm not quite sure whether this is actually need in liborgmode or should be part of a specific plugin
+*** add support for detaching a heading from a document
+    This is strongly linked to the changing of a heading's level. There needs to be an easy way to do that
+*** DONE build a general library for parsing orgmode files
+*** DONE build a general library for parsing orgmode files
     I think of something general like asciidoc
-*** remove dependency to vim to make the plugin generaly usable
-*** turn Document.heading into a method/property and make it writable
+*** DONE remove dependency to vim to make the plugin generaly usable
+*** DONE turn Document.heading into a method/property and make it writable
 *** DONE implement a more general object structure
     It should consist of a Document class implementing access to the
     current vim buffer or just a normal file. The Document also contains
@@ -367,11 +377,12 @@ Information about the license are found in the file LICENSE
 *** integrate v:operator
 *** make use of maparg() and mapcheck()
 *** make a video about vim-orgmode
-*** implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
-*** orgmode taglist integration doesn't work with txtfmt plugin: setf txt.txtfmt
+*** orgmode taglist integration doesn't work with txtfmt plugin: setf org.txtfmt
 *** add support for tagbar plugin
     tagbar is a reimplementation of the taglist plugin
 *** in original Org-mode keybindings perform different actions based on the context! This functionality should be integrated in vim-orgmode as well
+*** DONE implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
+    Resolved by the implementation of liborgmode
 *** DONE integrate with YankRing plugin
     actually I think there is not very much that needs to be integrated - it just works
 *** DONE integrate with Narrow Region plugin
