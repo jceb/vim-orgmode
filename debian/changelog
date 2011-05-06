@@ -1,3 +1,11 @@
+vim-orgmode (0.1.0-24) unstable; urgency=low
+
+  * add support for tags and todo
+  * externalize heading create to a separate classmethod
+  * add all relevant parameters to the heading constructor
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 06 May 2011 20:20:37 +0900
+
 vim-orgmode (0.1.0-23) unstable; urgency=low
 
   * make Document.is_dirty function test all headings not just the first two

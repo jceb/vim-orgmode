@@ -892,5 +892,265 @@ Bla Bla bla bla
 		#self.assertEqual(h.heading, 'Überschrift 1')
 		#self.assertEqual(h.title, 'Text 1\n\nBla bla')
 
+class VimBufferTagsTestCase(unittest.TestCase):
+	def setUp(self):
+		vim.CMDHISTORY = []
+		vim.CMDRESULTS = {}
+		vim.EVALHISTORY = []
+		vim.EVALRESULTS = {
+				'exists("g:org_debug")': 0,
+				'exists("g:org_debug")': 0,
+				'exists("*repeat#set()")': 0,
+				"v:count": 0}
+		vim.current.buffer = """#Meta information
+#more meta information
+* Überschrift 1     :testtag:
+Text 1
+
+Bla bla
+** Überschrift 1.1 :multi:tags:
+Text 2
+
+Bla Bla bla
+** Überschrift 1.2:notag:
+Text 3
+
+**** Überschrift 1.2.1.falsch :no tag:
+
+Bla Bla bla bla
+*** Überschrift 1.2.1 :no tag
+*** Überschrift 1.2.2 no tag:
+* Überschrift 2				  :more:tags:
+* Überschrift 3	:lesser:tag:
+  asdf sdf
+* Überschrift 4 super long long long long long long long long extremely long title	:title:long:
+* TODO Überschrift 5 super long long long long long long long long extremely long title	:title_with_todo:
+""".split('\n')
+		self.document = VimBuffer()
+
+	def test_tag_read_one(self):
+		self.assertEqual(len(self.document.headings[0].tags), 1)
+		self.assertEqual(self.document.headings[0].tags[0], 'testtag')
+		self.assertEqual(str(self.document.headings[0]), '* Überschrift 1							    :testtag:')
+
+	def test_tag_read_multiple(self):
+		self.assertEqual(len(self.document.headings[0].children[0].tags), 2)
+		self.assertEqual(self.document.headings[0].children[0].tags, ['multi', 'tags'])
+		self.assertEqual(str(self.document.headings[0].children[0]), '** Überschrift 1.1						 :multi:tags:')
+
+	def test_tag_no_tags(self):
+		self.assertEqual(len(self.document.headings[0].children[1].children), 3)
+		self.assertEqual(len(self.document.headings[0].children[1].tags), 0)
+		self.assertEqual(len(self.document.headings[0].children[1].children[0].tags), 0)
+		self.assertEqual(len(self.document.headings[0].children[1].children[1].tags), 0)
+		self.assertEqual(len(self.document.headings[0].children[1].children[2].tags), 0)
+
+	def test_tag_read_space_and_tab_separated(self):
+		self.assertEqual(len(self.document.headings[1].children), 0)
+		self.assertEqual(len(self.document.headings[1].tags), 2)
+		self.assertEqual(self.document.headings[1].tags, ['more', 'tags'])
+
+	def test_tag_read_tab_separated(self):
+		self.assertEqual(len(self.document.headings[2].children), 0)
+		self.assertEqual(len(self.document.headings[2].tags), 2)
+		self.assertEqual(self.document.headings[2].tags, ['lesser', 'tag'])
+
+	def test_tag_read_long_title(self):
+		self.assertEqual(len(self.document.headings[3].children), 0)
+		self.assertEqual(len(self.document.headings[3].tags), 2)
+		self.assertEqual(self.document.headings[3].tags, ['title', 'long'])
+		self.assertEqual(str(self.document.headings[3]), '* Überschrift 4 super long long long long long long long long extremely long title  :title:long:')
+
+	def test_tag_read_long_title_plus_todo_state(self):
+		self.assertEqual(len(self.document.headings[4].children), 0)
+		self.assertEqual(len(self.document.headings[4].tags), 1)
+		self.assertEqual(self.document.headings[4].level, 1)
+		self.assertEqual(self.document.headings[4].todo, 'TODO')
+		self.assertEqual(self.document.headings[4].title, 'Überschrift 5 super long long long long long long long long extremely long title')
+		self.assertEqual(self.document.headings[4].tags, ['title_with_todo'])
+		self.assertEqual(str(self.document.headings[4]), '* TODO Überschrift 5 super long long long long long long long long extremely long title  :title_with_todo:')
+
+	def test_tag_del_tags(self):
+		self.assertEqual(len(self.document.headings[0].tags), 1)
+		del self.document.headings[0].tags
+		self.assertEqual(len(self.document.headings[0].tags), 0)
+		self.assertEqual(self.document.headings[0].is_dirty_heading, True)
+		self.assertEqual(self.document.headings[0].is_dirty_body, False)
+		self.assertEqual(str(self.document.headings[0]), '* Überschrift 1')
+		self.assertEqual(self.document.write(), True)
+
+		# sanity check
+		d = VimBuffer()
+		self.assertEqual(len(d.headings[0].tags), 0)
+		self.assertEqual(d.headings[0].title, 'Überschrift 1')
+		self.assertEqual(str(d.headings[0]), '* Überschrift 1')
+
+	def test_tag_replace_one_tag(self):
+		self.assertEqual(len(self.document.headings[0].tags), 1)
+		self.document.headings[0].tags = ['justonetag']
+		self.assertEqual(len(self.document.headings[0].tags), 1)
+		self.assertEqual(self.document.headings[0].is_dirty_heading, True)
+		self.assertEqual(self.document.headings[0].is_dirty_body, False)
+		self.assertEqual(str(self.document.headings[0]), '* Überschrift 1							 :justonetag:')
+		self.assertEqual(self.document.write(), True)
+
+		# sanity check
+		d = VimBuffer()
+		self.assertEqual(len(d.headings[0].tags), 1)
+		self.assertEqual(d.headings[0].tags, ['justonetag'])
+		self.assertEqual(d.headings[0].title, 'Überschrift 1')
+		self.assertEqual(str(d.headings[0]), '* Überschrift 1							 :justonetag:')
+
+	def test_tag_replace_multiple_tags(self):
+		self.assertEqual(len(self.document.headings[1].tags), 2)
+		self.document.headings[1].tags = ['justonetag', 'moretags', 'lesstags']
+		self.assertEqual(len(self.document.headings[1].tags), 3)
+		self.assertEqual(self.document.headings[1].is_dirty_heading, True)
+		self.assertEqual(self.document.headings[1].is_dirty_body, False)
+		self.assertEqual(str(self.document.headings[1]), '* Überschrift 2				       :justonetag:moretags:lesstags:')
+		self.assertEqual(self.document.write(), True)
+
+		# sanity check
+		d = VimBuffer()
+		self.assertEqual(len(d.headings[1].tags), 3)
+		self.assertEqual(d.headings[1].tags, ['justonetag', 'moretags', 'lesstags'])
+		self.assertEqual(d.headings[1].title, 'Überschrift 2')
+		self.assertEqual(str(d.headings[1]), '* Überschrift 2				       :justonetag:moretags:lesstags:')
+
+class VimBufferTodoTestCase(unittest.TestCase):
+	def setUp(self):
+		vim.CMDHISTORY = []
+		vim.CMDRESULTS = {}
+		vim.EVALHISTORY = []
+		vim.EVALRESULTS = {
+				'exists("g:org_debug")': 0,
+				'exists("g:org_debug")': 0,
+				'exists("*repeat#set()")': 0,
+				"v:count": 0}
+		vim.current.buffer = """#Meta information
+#more meta information
+* TODO Überschrift 1     :testtag:
+Text 1
+
+Bla bla
+** TODO NOTODO Überschrift 1.1 :multi:tags:
+Text 2
+
+Bla Bla bla
+** NO-TODO Überschrift 1.2:notag:
+Text 3
+
+**** NOTODOÜberschrift 1.2.1.falsch :no tag:
+
+Bla Bla bla bla
+*** notodo Überschrift 1.2.1 :no tag
+*** NOTODo Überschrift 1.2.2 no tag:
+* WAITING Überschrift 2				  :more:tags:
+* DONE Überschrift 3	:lesser:tag:
+  asdf sdf
+* DÖNE Überschrift 4
+* DONß Überschrift 5
+* DONÉ Überschrift 6
+* DONé    Überschrift 7
+""".split('\n')
+		self.document = VimBuffer()
+
+	def test_todo_read_TODO(self):
+		self.assertEqual(self.document.headings[0].todo, 'TODO')
+		self.assertEqual(self.document.headings[0].title, 'Überschrift 1')
+		self.assertEqual(str(self.document.headings[0]), '* TODO Überschrift 1						    :testtag:')
+
+	def test_todo_read_TODO_NOTODO(self):
+		self.assertEqual(self.document.headings[0].children[0].todo, 'TODO')
+		self.assertEqual(self.document.headings[0].children[0].title, 'NOTODO Überschrift 1.1')
+		self.assertEqual(str(self.document.headings[0].children[0]), '** TODO NOTODO Überschrift 1.1					 :multi:tags:')
+
+	def test_todo_read_WAITING(self):
+		self.assertEqual(self.document.headings[1].todo, 'WAITING')
+		self.assertEqual(self.document.headings[1].title, 'Überschrift 2')
+		self.assertEqual(str(self.document.headings[1]), '* WAITING Überschrift 2						  :more:tags:')
+
+	def test_todo_read_DONE(self):
+		self.assertEqual(self.document.headings[2].todo, 'DONE')
+		self.assertEqual(self.document.headings[2].title, 'Überschrift 3')
+		self.assertEqual(str(self.document.headings[2]), '* DONE Überschrift 3						 :lesser:tag:')
+
+	def test_todo_read_special(self):
+		self.assertEqual(self.document.headings[3].todo, 'DÖNE')
+		self.assertEqual(self.document.headings[3].title, 'Überschrift 4')
+
+		self.assertEqual(self.document.headings[4].todo, 'DONß')
+		self.assertEqual(self.document.headings[4].title, 'Überschrift 5')
+
+		self.assertEqual(self.document.headings[5].todo, 'DONÉ')
+		self.assertEqual(self.document.headings[5].title, 'Überschrift 6')
+
+		# TODO this test will fail as long as unicode is not fully
+		# supported by liborgmode
+		self.assertEqual(self.document.headings[6].todo, None)
+		self.assertEqual(self.document.headings[6].title, 'DONé    Überschrift 7')
+
+	def test_todo_del_todo(self):
+		self.assertEqual(self.document.headings[0].todo, 'TODO')
+		del self.document.headings[0].todo
+		self.assertEqual(self.document.headings[0].is_dirty_body, False)
+		self.assertEqual(self.document.headings[0].is_dirty_heading, True)
+		self.assertEqual(self.document.headings[0].todo, None)
+		self.assertEqual(self.document.headings[0].title, 'Überschrift 1')
+		self.assertEqual(str(self.document.headings[0]), '* Überschrift 1							    :testtag:')
+		self.assertEqual(self.document.write(), True)
+
+		# sanity check
+		d = VimBuffer()
+		self.assertEqual(d.headings[0].todo, None)
+		self.assertEqual(d.headings[0].title, 'Überschrift 1')
+		self.assertEqual(str(d.headings[0]), '* Überschrift 1							    :testtag:')
+
+	def test_todo_write_todo_lowercase(self):
+		self.assertEqual(self.document.headings[0].todo, 'TODO')
+		self.document.headings[0].todo = 'waiting'
+		self.assertEqual(self.document.headings[0].is_dirty_body, False)
+		self.assertEqual(self.document.headings[0].is_dirty_heading, True)
+		self.assertEqual(self.document.headings[0].todo, 'WAITING')
+		self.assertEqual(self.document.headings[0].title, 'Überschrift 1')
+		self.assertEqual(str(self.document.headings[0]), '* WAITING Überschrift 1						    :testtag:')
+		self.assertEqual(self.document.write(), True)
+
+		# sanity check
+		d = VimBuffer()
+		self.assertEqual(d.headings[0].todo, 'WAITING')
+		self.assertEqual(d.headings[0].title, 'Überschrift 1')
+		self.assertEqual(str(d.headings[0]), '* WAITING Überschrift 1						    :testtag:')
+
+	def test_todo_write_todo_uppercase(self):
+		self.assertEqual(self.document.headings[0].todo, 'TODO')
+		self.document.headings[0].todo = 'DONE'
+		self.assertEqual(self.document.headings[0].is_dirty_body, False)
+		self.assertEqual(self.document.headings[0].is_dirty_heading, True)
+		self.assertEqual(self.document.headings[0].todo, 'DONE')
+		self.assertEqual(self.document.headings[0].title, 'Überschrift 1')
+		self.assertEqual(str(self.document.headings[0]), '* DONE Überschrift 1						    :testtag:')
+		self.assertEqual(self.document.write(), True)
+
+		# sanity check
+		d = VimBuffer()
+		self.assertEqual(d.headings[0].todo, 'DONE')
+		self.assertEqual(d.headings[0].title, 'Überschrift 1')
+		self.assertEqual(str(d.headings[0]), '* DONE Überschrift 1						    :testtag:')
+
+	def test_todo_set_illegal_todo(self):
+		def set_todo(todo):
+			self.document.headings[0].todo = todo
+		self.assertEqual(self.document.headings[0].todo, 'TODO')
+		self.assertRaises(ValueError, set_todo, 'DO NE')
+		self.assertRaises(ValueError, set_todo, 'DO\tNE')
+		self.assertRaises(ValueError, set_todo, 'D\nNE')
+		self.assertRaises(ValueError, set_todo, 'DO\rNE')
+		self.assertEqual(self.document.headings[0].todo, 'TODO')
+
 def suite():
-	return unittest.TestLoader().loadTestsFromTestCase(VimBufferTestCase)
+	return ( \
+			unittest.TestLoader().loadTestsFromTestCase(VimBufferTestCase), \
+			unittest.TestLoader().loadTestsFromTestCase(VimBufferTagsTestCase), \
+			unittest.TestLoader().loadTestsFromTestCase(VimBufferTodoTestCase), \
+			)

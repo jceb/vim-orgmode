@@ -238,49 +238,127 @@ class HeadingList(MultiPurposeList):
 		self._associate_heading(o)
 		MultiPurposeList.extend(self, o)
 
-REGEX_HEADING = re.compile('^(?P<level>\*+)( (?P<todo>[A-Z]+))?( (?P<title>.*?))?\s*(?P<tags>:[a-zA-Z:]+:)?$')
+REGEX_HEADING = re.compile('^(?P<level>\*+)(?P<todotitle>(\s+(?P<todo>[^\s]+))?(\s+(?P<title>.*?))?)\s*(\s(?P<tags>:[\w_:]+:))?$', flags=re.U|re.L)
+REGEX_TODO = re.compile('^[^\s]*$')
 
 class Heading(object):
 	""" Structural heading object """
 
-	def __init__(self, document=None, data=None, orig_start=None):
+	def __init__(self, level=1, title='', tags=None, todo=None, body=None):
 		"""
-		:document:	The document object this heading belongs to
-		:data:		When creating a new heading from a file or buffer this is a
-					list of lines/data belonging to the heading. The first line
-					must contain the heading!
-		:orig_start:	The original start of the heading in case it was read
-						from a document.
+		:level:		Level of the heading
+		:title:		Title of the heading
+		:tags:		Tags of the heading
+		:todo:		Todo state of the heading
+		:body:		Body of the heading
 		"""
 		object.__init__(self)
 
-		self._document      = document
-		self._parent        = None
-		self._dirty_heading = False
-		self._dirty_body    = False
-		self._orig_len      = len(data) if data else 0
-		self._orig_start    = orig_start
-		self._body          = MultiPurposeList(initlist = data[1:] if data else [], on_change=self.set_dirty_body)
-		self._level, self._title, self._tags, self._todo = self.__class__.parse_title(data[0] if data else '')
+		#self._level, self._title, self._tags, self._todo = self.__class__.parse_title(data[0] if data else '')
 
-		self._children  = HeadingList(self)
+		self._document      = None
+		self._parent        = None
+		self._children      = HeadingList(self)
+		self._orig_start    = None
+		self._orig_len      = 0
+
+		self._dirty_heading = False
+		self._level         = level
+		self._todo          = None
+		if todo: self.todo  = todo
+		self._tags          = MultiPurposeList(on_change=self.set_dirty_heading)
+		self._title         = ''
+		if title: self.title = title
+		if tags: self.tags   = tags
+
+		self._dirty_body    = False
+		self._body          = MultiPurposeList(on_change=self.set_dirty_body)
+		if body: self.body  = body
 
 	def __str__(self):
-		# TODO this must return a properly formatted heading!!!!
-		return ' '.join(('*'*self.level, self.title))
+		res = '*' * self.level
+		if self.todo:
+			res += ' ' + self.todo
+		res += ' ' + self.title
+		res = res.strip()
+
+		# compute position of tags
+		if self.tags:
+			# en- and decoding is done because python otherwise counts
+			# bytewise instead of characterwise
+			res = res.decode('utf-8')
+
+			tabs = 0
+			spaces = 2
+			tags = (':%s:' % (':'.join(self.tags))).decode('utf-8')
+
+			ts = 8
+			tag_column = 77
+			if self.document:
+				ts = self.document.tabstop
+				tag_column = self.document.tag_column
+
+			len_heading = len(res)
+			len_tags = len(tags)
+			if len_heading + spaces + len_tags < tag_column:
+				spaces_to_next_tabstop =  ts - divmod(len_heading, ts)[1]
+
+				if len_heading + spaces_to_next_tabstop + len_tags < tag_column:
+					tabs, spaces = divmod(tag_column - (len_heading + spaces_to_next_tabstop + len_tags), ts)
+
+					if spaces_to_next_tabstop:
+						tabs += 1
+				else:
+					spaces = tag_column - (len_heading + len_tags)
+
+			res = res.encode('utf-8') + '\t' * tabs + ' ' * spaces + tags.encode('utf-8')
+		return res
 
 	def __len__(self):
+		# 1 is for the heading's title
 		return 1 + len(self.body)
 
 	@classmethod
-	def parse_title(cls, heading_line):
-		m = REGEX_HEADING.match(heading_line)
-		if m:
-			r = m.groupdict()
-			title = r['title'] if r['title'] else ''
-			tags = r['tags'] if r['tags'] else []
-			return (len(r['level']), title, tags, r['todo'])
-		return (1, '', [], None)
+	def parse_heading_from_data(cls, data, document=None, orig_start=None):
+		""" Construct a new heading from the provided data
+
+		:document:		The document object this heading belongs to
+		:data:			List of lines
+		:orig_start:	The original start of the heading in case it was read
+						from a document. If orig_start is provided, the
+						resulting heading will not be marked dirty.
+
+		:returns:	The newly created heading
+	    """
+		def parse_title(heading_line):
+			m = REGEX_HEADING.match(heading_line)
+			if m:
+				r = m.groupdict()
+				tags = filter(lambda x: x != '', r['tags'].split(':')) if r['tags'] else []
+				todo = r['todo']
+				if not todo or todo == todo.upper():
+					title = r['title'] if r['title'] else ''
+				else:
+					todo = None
+					title = r['todotitle'].strip()
+				return (len(r['level']), todo, title, tags)
+			raise ValueError('Data doesn\'t start with a heading definition.')
+
+		if not data:
+			raise ValueError('Unable to create heading, no data provided.')
+
+		h = cls()
+		h.level, h.todo, h.title, h.tags = parse_title(data[0])
+		h.body = data[1:]
+		if orig_start:
+			h._dirty_heading = False
+			h._dirty_body    = False
+			h._orig_start    = orig_start
+			h._orig_len      = len(h)
+		if document:
+			h._document = document
+
+		return h
 
 	@classmethod
 	def identify_heading(cls, line):
@@ -301,55 +379,9 @@ class Heading(object):
 			else:
 				return None
 
-	def children():
-		""" Subheadings of the current heading """
-		def fget(self):
-			return self._children
-		def fset(self, value):
-			self._children[:] = value
-		return locals()
-	children = property(**children())
-
-	def body():
-		""" Holds the content belonging to the heading """
-		def fget(self):
-			return self._body
-
-		def fset(self, value):
-			if type(value) in (list, tuple):
-				self._body[:] = value
-			elif type(value) in (unicode, str):
-				self._body[:] = value.split('\n')
-			else:
-				self._body[:] = list(str(value))
-		return locals()
-	body = property(**body())
-
-	@property
-	def document(self):
-		""" Read only access to the document. If you want to change the
-		document, just assign the heading to another document """
-		return self._document
-
-	def set_dirty(self):
-		""" Mark the heading dirty so that it will be rewritten when saving the
-		document """
-		self._dirty_heading = True
-		self._dirty_body = True
-
-	def set_dirty_heading(self):
-		""" Mark the heading dirty so that it will be rewritten when saving the
-		document """
-		self._dirty_heading = True
-
-	def set_dirty_body(self):
-		""" Mark the heading dirty so that it will be rewritten when saving the
-		document """
-		self._dirty_body = True
-
 	@property
 	def is_dirty(self):
-		""" Return True if the heading is marked dirty """
+		""" Return True if the heading's body is marked dirty """
 		return self._dirty_heading or self._dirty_body
 
 	@property
@@ -359,85 +391,30 @@ class Heading(object):
 
 	@property
 	def is_dirty_body(self):
-		""" Return True if the heading is marked dirty """
+		""" Return True if the heading's body is marked dirty """
 		return self._dirty_body
 
-	def title():
-		""" Access to the title of the heading """
-		def fget(self):
-			return self._title
-		def fset(self, value):
-			if type(value) in (unicode, str):
-				self._title = value
-			else:
-				self._title = str(value)
-			self.set_dirty_heading()
-		return locals()
-	title = property(**title())
+	def set_dirty(self):
+		""" Mark the heading and body dirty so that it will be rewritten when
+		saving the document """
+		self._dirty_heading = True
+		self._dirty_body = True
 
-	def level():
-		""" Access to the heading level """
-		def fget(self):
-			return self._level
-		def fset(self, value):
-			self._level = int(value)
-			self.set_dirty_heading()
-		return locals()
-	level = property(**level())
+	def set_dirty_heading(self):
+		""" Mark the heading dirty so that it will be rewritten when saving the
+		document """
+		self._dirty_heading = True
+
+	def set_dirty_body(self):
+		""" Mark the heading's body dirty so that it will be rewritten when
+		saving the document """
+		self._dirty_body = True
 
 	@property
-	def start(self):
-		""" Access to the starting line of the heading """
-		if not self.document:
-			return
-
-		def compute_start(h):
-			if h:
-				return len(h) + compute_start(h.previous_heading)
-			return len(self.document.meta_information) if self.document.meta_information else 0
-		return compute_start(self.previous_heading)
-
-	@property
-	def start_vim(self):
-		if self.start != None:
-			return self.start + 1
-
-	@property
-	def end(self):
-		""" Access to the ending line of the heading """
-		if self.start != None:
-			return self.start + len(self.body)
-
-	@property
-	def end_vim(self):
-		if self.end != None:
-			return self.end + 1
-
-	@property
-	def end_of_last_child(self):
-		""" Access to end of the last child """
-		if self.children:
-			child = self.children[-1]
-			while child.children:
-				child = child.children[-1]
-			return child.end
-		return self.end
-
-	@property
-	def end_of_last_child_vim(self):
-		return self.end_of_last_child + 1
-
-	@property
-	def first_child(self):
-		""" Access to the first child heading or None if no children exist """
-		if self.children:
-			return self.children[0]
-
-	@property
-	def last_child(self):
-		""" Access to the last child heading or None if no children exist """
-		if self.children:
-			return self.children[-1]
+	def document(self):
+		""" Read only access to the document. If you want to change the
+		document, just assign the heading to another document """
+		return self._document
 
 	@property
 	def parent(self):
@@ -505,72 +482,155 @@ class Heading(object):
 					return h.next_sibling
 				else:
 					h = h.parent
-	def tags():
-		""" Tags """
+
+	@property
+	def start(self):
+		""" Access to the starting line of the heading """
+		if not self.document:
+			return
+
+		def compute_start(h):
+			if h:
+				return len(h) + compute_start(h.previous_heading)
+			return len(self.document.meta_information) if self.document.meta_information else 0
+		return compute_start(self.previous_heading)
+
+	@property
+	def start_vim(self):
+		if self.start != None:
+			return self.start + 1
+
+	@property
+	def end(self):
+		""" Access to the ending line of the heading """
+		if self.start != None:
+			return self.start + len(self.body)
+
+	@property
+	def end_vim(self):
+		if self.end != None:
+			return self.end + 1
+
+	@property
+	def end_of_last_child(self):
+		""" Access to end of the last child """
+		if self.children:
+			child = self.children[-1]
+			while child.children:
+				child = child.children[-1]
+			return child.end
+		return self.end
+
+	@property
+	def end_of_last_child_vim(self):
+		return self.end_of_last_child + 1
+
+	def children():
+		""" Subheadings of the current heading """
 		def fget(self):
-			if self._tags == None:
-				text = self.text.split()
-				if not text or len(text[-1]) <= 2 or text[-1][0] != ':' or text[-1][-1] != ':':
-					self._tags = []
-				else:
-					self._tags = [ x for x in text[-1].split(':') if x ]
-			return self._tags
-
+			return self._children
 		def fset(self, value):
-			"""
-			:value:	list of tags, the empty list deletes all tags
-			"""
-			# find beginning of tags
-			text = self.text.decode('utf-8')
-			idx = text.rfind(' ')
-			idx2 = text.rfind('\t')
-			idx = idx if idx > idx2 else idx2
-
-			if not value:
-				if self.tags:
-					# remove tags
-					vim.current.buffer[self.start] = '%s %s' % ('*'*self.level, text[:idx].strip().encode('utf-8'))
-			else:
-				if self.tags:
-					text = text[:idx]
-				text = text.strip()
-
-				tabs = 0
-				spaces = 2
-				tags = ':%s:' % (':'.join(value))
-
-				tag_column = int(settings.get('org_tags_column', '77'))
-
-				len_heading = self.level + 1 + len(text)
-				if len_heading + spaces + len(tags) < tag_column:
-					ts = int(vim.eval('&ts'))
-					tmp_spaces =  ts - divmod(len_heading, ts)[1]
-
-					if len_heading + tmp_spaces + len(tags) < tag_column:
-						tabs, spaces = divmod(tag_column - (len_heading + tmp_spaces + len(tags)), ts)
-
-						if tmp_spaces:
-							tabs += 1
-					else:
-						spaces = tag_column - (len_heading + len(tags))
-
-				# add tags
-				vim.current.buffer[self.start] = '%s %s%s%s%s' % ('*'*self.level, text.encode('utf-8'), '\t'*tabs, ' '*spaces, tags)
-
-			self._tags = value
+			self._children[:] = value
 		return locals()
-	tags = property(**tags())
+	children = property(**children())
+
+	@property
+	def first_child(self):
+		""" Access to the first child heading or None if no children exist """
+		if self.children:
+			return self.children[0]
+
+	@property
+	def last_child(self):
+		""" Access to the last child heading or None if no children exist """
+		if self.children:
+			return self.children[-1]
+
+	def level():
+		""" Access to the heading level """
+		def fget(self):
+			return self._level
+		def fset(self, value):
+			self._level = int(value)
+			self.set_dirty_heading()
+		def fdel(self):
+			self.level = None
+		return locals()
+	level = property(**level())
 
 	def todo():
-		"""Set and get todo state """
+		""" Todo state of current heading. When todo state is set, it will be
+		converted to uppercase """
 		def fget(self):
 			# extract todo state from heading
 			return self._todo
 		def fset(self, value):
 			# update todo state
-			self._todo = value
+			if type(value) not in (unicode, str, type(None)):
+				raise ValueError('Todo state must be a string or None.')
+			if value and not REGEX_TODO.match(value):
+				raise ValueError('Found non allowed character in todo state!')
+			if not value:
+				self._todo = None
+			else:
+				self._todo = value.upper()
+			self.set_dirty_heading()
+		def fdel(self):
+			self.todo = None
 		return locals()
 	todo = property(**todo())
+
+	def title():
+		""" Title of current heading """
+		def fget(self):
+			return self._title
+		def fset(self, value):
+			if type(value) not in (unicode, str):
+				raise ValueError('Title must be a string.')
+			self._title = value
+			self.set_dirty_heading()
+		def fdel(self):
+			self.title = ''
+		return locals()
+	title = property(**title())
+
+	def tags():
+		""" Tags of the current heading """
+		def fget(self):
+			return self._tags
+		def fset(self, value):
+			v = value
+			if type(value) in (unicode, str):
+				v = list(value)
+			for i in v:
+				if type(i) not in (unicode, str):
+					raise ValueError('Found non string value in tags!')
+				if ' ' in i \
+						or '\t' in i \
+						or ':' in i:
+					raise ValueError('Found non allowed character in tag!')
+			self._tags[:] = v
+		def fdel(self):
+			self.tags = []
+		return locals()
+	tags = property(**tags())
+
+	def body():
+		""" Holds the content belonging to the heading """
+		def fget(self):
+			return self._body
+
+		def fset(self, value):
+			if type(value) in (list, tuple):
+				self._body[:] = value
+			elif type(value) in (unicode, str):
+				self._body[:] = value.split('\n')
+			else:
+				self._body[:] = list(str(value))
+		def fdel(self):
+			self.body = []
+		return locals()
+	body = property(**body())
 
 class Document(object):
 	""" Representation of a whole org-mode document """
@@ -584,24 +644,28 @@ class Document(object):
 
 		# is a list - only the Document methods should work with this list!
 		self._content                   = None
-		self._dirty_meta_information     = False
+		self._dirty_meta_information    = False
 		self._meta_information          = MultiPurposeList(on_change = self.set_dirty_meta_information)
 		self._orig_meta_information_len = None
 		self._headings                  = HeadingList(self)
 		self._deleted_headings          = []
 
-	def _init_dom(self):
+		# settings needed to align tags properly
+		self.tabstop                    = 8
+		self.tag_column                 = 77
+
+	def _init_dom(self, heading=Heading):
 		""" Initialize all headings in document - build DOM
 
-		:returns: None
+		:returns:	None
 	    """
 		def init_heading(heading):
 			"""
-			:returns: the initialized heading
+			:returns	the initialized heading
 			"""
 			start = heading.end + 1
 			while True:
-				new_heading = self.find_heading(start)
+				new_heading = self.find_heading(start, heading=heading)
 
 				# * Heading 1 <- heading
 				# * Heading 1 <- sibling
@@ -629,7 +693,7 @@ class Document(object):
 
 			return heading
 
-		h = self.find_heading()
+		h = self.find_heading(heading=heading)
 		# initialize meta information
 		if h:
 			self._meta_information.data.extend(self._content[:h._orig_start])
@@ -641,7 +705,7 @@ class Document(object):
 		while h:
 			self.headings.data.append(h)
 			init_heading(h)
-			h = self.find_heading(h.end_of_last_child + 1)
+			h = self.find_heading(h.end_of_last_child + 1, heading=heading)
 
 	def meta_information():
 		"""
@@ -680,6 +744,8 @@ class Document(object):
 		raise NotImplementedError('Abstract method, please use concrete impelementation!')
 
 	def set_dirty_meta_information(self):
+		""" Mark the meta information dirty so that it will be rewritten when
+		saving the document """
 		self._dirty_meta_information = True
 
 	@property
@@ -707,6 +773,7 @@ class Document(object):
 
 	@property
 	def is_dirty_meta_information(self):
+		""" Return True if the meta information is marked dirty """
 		return self._dirty_meta_information
 
 	def all_headings(self):
@@ -768,4 +835,4 @@ class Document(object):
 		if start != None and end == None:
 			end = len_cb - 1
 		if None not in (start, end):
-			return heading(self, data=self._content[start:end + 1], orig_start=start)
+			return heading.parse_heading_from_data(self._content[start:end + 1], document=self, orig_start=start)

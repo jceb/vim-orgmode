@@ -13,15 +13,14 @@ import test_date
 import unittest
 
 if __name__ == '__main__':
-	tests = unittest.TestSuite([
-		test_vimbuffer.suite(),
-		#test_edit_structure.suite(),
-		#test_misc.suite(),
-		#test_navigator.suite(),
-		#test_show_hide.suite(),
-		#test_tags_properties.suite(),
-		#test_date.suite(),
-		#test_todo.suite()
-		])
+	tests = unittest.TestSuite()
+	tests.addTests(test_vimbuffer.suite())
+	#tests.addTests(test_edit_structure.suite())
+	#tests.addTests(test_misc.suite())
+	#tests.addTests(test_navigator.suite())
+	#tests.addTests(test_show_hide.suite())
+	#tests.addTests(test_tags_properties.suite())
+	#tests.addTests(test_date.suite())
+	#tests.addTests(test_todo.suite())
 	runner = unittest.TextTestRunner()
 	runner.run(tests)
