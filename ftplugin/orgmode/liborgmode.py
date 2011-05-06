@@ -652,10 +652,11 @@ class Document(object):
 		self.tabstop                    = 8
 		self.tag_column                 = 77
 
-	def _init_dom(self, heading=Heading):
-		""" Initialize all headings in document - build DOM
+	def load(self, heading=Heading):
+		""" Initialize all headings in document - build DOM. This method
+		should be call prior to accessing the document.
 
-		:returns:	None
+		:returns:	self
 	    """
 		def init_heading(heading):
 			"""
@@ -704,6 +705,8 @@ class Document(object):
 			self.headings.data.append(h)
 			init_heading(h)
 			h = self.find_heading(h.end_of_last_child + 1, heading=heading)
+
+		return self
 
 	def meta_information():
 		"""

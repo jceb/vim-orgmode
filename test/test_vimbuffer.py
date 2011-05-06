@@ -40,7 +40,7 @@ Bla Bla bla bla
 * Überschrift 3
   asdf sdf
 """.split('\n')
-		self.document = VimBuffer()
+		self.document = VimBuffer().load()
 
 	def test_meta_information_assign_directly(self):
 		# read meta information from document
@@ -107,7 +107,7 @@ Bla Bla bla bla
 * Überschrift 3
   asdf sdf
 """.split('\n')
-		self.document = VimBuffer()
+		self.document = VimBuffer().load()
 
 		# read no meta information from document
 		self.assertEqual(self.document.meta_information, [])
@@ -155,7 +155,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.is_dirty, False)
 		self.assertEqual(self.document.headings[0].start, 2)
 		self.assertEqual(self.document.headings[0]._orig_start, 2)
-		self.assertEqual('\n'.join(VimBuffer().meta_information), '#More or less meta information\n#lesser information')
+		self.assertEqual('\n'.join(VimBuffer().load().meta_information), '#More or less meta information\n#lesser information')
 
 		# shorten meta information
 		self.assertEqual(self.document.is_dirty, False)
@@ -168,7 +168,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.is_dirty, False)
 		self.assertEqual(self.document.headings[0].start, 1)
 		self.assertEqual(self.document.headings[0]._orig_start, 1)
-		self.assertEqual('\n'.join(VimBuffer().meta_information), '!More or less meta information')
+		self.assertEqual('\n'.join(VimBuffer().load().meta_information), '!More or less meta information')
 
 		# lengthen meta information
 		self.assertEqual(self.document.is_dirty, False)
@@ -181,7 +181,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.is_dirty, False)
 		self.assertEqual(self.document.headings[0].start, 3)
 		self.assertEqual(self.document.headings[0]._orig_start, 3)
-		self.assertEqual('\n'.join(VimBuffer().meta_information), '!More or less meta information\ntest\ntest')
+		self.assertEqual('\n'.join(VimBuffer().load().meta_information), '!More or less meta information\ntest\ntest')
 
 		# write empty meta information
 		self.assertEqual(self.document.is_dirty, False)
@@ -194,7 +194,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.is_dirty, False)
 		self.assertEqual(self.document.headings[0].start, 0)
 		self.assertEqual(self.document.headings[0]._orig_start, 0)
-		self.assertEqual(VimBuffer().meta_information, [])
+		self.assertEqual(VimBuffer().load().meta_information, [])
 
 	def test_write_changed_title(self):
 		# write a changed title
@@ -219,7 +219,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0]._orig_len, 4)
 		self.assertEqual(self.document.headings[0].children[0].start, 6)
 		self.assertEqual(self.document.headings[0].children[0]._orig_start, 6)
-		self.assertEqual(VimBuffer().headings[0].title, 'Heading 1')
+		self.assertEqual(VimBuffer().load().headings[0].title, 'Heading 1')
 
 	def test_write_changed_body(self):
 		# write a changed body
@@ -245,7 +245,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0]._orig_len, 4)
 		self.assertEqual(self.document.headings[0].children[0].start, 6)
 		self.assertEqual(self.document.headings[0].children[0]._orig_start, 6)
-		self.assertEqual(VimBuffer().headings[0].body, ['Another text', '', 'Bla bla'])
+		self.assertEqual(VimBuffer().load().headings[0].body, ['Another text', '', 'Bla bla'])
 
 	def test_write_shortened_body(self):
 		# write a shortened body
@@ -270,7 +270,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0]._orig_len, 2)
 		self.assertEqual(self.document.headings[0].children[0].start, 4)
 		self.assertEqual(self.document.headings[0].children[0]._orig_start, 4)
-		self.assertEqual(VimBuffer().headings[0].body, ['Another text'])
+		self.assertEqual(VimBuffer().load().headings[0].body, ['Another text'])
 
 	def test_write_lengthened_body(self):
 		# write a lengthened body
@@ -295,7 +295,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0]._orig_len, 5)
 		self.assertEqual(self.document.headings[0].children[0].start, 7)
 		self.assertEqual(self.document.headings[0].children[0]._orig_start, 7)
-		self.assertEqual(VimBuffer().headings[0].body, ['Another text', 'more', 'and more', 'and more'])
+		self.assertEqual(VimBuffer().load().headings[0].body, ['Another text', 'more', 'and more', 'and more'])
 
 	def test_write_delete_heading(self):
 		# delete a heading
@@ -322,7 +322,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0].children[0]._orig_len, 3)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(self.document.headings[0].children), 1)
 		self.assertEqual(self.document.headings[0].end, 5)
 		self.assertEqual(d.headings[0].end, 5)
@@ -358,7 +358,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[1]._orig_len, 3)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(self.document.headings), 2)
 		self.assertEqual(d.headings[0].end, 2)
 		self.assertEqual(len(d.headings[0]), 1)
@@ -399,7 +399,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[-1].end_of_last_child, 17)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(self.document.headings), 2)
 		self.assertEqual(d.headings[0].end, 5)
 		self.assertEqual(d.headings[0].end_of_last_child, 16)
@@ -451,7 +451,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[-1].title, 'Überschrift 3')
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(self.document.headings), 2)
 		self.assertEqual(len(self.document.headings[0].children), 1)
 		self.assertEqual(len(self.document.headings[0].children[0].children), 1)
@@ -490,7 +490,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0].children[-1].title, 'Test heading')
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(d.headings[0].children), 3)
 		self.assertEqual(d.headings[0].children[-1].title, 'Test heading')
 
@@ -518,7 +518,7 @@ Bla Bla bla bla
 		self.assertEqual(len(self.document.headings[1]), 4)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(d.headings), 4)
 		self.assertEqual(d.headings[0].title, 'Test heading')
 		self.assertEqual(d.headings[0].start, 2)
@@ -552,7 +552,7 @@ Bla Bla bla bla
 		self.assertEqual(len(self.document.headings[-2]), 3)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(d.headings), 4)
 		self.assertEqual(d.headings[-1].title, 'Test heading')
 		self.assertEqual(d.headings[-1].start, 21)
@@ -587,7 +587,7 @@ Bla Bla bla bla
 		self.assertEqual(len(self.document.headings[-1]), 3)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(d.headings), 3)
 		self.assertEqual(len(d.headings[-1]), 3)
 		self.assertEqual(d.headings[-1].children[-1].title, 'Test heading')
@@ -626,7 +626,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0].children[1].children[-1].start, 17)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(d.headings), 3)
 		self.assertEqual(len(d.headings[0].children[1].children), 2)
 		self.assertEqual(d.headings[0].children[1].children[0].title, 'Test heading')
@@ -664,7 +664,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0].children[1].children[0].start, 13)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(d.headings[0].children[1].children), 1)
 		self.assertEqual(d.headings[0].children[1].title, 'Überschrift 1.2')
 		self.assertEqual(d.headings[0].children[1].children[0].title, 'Test heading')
@@ -710,7 +710,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0].children[1].children[1].start, 22)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(d.headings[0].children[1].title, 'Überschrift 1.2')
 		self.assertEqual(d.headings[0].children[1].children[0].title, 'Test heading')
 		self.assertEqual(d.headings[0].children[1].children[0].children[0].title, 'another heading')
@@ -792,7 +792,7 @@ Bla Bla bla bla
 * Überschrift 3
   asdf sdf
 """.split('\n')
-		self.document = VimBuffer()
+		self.document = VimBuffer().load()
 		vim.current.window.cursor = (3, 0)
 		h = self.document.current_heading()
 		self.assertNotEqual(h, None)
@@ -811,7 +811,7 @@ Bla Bla bla bla
 		vim.current.buffer = """
 * Überschrift 2
 * Überschrift 3""".split('\n')
-		self.document = VimBuffer()
+		self.document = VimBuffer().load()
 		vim.current.window.cursor = (3, 0)
 		h = self.document.current_heading()
 		self.assertNotEqual(h, None)
@@ -928,7 +928,7 @@ Bla Bla bla bla
 * Überschrift 4 super long long long long long long long long extremely long title	:title:long:
 * TODO Überschrift 5 super long long long long long long long long extremely long title	:title_with_todo:
 """.split('\n')
-		self.document = VimBuffer()
+		self.document = VimBuffer().load()
 
 	def test_tag_read_one(self):
 		self.assertEqual(len(self.document.headings[0].tags), 1)
@@ -982,7 +982,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.write(), True)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(d.headings[0].tags), 0)
 		self.assertEqual(d.headings[0].title, 'Überschrift 1')
 		self.assertEqual(str(d.headings[0]), '* Überschrift 1')
@@ -997,7 +997,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.write(), True)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(d.headings[0].tags), 1)
 		self.assertEqual(d.headings[0].tags, ['justonetag'])
 		self.assertEqual(d.headings[0].title, 'Überschrift 1')
@@ -1013,7 +1013,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.write(), True)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(len(d.headings[1].tags), 3)
 		self.assertEqual(d.headings[1].tags, ['justonetag', 'moretags', 'lesstags'])
 		self.assertEqual(d.headings[1].title, 'Überschrift 2')
@@ -1055,7 +1055,7 @@ Bla Bla bla bla
 * DONÉ Überschrift 6
 * DONé    Überschrift 7
 """.split('\n')
-		self.document = VimBuffer()
+		self.document = VimBuffer().load()
 
 	def test_todo_read_TODO(self):
 		self.assertEqual(self.document.headings[0].todo, 'TODO')
@@ -1103,7 +1103,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.write(), True)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(d.headings[0].todo, None)
 		self.assertEqual(d.headings[0].title, 'Überschrift 1')
 		self.assertEqual(str(d.headings[0]), '* Überschrift 1							    :testtag:')
@@ -1119,7 +1119,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.write(), True)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(d.headings[0].todo, 'WAITING')
 		self.assertEqual(d.headings[0].title, 'Überschrift 1')
 		self.assertEqual(str(d.headings[0]), '* WAITING Überschrift 1						    :testtag:')
@@ -1135,7 +1135,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.write(), True)
 
 		# sanity check
-		d = VimBuffer()
+		d = VimBuffer().load()
 		self.assertEqual(d.headings[0].todo, 'DONE')
 		self.assertEqual(d.headings[0].title, 'Überschrift 1')
 		self.assertEqual(str(d.headings[0]), '* DONE Überschrift 1						    :testtag:')

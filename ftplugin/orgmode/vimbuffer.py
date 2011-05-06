@@ -11,6 +11,15 @@ class VimBuffer(Document):
 		"""
 		Document.__init__(self)
 		self._bufnr = bufnr
+
+	@property
+	def bufnr(self):
+		"""
+		:returns:	The buffer's number for the current document
+		"""
+		return self._bufnr
+
+	def load(self):
 		if self._bufnr == 0:
 			self._content = vim.current.buffer
 		else:
@@ -23,15 +32,7 @@ class VimBuffer(Document):
 			if not _buffer:
 				raise BufferNotFound('Unable to locate buffer number #%d' % self._bufnr)
 			self._content = _buffer
-
-		self._init_dom()
-
-	@property
-	def bufnr(self):
-		"""
-		:returns:	The buffer's number for the current document
-		"""
-		return self._bufnr
+		return Document.load(self)
 
 	def write(self):
 		""" write the changes to the vim buffer

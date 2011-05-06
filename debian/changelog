@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-26) unstable; urgency=low
+
+  * add load method to documents for initializing the DOM
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 06 May 2011 21:21:39 +0900
+
 vim-orgmode (0.1.0-25) unstable; urgency=low
 
   * fix heading initialization (Heading.parse_heading_from_data) when orig_start == 0
