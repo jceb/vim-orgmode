@@ -6,8 +6,8 @@ sys.path.append('../ftplugin')
 
 import vim
 
-from orgmode.liborgmode import Heading
-from orgmode.vimbuffer import VimBuffer
+from liborgmode import Heading
+from orgmode.document import VimBuffer
 
 class VimBufferTestCase(unittest.TestCase):
 	def setUp(self):

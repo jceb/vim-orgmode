@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import test_vimbuffer
-import test_edit_structure
-import test_misc
-import test_navigator
-import test_show_hide
-import test_tags_properties
-import test_todo
-import test_date
+#import test_edit_structure
+#import test_misc
+#import test_navigator
+#import test_show_hide
+#import test_tags_properties
+#import test_todo
+#import test_date
 
 import unittest
 

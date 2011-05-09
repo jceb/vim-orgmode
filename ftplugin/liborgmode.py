@@ -3,8 +3,6 @@
 import re
 from UserList import UserList
 
-from orgmode import settings
-
 DIRECTION_FORWARD  = True
 DIRECTION_BACKWARD = False
 

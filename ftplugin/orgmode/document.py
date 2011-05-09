@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from exceptions import BufferNotFound
-from liborgmode import Document
+from liborgmode import Document, Heading
 import vim
 
 class VimBuffer(Document):
@@ -19,7 +19,7 @@ class VimBuffer(Document):
 		"""
 		return self._bufnr
 
-	def load(self):
+	def load(self, heading=Heading):
 		if self._bufnr == 0:
 			self._content = vim.current.buffer
 		else:
@@ -32,7 +32,7 @@ class VimBuffer(Document):
 			if not _buffer:
 				raise BufferNotFound('Unable to locate buffer number #%d' % self._bufnr)
 			self._content = _buffer
-		return Document.load(self)
+		return Document.load(self, heading=Heading)
 
 	def write(self):
 		""" write the changes to the vim buffer
