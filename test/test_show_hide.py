@@ -21,9 +21,9 @@ class ShowHideTestCase(unittest.TestCase):
 				u'exists("g:org_leader")': 0,
 				u'b:changedtick': 0,
 				u"v:count": 0}
-		if not u'ShowHide' in ORGMODE.plugins:
+		if not 'ShowHide' in ORGMODE.plugins:
 			ORGMODE.register_plugin('ShowHide')
-		self.showhide = ORGMODE.plugins[u'ShowHide']
+		self.showhide = ORGMODE.plugins['ShowHide']
 		vim.current.buffer = """
 * Überschrift 1
 Text 1
@@ -50,6 +50,28 @@ Bla Bla bla bla
 		self.assertEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(vim.EVALHISTORY[-1], 'feedkeys("<Tab>", "n")')
 		self.assertEqual(vim.current.window.cursor, (1, 0))
+
+	def test_toggle_folding_first_heading_with_no_children(self):
+		vim.current.buffer = """
+* Überschrift 1
+Text 1
+
+Bla bla
+* Überschrift 2
+* Überschrift 3
+  asdf sdf
+""".split('\n')
+		vim.EVALRESULTS = {
+				u'foldclosed(2)': 2,
+				u'foldclosed(6)': -1,
+				u'foldclosed(7)': -1,
+				u'b:changedtick': 0,
+				}
+		vim.current.window.cursor = (2, 0)
+
+		self.assertNotEqual(self.showhide.toggle_folding(), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 1zo')
+		self.assertEqual(vim.current.window.cursor, (2, 0))
 
 	def test_toggle_folding_close_one(self):
 		vim.current.window.cursor = (13, 0)
@@ -97,7 +119,7 @@ Bla Bla bla bla
 				}
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 0zo')
+		self.assertEqual(vim.CMDHISTORY[-1], 'normal 1zo')
 		self.assertEqual(vim.current.window.cursor, (2, 0))
 
 	def test_toggle_folding_open_multiple_first_level_open(self):

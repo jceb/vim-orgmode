@@ -1,3 +1,10 @@
+vim-orgmode (0.1.0-35) unstable; urgency=low
+
+  * fix a bug in ShowHide.toggle_folding when folding the first heading in
+  	document when it doesn't have a child heading
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 19:55:52 +0900
+
 vim-orgmode (0.1.0-34) unstable; urgency=low
 
   * enable tests for ShowHide plugin

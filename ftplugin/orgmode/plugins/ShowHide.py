@@ -39,7 +39,10 @@ class ShowHide(object):
 
 		if int(vim.eval((u'foldclosed(%d)' % heading.start_vim).encode(u'utf-8'))) != -1:
 			# open closed fold
-			vim.command((u'normal %dzo' % heading.number_of_parents).encode(u'utf-8'))
+			p = heading.number_of_parents
+			if not p:
+				p = heading.level
+			vim.command((u'normal %dzo' % p).encode(u'utf-8'))
 			vim.current.window.cursor = cursor
 			return heading
 
@@ -69,7 +72,6 @@ class ShowHide(object):
 
 		# find deepest fold
 		open_depth, found_fold = fold_depth(heading)
-		open_depth = open_depth
 
 		# recursively open folds
 		for child in heading.children:
@@ -84,8 +86,11 @@ class ShowHide(object):
 				# restore cursor position, it might have been changed by open_fold
 				vim.current.window.cursor = cursor
 
+				p = heading.number_of_parents
+				if not p:
+					p = heading.level
 				# reopen fold again beacause the former closing of the fold closed all levels, including parents!
-				vim.command((u'normal %dzo' % (heading.number_of_parents, )).encode(u'utf-8'))
+				vim.command((u'normal %dzo' % (p, )).encode(u'utf-8'))
 
 		# restore cursor position
 		vim.current.window.cursor = cursor
@@ -97,7 +102,7 @@ class ShowHide(object):
 		"""
 		# register plug
 
-		self.keybindings.append(Keybinding(u'<Tab>', Plug(u'OrgToggleFolding', u':silent! py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>')))
+		self.keybindings.append(Keybinding(u'<Tab>', Plug(u'OrgToggleFolding', u':py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>')))
 		self.menu + ActionEntry(u'&Cycle Visibility', self.keybindings[-1])
 
 		settings.set(u'org_leader', u',')
