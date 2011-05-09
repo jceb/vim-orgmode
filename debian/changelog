@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-36) unstable; urgency=low
+
+  * convert Misc plugin to unicode and liborgmode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 20:14:04 +0900
+
 vim-orgmode (0.1.0-35) unstable; urgency=low
 
   * fix a bug in ShowHide.toggle_folding when folding the first heading in
