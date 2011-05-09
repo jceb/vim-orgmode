@@ -5,7 +5,7 @@
 " @Last Modified: Mon 04. Apr 2011 21:01:07 +0200 CEST
 " @Revision     : 0.1
 " @vi           : ft=vim:tw=80:sw=4:ts=4
-" 
+"
 " @Description  :
 " @Usage        :
 " @TODO         :
@@ -35,7 +35,8 @@ endif
 
 " general setting plugins that should be loaded and their order
 if ! exists('g:org_plugins') && ! exists('b:org_plugins')
-	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'LoggingWork', 'Misc']
+	let g:org_plugins = ['ShowHide']
+	"let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'LoggingWork', 'Misc']
 endif
 
 if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_highlight_leading_stars')
@@ -49,10 +50,18 @@ try
 catch
 endtry
 
+function! <SID>OrgRegisterMenu()
+	python ORGMODE.register_menu()
+endfunction
+
+function! <SID>OrgUnregisterMenu()
+	python ORGMODE.unregister_menu()
+endfunction
+
 " show and hide Org menu depending on the filetype
 augroup orgmode
-	au BufEnter		*		if &filetype == "org" | silent! python ORGMODE.register_menu() | endif
-	au BufLeave		*		if &filetype == "org" | silent! python ORGMODE.unregister_menu() | endif
+	au BufEnter		*		:if &filetype == "org" | call <SID>OrgRegisterMenu() | endif
+	au BufLeave		*		:if &filetype == "org" | call <SID>OrgUnregisterMenu() | endif
 augroup END
 
 " Expand our path

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from exceptions import BufferNotFound
+from exceptions import BufferNotFound, BufferNotInSync
 from liborgmode import Document, Heading, MultiPurposeList
 import vim
 
@@ -124,7 +124,15 @@ class VimBuffer(Document):
 		:bufnr:		0: current buffer, every other number refers to another buffer
 		"""
 		Document.__init__(self)
-		self._bufnr = bufnr
+		self._bufnr            = vim.current.buffer.number if bufnr == 0 else bufnr
+		self._changedtick      = -1
+		self._orig_changedtick = 0
+
+	@property
+	def is_insync(self):
+		if self._changedtick == self._orig_changedtick:
+			self.update_changedtick()
+		return self._changedtick == self._orig_changedtick
 
 	@property
 	def bufnr(self):
@@ -133,8 +141,17 @@ class VimBuffer(Document):
 		"""
 		return self._bufnr
 
+	def changedtick():
+		""" Number of changes in vimbuffer """
+		def fget(self):
+			return self._changedtick
+		def fset(self, value):
+			self._changedtick = value
+		return locals()
+	changedtick = property(**changedtick())
+
 	def load(self, heading=Heading):
-		if self._bufnr == 0:
+		if self._bufnr == vim.current.buffer.number:
 			self._content = VimBufferContent(vim.current.buffer)
 		else:
 			_buffer = None
@@ -146,7 +163,21 @@ class VimBuffer(Document):
 			if not _buffer:
 				raise BufferNotFound(u'Unable to locate buffer number #%d' % self._bufnr)
 			self._content = VimBufferContent(_buffer)
+
+		self.update_changedtick()
+		self._orig_changedtick = self._changedtick
 		return Document.load(self, heading=Heading)
+
+	def update_changedtick(self):
+		if self._bufnr == vim.current.buffer.number:
+			self._changedtick = int(vim.eval(u'b:changedtick'.encode(u'utf-8')))
+		else:
+			vim.command(u'let org_lz = &lz | let org_hidden = &hidden | set lz=1 hidden=1'.encode(u'utf-8'))
+			# TODO is this likely to fail? maybe some error hangling should be added
+			vim.command((u'keepalt bufdo if bufnr("") == %d | let g:org_changedtick = b:changedtick | endif | buffer %d' % \
+					(self._bufnr, vim.current.buffer.number)).encode(u'utf-8'))
+			vim.command(u'let &lz = org_lz | let &hidden = org_hidden | unlet! org_lz, org_hidden | redraw'.encode(u'utf-8'))
+			self._changedtick = int(vim.eval(u'g:org_changedtick'.encode(u'utf-8')))
 
 	def write(self):
 		u""" write the changes to the vim buffer
@@ -155,6 +186,10 @@ class VimBuffer(Document):
 	    """
 		if not self.is_dirty:
 			return False
+
+		self.update_changedtick()
+		if not self.is_insync:
+			raise BufferNotInSync(u'Buffer is not in sync with vim!')
 
 		# write meta information
 		if self.is_dirty_meta_information:
@@ -193,30 +228,33 @@ class VimBuffer(Document):
 			h._orig_start = h.start
 			h._orig_len = len(h)
 
+		self.update_changedtick()
+		self._orig_changedtick = self._changedtick
 		self._dirty = False
 		return True
 
-	def previous_heading(self):
+	def previous_heading(self, position=None):
 		u""" Find the next heading (search forward) and return the related object
 		:returns:	 Heading object or None
 		"""
-		h = self.current_heading()
+		h = self.current_heading(position=position)
 		if h:
 			return h.previous_heading
 
-	def current_heading(self):
+	def current_heading(self, position=None):
 		u""" Find the current heading (search backward) and return the related object
 		:returns:	Heading object or None
 		"""
-		position = vim.current.window.cursor[0] - 1
+		if position == None:
+			position = vim.current.window.cursor[0] - 1
 		for h in self.all_headings():
 			if h.start <= position and h.end >= position:
 				return h
 
-	def next_heading(self):
+	def next_heading(self, position=None):
 		u""" Find the next heading (search forward) and return the related object
 		:returns:	 Heading object or None
 		"""
-		h = self.current_heading()
+		h = self.current_heading(position=position)
 		if h:
 			return h.next_heading

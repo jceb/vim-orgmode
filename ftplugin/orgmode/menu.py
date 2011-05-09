@@ -12,7 +12,7 @@ def register_menu(f):
 					or isinstance(entry, ActionEntry):
 				entry.create()
 
-		if hasattr(p, 'menu'):
+		if hasattr(p, u'menu'):
 			if isinstance(p.menu, list) or isinstance(p.menu, tuple):
 				for e in p.menu:
 					create(e)
@@ -22,7 +22,7 @@ def register_menu(f):
 	return r
 
 class Submenu(object):
-	""" Submenu entry """
+	u""" Submenu entry """
 
 	def __init__(self, name, parent=None):
 		object.__init__(self)
@@ -46,9 +46,9 @@ class Submenu(object):
 		return self._children[:]
 
 	def get_menu(self):
-		n = self.name.replace(' ', '\\ ')
+		n = self.name.replace(u' ', u'\\ ')
 		if self.parent:
-			return '%s.%s' % (self.parent.get_menu(), n)
+			return u'%s.%s' % (self.parent.get_menu(), n)
 		return n
 
 	def create(self):
@@ -62,25 +62,28 @@ class Submenu(object):
 		return res
 
 class Separator(object):
-	""" Menu entry for a Separator """
+	u""" Menu entry for a Separator """
 
 	def __init__(self, parent=None):
 		object.__init__(self)
 		self.parent = parent
 
+	def __unicode__(self):
+		return u'-----'
+
 	def __str__(self):
-		return '-----'
+		return self.__unicode__().encode(u'utf-8')
 
 	def create(self):
 		if self.parent:
 			menu = self.parent.get_menu()
-			vim.command('menu %s.-%s- :' % (menu, id(self)))
+			vim.command((u'menu %s.-%s- :' % (menu, id(self))).encode(u'utf-8'))
 
 class ActionEntry(object):
-	""" ActionEntry entry """
+	u""" ActionEntry entry """
 
 	def __init__(self, lname, action, rname=None, mode=MODE_NORMAL, parent=None):
-		"""
+		u"""
 		:lname: menu title on the left hand side of the menu entry
 		:action: could be a vim command sequence or an actual Keybinding
 		:rname: menu title that appears on the right hand side of the menu
@@ -94,16 +97,16 @@ class ActionEntry(object):
 		self._action = action
 		self._rname = rname
 		if mode not in (MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT):
-			raise ValueError('Parameter mode not in MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT')
+			raise ValueError(u'Parameter mode not in MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT')
 		self._mode = mode
 		self.parent = parent
 
 	def __str__(self):
-		return '%s\t%s' % (self.lname, self.rname)
+		return u'%s\t%s' % (self.lname, self.rname)
 
 	@property
 	def lname(self):
-		return self._lname.replace(' ', '\\ ')
+		return self._lname.replace(u' ', u'\\ ')
 
 	@property
 	def action(self):
@@ -114,7 +117,7 @@ class ActionEntry(object):
 	@property
 	def rname(self):
 		if isinstance(self._action, Keybinding):
-			return self._action.key.replace('<Tab>', 'Tab')
+			return self._action.key.replace(u'<Tab>', u'Tab')
 		return self._rname
 
 	@property
@@ -124,20 +127,20 @@ class ActionEntry(object):
 		return self._mode
 
 	def create(self):
-		menucmd = ':%smenu ' % self.mode
-		menu = ''
-		cmd = ''
+		menucmd = u':%smenu ' % self.mode
+		menu = u''
+		cmd = u''
 
 		if self.parent:
 			menu = self.parent.get_menu()
-		menu += '.%s' % self.lname
+		menu += u'.%s' % self.lname
 
 		if self.rname:
-			cmd = '%s %s<Tab>%s %s' % (menucmd, menu, self.rname, self.action)
+			cmd = u'%s %s<Tab>%s %s' % (menucmd, menu, self.rname, self.action)
 		else:
-			cmd = '%s %s %s' % (menucmd, menu, self.action)
+			cmd = u'%s %s %s' % (menucmd, menu, self.action)
 
-		vim.command(cmd)
+		vim.command(cmd.encode(u'utf-8'))
 
 		# keybindings should be stored in the plugin.keybindings property and be registered by the appropriate keybinding registrar
 		#if isinstance(self._action, Keybinding):

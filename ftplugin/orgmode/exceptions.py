@@ -7,3 +7,7 @@ class PluginError(Exception):
 class BufferNotFound(Exception):
 	def __init__(self, message):
 		Exception.__init__(self, message)
+
+class BufferNotInSync(Exception):
+	def __init__(self, message):
+		Exception.__init__(self, message)

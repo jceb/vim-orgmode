@@ -18,6 +18,7 @@ class VimBufferTestCase(unittest.TestCase):
 				u'exists("g:org_debug")': 0,
 				u'exists("g:org_debug")': 0,
 				u'exists("*repeat#set()")': 0,
+				u'b:changedtick': 0,
 				u"v:count": 0}
 		vim.current.buffer = """#Meta information
 #more meta information
@@ -899,6 +900,7 @@ class VimBufferTagsTestCase(unittest.TestCase):
 				u'exists("g:org_debug")': 0,
 				u'exists("g:org_debug")': 0,
 				u'exists("*repeat#set()")': 0,
+				u'b:changedtick': 0,
 				u"v:count": 0}
 		vim.current.buffer = """#Meta information
 #more meta information
@@ -1024,6 +1026,7 @@ class VimBufferTodoTestCase(unittest.TestCase):
 				u'exists("g:org_debug")': 0,
 				u'exists("g:org_debug")': 0,
 				u'exists("*repeat#set()")': 0,
+				u'b:changedtick': 0,
 				u"v:count": 0}
 		vim.current.buffer = """#Meta information
 #more meta information

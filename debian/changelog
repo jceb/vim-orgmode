@@ -1,3 +1,18 @@
+vim-orgmode (0.1.0-32) unstable; urgency=low
+
+  * remove debug infomation from liborgmode.py
+  * add __str__ method for for Heading class
+  * port base functionality of orgmode to unicode
+  * echo a message instead of an error when no plugins are definied
+  * add heading parameter to VimBuffer methods
+  * add functionality to reuse VimBuffer objects and recognise user changes
+  * add BufNotInSync exception
+  * disable all but ShowHide plugin
+  * port ShowHide plugin to unicode and liborgmode
+  * port PluginExample to unicode and liborgmode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 18:20:59 +0900
+
 vim-orgmode (0.1.0-31) unstable; urgency=low
 
   * add vim swap files to gitignore list

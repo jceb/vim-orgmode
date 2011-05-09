@@ -10,30 +10,31 @@ import orgmode.plugins
 import orgmode.menu
 import orgmode.keybinding
 import orgmode.settings
+from orgmode.document   import VimBuffer
 from orgmode.exceptions import PluginError
 
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
 TAGSPROPERTIES_EXISTS = False
 
 def realign_tags(f):
-	"""
+	u"""
 	Update tag alignment, dependency to TagsProperties plugin!
 	"""
 	def r(*args, **kwargs):
 		global TAGSPROPERTIES_EXISTS
 		res = f(*args, **kwargs)
 
-		if not TAGSPROPERTIES_EXISTS and 'TagsProperties' in ORGMODE.plugins:
+		if not TAGSPROPERTIES_EXISTS and u'TagsProperties' in ORGMODE.plugins:
 			TAGSPROPERTIES_EXISTS = True
 
 		if TAGSPROPERTIES_EXISTS:
-			ORGMODE.plugins['TagsProperties'].realign_tags()
+			ORGMODE.plugins[u'TagsProperties'].realign_tags()
 
 		return res
 	return r
 
 def repeat(f):
-	"""
+	u"""
 	Integrate with the repeat plugin if available
 
 	The decorated function must return the name of the <Plug> command to
@@ -42,12 +43,12 @@ def repeat(f):
 	def r(*args, **kwargs):
 		res = f(*args, **kwargs)
 		if REPEAT_EXISTS and isinstance(res, basestring):
-			vim.command('silent! call repeat#set("\\<Plug>%s")' % res)
+			vim.command((u'silent! call repeat#set("\\<Plug>%s")' % res).encode(u'utf-8'))
 		return res
 	return r
 
 def apply_count(f):
-	"""
+	u"""
 	Decorator which executes function v:count or v:prevount (not implemented,
 	yet) times. The decorated function must return a value that evaluates to
 	True otherwise the function is not repeated.
@@ -55,11 +56,11 @@ def apply_count(f):
 	def r(*args, **kwargs):
 		count = 0
 		try:
-			count = int(vim.eval('v:count'))
+			count = int(vim.eval(u'v:count'.encode('utf-8')))
 
 			# visual count is not implemented yet
 			#if not count:
-			#	count = int(vim.eval('v:prevcount'))
+			#	count = int(vim.eval(u'v:prevcount'.encode(u'utf-8')))
 		except Exception, e:
 			pass
 
@@ -72,29 +73,29 @@ def apply_count(f):
 	return r
 
 def echo(message):
-	"""
+	u"""
 	Print a regular message that will not be visible to the user when
 	multiple lines are printed
 	"""
-	print message
+	print message.encode(u'utf-8')
 
 def echom(message):
-	"""
+	u"""
 	Print a regular message that will be visible to the user, even when
 	multiple lines are printed
 	"""
 	# probably some escaping is needed here
-	vim.command(':echomsg "%s"' % message)
+	vim.command((u':echomsg "%s"' % message).encode(u'utf-8'))
 
 def echoe(message):
-	"""
+	u"""
 	Print an error message. This should only be used for serious errors!
 	"""
 	# probably some escaping is needed here
-	vim.command(':echoerr "%s"' % message)
+	vim.command((u':echoerr "%s"' % message).encode(u'utf-8'))
 
 def insert_at_cursor(text, move=True):
-    """Insert text at the position of the cursor.
+    u"""Insert text at the position of the cursor.
 
     If move==True move the cursor with the inserted text.
     """
@@ -105,91 +106,96 @@ def insert_at_cursor(text, move=True):
     if move:
         vim.current.window.cursor = (row, col + len(text))
 
-
 def get_user_input(message):
-    """Print the message and take input from the user.
+    u"""Print the message and take input from the user.
     Return the input.
     """
-    vim.command('call inputsave()')
-    vim.command("let user_input = input('" + message + ": ')")
-    vim.command('call inputrestore()')
-    return vim.eval('user_input')
+    vim.command(u'call inputsave()'.encode(u'utf-8'))
+    vim.command((u"let user_input = input('" + message + u": ')").encode(u'utf-8'))
+    vim.command(u'call inputrestore()'.encode(u'utf-8'))
+    return vim.eval(u'user_input'.encode(u'utf-8'))
 
 def indent_orgmode():
-	""" Set the indent value for the current line in the variable b:indent_level
+	u""" Set the indent value for the current line in the variable b:indent_level
 	Vim prerequisites:
 		:setlocal indentexpr=Method-which-calls-indent_orgmode
 
 	:returns: None
 	"""
-	from orgmode.liborgmode import Document, DIRECTION_BACKWARD
-	try:
-		line = int(vim.eval('v:lnum'))
-		heading = Document.find_heading(line - 1, direction=DIRECTION_BACKWARD)
-		if heading and line != heading.start + 1:
-			vim.command('let b:indent_level = %d' % (heading.level + 1))
-	except Exception, e:
-		pass
+	line = int(vim.eval(u'v:lnum'.encode(u'utf-8')))
+	d = ORGMODE.get_document()
+	heading = d.current_heading(line - 1)
+	if heading and line != heading.start_vim:
+		vim.command((u'let b:indent_level = %d' % (heading.level + 1)).encode(u'utf-8'))
 
 def fold_text():
-	""" Set the fold text
+	u""" Set the fold text
 		:setlocal foldtext=Method-which-calls-foldtext
 
 	:returns: None
 	"""
-	from orgmode.liborgmode import Document, DIRECTION_BACKWARD
-	try:
-		line = int(vim.eval('v:foldstart'))
-		heading = Document.find_heading(line - 1, direction=DIRECTION_BACKWARD)
-		if heading:
-			str_heading = str(heading).decode('utf-8')
-			ts = int(vim.eval('&ts'))
-			idx = str_heading.find('\t')
-			if idx != -1:
-				tabs, spaces = divmod(idx, ts)
+	line = int(vim.eval(u'v:foldstart'.encode(u'utf-8')))
+	d = ORGMODE.get_document()
+	heading = d.current_heading(line - 1)
+	if heading:
+		str_heading = unicode(heading)
 
-				str_heading = str_heading.replace('\t', ' '*(ts - spaces), 1)
-				str_heading = str_heading.replace('\t', ' '*ts)
+		# expand tabs
+		ts = int(vim.eval(u'&ts'.encode('utf-8')))
+		idx = str_heading.find(u'\t')
+		if idx != -1:
+			tabs, spaces = divmod(idx, ts)
 
-			vim.command('let b:foldtext = "%s... "' % (str_heading.encode('utf-8')))
-	except Exception, e:
-		pass
+			str_heading = str_heading.replace(u'\t', u' '*(ts - spaces), 1)
+			str_heading = str_heading.replace(u'\t', u' '*ts)
+
+		vim.command((u'let b:foldtext = "%s... "' % (str_heading, )).encode('utf-8'))
 
 def fold_orgmode():
-	""" Set the fold expression/value for the current line in the variable b:fold_expr
+	u""" Set the fold expression/value for the current line in the variable b:fold_expr
 	Vim prerequisites:
 		:setlocal foldmethod=expr
 		:setlocal foldexpr=Method-which-calls-fold_orgmode
 
 	:returns: None
 	"""
-	from orgmode.liborgmode import Document, DIRECTION_BACKWARD
-	try:
-		line = int(vim.eval('v:lnum'))
-		heading = Document.find_heading(line - 1, direction=DIRECTION_BACKWARD)
-		if heading:
-			if line == heading.start_vim:
-				vim.command('let b:fold_expr = ">%d"' % heading.level)
-			#elif line == heading.end_vim:
-			#	vim.command('let b:fold_expr = "<%d"' % heading.level)
-			# end_of_last_child_vim is a performance junky and is actually not needed
-			#elif line == heading.end_of_last_child_vim:
-			#	vim.command('let b:fold_expr = "<%d"' % heading.level)
-			else:
-				vim.command('let b:fold_expr = %d' % heading.level)
-	except Exception, e:
-		pass
+	line = int(vim.eval(u'v:lnum'.encode(u'utf-8')))
+	d = ORGMODE.get_document()
+	heading = d.current_heading(line - 1)
+	if heading:
+		if line == heading.start_vim:
+			vim.command((u'let b:fold_expr = ">%d"' % heading.level).encode(u'utf-8'))
+		#elif line == heading.end_vim:
+		#	vim.command((u'let b:fold_expr = "<%d"' % heading.level).encode(u'utf-8'))
+		# end_of_last_child_vim is a performance junky and is actually not needed
+		#elif line == heading.end_of_last_child_vim:
+		#	vim.command((u'let b:fold_expr = "<%d"' % heading.level).encode(u'utf-8'))
+		else:
+			vim.command((u'let b:fold_expr = %d' % heading.level).encode(u'utf-8'))
 
 class OrgMode(object):
-	""" Vim Buffer """
+	u""" Vim Buffer """
 
 	def __init__(self):
 		object.__init__(self)
-		self.debug = bool(int(orgmode.settings.get('org_debug', False)))
+		self.debug = bool(int(orgmode.settings.get(u'org_debug', False)))
 
-		self.orgmenu = orgmode.menu.Submenu('&Org')
+		self.orgmenu = orgmode.menu.Submenu(u'&Org')
 		self._plugins = {}
+		# list of vim buffer objects
+		self._documents = {}
 
+	def get_document(self, bufnr=0):
+		""" Retrieve instance of vim buffer document. This Document should be
+		used for manipulating the vim buffer.
+
+		:returns:	vim buffer instance
+		"""
+		if bufnr in self._documents:
+			if self._documents[bufnr].is_insync:
+				return self._documents[bufnr]
+		self._documents[bufnr] = VimBuffer(bufnr).load()
+		return self._documents[bufnr]
 
 	@property
 	def plugins(self):
@@ -200,15 +206,15 @@ class OrgMode(object):
 	@orgmode.menu.register_menu
 	def register_plugin(self, plugin):
 		if not isinstance(plugin, basestring):
-			raise ValueError('Parameter plugin is not of type string')
+			raise ValueError(u'Parameter plugin is not of type string')
 
-		if plugin == '|':
+		if plugin == u'|':
 			self.orgmenu + orgmode.menu.Separator()
 			self.orgmenu.children[-1].create()
 			return
 
 		if self._plugins.has_key(plugin):
-			raise PluginError('Plugin %s has already been loaded')
+			raise PluginError(u'Plugin %s has already been loaded')
 
 		# a python module
 		module = None
@@ -220,30 +226,30 @@ class OrgMode(object):
 		try:
 			module = imp.find_module(plugin, orgmode.plugins.__path__)
 		except ImportError, e:
-			echom('Plugin not found: %s' % plugin)
+			echom(u'Plugin not found: %s' % plugin)
 			if self.debug:
 				raise e
 			return
 
 		if not module:
-			echom('Plugin not found: %s' % plugin)
+			echom(u'Plugin not found: %s' % plugin)
 			return
 
 		try:
 			module = imp.load_module(plugin, *module)
 			if not hasattr(module, plugin):
-				echoe('Unable to find plugin: %s' % plugin)
+				echoe(u'Unable to find plugin: %s' % plugin)
 				if self.debug:
-					raise PluginError('Unable to find class %s' % plugin)
+					raise PluginError(u'Unable to find class %s' % plugin)
 				return
 			_class = getattr(module, plugin)
 			self._plugins[plugin] = _class()
 			self._plugins[plugin].register()
 			if self.debug:
-				echo('Plugin registered: %s' % plugin)
+				echo(u'Plugin registered: %s' % plugin)
 			return self._plugins[plugin]
 		except Exception, e:
-			echoe('Unable to activate plugin: %s' % plugin)
+			echoe(u'Unable to activate plugin: %s' % plugin)
 			if self.debug:
 				import traceback
 				echoe(traceback.format_exc())
@@ -260,15 +266,15 @@ class OrgMode(object):
 		self.orgmenu.create()
 
 	def unregister_menu(self):
-		vim.command('silent! aunmenu Org')
+		vim.command(u'silent! aunmenu Org'.encode(u'utf-8'))
 
 	def start(self):
-		""" Start orgmode and load all requested plugins
+		u""" Start orgmode and load all requested plugins
 		"""
-		plugins = orgmode.settings.get("org_plugins")
+		plugins = orgmode.settings.get(u"org_plugins")
 
 		if not plugins:
-			echoe('orgmode: No plugins registered.')
+			echom(u'orgmode: No plugins registered.')
 
 		if isinstance(plugins, basestring):
 			try:

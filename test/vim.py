@@ -21,6 +21,7 @@ class VimWindow(object):
 
 class VimBuffer(list):
 	def __init__(self, iterable=None):
+		self.number = 0
 		if iterable != None:
 			list.__init__(self, iterable)
 		else:
@@ -62,6 +63,7 @@ EVALRESULTS = {
 		u'exists("*repeat#set()")': 0,
 		u'exists("b:org_plugins")': 0,
 		u'exists("g:org_plugins")': 0,
+		u'b:changedtick': 0,
 		}
 
 

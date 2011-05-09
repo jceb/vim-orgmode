@@ -280,14 +280,9 @@ class Heading(object):
 
 		# compute position of tags
 		if self.tags:
-			# en- and decoding is done because python otherwise counts
-			# bytewise instead of characterwise
-			#res = res.decode(u'utf-8')
-
 			tabs = 0
 			spaces = 2
 			tags = (u':%s:' % (u':'.join(self.tags)))
-			#tags = (u':%s:' % (u':'.join(self.tags))).decode(u'utf-8')
 
 			ts = 8
 			tag_column = 77
@@ -308,11 +303,11 @@ class Heading(object):
 				else:
 					spaces = tag_column - (len_heading + len_tags)
 
-			#res = res.encode(u'utf-8') + u'\t' * tabs + u' ' * spaces + tags.encode(u'utf-8')
 			res = res + u'\t' * tabs + u' ' * spaces + tags
 		return res
 
-	#__str__ = __unicode__
+	def __str__(self):
+		return self.__unicode__().encode(u'utf-8')
 
 	def __len__(self):
 		# 1 is for the heading's title
@@ -842,6 +837,7 @@ class Document(object):
 				tmp_line += 1
 		else:
 			while tmp_line >= 0 and tmp_line < len_cb:
+				print tmp_line
 				if heading.identify_heading(self._content[tmp_line]) != None:
 					if start == None:
 						start = tmp_line
