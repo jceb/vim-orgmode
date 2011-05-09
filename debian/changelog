@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-38) unstable; urgency=low
+
+  * convert Navigator plugin to unicode and liborgmode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 21:17:17 +0900
+
 vim-orgmode (0.1.0-37) unstable; urgency=low
 
   * change echo function to use vim echo function
