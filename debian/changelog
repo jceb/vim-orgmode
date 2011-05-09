@@ -1,3 +1,10 @@
+vim-orgmode (0.1.0-28) unstable; urgency=low
+
+  * rename ftplugin/orgmode/liborgmode.py to ftplugin/liborgmode.py
+  * rename ftplugin/orgmode/vimbuffer.py to ftplugin/orgmode/document.py
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 11:46:39 +0900
+
 vim-orgmode (0.1.0-27) unstable; urgency=low
 
   * update README
