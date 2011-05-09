@@ -1,3 +1,10 @@
+vim-orgmode (0.1.0-33) unstable; urgency=low
+
+  * optimize update_changedtick to not run through all but just the wanted
+  	buffer
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 18:33:14 +0900
+
 vim-orgmode (0.1.0-32) unstable; urgency=low
 
   * remove debug infomation from liborgmode.py

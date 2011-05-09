@@ -172,12 +172,12 @@ class VimBuffer(Document):
 		if self._bufnr == vim.current.buffer.number:
 			self._changedtick = int(vim.eval(u'b:changedtick'.encode(u'utf-8')))
 		else:
-			vim.command(u'let org_lz = &lz | let org_hidden = &hidden | set lz=1 hidden=1'.encode(u'utf-8'))
+			vim.command(u'unlet! s:org_changedtick | let org_lz = &lz | let org_hidden = &hidden | set lz=1 hidden=1'.encode(u'utf-8'))
 			# TODO is this likely to fail? maybe some error hangling should be added
-			vim.command((u'keepalt bufdo if bufnr("") == %d | let g:org_changedtick = b:changedtick | endif | buffer %d' % \
+			vim.command((u'keepalt buffer %d | let s:org_changedtick = b:changedtick | buffer %d' % \
 					(self._bufnr, vim.current.buffer.number)).encode(u'utf-8'))
 			vim.command(u'let &lz = org_lz | let &hidden = org_hidden | unlet! org_lz, org_hidden | redraw'.encode(u'utf-8'))
-			self._changedtick = int(vim.eval(u'g:org_changedtick'.encode(u'utf-8')))
+			self._changedtick = int(vim.eval(u's:org_changedtick'.encode(u'utf-8')))
 
 	def write(self):
 		u""" write the changes to the vim buffer
