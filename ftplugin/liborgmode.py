@@ -7,7 +7,7 @@ DIRECTION_FORWARD  = True
 DIRECTION_BACKWARD = False
 
 class MultiPurposeList(UserList):
-	""" A Multi Purpose List is a list that calls a user defined hook on
+	u""" A Multi Purpose List is a list that calls a user defined hook on
 	change. The impelementation is very basic - the hook is called without any
 	parameters. Otherwise the Multi Purpose List can be used like any other
 	list.
@@ -21,7 +21,7 @@ class MultiPurposeList(UserList):
 		self._on_change = on_change
 
 	def _changed(self):
-		"""
+		u"""
 		Call hook
 		"""
 		if callable(self._on_change):
@@ -81,7 +81,7 @@ class MultiPurposeList(UserList):
 		self._changed()
 
 class HeadingList(MultiPurposeList):
-	"""
+	u"""
 	A Heading List just contains headings. It's used for documents to store top
 	level headings and for headings to store subheadings.
 
@@ -97,7 +97,7 @@ class HeadingList(MultiPurposeList):
 
 		self._obj = obj
 		if not (isinstance(obj, Document) or self.__class__.is_heading(obj)):
-			raise ValueError('A Heading List must be linked to a Document or Heading object!')
+			raise ValueError(u'A Heading List must be linked to a Document or Heading object!')
 
 		# initialization must be done here, because
 		# self._document is not initialized when the
@@ -115,7 +115,7 @@ class HeadingList(MultiPurposeList):
 		return self._obj
 
 	def _add_to_deleted_headings(self, item):
-		"""
+		u"""
 		Serialize headings so that all subheadings are also marked for deletion
 		"""
 		if not self._get_document():
@@ -153,9 +153,9 @@ class HeadingList(MultiPurposeList):
 
 	def __setitem__(self, i, item):
 		if not self.__class__.is_heading(item):
-			raise ValueError('Item is not a heading!')
+			raise ValueError(u'Item is not a heading!')
 		if item in self.data:
-			raise ValueError('Heading is already part of this list!')
+			raise ValueError(u'Heading is already part of this list!')
 		self._add_to_deleted_headings(self[i])
 
 		self._associate_heading(item)
@@ -167,7 +167,7 @@ class HeadingList(MultiPurposeList):
 			o = (o, )
 		for item in o:
 			if not self.__class__.is_heading(item):
-				raise ValueError('List contains items that are not a heading!')
+				raise ValueError(u'List contains items that are not a heading!')
 		i = max(i, 0); j = max(j, 0)
 		self._add_to_deleted_headings(self.data[i:j])
 		self._associate_heading(o)
@@ -188,7 +188,7 @@ class HeadingList(MultiPurposeList):
 			o = (o, )
 		for item in o:
 			if not self.__class__.is_heading(item):
-				raise ValueError('List contains items that are not a heading!')
+				raise ValueError(u'List contains items that are not a heading!')
 		self._associate_heading(o)
 		return MultiPurposeList.__iadd__(self, o)
 
@@ -198,9 +198,9 @@ class HeadingList(MultiPurposeList):
 
 	def append(self, item):
 		if not self.__class__.is_heading(item):
-			raise ValueError('Item is not a heading!')
+			raise ValueError(u'Item is not a heading!')
 		if item in self.data:
-			raise ValueError('Heading is already part of this list!')
+			raise ValueError(u'Heading is already part of this list!')
 		self._associate_heading(item)
 		MultiPurposeList.append(self, item)
 
@@ -232,18 +232,18 @@ class HeadingList(MultiPurposeList):
 			o = (o, )
 		for item in o:
 			if not self.__class__.is_heading(item):
-				raise ValueError('List contains items that are not a heading!')
+				raise ValueError(u'List contains items that are not a heading!')
 		self._associate_heading(o)
 		MultiPurposeList.extend(self, o)
 
-REGEX_HEADING = re.compile('^(?P<level>\*+)(?P<todotitle>(\s+(?P<todo>[^\s]+))?(\s+(?P<title>.*?))?)\s*(\s(?P<tags>:[\w_:]+:))?$', flags=re.U|re.L)
-REGEX_TODO = re.compile('^[^\s]*$')
+REGEX_HEADING = re.compile(u'^(?P<level>\*+)(?P<todotitle>(\s+(?P<todo>[^\s]+))?(\s+(?P<title>.*?))?)\s*(\s(?P<tags>:[\w_:]+:))?$', flags=re.U|re.L)
+REGEX_TODO = re.compile(u'^[^\s]*$')
 
 class Heading(object):
-	""" Structural heading object """
+	u""" Structural heading object """
 
-	def __init__(self, level=1, title='', tags=None, todo=None, body=None):
-		"""
+	def __init__(self, level=1, title=u'', tags=None, todo=None, body=None):
+		u"""
 		:level:		Level of the heading
 		:title:		Title of the heading
 		:tags:		Tags of the heading
@@ -263,7 +263,7 @@ class Heading(object):
 		self._todo          = None
 		if todo: self.todo  = todo
 		self._tags          = MultiPurposeList(on_change=self.set_dirty_heading)
-		self._title         = ''
+		self._title         = u''
 		if title: self.title = title
 		if tags: self.tags   = tags
 
@@ -271,22 +271,23 @@ class Heading(object):
 		self._body          = MultiPurposeList(on_change=self.set_dirty_body)
 		if body: self.body  = body
 
-	def __str__(self):
-		res = '*' * self.level
+	def __unicode__(self):
+		res = u'*' * self.level
 		if self.todo:
-			res += ' ' + self.todo
-		res += ' ' + self.title
+			res += u' ' + self.todo
+		res += u' ' + self.title
 		res = res.strip()
 
 		# compute position of tags
 		if self.tags:
 			# en- and decoding is done because python otherwise counts
 			# bytewise instead of characterwise
-			res = res.decode('utf-8')
+			#res = res.decode(u'utf-8')
 
 			tabs = 0
 			spaces = 2
-			tags = (':%s:' % (':'.join(self.tags))).decode('utf-8')
+			tags = (u':%s:' % (u':'.join(self.tags)))
+			#tags = (u':%s:' % (u':'.join(self.tags))).decode(u'utf-8')
 
 			ts = 8
 			tag_column = 77
@@ -307,8 +308,11 @@ class Heading(object):
 				else:
 					spaces = tag_column - (len_heading + len_tags)
 
-			res = res.encode('utf-8') + '\t' * tabs + ' ' * spaces + tags.encode('utf-8')
+			#res = res.encode(u'utf-8') + u'\t' * tabs + u' ' * spaces + tags.encode(u'utf-8')
+			res = res + u'\t' * tabs + u' ' * spaces + tags
 		return res
+
+	#__str__ = __unicode__
 
 	def __len__(self):
 		# 1 is for the heading's title
@@ -316,7 +320,7 @@ class Heading(object):
 
 	@classmethod
 	def parse_heading_from_data(cls, data, document=None, orig_start=None):
-		""" Construct a new heading from the provided data
+		u""" Construct a new heading from the provided data
 
 		:document:		The document object this heading belongs to
 		:data:			List of lines
@@ -330,18 +334,18 @@ class Heading(object):
 			m = REGEX_HEADING.match(heading_line)
 			if m:
 				r = m.groupdict()
-				tags = filter(lambda x: x != '', r['tags'].split(':')) if r['tags'] else []
-				todo = r['todo']
+				tags = filter(lambda x: x != u'', r[u'tags'].split(u':')) if r[u'tags'] else []
+				todo = r[u'todo']
 				if not todo or todo == todo.upper():
-					title = r['title'] if r['title'] else ''
+					title = r[u'title'] if r[u'title'] else u''
 				else:
 					todo = None
-					title = r['todotitle'].strip()
-				return (len(r['level']), todo, title, tags)
-			raise ValueError('Data doesn\'t start with a heading definition.')
+					title = r[u'todotitle'].strip()
+				return (len(r[u'level']), todo, title, tags)
+			raise ValueError(u'Data doesn\'t start with a heading definition.')
 
 		if not data:
-			raise ValueError('Unable to create heading, no data provided.')
+			raise ValueError(u'Unable to create heading, no data provided.')
 
 		h = cls()
 		h.level, h.todo, h.title, h.tags = parse_title(data[0])
@@ -358,7 +362,7 @@ class Heading(object):
 
 	@classmethod
 	def identify_heading(cls, line):
-		""" Test if a certain line is a heading or not.
+		u""" Test if a certain line is a heading or not.
 
 		:line: the line to check
 
@@ -368,58 +372,58 @@ class Heading(object):
 		if not line:
 			return None
 		for i in xrange(0, len(line)):
-			if line[i] == '*':
+			if line[i] == u'*':
 				level += 1
-				if len(line) > (i + 1) and line[i+1] in ('\t', ' '):
+				if len(line) > (i + 1) and line[i+1] in (u'\t', u' '):
 					return level
 			else:
 				return None
 
 	@property
 	def is_dirty(self):
-		""" Return True if the heading's body is marked dirty """
+		u""" Return True if the heading's body is marked dirty """
 		return self._dirty_heading or self._dirty_body
 
 	@property
 	def is_dirty_heading(self):
-		""" Return True if the heading is marked dirty """
+		u""" Return True if the heading is marked dirty """
 		return self._dirty_heading
 
 	@property
 	def is_dirty_body(self):
-		""" Return True if the heading's body is marked dirty """
+		u""" Return True if the heading's body is marked dirty """
 		return self._dirty_body
 
 	def set_dirty(self):
-		""" Mark the heading and body dirty so that it will be rewritten when
+		u""" Mark the heading and body dirty so that it will be rewritten when
 		saving the document """
 		self._dirty_heading = True
 		self._dirty_body = True
 
 	def set_dirty_heading(self):
-		""" Mark the heading dirty so that it will be rewritten when saving the
+		u""" Mark the heading dirty so that it will be rewritten when saving the
 		document """
 		self._dirty_heading = True
 
 	def set_dirty_body(self):
-		""" Mark the heading's body dirty so that it will be rewritten when
+		u""" Mark the heading's body dirty so that it will be rewritten when
 		saving the document """
 		self._dirty_body = True
 
 	@property
 	def document(self):
-		""" Read only access to the document. If you want to change the
+		u""" Read only access to the document. If you want to change the
 		document, just assign the heading to another document """
 		return self._document
 
 	@property
 	def parent(self):
-		""" Access to the parent heading """
+		u""" Access to the parent heading """
 		return self._parent
 
 	@property
 	def number_of_parents(self):
-		""" Access to the number of parent headings before reaching the root
+		u""" Access to the number of parent headings before reaching the root
 		document """
 		def count_parents(h):
 			if h.parent:
@@ -430,7 +434,7 @@ class Heading(object):
 
 	@property
 	def previous_sibling(self):
-		""" Access to the previous heading that's a sibling of the current one
+		u""" Access to the previous heading that's a sibling of the current one
 		"""
 		if self.parent and self in self.parent.children:
 			idx = self.parent.children.index(self)
@@ -443,7 +447,7 @@ class Heading(object):
 
 	@property
 	def next_sibling(self):
-		""" Access to the next heading that's a sibling of the current one """
+		u""" Access to the next heading that's a sibling of the current one """
 		if self.parent and self in self.parent.children:
 			idx = self.parent.children.index(self)
 			if len(self.parent.children) > idx + 1:
@@ -455,7 +459,7 @@ class Heading(object):
 
 	@property
 	def previous_heading(self):
-		""" Serialized access to the previous heading """
+		u""" Serialized access to the previous heading """
 		if self.previous_sibling:
 			h = self.previous_sibling
 			while h.children:
@@ -466,7 +470,7 @@ class Heading(object):
 
 	@property
 	def next_heading(self):
-		""" Serialized access to the next heading """
+		u""" Serialized access to the next heading """
 		if self.children:
 			return self.children[0]
 		elif self.next_sibling:
@@ -481,7 +485,7 @@ class Heading(object):
 
 	@property
 	def start(self):
-		""" Access to the starting line of the heading """
+		u""" Access to the starting line of the heading """
 		if not self.document:
 			return
 
@@ -498,7 +502,7 @@ class Heading(object):
 
 	@property
 	def end(self):
-		""" Access to the ending line of the heading """
+		u""" Access to the ending line of the heading """
 		if self.start != None:
 			return self.start + len(self.body)
 
@@ -509,7 +513,7 @@ class Heading(object):
 
 	@property
 	def end_of_last_child(self):
-		""" Access to end of the last child """
+		u""" Access to end of the last child """
 		if self.children:
 			child = self.children[-1]
 			while child.children:
@@ -522,7 +526,7 @@ class Heading(object):
 		return self.end_of_last_child + 1
 
 	def children():
-		""" Subheadings of the current heading """
+		u""" Subheadings of the current heading """
 		def fget(self):
 			return self._children
 		def fset(self, value):
@@ -532,18 +536,18 @@ class Heading(object):
 
 	@property
 	def first_child(self):
-		""" Access to the first child heading or None if no children exist """
+		u""" Access to the first child heading or None if no children exist """
 		if self.children:
 			return self.children[0]
 
 	@property
 	def last_child(self):
-		""" Access to the last child heading or None if no children exist """
+		u""" Access to the last child heading or None if no children exist """
 		if self.children:
 			return self.children[-1]
 
 	def level():
-		""" Access to the heading level """
+		u""" Access to the heading level """
 		def fget(self):
 			return self._level
 		def fset(self, value):
@@ -555,7 +559,7 @@ class Heading(object):
 	level = property(**level())
 
 	def todo():
-		""" Todo state of current heading. When todo state is set, it will be
+		u""" Todo state of current heading. When todo state is set, it will be
 		converted to uppercase """
 		def fget(self):
 			# extract todo state from heading
@@ -563,13 +567,16 @@ class Heading(object):
 		def fset(self, value):
 			# update todo state
 			if type(value) not in (unicode, str, type(None)):
-				raise ValueError('Todo state must be a string or None.')
+				raise ValueError(u'Todo state must be a string or None.')
 			if value and not REGEX_TODO.match(value):
-				raise ValueError('Found non allowed character in todo state!')
+				raise ValueError(u'Found non allowed character in todo state!')
 			if not value:
 				self._todo = None
 			else:
-				self._todo = value.upper()
+				v = value
+				if type(v) == str:
+					v = v.decode(u'utf-8')
+				self._todo = v.upper()
 			self.set_dirty_heading()
 		def fdel(self):
 			self.todo = None
@@ -577,62 +584,73 @@ class Heading(object):
 	todo = property(**todo())
 
 	def title():
-		""" Title of current heading """
+		u""" Title of current heading """
 		def fget(self):
 			return self._title
 		def fset(self, value):
 			if type(value) not in (unicode, str):
-				raise ValueError('Title must be a string.')
+				raise ValueError(u'Title must be a string.')
+			v = value
+			if type(v) == str:
+				v = v.decode(u'utf-8')
 			self._title = value
 			self.set_dirty_heading()
 		def fdel(self):
-			self.title = ''
+			self.title = u''
 		return locals()
 	title = property(**title())
 
 	def tags():
-		""" Tags of the current heading """
+		u""" Tags of the current heading """
 		def fget(self):
 			return self._tags
 		def fset(self, value):
 			v = value
 			if type(value) in (unicode, str):
 				v = list(value)
+			v_decoded = []
 			for i in v:
 				if type(i) not in (unicode, str):
-					raise ValueError('Found non string value in tags!')
-				if ' ' in i \
-						or '\t' in i \
-						or ':' in i:
-					raise ValueError('Found non allowed character in tag!')
-			self._tags[:] = v
+					raise ValueError(u'Found non string value in tags!')
+				if u' ' in i \
+						or u'\t' in i \
+						or u':' in i:
+					raise ValueError(u'Found non allowed character in tag!')
+				i_tmp = i
+				if type(i) == str:
+					i_tmp = i.decode(u'utf-8')
+				v_decoded.append(i_tmp)
+
+			self._tags[:] = v_decoded
 		def fdel(self):
 			self.tags = []
 		return locals()
 	tags = property(**tags())
 
 	def body():
-		""" Holds the content belonging to the heading """
+		u""" Holds the content belonging to the heading """
 		def fget(self):
 			return self._body
 
 		def fset(self, value):
 			if type(value) in (list, tuple):
 				self._body[:] = value
-			elif type(value) in (unicode, str):
-				self._body[:] = value.split('\n')
+			elif type(value) in (str, ):
+				self._body[:] = value.decode('utf-8').split(u'\n')
+			elif type(value) in (unicode, ):
+				self._body[:] = value.split(u'\n')
 			else:
-				self._body[:] = list(str(value))
+				self._body[:] = list(unicode(value))
 		def fdel(self):
 			self.body = []
 		return locals()
 	body = property(**body())
 
 class Document(object):
-	""" Representation of a whole org-mode document """
+	u""" Representation of a whole org-mode document """
 
 	def __init__(self):
-		"""
+		u"""
 		Don't call this constructor directly but use one of the concrete
 		implementations.
 		"""
@@ -651,13 +669,13 @@ class Document(object):
 		self.tag_column                 = 77
 
 	def load(self, heading=Heading):
-		""" Initialize all headings in document - build DOM. This method
+		u""" Initialize all headings in document - build DOM. This method
 		should be call prior to accessing the document.
 
 		:returns:	self
 	    """
 		def init_heading(heading):
-			"""
+			u"""
 			:returns	the initialized heading
 			"""
 			start = heading.end + 1
@@ -707,7 +725,7 @@ class Document(object):
 		return self
 
 	def meta_information():
-		"""
+		u"""
 		Meta information is text that precedes all headings in an org-mode
 		document. It might contain additional information about the document,
 		e.g. author
@@ -720,14 +738,16 @@ class Document(object):
 				self._orig_meta_information_len = len(self.meta_information)
 			if type(value) in (list, tuple):
 				self._meta_information[:] = value
-			elif type(value) in (unicode, str):
-				self._meta_information[:] = value.split('\n')
+			elif type(value) in (str, ):
+				self._meta_information[:] = value.decode(u'utf-8').split(u'\n')
+			elif type(value) in (unicode, ):
+				self._meta_information[:] = value.split(u'\n')
 			self.set_dirty_meta_information()
 		return locals()
 	meta_information = property(**meta_information())
 
 	def headings():
-		""" List of top level headings """
+		u""" List of top level headings """
 		def fget(self):
 			return self._headings
 		def fset(self, value):
@@ -736,20 +756,20 @@ class Document(object):
 	headings = property(**headings())
 
 	def write(self):
-		""" write the document
+		u""" write the document
 
 		:returns:	True if something was written, otherwise False
 		"""
-		raise NotImplementedError('Abstract method, please use concrete impelementation!')
+		raise NotImplementedError(u'Abstract method, please use concrete impelementation!')
 
 	def set_dirty_meta_information(self):
-		""" Mark the meta information dirty so that it will be rewritten when
+		u""" Mark the meta information dirty so that it will be rewritten when
 		saving the document """
 		self._dirty_meta_information = True
 
 	@property
 	def is_dirty(self):
-		"""
+		u"""
 		Return information about unsaved changes for the document and all
 		related headings.
 
@@ -772,11 +792,11 @@ class Document(object):
 
 	@property
 	def is_dirty_meta_information(self):
-		""" Return True if the meta information is marked dirty """
+		u""" Return True if the meta information is marked dirty """
 		return self._dirty_meta_information
 
 	def all_headings(self):
-		""" Iterate over all headings of the current document in serialized
+		u""" Iterate over all headings of the current document in serialized
 		order
 
 		:returns:	Returns an iterator object which returns all headings of
@@ -792,7 +812,7 @@ class Document(object):
 		raise StopIteration()
 
 	def find_heading(self, position=0, direction=DIRECTION_FORWARD, heading=Heading):
-		""" Find heading in the given direction
+		u""" Find heading in the given direction
 
 		:postition:	starting line, counting from 0 (in vim you start counting from 1, don't forget)
 		:direction:	downwards == DIRECTION_FORWARD, upwards == DIRECTION_BACKWARD

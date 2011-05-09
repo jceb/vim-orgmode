@@ -343,6 +343,7 @@ Information about the license are found in the file LICENSE
 *** DONE implement edit functionality
 
 ** liborgmode
+*** add support for related documents
 *** move HeadingList._associate_heading to Heading and Document
 *** add support for easily changing a heading's level
 *** throw exception when adding a heading to the DOM with a lower level than the parent
@@ -351,6 +352,7 @@ Information about the license are found in the file LICENSE
     I'm not quite sure whether this is actually need in liborgmode or should be part of a specific plugin
 *** add support for detaching a heading from a document
     This is strongly linked to the changing of a heading's level. There needs to be an easy way to do that
+*** DONE add support for unicode
 *** DONE build a general library for parsing orgmode files
 *** DONE build a general library for parsing orgmode files
     I think of something general like asciidoc
@@ -367,7 +369,6 @@ Information about the license are found in the file LICENSE
 *** generate documentation from plugin code, add short/long descriptions to keybindings
 
 ** Misc
-*** convert all strings to unicode
 *** autocommand for removing Org menu breaks other plugins
 *** reimplement syntax file (the current version is from hsitz)
 *** implement functionality of [[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html][Orgmode 5 Minutes Tutorial]]
