@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-31) unstable; urgency=low
+
+  * add vim swap files to gitignore list
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 14:29:41 +0900
+
 vim-orgmode (0.1.0-30) unstable; urgency=low
 
   * add support for unicode
