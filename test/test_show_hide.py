@@ -2,7 +2,7 @@
 
 import unittest
 import sys
-sys.path.append('../ftplugin')
+sys.path.append(u'../ftplugin')
 
 import vim
 
@@ -14,15 +14,16 @@ class ShowHideTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:org_debug")': 0,
-				'exists("b:org_debug")': 0,
-				'exists("*repeat#set()")': 0,
-				'exists("b:org_leader")': 0,
-				'exists("g:org_leader")': 0,
-				"v:count": 0}
-		if not 'ShowHide' in ORGMODE.plugins:
+				u'exists("g:org_debug")': 0,
+				u'exists("b:org_debug")': 0,
+				u'exists("*repeat#set()")': 0,
+				u'exists("b:org_leader")': 0,
+				u'exists("g:org_leader")': 0,
+				u'b:changedtick': 0,
+				u"v:count": 0}
+		if not u'ShowHide' in ORGMODE.plugins:
 			ORGMODE.register_plugin('ShowHide')
-		self.showhide = ORGMODE.plugins['ShowHide']
+		self.showhide = ORGMODE.plugins[u'ShowHide']
 		vim.current.buffer = """
 * Überschrift 1
 Text 1
@@ -53,7 +54,8 @@ Bla Bla bla bla
 	def test_toggle_folding_close_one(self):
 		vim.current.window.cursor = (13, 0)
 		vim.EVALRESULTS = {
-				'foldclosed(13)': -1,
+				u'foldclosed(13)': -1,
+				u'b:changedtick': 0,
 				}
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 2)
@@ -64,7 +66,8 @@ Bla Bla bla bla
 	def test_toggle_folding_open_one(self):
 		vim.current.window.cursor = (10, 0)
 		vim.EVALRESULTS = {
-				'foldclosed(10)': 10,
+				u'foldclosed(10)': 10,
+				u'b:changedtick': 0,
 				}
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
@@ -74,11 +77,12 @@ Bla Bla bla bla
 	def test_toggle_folding_close_multiple_all_open(self):
 		vim.current.window.cursor = (2, 0)
 		vim.EVALRESULTS = {
-				'foldclosed(2)': -1,
-				'foldclosed(6)': -1,
-				'foldclosed(10)': -1,
-				'foldclosed(13)': -1,
-				'foldclosed(16)': -1,
+				u'foldclosed(2)': -1,
+				u'foldclosed(6)': -1,
+				u'foldclosed(10)': -1,
+				u'foldclosed(13)': -1,
+				u'foldclosed(16)': -1,
+				u'b:changedtick': 0,
 				}
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
@@ -88,7 +92,8 @@ Bla Bla bla bla
 	def test_toggle_folding_open_multiple_all_closed(self):
 		vim.current.window.cursor = (2, 0)
 		vim.EVALRESULTS = {
-				'foldclosed(2)': 2,
+				u'foldclosed(2)': 2,
+				u'b:changedtick': 0,
 				}
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
@@ -98,11 +103,12 @@ Bla Bla bla bla
 	def test_toggle_folding_open_multiple_first_level_open(self):
 		vim.current.window.cursor = (2, 0)
 		vim.EVALRESULTS = {
-				'foldclosed(2)': -1,
-				'foldclosed(6)': 6,
-				'foldclosed(10)': 10,
-				'foldclosed(13)': 13,
-				'foldclosed(16)': 16,
+				u'foldclosed(2)': -1,
+				u'foldclosed(6)': 6,
+				u'foldclosed(10)': 10,
+				u'foldclosed(13)': 13,
+				u'foldclosed(16)': 16,
+				u'b:changedtick': 0,
 				}
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 2)
@@ -113,11 +119,12 @@ Bla Bla bla bla
 	def test_toggle_folding_open_multiple_second_level_half_open(self):
 		vim.current.window.cursor = (2, 0)
 		vim.EVALRESULTS = {
-				'foldclosed(2)': -1,
-				'foldclosed(6)': -1,
-				'foldclosed(10)': 10,
-				'foldclosed(13)': 13,
-				'foldclosed(16)': 16,
+				u'foldclosed(2)': -1,
+				u'foldclosed(6)': -1,
+				u'foldclosed(10)': 10,
+				u'foldclosed(13)': 13,
+				u'foldclosed(16)': 16,
+				u'b:changedtick': 0,
 				}
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 4)
@@ -130,11 +137,12 @@ Bla Bla bla bla
 	def test_toggle_folding_open_multiple_other_second_level_half_open(self):
 		vim.current.window.cursor = (2, 0)
 		vim.EVALRESULTS = {
-				'foldclosed(2)': -1,
-				'foldclosed(6)': 6,
-				'foldclosed(10)': -1,
-				'foldclosed(13)': 13,
-				'foldclosed(16)': 16,
+				u'foldclosed(2)': -1,
+				u'foldclosed(6)': 6,
+				u'foldclosed(10)': -1,
+				u'foldclosed(13)': 13,
+				u'foldclosed(16)': 16,
+				u'b:changedtick': 0,
 				}
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 4)
@@ -147,11 +155,12 @@ Bla Bla bla bla
 	def test_toggle_folding_open_multiple_third_level_half_open(self):
 		vim.current.window.cursor = (2, 0)
 		vim.EVALRESULTS = {
-				'foldclosed(2)': -1,
-				'foldclosed(6)': -1,
-				'foldclosed(10)': -1,
-				'foldclosed(13)': -1,
-				'foldclosed(16)': 16,
+				u'foldclosed(2)': -1,
+				u'foldclosed(6)': -1,
+				u'foldclosed(10)': -1,
+				u'foldclosed(13)': -1,
+				u'foldclosed(16)': 16,
+				u'b:changedtick': 0,
 				}
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 4)
@@ -164,11 +173,12 @@ Bla Bla bla bla
 	def test_toggle_folding_open_multiple_other_third_level_half_open(self):
 		vim.current.window.cursor = (2, 0)
 		vim.EVALRESULTS = {
-				'foldclosed(2)': -1,
-				'foldclosed(6)': -1,
-				'foldclosed(10)': -1,
-				'foldclosed(13)': 13,
-				'foldclosed(16)': -1,
+				u'foldclosed(2)': -1,
+				u'foldclosed(6)': -1,
+				u'foldclosed(10)': -1,
+				u'foldclosed(13)': 13,
+				u'foldclosed(16)': -1,
+				u'b:changedtick': 0,
 				}
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 4)
@@ -181,11 +191,12 @@ Bla Bla bla bla
 	def test_toggle_folding_open_multiple_other_third_level_half_open_second_level_half_closed(self):
 		vim.current.window.cursor = (2, 0)
 		vim.EVALRESULTS = {
-				'foldclosed(2)': -1,
-				'foldclosed(6)': 6,
-				'foldclosed(10)': -1,
-				'foldclosed(13)': 13,
-				'foldclosed(16)': -1,
+				u'foldclosed(2)': -1,
+				u'foldclosed(6)': 6,
+				u'foldclosed(10)': -1,
+				u'foldclosed(13)': 13,
+				u'foldclosed(16)': -1,
+				u'b:changedtick': 0,
 				}
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 4)

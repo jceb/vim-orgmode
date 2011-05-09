@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-34) unstable; urgency=low
+
+  * enable tests for ShowHide plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 18:40:11 +0900
+
 vim-orgmode (0.1.0-33) unstable; urgency=low
 
   * optimize update_changedtick to not run through all but just the wanted
