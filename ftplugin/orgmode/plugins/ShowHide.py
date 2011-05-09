@@ -102,7 +102,7 @@ class ShowHide(object):
 		"""
 		# register plug
 
-		self.keybindings.append(Keybinding(u'<Tab>', Plug(u'OrgToggleFolding', u':py ORGMODE.plugins["ShowHide"].toggle_folding()<CR>')))
+		self.keybindings.append(Keybinding(u'<Tab>', Plug(u'OrgToggleFolding', u':py ORGMODE.plugins[u"ShowHide"].toggle_folding()<CR>')))
 		self.menu + ActionEntry(u'&Cycle Visibility', self.keybindings[-1])
 
 		settings.set(u'org_leader', u',')

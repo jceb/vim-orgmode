@@ -77,7 +77,7 @@ def echo(message):
 	Print a regular message that will not be visible to the user when
 	multiple lines are printed
 	"""
-	print message.encode(u'utf-8')
+	vim.eval(('echo("%s")' % message).encode(u'utf-8'))
 
 def echom(message):
 	u"""

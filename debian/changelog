@@ -1,3 +1,11 @@
+vim-orgmode (0.1.0-37) unstable; urgency=low
+
+  * change echo function to use vim echo function
+  * add missing unicode parameter to string in ShowHide keybinding
+  * enable Misc plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 20:32:22 +0900
+
 vim-orgmode (0.1.0-36) unstable; urgency=low
 
   * convert Misc plugin to unicode and liborgmode
