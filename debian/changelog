@@ -1,3 +1,13 @@
+vim-orgmode (0.1.0-40) unstable; urgency=low
+
+  * add tag_column and tabstop implementation to VimBuffer
+  * rename setting org_tags_column to org_tag_column
+  * rename setting org_tags_completion_ignorecase to
+  	org_tag_completion_ignorecase
+  * fix unicode settings in test cases
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 10 May 2011 13:16:35 +0900
+
 vim-orgmode (0.1.0-39) unstable; urgency=low
 
   * fix bug in echo function - use echo command

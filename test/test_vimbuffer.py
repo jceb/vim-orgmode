@@ -15,11 +15,14 @@ class VimBufferTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				u'exists("g:org_debug")': 0,
-				u'exists("g:org_debug")': 0,
-				u'exists("*repeat#set()")': 0,
-				u'b:changedtick': 0,
-				u"v:count": 0}
+				'exists("g:org_debug")': '0',
+				'exists("g:org_debug")': '0',
+				'exists("*repeat#set()")': '0',
+				'b:changedtick': '0',
+				'&ts': '8',
+				'exists("g:org_tag_column")': '0',
+				'exists("b:org_tag_column")': '0',
+				"v:count": '0'}
 		vim.current.buffer = """#Meta information
 #more meta information
 * Überschrift 1
@@ -897,11 +900,14 @@ class VimBufferTagsTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				u'exists("g:org_debug")': 0,
-				u'exists("g:org_debug")': 0,
-				u'exists("*repeat#set()")': 0,
-				u'b:changedtick': 0,
-				u"v:count": 0}
+				'exists("g:org_debug")': '0',
+				'exists("g:org_debug")': '0',
+				'exists("*repeat#set()")': '0',
+				'b:changedtick': '0',
+				'&ts': '8',
+				'exists("g:org_tag_column")': '0',
+				'exists("b:org_tag_column")': '0',
+				"v:count": '0'}
 		vim.current.buffer = """#Meta information
 #more meta information
 * Überschrift 1     :testtag:
@@ -1023,11 +1029,14 @@ class VimBufferTodoTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				u'exists("g:org_debug")': 0,
-				u'exists("g:org_debug")': 0,
-				u'exists("*repeat#set()")': 0,
-				u'b:changedtick': 0,
-				u"v:count": 0}
+				'exists("g:org_debug")': '0',
+				'exists("g:org_debug")': '0',
+				'exists("*repeat#set()")': '0',
+				'b:changedtick': 0,
+				'&ts': '8',
+				'exists("g:org_tag_column")': '0',
+				'exists("b:org_tag_column")': '0',
+				"v:count": '0'}
 		vim.current.buffer = """#Meta information
 #more meta information
 * TODO Überschrift 1     :testtag:

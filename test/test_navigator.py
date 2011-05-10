@@ -17,13 +17,13 @@ def set_visual_selection(visualmode, line_start, line_end, col_start=1,
 	if visualmode not in (u'', u'V', u'v'):
 		raise ValueError(u'Illegal value for visualmode, must be in , V, v')
 
-	vim.EVALRESULTS[u'visualmode()'] = visualmode
+	vim.EVALRESULTS['visualmode()'] = visualmode
 
 	# getpos results [bufnum, lnum, col, off]
-	vim.EVALRESULTS[u'getpos("\'<")'] = (u'', u'%d' % line_start, u'%d' %
-			col_start, u'')
-	vim.EVALRESULTS[u'getpos("\'>")'] = (u'', u'%d' % line_end, u'%d' %
-			col_end, u'')
+	vim.EVALRESULTS['getpos("\'<")'] = ('', '%d' % line_start, '%d' %
+			col_start, '')
+	vim.EVALRESULTS['getpos("\'>")'] = ('', '%d' % line_end, '%d' %
+			col_end, '')
 	if cursor_pos == START:
 		vim.current.window.cursor = (line_start, col_start)
 	else:
@@ -36,11 +36,11 @@ class NavigatorTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				u'exists("g:org_debug")': 0,
-				u'exists("g:org_debug")': 0,
-				u'exists("*repeat#set()")': 0,
-				u'b:changedtick': 0,
-				u"v:count": 0,
+				'exists("g:org_debug")': 0,
+				'exists("g:org_debug")': 0,
+				'exists("*repeat#set()")': 0,
+				'b:changedtick': 0,
+				"v:count": 0,
 				}
 		vim.current.buffer = """
 * Überschrift 1
@@ -100,27 +100,27 @@ Bla Bla bla bla
 
 		## test movement with count
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u"v:count"] = -1
+		vim.EVALRESULTS["v:count"] = '-1'
 		self.navigator.next(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (6, 3))
 
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u"v:count"] = 0
+		vim.EVALRESULTS["v:count"] = '0'
 		self.navigator.next(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (6, 3))
 
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u"v:count"] = 1
+		vim.EVALRESULTS["v:count"] = '1'
 		self.navigator.next(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (6, 3))
-		vim.EVALRESULTS[u"v:count"] = 3
+		vim.EVALRESULTS["v:count"] = '3'
 		self.navigator.next(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (16, 4))
 		self.navigator.next(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (18, 2))
 		self.navigator.next(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (18, 2))
-		vim.EVALRESULTS[u"v:count"] = 0
+		vim.EVALRESULTS["v:count"] = '0'
 
 	def test_backward_movement(self):
 		# test backward movement
@@ -142,23 +142,23 @@ Bla Bla bla bla
 
 		## test movement with count
 		vim.current.window.cursor = (19, 6)
-		vim.EVALRESULTS[u"v:count"] = -1
+		vim.EVALRESULTS["v:count"] = '-1'
 		self.navigator.previous(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (18, 2))
 
 		vim.current.window.cursor = (19, 6)
-		vim.EVALRESULTS[u"v:count"] = 0
+		vim.EVALRESULTS["v:count"] = '0'
 		self.navigator.previous(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (18, 2))
 
 		vim.current.window.cursor = (19, 6)
-		vim.EVALRESULTS[u"v:count"] = 3
+		vim.EVALRESULTS["v:count"] = '3'
 		self.navigator.previous(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (16, 4))
-		vim.EVALRESULTS[u"v:count"] = 4
+		vim.EVALRESULTS["v:count"] = '4'
 		self.navigator.previous(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (2, 2))
-		vim.EVALRESULTS[u"v:count"] = 4
+		vim.EVALRESULTS["v:count"] = '4'
 		self.navigator.previous(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (2, 2))
 
@@ -186,27 +186,27 @@ Bla Bla bla bla
 
 		## test movement with count
 		vim.current.window.cursor = (16, 4)
-		vim.EVALRESULTS[u"v:count"] = -1
+		vim.EVALRESULTS["v:count"] = '-1'
 		self.navigator.parent(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (10, 3))
 
 		vim.current.window.cursor = (16, 4)
-		vim.EVALRESULTS[u"v:count"] = 0
+		vim.EVALRESULTS["v:count"] = '0'
 		self.navigator.parent(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (10, 3))
 
 		vim.current.window.cursor = (16, 4)
-		vim.EVALRESULTS[u"v:count"] = 1
+		vim.EVALRESULTS["v:count"] = '1'
 		self.navigator.parent(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (10, 3))
 
 		vim.current.window.cursor = (16, 4)
-		vim.EVALRESULTS[u"v:count"] = 2
+		vim.EVALRESULTS["v:count"] = '2'
 		self.navigator.parent(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (2, 2))
 
 		vim.current.window.cursor = (16, 4)
-		vim.EVALRESULTS[u"v:count"] = 3
+		vim.EVALRESULTS["v:count"] = '3'
 		self.navigator.parent(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (2, 2))
 

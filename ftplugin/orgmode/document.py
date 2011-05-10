@@ -2,6 +2,7 @@
 
 from exceptions import BufferNotFound, BufferNotInSync
 from liborgmode import Document, Heading, MultiPurposeList
+import settings
 import vim
 
 class VimBufferContent(MultiPurposeList):
@@ -127,6 +128,14 @@ class VimBuffer(Document):
 		self._bufnr            = vim.current.buffer.number if bufnr == 0 else bufnr
 		self._changedtick      = -1
 		self._orig_changedtick = 0
+
+	@property
+	def tabstop(self):
+		return int(vim.eval(u'&ts'.encode(u'utf-8')))
+
+	@property
+	def tag_column(self):
+		return int(settings.get('org_tag_column', '77'))
 
 	@property
 	def is_insync(self):

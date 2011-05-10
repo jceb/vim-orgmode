@@ -660,8 +660,26 @@ class Document(object):
 		self._deleted_headings          = []
 
 		# settings needed to align tags properly
-		self.tabstop                    = 8
-		self.tag_column                 = 77
+		self._tabstop                    = 8
+		self._tag_column                 = 77
+
+	def tabstop():
+		""" Tabstop for this document """
+		def fget(self):
+			return self._tabstop
+		def fset(self, value):
+			self._tabstop = value
+		return locals()
+	tabstop = property(**tabstop())
+
+	def tag_column():
+		""" The column all tags are right-aligned to """
+		def fget(self):
+			return self._tag_column
+		def fset(self, value):
+			self._tag_column = value
+		return locals()
+	tag_column = property(**tag_column())
 
 	def load(self, heading=Heading):
 		u""" Initialize all headings in document - build DOM. This method
