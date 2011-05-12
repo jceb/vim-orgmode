@@ -1,3 +1,11 @@
+vim-orgmode (0.1.0-41) unstable; urgency=low
+
+  * replace hbsitz's org syntax file
+  * change highlighting to integrate much better with colorschemes
+  * change license to AGPL 3
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Thu, 12 May 2011 18:46:13 +0200
+
 vim-orgmode (0.1.0-40) unstable; urgency=low
 
   * add tag_column and tabstop implementation to VimBuffer

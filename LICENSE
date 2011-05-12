@@ -1,28 +1,26 @@
-Copyright (C) 2010 Jan Christoph Ebersbach
+Copyright (C) 2010,2011 Jan Christoph Ebersbach
 
 http://www.e-jc.de/
 
 All rights reserved.
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 3 as
-published by the Free Software Foundation.
+The source code of this program is made available
+under the terms of the GNU Affero General Public License version 3
+(GNU AGPL V3) as published by the Free Software Foundation.
 
-Binary versions of this file provided by Univention to you as
+Binary versions of this program provided by Univention to you as
 well as other copyrighted, protected or trademarked materials like
 Logos, graphics, fonts, specific documentations and configurations,
 cryptographic keys etc. are subject to a license agreement between
-you and Univention.
+you and Univention and not subject to the GNU AGPL V3.
 
-This program is distributed in the hope that it will be useful,
+In the case you use this program under the terms of the GNU AGPL V3,
+the program is provided in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
-USA
-
-Except file syntax/org.vim which was copied from Herbert Sitz and
-changed later on by Jan Christoph Ebersbach.
+You should have received a copy of the GNU Affero General Public
+License with the Debian GNU/Linux or Univention distribution in file
+/usr/share/common-licenses/AGPL-3; if not, see
+<http://www.gnu.org/licenses/>.
