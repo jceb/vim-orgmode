@@ -21,15 +21,15 @@ if g:org_heading_shade_leading_stars == 1
 endif
 
 while s:i <= g:org_heading_highlight_levels
-	exec 'syntax match org_heading' . s:i . ' /^\*\{' . s:i . '\}\s.*/' . s:shaded_stars
+	exec 'syntax match org_heading' . s:i . ' /^\*\{' . s:i . '\}\s.*/' . s:shade_stars
 	exec 'hi link org_heading' . s:i . ' ' . g:org_heading_highlight_colors[(s:i - 1) % s:j]
 	let s:i += 1
 endwhile
-unlet! s:i s:j s:shaded_stars
+unlet! s:i s:j s:shade_stars
 
 " Todo keywords
 if !exists('g:org_todo_keywords')
-	let g:org_todo_keywords = ['TODO' | 'DONE']
+	let g:org_todo_keywords = ['TODO', '|', 'DONE']
 endif
 
 if !exists('g:org_todo_keyword_faces')

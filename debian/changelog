@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-42) unstable; urgency=low
+
+  * fix syntax error in syntax/org.vim
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 13 May 2011 19:30:44 +0200
+
 vim-orgmode (0.1.0-41) unstable; urgency=low
 
   * replace hbsitz's org syntax file
