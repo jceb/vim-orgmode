@@ -22,7 +22,7 @@ class VimWindow(object):
 class VimBuffer(list):
 	def __init__(self, iterable=None):
 		self.number = 0
-		if iterable != None:
+		if iterable is not None:
 			list.__init__(self, iterable)
 		else:
 			list.__init__(self)

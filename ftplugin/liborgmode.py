@@ -6,6 +6,16 @@ from UserList import UserList
 DIRECTION_FORWARD  = True
 DIRECTION_BACKWARD = False
 
+def flatten_list(l):
+	res = []
+	if type(l) in (tuple, list) or isinstance(l, UserList):
+		for i in l:
+			if type(i) in (list, tuple) or isinstance(i, UserList):
+				res.extend(flatten_list(i))
+			else:
+				res.append(i)
+	return res
+
 class MultiPurposeList(UserList):
 	u""" A Multi Purpose List is a list that calls a user defined hook on
 	change. The impelementation is very basic - the hook is called without any
@@ -58,7 +68,8 @@ class MultiPurposeList(UserList):
 		self._changed()
 
 	def insert(self, i, item):
-		self.__setitem__(i, item)
+		UserList.insert(self, i, item)
+		self._changed()
 
 	def pop(self, i=-1):
 		item = self[i]
@@ -89,15 +100,17 @@ class HeadingList(MultiPurposeList):
 
 	See documenatation of MultiPurposeList for more information.
 	"""
-	def __init__(self, obj, initlist=None):
+	def __init__(self, initlist=None, obj=None):
+		"""
+		:initlist:	Initial data
+		:obj:		Link to a concrete Heading or Document object
+		"""
 		# it's not necessary to register a on_change hook because the heading
 		# list will itself take care of marking headings dirty or adding
 		# headings to the deleted headings list
 		MultiPurposeList.__init__(self)
 
 		self._obj = obj
-		if not (isinstance(obj, Document) or self.__class__.is_heading(obj)):
-			raise ValueError(u'A Heading List must be linked to a Document or Heading object!')
 
 		# initialization must be done here, because
 		# self._document is not initialized when the
@@ -122,17 +135,22 @@ class HeadingList(MultiPurposeList):
 			# HeadingList has not been associated yet
 			return
 
-		if type(item) in (HeadingList, tuple, list):
-			for i in item:
+		if type(item) in (list, tuple) or isinstance(item, UserList):
+			for i in flatten_list(item):
 				self._add_to_deleted_headings(i)
 		else:
 			self._get_document()._deleted_headings.append(item)
 			self._add_to_deleted_headings(item.children)
 
 	def _associate_heading(self, item, children=False):
+		"""
+		:item:		The heading or list to associate with the current heading
+		:children:	Marks whether children are processed in the current
+					iteration or not (should not be use, it's set automatically)
+		"""
 		# TODO this method should be externalized and moved to the Heading class
-		if type(item) in (HeadingList, tuple, list):
-			for i in item:
+		if type(item) in (list, tuple) or isinstance(item, UserList):
+			for i in flatten_list(item):
 				self._associate_heading(i, children=children)
 		else:
 			item.set_dirty()
@@ -165,6 +183,7 @@ class HeadingList(MultiPurposeList):
 		o = other
 		if self.__class__.is_heading(o):
 			o = (o, )
+		o = flatten_list(o)
 		for item in o:
 			if not self.__class__.is_heading(item):
 				raise ValueError(u'List contains items that are not a heading!')
@@ -186,7 +205,7 @@ class HeadingList(MultiPurposeList):
 		o = other
 		if self.__class__.is_heading(o):
 			o = (o, )
-		for item in o:
+		for item in flatten_list(o):
 			if not self.__class__.is_heading(item):
 				raise ValueError(u'List contains items that are not a heading!')
 		self._associate_heading(o)
@@ -205,7 +224,8 @@ class HeadingList(MultiPurposeList):
 		MultiPurposeList.append(self, item)
 
 	def insert(self, i, item):
-		self.__setitem__(i, item)
+		self._associate_heading(item)
+		MultiPurposeList.insert(self, i, item)
 
 	def pop(self, i=-1):
 		item = self[i]
@@ -254,7 +274,7 @@ class Heading(object):
 
 		self._document      = None
 		self._parent        = None
-		self._children      = HeadingList(self)
+		self._children      = HeadingList(obj=self)
 		self._orig_start    = None
 		self._orig_len      = 0
 
@@ -276,7 +296,6 @@ class Heading(object):
 		if self.todo:
 			res += u' ' + self.todo
 		res += u' ' + self.title
-		res = res.strip()
 
 		# compute position of tags
 		if self.tags:
@@ -303,7 +322,7 @@ class Heading(object):
 				else:
 					spaces = tag_column - (len_heading + len_tags)
 
-			res = res + u'\t' * tabs + u' ' * spaces + tags
+			res += u'\t' * tabs + u' ' * spaces + tags
 		return res
 
 	def __str__(self):
@@ -345,7 +364,7 @@ class Heading(object):
 		h = cls()
 		h.level, h.todo, h.title, h.tags = parse_title(data[0])
 		h.body = data[1:]
-		if orig_start != None:
+		if orig_start is not None:
 			h._dirty_heading = False
 			h._dirty_body    = False
 			h._orig_start    = orig_start
@@ -388,6 +407,34 @@ class Heading(object):
 	def is_dirty_body(self):
 		u""" Return True if the heading's body is marked dirty """
 		return self._dirty_body
+
+	def get_index_in_parent_list(self):
+		""" Retrieve the index value of current heading in the parents list of
+		headings. This works also for top level headings.
+
+		:returns:	Index value or None if heading doesn't have a
+					parent/document or is not in the list of headings
+	    """
+		if self.parent:
+			if self in self.parent.children:
+				return self.parent.children.index(self)
+		elif self.document:
+			if self in self.document.headings:
+				return self.document.headings.index(self)
+
+	def get_parent_list(self):
+		""" Retrieve the parents list of headings. This works also for top
+		level headings.
+
+		:returns:	List of headings or None if heading doesn't have a
+					parent/document or is not in the list of headings
+	    """
+		if self.parent:
+			if self in self.parent.children:
+				return self.parent.children
+		elif self.document:
+			if self in self.document.headings:
+				return self.document.headings
 
 	def set_dirty(self):
 		u""" Mark the heading and body dirty so that it will be rewritten when
@@ -492,18 +539,18 @@ class Heading(object):
 
 	@property
 	def start_vim(self):
-		if self.start != None:
+		if self.start is not None:
 			return self.start + 1
 
 	@property
 	def end(self):
 		u""" Access to the ending line of the heading """
-		if self.start != None:
+		if self.start is not None:
 			return self.start + len(self.body)
 
 	@property
 	def end_vim(self):
-		if self.end != None:
+		if self.end is not None:
 			return self.end + 1
 
 	@property
@@ -525,7 +572,12 @@ class Heading(object):
 		def fget(self):
 			return self._children
 		def fset(self, value):
-			self._children[:] = value
+			v = value
+			if type(v) in (list, tuple) or isinstance(v, UserList):
+				v = flatten_list(v)
+			self._children[:] = v
+		def fdel(self):
+			del self.children[:]
 		return locals()
 	children = property(**children())
 
@@ -581,14 +633,14 @@ class Heading(object):
 	def title():
 		u""" Title of current heading """
 		def fget(self):
-			return self._title
+			return self._title.strip()
 		def fset(self, value):
 			if type(value) not in (unicode, str):
 				raise ValueError(u'Title must be a string.')
 			v = value
 			if type(v) == str:
 				v = v.decode(u'utf-8')
-			self._title = value
+			self._title = v.strip()
 			self.set_dirty_heading()
 		def fdel(self):
 			self.title = u''
@@ -601,8 +653,11 @@ class Heading(object):
 			return self._tags
 		def fset(self, value):
 			v = value
-			if type(value) in (unicode, str):
-				v = list(value)
+			if type(v) not in (list, tuple) or isinstance(v, UserList):
+				v = list(unicode(v))
+			if type(v) in (unicode, str):
+				v = list(v)
+			v = flatten_list(v)
 			v_decoded = []
 			for i in v:
 				if type(i) not in (unicode, str):
@@ -611,7 +666,7 @@ class Heading(object):
 						or u'\t' in i \
 						or u':' in i:
 					raise ValueError(u'Found non allowed character in tag!')
-				i_tmp = i
+				i_tmp = i.strip().replace(' ', '_').replace('\t', '_')
 				if type(i) == str:
 					i_tmp = i.decode(u'utf-8')
 				v_decoded.append(i_tmp)
@@ -628,14 +683,14 @@ class Heading(object):
 			return self._body
 
 		def fset(self, value):
-			if type(value) in (list, tuple):
-				self._body[:] = value
+			if type(value) in (list, tuple) or isinstance(value, UserList):
+				self._body[:] = flatten_list(value)
 			elif type(value) in (str, ):
 				self._body[:] = value.decode('utf-8').split(u'\n')
 			elif type(value) in (unicode, ):
 				self._body[:] = value.split(u'\n')
 			else:
-				self._body[:] = list(unicode(value))
+				self.body = list(unicode(value))
 		def fdel(self):
 			self.body = []
 		return locals()
@@ -656,12 +711,20 @@ class Document(object):
 		self._dirty_meta_information    = False
 		self._meta_information          = MultiPurposeList(on_change = self.set_dirty_meta_information)
 		self._orig_meta_information_len = None
-		self._headings                  = HeadingList(self)
+		self._headings                  = HeadingList(obj=self)
 		self._deleted_headings          = []
 
 		# settings needed to align tags properly
 		self._tabstop                    = 8
 		self._tag_column                 = 77
+
+	def __unicode__(self):
+		if self.meta_information is None:
+			return '\n'.join(self.all_headings())
+		return '\n'.join(self.meta_information) + '\n' + '\n'.join(['\n'.join([unicode(i)] + i.body) for i in self.all_headings()])
+
+	def __str__(self):
+		return self.__unicode__().encode(u'utf-8')
 
 	def tabstop():
 		""" Tabstop for this document """
@@ -747,15 +810,17 @@ class Document(object):
 			return self._meta_information
 
 		def fset(self, value):
-			if self._orig_meta_information_len == None:
+			if self._orig_meta_information_len is None:
 				self._orig_meta_information_len = len(self.meta_information)
-			if type(value) in (list, tuple):
-				self._meta_information[:] = value
+			if type(value) in (list, tuple) or isinstance(value, UserList):
+				self._meta_information[:] = flatten_list(value)
 			elif type(value) in (str, ):
 				self._meta_information[:] = value.decode(u'utf-8').split(u'\n')
 			elif type(value) in (unicode, ):
 				self._meta_information[:] = value.split(u'\n')
 			self.set_dirty_meta_information()
+		def fdel(self):
+			self.meta_information = u''
 		return locals()
 	meta_information = property(**meta_information())
 
@@ -765,6 +830,8 @@ class Document(object):
 			return self._headings
 		def fset(self, value):
 			self._headings[:] = value
+		def fdel(self):
+			del self.headings[:]
 		return locals()
 	headings = property(**headings())
 
@@ -845,27 +912,27 @@ class Document(object):
 		# Search heading upwards
 		if direction == DIRECTION_FORWARD:
 			while tmp_line < len_cb:
-				if heading.identify_heading(self._content[tmp_line]) != None:
-					if start == None:
+				if heading.identify_heading(self._content[tmp_line]) is not None:
+					if start is None:
 						start = tmp_line
-					elif end == None:
+					elif end is None:
 						end = tmp_line - 1
-					if None not in (start, end):
+					if start is not None and end is not None:
 						break
 				tmp_line += 1
 		else:
 			while tmp_line >= 0 and tmp_line < len_cb:
 				print tmp_line
-				if heading.identify_heading(self._content[tmp_line]) != None:
-					if start == None:
+				if heading.identify_heading(self._content[tmp_line]) is not None:
+					if start is None:
 						start = tmp_line
-					elif end == None:
+					elif end is None:
 						end = tmp_line - 1
-					if None not in (start, end):
+					if start is not None and end is not None:
 						break
-				tmp_line -= 1 if start == None else -1
+				tmp_line -= 1 if start is None else -1
 
-		if start != None and end == None:
+		if start is not None and end is None:
 			end = len_cb - 1
-		if None not in (start, end):
+		if start is not None and end is not None:
 			return heading.parse_heading_from_data(self._content[start:end + 1], document=self, orig_start=start)

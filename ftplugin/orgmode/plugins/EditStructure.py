@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import ORGMODE, apply_count, repeat, realign_tags
+from orgmode import ORGMODE, apply_count, repeat, realign_tags, DIRECTION_FORWARD, DIRECTION_BACKWARD
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_INSERT, MODE_NORMAL
-from orgmode.liborgmode import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from liborgmode import Heading
+from orgmode.exceptions import HeadingDomError
 
 import vim
 
 class EditStructure(object):
-	""" EditStructure plugin """
+	u""" EditStructure plugin """
 
 	def __init__(self):
-		""" Initialize plugin """
+		u""" Initialize plugin """
 		object.__init__(self)
 		# menu entries this plugin should create
-		self.menu = ORGMODE.orgmenu + Submenu('&Edit Structure')
+		self.menu = ORGMODE.orgmenu + Submenu(u'&Edit Structure')
 
 		# key bindings for this plugin
 		# key bindings are also registered through the menu so only additional
@@ -23,79 +24,104 @@ class EditStructure(object):
 
 	@classmethod
 	def new_heading(cls, below=None, insert_mode=False, end_of_last_child=False):
-		h = Document.current_heading()
+		"""
+		:below:				True, insert heading below current heading, False,
+							insert heading above current heading, None, special
+							behavior for insert mode, use the current text as
+							heading
+		:insert_mode:		True, if action is performed in insert mode
+		:end_of_last_child:	True, insert heading at the end of last child,
+							otherwise the newly created heading will "take
+							over" the current heading's children
+		"""
+		d = ORGMODE.get_document()
+		h = d.current_heading()
 		cursor = vim.current.window.cursor[:]
 		if not h:
+			# the user is in meta data region
 			pos = cursor[0] - 1
-			tmp = vim.current.buffer[pos]
-			del vim.current.buffer[pos]
-			vim.current.buffer[pos:pos] = ['%s %s' % ('*', tmp.lstrip())]
-			vim.current.window.cursor = (pos + 1, cursor[1] + 1 + 1)
+			heading = Heading(body=d.meta_information[pos:])
+			d.headings.insert(0, heading)
+			del d.meta_information[pos:]
+			d.write()
+			vim.current.window.cursor = (pos + 1, heading.level + 1)
 			return
 
+		heading = Heading(level=h.level)
+
 		# it's weird but this is the behavior of original orgmode
-		if below == None:
+		if below is None:
 			below = cursor[1] != 0 or end_of_last_child
 
+		heading_insert_position = 0
 		if below:
-			if end_of_last_child:
-				pos = h.end_of_last_child_vim
-			else:
-				pos = h.end_vim
-			level = h.level
+			heading_insert_position = 1
+			if not end_of_last_child:
+				# append heading at the end of current heading but also take
+				# over the children of current heading
+				heading.children = h.children[:]
+				del h.children
+
+		# insert newly created heading
+		l = h.get_parent_list()
+		idx = h.get_index_in_parent_list()
+		if l is not None and idx is not None:
+			l.insert(idx + heading_insert_position, heading)
 		else:
-			pos = h.start_vim - 1
-			level = h.level
+			raise HeadingDomError('Current heading is not properly linked in DOM')
+
+		d.write()
 
 		# if cursor is currently on a heading, insert parts of it into the
 		# newly created heading
-		if  insert_mode and not end_of_last_child and cursor[0] == h.start_vim:
-			if cursor[1] > h.level:
-				tmp1 = vim.current.buffer[cursor[0] - 1][:cursor[1]]
-				tmp2 = vim.current.buffer[cursor[0] - 1][cursor[1]:]
-				vim.current.buffer[cursor[0] - 1] = tmp1
-			else:
-				tmp2 = ''
-			if below:
-				vim.current.buffer[cursor[0]:cursor[0]] = ['%s %s' % ('*' * level, tmp2.lstrip())]
-				vim.current.window.cursor = (cursor[0] + 1, level + 1)
-			else:
-				# this can only happen at column 0
-				vim.current.buffer[cursor[0] - 1:cursor[0] - 1] = ['%s ' % ('*' * level, )]
-				vim.current.window.cursor = (cursor[0], level + 1)
-		elif insert_mode and not below and not end_of_last_child:
-			vim.current.buffer[cursor[0] - 1] = '%s %s' % ('*' * level, vim.current.buffer[cursor[0] - 1].lstrip())
-			vim.current.window.cursor = (cursor[0], cursor[1] + level + 1)
-		else:
-			vim.current.buffer[pos:pos] = vim.current.buffer[pos:pos] + ['%s ' % ('*' * level, )]
-			vim.command('exe "normal %dgg"|startinsert!' % (pos + 1, ))
+		# TODO implement me
+		#if insert_mode and not end_of_last_child and cursor[0] == h.start_vim:
+		#	if cursor[1] > h.level:
+		#		tmp1 = vim.current.buffer[cursor[0] - 1][:cursor[1]]
+		#		tmp2 = vim.current.buffer[cursor[0] - 1][cursor[1]:]
+		#		vim.current.buffer[cursor[0] - 1] = tmp1
+		#	else:
+		#		tmp2 = u''
+		#	if below:
+		#		vim.current.buffer[cursor[0]:cursor[0]] = [(u'%s %s' % (u'*' * level, tmp2.lstrip())).encode(u'utf-8')]
+		#		vim.current.window.cursor = (cursor[0] + 1, level + 1)
+		#	else:
+		#		# this can only happen at column 0
+		#		vim.current.buffer[cursor[0] - 1:cursor[0] - 1] = [(u'%s ' % (u'*' * level, )).encode(u'utf-8')]
+		#		vim.current.window.cursor = (cursor[0], level + 1)
 
-		# not sure what to return here .. line number of new heading or old heading object?
-		return h
+		if insert_mode:
+			vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
+		else:
+			vim.current.window.cursor = (cursor[0], cursor[1] + heading.level + 1)
+
+		# return newly created heading
+		return heading
 
 	@classmethod
 	def _change_heading_level(cls, level, including_children=True, on_heading=False):
-		"""
+		u"""
 		Change level of heading realtively with or without including children.
 		"""
-		h = Document.current_heading()
+		d = ORGMODE.get_document()
+		h = d.current_heading()
 		if not h or on_heading and h.start_vim != vim.current.window.cursor[0]:
 			# TODO figure out the actually pressed keybinding and feed these
 			# keys instead of making keys up like this
 			if level > 0:
 				if including_children:
-					vim.eval('feedkeys(">]]", "n")')
+					vim.eval((u'feedkeys(">]]", "n")').encode(u'utf-8'))
 				elif on_heading:
-					vim.eval('feedkeys(">>", "n")')
+					vim.eval(u'feedkeys(">>", "n")'.encode(u'utf-8'))
 				else:
-					vim.eval('feedkeys(">}", "n")')
+					vim.eval(u'feedkeys(">}", "n")'.encode(u'utf-8'))
 			else:
 				if including_children:
-					vim.eval('feedkeys("<]]", "n")')
+					vim.eval(u'feedkeys("<]]", "n")'.encode(u'utf-8'))
 				elif on_heading:
-					vim.eval('feedkeys("<<", "n")')
+					vim.eval(u'feedkeys("<<", "n")'.encode(u'utf-8'))
 				else:
-					vim.eval('feedkeys("<}", "n")')
+					vim.eval(u'feedkeys("<}", "n")'.encode(u'utf-8'))
 			# return True because otherwise apply_count will not work
 			return True
 
@@ -110,26 +136,21 @@ class EditStructure(object):
 		def indent(heading, ic):
 			if not heading:
 				return
-			end_vim = heading.end_vim
-			# strip level and add new level
-			vim.current.buffer[heading.start] = '%s%s' % ('*' * (heading.level + level), \
-					vim.current.buffer[heading.start][heading.level:])
+			heading.level += level
 
 			if ic:
 				for child in heading.children:
-					res = indent(child, ic)
-					if res > end_vim:
-						end_vim = res
-			return end_vim
+					indent(child, ic)
 
 		# save cursor position
 		c = vim.current.window.cursor[:]
-		# figure out the end of the last child before changing anything within the vim buffer
-		h.end_of_last_child
+
 		# indent the promoted/demoted heading
-		tmp = indent(h, including_children)
-		if tmp != h.start_vim:
-			vim.command('normal %dggV%dgg=' % (h.start_vim, tmp))
+		indent_end_vim = h.end_of_last_child_vim if including_children else h.end_vim
+		indent(h, including_children)
+		d.write()
+		if indent_end_vim != h.start_vim:
+			vim.command((u'normal %dggV%dgg=' % (h.start_vim, indent_end_vim)).encode(u'utf-8'))
 		# restore cursor position
 		vim.current.window.cursor = (c[0], c[1] + level)
 
@@ -142,8 +163,8 @@ class EditStructure(object):
 	def demote_heading(cls, including_children=True, on_heading=False):
 		if cls._change_heading_level(-1, including_children=including_children, on_heading=on_heading):
 			if including_children:
-				return 'OrgDemoteSubtree'
-			return 'OrgDemoteHeading'
+				return u'OrgDemoteSubtree'
+			return u'OrgDemoteHeading'
 
 	@classmethod
 	@realign_tags
@@ -152,128 +173,115 @@ class EditStructure(object):
 	def promote_heading(cls, including_children=True, on_heading=False):
 		if cls._change_heading_level(1, including_children=including_children, on_heading=on_heading):
 			if including_children:
-				return 'OrgPromoteSubtreeNormal'
-			return 'OrgPromoteHeadingNormal'
+				return u'OrgPromoteSubtreeNormal'
+			return u'OrgPromoteHeadingNormal'
 
 	@classmethod
-	def _move_heading(cls, direction=DIRECTION_FORWARD):
-		""" Move heading up or down
+	def _move_heading(cls, direction=DIRECTION_FORWARD, including_children=True):
+		u""" Move heading up or down
 
 		:returns: heading or None
 		"""
-		heading = Document.current_heading()
+		d = ORGMODE.get_document()
+		heading = d.current_heading()
 		if not heading or \
 				direction == DIRECTION_FORWARD and not heading.next_sibling or \
 				direction == DIRECTION_BACKWARD and not heading.previous_sibling:
 			return None
 
-		replaced_heading = None
-		if direction == DIRECTION_FORWARD:
-			replaced_heading = heading.next_sibling
+		cursor_offset_within_the_heading_vim = vim.current.window.cursor[0] - (heading._orig_start + 1)
+
+		if not including_children:
+			heading.previous_sibling.children.extend(heading.children)
+			del heading.children
+
+		heading_insert_position = 1 if direction == DIRECTION_FORWARD else -1
+		l = heading.get_parent_list()
+		idx = heading.get_index_in_parent_list()
+		if l is not None and idx is not None:
+			l.insert(idx + heading_insert_position, heading)
 		else:
-			replaced_heading = heading.previous_sibling
+			raise HeadingDomError('Current heading is not properly linked in DOM')
 
-		# move heading including all sub heading upwards
-		save_next_previous_sibling = vim.current.buffer[replaced_heading.start:replaced_heading.end_of_last_child + 1]
-		save_current_heading = vim.current.buffer[heading.start:heading.end_of_last_child + 1]
+		d.write()
 
-		new_end_of_last_child = None
-		new_start = None
-		new_cursor_position = None
-		old_start = None
-		old_end_of_last_child = None
-
-		if direction == DIRECTION_FORWARD:
-			new_start = replaced_heading.end_of_last_child - (heading.end_of_last_child - heading.start)
-			new_end_of_last_child = replaced_heading.end_of_last_child
-			new_cursor_position = vim.current.window.cursor[0] + (new_start - heading.start)
-			old_start = heading.start
-			old_end_of_last_child = new_start
-		else:
-			new_start = replaced_heading.start
-			new_end_of_last_child = replaced_heading.start + heading.end_of_last_child - heading.start
-			new_cursor_position = vim.current.window.cursor[0] - (heading.start - new_start)
-			old_start = new_end_of_last_child + 1
-			old_end_of_last_child = heading.end_of_last_child + 1
-
-		vim.current.buffer[new_start:new_end_of_last_child + 1] = save_current_heading
-		vim.current.buffer[old_start:old_end_of_last_child] = save_next_previous_sibling
-
-		vim.current.window.cursor = (new_cursor_position, vim.current.window.cursor[1])
+		vim.current.window.cursor = (heading.start_vim + cursor_offset_within_the_heading_vim, vim.current.window.cursor[1])
 
 		return True
 
 	@classmethod
 	@repeat
 	@apply_count
-	def move_heading_upward(cls):
-		if cls._move_heading(direction=DIRECTION_BACKWARD):
-			return 'OrgMoveHeadingUpward'
+	def move_heading_upward(cls, including_children=True):
+		if cls._move_heading(direction=DIRECTION_BACKWARD, including_children=including_children):
+			return u'OrgMoveHeadingUpward'
 
 	@classmethod
 	@repeat
 	@apply_count
-	def move_heading_downward(cls):
-		if cls._move_heading(direction=DIRECTION_FORWARD):
-			return 'OrgMoveHeadingDownward'
+	def move_heading_downward(cls, including_children=True):
+		if cls._move_heading(direction=DIRECTION_FORWARD, including_children=including_children):
+			return u'OrgMoveHeadingDownward'
 
 	def register(self):
-		"""
+		u"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		self.keybindings.append(Keybinding('<C-S-CR>', Plug('OrgNewHeadingAboveNormal', ':silent! py ORGMODE.plugins["EditStructure"].new_heading(below=False)<CR>')))
-		self.menu + ActionEntry('New Heading &above', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<S-CR>', Plug('OrgNewHeadingBelowNormal', ':silent! py ORGMODE.plugins["EditStructure"].new_heading(below=True)<CR>')))
-		self.menu + ActionEntry('New Heading &below', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<C-CR>', Plug('OrgNewHeadingBelowAfterChildrenNormal', ':silent! py ORGMODE.plugins["EditStructure"].new_heading(below=True, end_of_last_child=True)<CR>')))
-		self.menu + ActionEntry('New Heading below, after &children', self.keybindings[-1])
+		self.keybindings.append(Keybinding(u'<C-A-CR>', Plug(u'OrgNewHeadingAboveNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=False)<CR>')))
+		self.menu + ActionEntry(u'New Heading &above', self.keybindings[-1])
+		self.keybindings.append(Keybinding(u'<A-CR>', Plug(u'OrgNewHeadingBelowNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=True)<CR>')))
+		self.menu + ActionEntry(u'New Heading &below', self.keybindings[-1])
+		self.keybindings.append(Keybinding(u'<C-CR>', Plug(u'OrgNewHeadingBelowAfterChildrenNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=True, end_of_last_child=True)<CR>')))
+		self.menu + ActionEntry(u'New Heading below, after &children', self.keybindings[-1])
 
-		self.keybindings.append(Keybinding('<C-S-CR>', Plug('OrgNewHeadingAboveInsert', '<C-o>:<C-u>silent! py ORGMODE.plugins["EditStructure"].new_heading(below=False, insert_mode=True)<CR>', mode=MODE_INSERT)))
-		self.keybindings.append(Keybinding('<S-CR>', Plug('OrgNewHeadingBelowInsert', '<C-o>:<C-u>silent! py ORGMODE.plugins["EditStructure"].new_heading(insert_mode=True)<CR>', mode=MODE_INSERT)))
-		self.keybindings.append(Keybinding('<C-CR>', Plug('OrgNewHeadingBelowAfterChildrenInsert', '<C-o>:<C-u>silent! py ORGMODE.plugins["EditStructure"].new_heading(insert_mode=True, end_of_last_child=True)<CR>', mode=MODE_INSERT)))
-
-		self.menu + Separator()
-
-		self.keybindings.append(Keybinding('m[[', Plug('OrgMoveHeadingUpward', ':silent! py ORGMODE.plugins["EditStructure"].move_heading_upward()<CR>')))
-		self.menu + ActionEntry('Move Subtree &Up', self.keybindings[-1])
-		self.keybindings.append(Keybinding('m]]', Plug('OrgMoveHeadingDownward', ':silent! py ORGMODE.plugins["EditStructure"].move_heading_downward()<CR>')))
-		self.menu + ActionEntry('Move Subtree &Down', self.keybindings[-1])
+		self.keybindings.append(Keybinding(u'<C-S-CR>', Plug(u'OrgNewHeadingAboveInsert', u'<C-o>:<C-u>silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=False, insert_mode=True)<CR>', mode=MODE_INSERT)))
+		self.keybindings.append(Keybinding(u'<S-CR>', Plug(u'OrgNewHeadingBelowInsert', u'<C-o>:<C-u>silent! py ORGMODE.plugins[u"EditStructure"].new_heading(insert_mode=True)<CR>', mode=MODE_INSERT)))
+		self.keybindings.append(Keybinding(u'<C-CR>', Plug(u'OrgNewHeadingBelowAfterChildrenInsert', u'<C-o>:<C-u>silent! py ORGMODE.plugins[u"EditStructure"].new_heading(insert_mode=True, end_of_last_child=True)<CR>', mode=MODE_INSERT)))
 
 		self.menu + Separator()
 
-		self.menu + ActionEntry('&Copy Heading', 'yah', 'yah')
-		self.menu + ActionEntry('C&ut Heading', 'dah', 'dah')
+		self.keybindings.append(Keybinding(u'm{', Plug(u'OrgMoveHeadingUpward', u':silent! py ORGMODE.plugins[u"EditStructure"].move_heading_upward(including_children=False)<CR>')))
+		self.keybindings.append(Keybinding(u'm[[', Plug(u'OrgMoveSubtreeUpward', u':silent! py ORGMODE.plugins[u"EditStructure"].move_heading_upward()<CR>')))
+		self.menu + ActionEntry(u'Move Subtree &Up', self.keybindings[-1])
+		self.keybindings.append(Keybinding(u'm}', Plug(u'OrgMoveHeadingDownward', u':silent! py ORGMODE.plugins[u"EditStructure"].move_heading_downward(including_children=False)<CR>')))
+		self.keybindings.append(Keybinding(u'm]]', Plug(u'OrgMoveSubtreeDownward', u':silent! py ORGMODE.plugins[u"EditStructure"].move_heading_downward()<CR>')))
+		self.menu + ActionEntry(u'Move Subtree &Down', self.keybindings[-1])
 
 		self.menu + Separator()
 
-		self.menu + ActionEntry('&Copy Subtree', 'yat', 'yat')
-		self.menu + ActionEntry('C&ut Subtree', 'dat', 'dat')
-		self.menu + ActionEntry('&Paste Subtree', 'p', 'p')
+		self.menu + ActionEntry(u'&Copy Heading', u'yah', u'yah')
+		self.menu + ActionEntry(u'C&ut Heading', u'dah', u'dah')
 
 		self.menu + Separator()
 
-		self.keybindings.append(Keybinding('>ah', Plug('OrgPromoteHeadingNormal', ':silent! py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False)<CR>')))
-		self.menu + ActionEntry('&Promote Heading', self.keybindings[-1])
-		self.keybindings.append(Keybinding('>>', Plug('OrgPromoteOnHeadingNormal', ':silent! py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False, on_heading=True)<CR>')))
-		self.keybindings.append(Keybinding('>}', '<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
-		self.keybindings.append(Keybinding('>ih', '<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
+		self.menu + ActionEntry(u'&Copy Subtree', u'yat', u'yat')
+		self.menu + ActionEntry(u'C&ut Subtree', u'dat', u'dat')
+		self.menu + ActionEntry(u'&Paste Subtree', u'p', u'p')
 
-		self.keybindings.append(Keybinding('>at', Plug('OrgPromoteSubtreeNormal', ':silent! py ORGMODE.plugins["EditStructure"].promote_heading()<CR>')))
-		self.menu + ActionEntry('&Promote Subtree', self.keybindings[-1])
-		self.keybindings.append(Keybinding('>]]', '<Plug>OrgPromoteSubtreeNormal', mode=MODE_NORMAL))
-		self.keybindings.append(Keybinding('>it', '<Plug>OrgPromoteSubtreeNormal', mode=MODE_NORMAL))
+		self.menu + Separator()
 
-		self.keybindings.append(Keybinding('<ah', Plug('OrgDemoteHeadingNormal', ':silent! py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False)<CR>')))
-		self.menu + ActionEntry('&Demote Heading', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<<', Plug('OrgDemoteOnHeadingNormal', ':silent! py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False, on_heading=True)<CR>')))
-		self.keybindings.append(Keybinding('<{', '<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
-		self.keybindings.append(Keybinding('<ih', '<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'>ah', Plug(u'OrgPromoteHeadingNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].promote_heading(including_children=False)<CR>')))
+		self.menu + ActionEntry(u'&Promote Heading', self.keybindings[-1])
+		self.keybindings.append(Keybinding(u'>>', Plug(u'OrgPromoteOnHeadingNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].promote_heading(including_children=False, on_heading=True)<CR>')))
+		self.keybindings.append(Keybinding(u'>}', u'<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'>ih', u'<Plug>OrgPromoteHeadingNormal', mode=MODE_NORMAL))
 
-		self.keybindings.append(Keybinding('<at', Plug('OrgDemoteSubtreeNormal', ':silent! py ORGMODE.plugins["EditStructure"].demote_heading()<CR>')))
-		self.menu + ActionEntry('&Demote Subtree', self.keybindings[-1])
-		self.keybindings.append(Keybinding('<[[', '<Plug>OrgDemoteSubtreeNormal', mode=MODE_NORMAL))
-		self.keybindings.append(Keybinding('<it', '<Plug>OrgDemoteSubtreeNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'>at', Plug(u'OrgPromoteSubtreeNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].promote_heading()<CR>')))
+		self.menu + ActionEntry(u'&Promote Subtree', self.keybindings[-1])
+		self.keybindings.append(Keybinding(u'>]]', u'<Plug>OrgPromoteSubtreeNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'>it', u'<Plug>OrgPromoteSubtreeNormal', mode=MODE_NORMAL))
+
+		self.keybindings.append(Keybinding(u'<ah', Plug(u'OrgDemoteHeadingNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].demote_heading(including_children=False)<CR>')))
+		self.menu + ActionEntry(u'&Demote Heading', self.keybindings[-1])
+		self.keybindings.append(Keybinding(u'<<', Plug(u'OrgDemoteOnHeadingNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].demote_heading(including_children=False, on_heading=True)<CR>')))
+		self.keybindings.append(Keybinding(u'<{', u'<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'<ih', u'<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
+
+		self.keybindings.append(Keybinding(u'<at', Plug(u'OrgDemoteSubtreeNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].demote_heading()<CR>')))
+		self.menu + ActionEntry(u'&Demote Subtree', self.keybindings[-1])
+		self.keybindings.append(Keybinding(u'<[[', u'<Plug>OrgDemoteSubtreeNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'<it', u'<Plug>OrgDemoteSubtreeNormal', mode=MODE_NORMAL))
 
 		# other keybindings
-		self.keybindings.append(Keybinding('<C-t>', Plug('OrgPromoteOnHeadingInsert', '<C-o>:silent! py ORGMODE.plugins["EditStructure"].promote_heading(including_children=False, on_heading=True)<CR>', mode=MODE_INSERT)))
-		self.keybindings.append(Keybinding('<C-d>', Plug('OrgDemoteOnHeadingInsert', '<C-o>:silent! py ORGMODE.plugins["EditStructure"].demote_heading(including_children=False, on_heading=True)<CR>', mode=MODE_INSERT)))
+		self.keybindings.append(Keybinding(u'<C-t>', Plug(u'OrgPromoteOnHeadingInsert', u'<C-o>:silent! py ORGMODE.plugins[u"EditStructure"].promote_heading(including_children=False, on_heading=True)<CR>', mode=MODE_INSERT)))
+		self.keybindings.append(Keybinding(u'<C-d>', Plug(u'OrgDemoteOnHeadingInsert', u'<C-o>:silent! py ORGMODE.plugins[u"EditStructure"].demote_heading(including_children=False, on_heading=True)<CR>', mode=MODE_INSERT)))

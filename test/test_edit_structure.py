@@ -2,28 +2,33 @@
 
 import unittest
 import sys
-sys.path.append('../ftplugin')
+sys.path.append(u'../ftplugin')
 
 import vim
 
 from orgmode import ORGMODE
-from orgmode.liborgmode import Document
 
-
+counter = 0
 class EditStructureTestCase(unittest.TestCase):
 	def setUp(self):
+		global counter
+		counter += 1
 		vim.CMDHISTORY = []
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:org_debug")': 0,
-				'exists("g:org_debug")': 0,
-				'exists("*repeat#set()")': 0,
-				"v:count": 0}
-		if not 'EditStructure' in ORGMODE.plugins:
-			ORGMODE.register_plugin('EditStructure')
-		self.editstructure = ORGMODE.plugins['EditStructure']
-		vim.current.buffer = """
+				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'b:changedtick'.encode(u'utf-8'): (u'%d' % counter).encode(u'utf-8'),
+				u'&ts'.encode(u'utf-8'): u'8'.encode(u'utf-8'),
+				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
+		if not u'EditStructure' in ORGMODE.plugins:
+			ORGMODE.register_plugin(u'EditStructure')
+		self.editstructure = ORGMODE.plugins[u'EditStructure']
+		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 1
 Text 1
 
@@ -42,11 +47,11 @@ Bla Bla bla bla
 * Überschrift 2
 * Überschrift 3
   asdf sdf
-""".split('\n')
+""".split(u'\n')]
 
 	def test_new_heading_below_normal_behavior(self):
 		vim.current.window.cursor = (1, 0)
-		self.assertEqual(self.editstructure.new_heading(below=True), None)
+		self.assertNotEqual(self.editstructure.new_heading(below=True), None)
 		self.assertEqual(vim.current.buffer[0], '* ')
 		self.assertEqual(vim.current.buffer[1], '* Überschrift 1')
 
@@ -154,7 +159,7 @@ Bla Bla bla bla
 * Überschrift 2
 * Überschrift 3""".split('\n')
 		vim.current.window.cursor = (3, 0)
-		h = Document.current_heading()
+		h = ORGMODE.get_document().current_heading()
 		self.assertNotEqual(self.editstructure.promote_heading(), None)
 		self.assertEqual(h.end, 2)
 		self.assertFalse(vim.CMDHISTORY)
@@ -207,7 +212,7 @@ Bla Bla bla bla
 	# run tests with count
 	def test_promote_parent_heading_count(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS["v:count"] = 3
+		vim.EVALRESULTS["v:count"] = '3'
 		self.assertNotEqual(self.editstructure.promote_heading(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 3)
 		self.assertEqual(vim.CMDHISTORY[-3], 'normal 2ggV16gg=')
@@ -224,7 +229,7 @@ Bla Bla bla bla
 
 	def test_demote_parent_heading(self):
 		vim.current.window.cursor = (13, 0)
-		vim.EVALRESULTS["v:count"] = 3
+		vim.EVALRESULTS["v:count"] = '3'
 		self.assertNotEqual(self.editstructure.demote_heading(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 3)
 		self.assertEqual(vim.CMDHISTORY[-3], 'normal 13ggV15gg=')

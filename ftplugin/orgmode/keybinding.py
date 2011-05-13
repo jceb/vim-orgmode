@@ -141,7 +141,7 @@ class Keybinding(object):
 			raise ValueError(u'Parameter mode not in MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT, MODE_OPERATOR')
 		self._mode = mode
 		self._options = options
-		if self._options == None:
+		if self._options is None:
 			self._options = []
 		self._remap = remap
 		self._buffer_only = buffer_only

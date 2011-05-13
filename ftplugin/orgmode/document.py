@@ -4,6 +4,7 @@ from exceptions import BufferNotFound, BufferNotInSync
 from liborgmode import Document, Heading, MultiPurposeList
 import settings
 import vim
+from UserList import UserList
 
 class VimBufferContent(MultiPurposeList):
 	u""" Vim Buffer Content is a UTF-8 wrapper around a vim buffer. When
@@ -23,22 +24,23 @@ class VimBufferContent(MultiPurposeList):
 
 	def __contains__(self, item):
 		i = item
-		if type(i) == unicode:
+		if type(i) is unicode:
 			i = item.encode(u'utf-8')
 		return MultiPurposeList.__contains__(self, i)
 
 	def __getitem__(self, i):
 		item = MultiPurposeList.__getitem__(self, i)
-		if type(item) == str:
+		if type(item) is str:
 			return item.decode(u'utf-8')
 		return item
 
 	def __getslice__(self, i, j):
-		return [item.decode(u'utf-8') if type(item) == str else item for item in MultiPurposeList.__getslice__(self, i, j)]
+		return [item.decode(u'utf-8') if type(item) is str else item \
+				for item in MultiPurposeList.__getslice__(self, i, j)]
 
 	def __setitem__(self, i, item):
 		_i = item
-		if type(_i) == unicode:
+		if type(_i) is unicode:
 			_i = item.encode(u'utf-8')
 
 		MultiPurposeList.__setitem__(self, i, _i)
@@ -46,7 +48,7 @@ class VimBufferContent(MultiPurposeList):
 	def __setslice__(self, i, j, other):
 		o = []
 		o_tmp = other
-		if type(o_tmp) not in (list, tuple, self.__class__):
+		if type(o_tmp) not in (list, tuple) and not isinstance(o_tmp, UserList):
 			o_tmp = list(o_tmp)
 		for item in o_tmp:
 			if type(item) == unicode:
@@ -56,8 +58,9 @@ class VimBufferContent(MultiPurposeList):
 		MultiPurposeList.__setslice__(self, i, j, o)
 
 	def __add__(self, other):
+		raise NotImplementedError()
 		# TODO: implement me
-		if isinstance(other, MultiPurposeList):
+		if isinstance(other, UserList):
 			return self.__class__(self.data + other.data)
 		elif isinstance(other, type(self.data)):
 			return self.__class__(self.data + other)
@@ -65,8 +68,9 @@ class VimBufferContent(MultiPurposeList):
 			return self.__class__(self.data + list(other))
 
 	def __radd__(self, other):
+		raise NotImplementedError()
 		# TODO: implement me
-		if isinstance(other, MultiPurposeList):
+		if isinstance(other, UserList):
 			return self.__class__(other.data + self.data)
 		elif isinstance(other, type(self.data)):
 			return self.__class__(other + self.data)
@@ -76,10 +80,10 @@ class VimBufferContent(MultiPurposeList):
 	def __iadd__(self, other):
 		o = []
 		o_tmp = other
-		if type(o_tmp) not in (list, tuple, self.__class__):
+		if type(o_tmp) not in (list, tuple) and not isinstance(o_tmp, UserList):
 			o_tmp = list(o_tmp)
 		for i in o_tmp:
-			if type(i) == unicode:
+			if type(i) is unicode:
 				o.append(i.encode(u'utf-8'))
 			else:
 				o.append(i)
@@ -88,19 +92,19 @@ class VimBufferContent(MultiPurposeList):
 
 	def append(self, item):
 		i = item
-		if type(item) == str:
+		if type(item) is str:
 			i = item.encode(u'utf-8')
 		MultiPurposeList.append(self, i)
 
 	def insert(self, i, item):
 		_i = item
-		if type(_i) == str:
+		if type(_i) is str:
 			_i = item.encode(u'utf-8')
 		MultiPurposeList.insert(self, i, _i)
 
 	def index(self, item, *args):
 		i = item
-		if type(i) == unicode:
+		if type(i) is unicode:
 			i = item.encode(u'utf-8')
 		MultiPurposeList.index(self, i, *args)
 
@@ -110,10 +114,10 @@ class VimBufferContent(MultiPurposeList):
 	def extend(self, other):
 		o = []
 		o_tmp = other
-		if type(o_tmp) not in (list, tuple, self.__class__):
+		if type(o_tmp) not in (list, tuple) and not isinstance(o_tmp, UserList):
 			o_tmp = list(o_tmp)
 		for i in o_tmp:
-			if type(i) == unicode:
+			if type(i) is unicode:
 				o.append(i.encode(u'utf-8'))
 			else:
 				o.append(i)
@@ -202,15 +206,15 @@ class VimBuffer(Document):
 
 		# write meta information
 		if self.is_dirty_meta_information:
-			meta_end = 0 if self._orig_meta_information_len == None else self._orig_meta_information_len
-			self._content[:meta_end] = self._meta_information
-			self._orig_meta_information_len = len(self._meta_information)
+			meta_end = 0 if self._orig_meta_information_len is None else self._orig_meta_information_len
+			self._content[:meta_end] = self.meta_information
+			self._orig_meta_information_len = len(self.meta_information)
 			self._dirty_meta_information = False
 
 		# remove deleted headings
 		already_deleted = []
 		for h in sorted(self._deleted_headings, cmp=lambda x, y: cmp(x._orig_start, y._orig_start), reverse=True):
-			if h._orig_start != None and h not in already_deleted:
+			if h._orig_start is not None and h not in already_deleted:
 				# this is a heading that actually exists on the buffer and it
 				# needs to be removed
 				del self._content[h._orig_start:h._orig_start + h._orig_len]
@@ -221,7 +225,7 @@ class VimBuffer(Document):
 		# update changed headings and add new headings
 		for h in self.all_headings():
 			if h.is_dirty:
-				if h._orig_start != None:
+				if h._orig_start is not None:
 					# this is a heading that existed before and was changed. It
 					# needs to be replaced
 					if h.is_dirty_heading:
@@ -254,7 +258,7 @@ class VimBuffer(Document):
 		u""" Find the current heading (search backward) and return the related object
 		:returns:	Heading object or None
 		"""
-		if position == None:
+		if position is None:
 			position = vim.current.window.cursor[0] - 1
 		for h in self.all_headings():
 			if h.start <= position and h.end >= position:

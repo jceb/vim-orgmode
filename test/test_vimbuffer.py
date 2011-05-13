@@ -9,21 +9,24 @@ import vim
 from liborgmode import Heading
 from orgmode.document import VimBuffer
 
+counter = 0
 class VimBufferTestCase(unittest.TestCase):
 	def setUp(self):
+		global counter
+		counter += 1
 		vim.CMDHISTORY = []
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:org_debug")': '0',
-				'exists("g:org_debug")': '0',
-				'exists("*repeat#set()")': '0',
-				'b:changedtick': '0',
-				'&ts': '8',
-				'exists("g:org_tag_column")': '0',
-				'exists("b:org_tag_column")': '0',
-				"v:count": '0'}
-		vim.current.buffer = """#Meta information
+				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'b:changedtick': u'0'.encode(u'utf-8'),
+				u'&ts'.encode(u'utf-8'): u'8'.encode(u'utf-8'),
+				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
+		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""#Meta information
 #more meta information
 * Überschrift 1
 Text 1
@@ -43,7 +46,7 @@ Bla Bla bla bla
 * Überschrift 2
 * Überschrift 3
   asdf sdf
-""".split('\n')
+""".split(u'\n') ]
 		self.document = VimBuffer().load()
 
 	def test_meta_information_assign_directly(self):
@@ -61,8 +64,8 @@ Bla Bla bla bla
 
 	def test_meta_information_assign_string(self):
 		# assign a single line string
-		self.document.meta_information = '#Less meta information'
-		self.assertEqual('\n'.join(self.document.meta_information), '#Less meta information')
+		self.document.meta_information = u'#Less meta information'
+		self.assertEqual('\n'.join(self.document.meta_information), u'#Less meta information')
 		self.assertEqual(self.document.is_dirty, True)
 		self.assertEqual(self.document.is_dirty_meta_information, True)
 		self.assertEqual(self.document.headings[0].start, 1)
@@ -92,7 +95,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0].start, 2)
 
 	def test_meta_information_read_no_meta_information(self):
-		vim.current.buffer = """* Überschrift 1
+		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""* Überschrift 1
 Text 1
 
 Bla bla
@@ -110,7 +113,7 @@ Bla Bla bla bla
 * Überschrift 2
 * Überschrift 3
   asdf sdf
-""".split('\n')
+""".split(u'\n') ]
 		self.document = VimBuffer().load()
 
 		# read no meta information from document
@@ -784,7 +787,7 @@ Bla Bla bla bla
 		self.assertEqual(h.end, 20)
 		self.assertEqual(h.end_of_last_child, 20)
 
-		vim.current.buffer = """
+		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
 ** Überschrift 1.2
 Text 3
 
@@ -795,7 +798,7 @@ Bla Bla bla bla
 * Überschrift 2
 * Überschrift 3
   asdf sdf
-""".split('\n')
+""".split(u'\n') ]
 		self.document = VimBuffer().load()
 		vim.current.window.cursor = (3, 0)
 		h = self.document.current_heading()
@@ -812,9 +815,9 @@ Bla Bla bla bla
 		self.assertEqual(h.end, 3)
 		self.assertEqual(h.end_of_last_child, 7)
 
-		vim.current.buffer = """
+		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 2
-* Überschrift 3""".split('\n')
+* Überschrift 3""".split(u'\n') ]
 		self.document = VimBuffer().load()
 		vim.current.window.cursor = (3, 0)
 		h = self.document.current_heading()
@@ -896,19 +899,21 @@ Bla Bla bla bla
 
 class VimBufferTagsTestCase(unittest.TestCase):
 	def setUp(self):
+		global counter
+		counter += 1
 		vim.CMDHISTORY = []
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:org_debug")': '0',
-				'exists("g:org_debug")': '0',
-				'exists("*repeat#set()")': '0',
-				'b:changedtick': '0',
-				'&ts': '8',
-				'exists("g:org_tag_column")': '0',
-				'exists("b:org_tag_column")': '0',
-				"v:count": '0'}
-		vim.current.buffer = """#Meta information
+				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'&ts'.encode(u'utf-8'): u'8'.encode(u'utf-8'),
+				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
+		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""#Meta information
 #more meta information
 * Überschrift 1     :testtag:
 Text 1
@@ -931,7 +936,7 @@ Bla Bla bla bla
   asdf sdf
 * Überschrift 4 super long long long long long long long long extremely long title	:title:long:
 * TODO Überschrift 5 super long long long long long long long long extremely long title	:title_with_todo:
-""".split('\n')
+""".split(u'\n') ]
 		self.document = VimBuffer().load()
 
 	def test_tag_read_one(self):
@@ -1025,19 +1030,21 @@ Bla Bla bla bla
 
 class VimBufferTodoTestCase(unittest.TestCase):
 	def setUp(self):
+		global counter
+		counter += 1
 		vim.CMDHISTORY = []
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:org_debug")': '0',
-				'exists("g:org_debug")': '0',
-				'exists("*repeat#set()")': '0',
-				'b:changedtick': 0,
-				'&ts': '8',
-				'exists("g:org_tag_column")': '0',
-				'exists("b:org_tag_column")': '0',
-				"v:count": '0'}
-		vim.current.buffer = """#Meta information
+				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'&ts'.encode(u'utf-8'): u'8'.encode(u'utf-8'),
+				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
+		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""#Meta information
 #more meta information
 * TODO Überschrift 1     :testtag:
 Text 1
@@ -1062,7 +1069,7 @@ Bla Bla bla bla
 * DONß Überschrift 5
 * DONÉ Überschrift 6
 * DONé    Überschrift 7
-""".split('\n')
+""".split(u'\n') ]
 		self.document = VimBuffer().load()
 
 	def test_todo_read_TODO(self):

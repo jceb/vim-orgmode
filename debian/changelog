@@ -1,3 +1,13 @@
+vim-orgmode (0.1.0-43) unstable; urgency=low
+
+  * change comparison of None to "is" instead of "=="
+  * add function flatten_list to prevent sublists
+  * add convenience methods get_index_in_parent_list and get_parent_list to Heading class
+  * add __unicode__ and __str__ methods to Document
+  * started porting of EditStructure plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 13 May 2011 22:59:41 +0200
+
 vim-orgmode (0.1.0-42) unstable; urgency=low
 
   * fix syntax error in syntax/org.vim

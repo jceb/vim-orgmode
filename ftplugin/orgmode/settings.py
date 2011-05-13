@@ -27,7 +27,7 @@ def get(setting, default=None):
 		return vim.eval((u"b:%s" % setting).encode(u'utf-8'))
 	elif int(vim.eval((u'exists("g:%s")' % setting).encode(u'utf-8'))):
 		return vim.eval((u"g:%s" % setting).encode(u'utf-8'))
-	elif default != None:
+	elif default is not None:
 		return default
 
 def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):

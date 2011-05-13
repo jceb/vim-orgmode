@@ -11,3 +11,7 @@ class BufferNotFound(Exception):
 class BufferNotInSync(Exception):
 	def __init__(self, message):
 		Exception.__init__(self, message)
+
+class HeadingDomError(Exception):
+	def __init__(self, message):
+		Exception.__init__(self, message)
