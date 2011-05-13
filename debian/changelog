@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-44) unstable; urgency=low
+
+  * convert tests to unicode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 13 May 2011 23:39:38 +0200
+
 vim-orgmode (0.1.0-43) unstable; urgency=low
 
   * change comparison of None to "is" instead of "=="

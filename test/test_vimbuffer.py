@@ -21,7 +21,7 @@ class VimBufferTestCase(unittest.TestCase):
 				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'b:changedtick': u'0'.encode(u'utf-8'),
+				u'b:changedtick'.encode(u'utf-8'): (u'%d' % counter).encode(u'utf-8'),
 				u'&ts'.encode(u'utf-8'): u'8'.encode(u'utf-8'),
 				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),

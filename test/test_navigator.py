@@ -30,19 +30,22 @@ def set_visual_selection(visualmode, line_start, line_end, col_start=1,
 		vim.current.window.cursor = (line_end, col_end)
 
 
+counter = 0
 class NavigatorTestCase(unittest.TestCase):
 	def setUp(self):
+		global counter
+		counter += 1
 		vim.CMDHISTORY = []
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:org_debug")': 0,
-				'exists("g:org_debug")': 0,
-				'exists("*repeat#set()")': 0,
-				'b:changedtick': 0,
-				"v:count": 0,
+				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'b:changedtick'.encode(u'utf-8'): (u'%d' % counter).encode(u'utf-8'),
+				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				}
-		vim.current.buffer = """
+		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 1
 Text 1
 
@@ -61,7 +64,7 @@ Bla Bla bla bla
 * Überschrift 2
 * Überschrift 3
   asdf sdf
-""".split('\n')
+""".split(u'\n') ]
 
 		if not u'Navigator' in ORGMODE.plugins:
 			ORGMODE.register_plugin(u'Navigator')
@@ -100,27 +103,27 @@ Bla Bla bla bla
 
 		## test movement with count
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS["v:count"] = '-1'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'-1'.encode(u'utf-8')
 		self.navigator.next(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (6, 3))
 
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS["v:count"] = '0'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'0'.encode(u'utf-8')
 		self.navigator.next(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (6, 3))
 
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS["v:count"] = '1'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'1'.encode(u'utf-8')
 		self.navigator.next(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (6, 3))
-		vim.EVALRESULTS["v:count"] = '3'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'3'.encode(u'utf-8')
 		self.navigator.next(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (16, 4))
 		self.navigator.next(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (18, 2))
 		self.navigator.next(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (18, 2))
-		vim.EVALRESULTS["v:count"] = '0'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'0'.encode(u'utf-8')
 
 	def test_backward_movement(self):
 		# test backward movement
@@ -142,23 +145,23 @@ Bla Bla bla bla
 
 		## test movement with count
 		vim.current.window.cursor = (19, 6)
-		vim.EVALRESULTS["v:count"] = '-1'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'-1'.encode(u'utf-8')
 		self.navigator.previous(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (18, 2))
 
 		vim.current.window.cursor = (19, 6)
-		vim.EVALRESULTS["v:count"] = '0'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'0'.encode(u'utf-8')
 		self.navigator.previous(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (18, 2))
 
 		vim.current.window.cursor = (19, 6)
-		vim.EVALRESULTS["v:count"] = '3'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'3'.encode(u'utf-8')
 		self.navigator.previous(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (16, 4))
-		vim.EVALRESULTS["v:count"] = '4'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'4'.encode(u'utf-8')
 		self.navigator.previous(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (2, 2))
-		vim.EVALRESULTS["v:count"] = '4'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'4'.encode(u'utf-8')
 		self.navigator.previous(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (2, 2))
 
@@ -186,27 +189,27 @@ Bla Bla bla bla
 
 		## test movement with count
 		vim.current.window.cursor = (16, 4)
-		vim.EVALRESULTS["v:count"] = '-1'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'-1'.encode(u'utf-8')
 		self.navigator.parent(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (10, 3))
 
 		vim.current.window.cursor = (16, 4)
-		vim.EVALRESULTS["v:count"] = '0'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'0'.encode(u'utf-8')
 		self.navigator.parent(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (10, 3))
 
 		vim.current.window.cursor = (16, 4)
-		vim.EVALRESULTS["v:count"] = '1'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'1'.encode(u'utf-8')
 		self.navigator.parent(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (10, 3))
 
 		vim.current.window.cursor = (16, 4)
-		vim.EVALRESULTS["v:count"] = '2'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'2'.encode(u'utf-8')
 		self.navigator.parent(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (2, 2))
 
 		vim.current.window.cursor = (16, 4)
-		vim.EVALRESULTS["v:count"] = '3'
+		vim.EVALRESULTS[u"v:count".encode(u'utf-8')] = u'3'.encode(u'utf-8')
 		self.navigator.parent(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (2, 2))
 
@@ -221,7 +224,7 @@ Bla Bla bla bla
 		# heading
 		set_visual_selection(u'V', 2, 4, cursor_pos=END)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV5gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV5gg'.encode(u'utf-8'))
 
 		# << text
 		# text
@@ -229,7 +232,7 @@ Bla Bla bla bla
 		# heading
 		set_visual_selection(u'V', 2, 5, cursor_pos=END)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV9gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV9gg'.encode(u'utf-8'))
 
 		# << text
 		# x. heading
@@ -237,15 +240,15 @@ Bla Bla bla bla
 		# heading
 		set_visual_selection(u'V', 12, 14, cursor_pos=END)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 12ggV15gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 12ggV15gg'.encode(u'utf-8'))
 
 		set_visual_selection(u'V', 12, 15, cursor_pos=END)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 12ggV16gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 12ggV16gg'.encode(u'utf-8'))
 
 		set_visual_selection(u'V', 12, 16, cursor_pos=END)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 12ggV17gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 12ggV17gg'.encode(u'utf-8'))
 
 		# << text
 		# text
@@ -254,26 +257,26 @@ Bla Bla bla bla
 		# EOF
 		set_visual_selection(u'V', 15, 17, cursor_pos=END)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 15ggV20gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 15ggV20gg'.encode(u'utf-8'))
 
 		# << text >>
 		# heading
 		set_visual_selection(u'V', 1, 1, cursor_pos=START)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 1ggV5gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 1ggV5gg'.encode(u'utf-8'))
 
 		# << heading >>
 		# text
 		# heading
 		set_visual_selection(u'V', 2, 2, cursor_pos=START)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV5gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV5gg'.encode(u'utf-8'))
 
 		# << text >>
 		# heading
 		set_visual_selection(u'V', 1, 1, cursor_pos=END)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 1ggV5gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 1ggV5gg'.encode(u'utf-8'))
 
 		# << |text
 		# heading
@@ -282,7 +285,7 @@ Bla Bla bla bla
 		# text >>
 		set_visual_selection(u'V', 1, 8, cursor_pos=START)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV8ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV8ggo'.encode(u'utf-8'))
 
 		# << |heading
 		# text
@@ -290,29 +293,29 @@ Bla Bla bla bla
 		# text >>
 		set_visual_selection(u'V', 2, 8, cursor_pos=START)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 6ggV8ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 6ggV8ggo'.encode(u'utf-8'))
 
 		# << |heading
 		# text >>
 		# heading
 		set_visual_selection(u'V', 6, 8, cursor_pos=START)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 8ggV9gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 8ggV9gg'.encode(u'utf-8'))
 
 		# << |x. heading
 		# text >>
 		# heading
 		set_visual_selection(u'V', 13, 15, cursor_pos=START)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 15ggV15gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 15ggV15gg'.encode(u'utf-8'))
 
 		set_visual_selection(u'V', 13, 16, cursor_pos=START)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 16ggV16ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 16ggV16ggo'.encode(u'utf-8'))
 
 		set_visual_selection(u'V', 16, 16, cursor_pos=START)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 16ggV17gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 16ggV17gg'.encode(u'utf-8'))
 
 		# << |x. heading
 		# text >>
@@ -320,7 +323,7 @@ Bla Bla bla bla
 		# EOF
 		set_visual_selection(u'V', 17, 17, cursor_pos=START)
 		self.assertNotEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 17ggV20gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 17ggV20gg'.encode(u'utf-8'))
 
 		# << |heading
 		# text>>
@@ -328,7 +331,7 @@ Bla Bla bla bla
 		# EOF
 		set_visual_selection(u'V', 18, 19, cursor_pos=START)
 		self.assertEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 19ggV20gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 19ggV20gg'.encode(u'utf-8'))
 
 		# << heading
 		# text|>>
@@ -336,7 +339,7 @@ Bla Bla bla bla
 		# EOF
 		set_visual_selection(u'V', 18, 19, cursor_pos=END)
 		self.assertEqual(self.navigator.next(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 18ggV20gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 18ggV20gg'.encode(u'utf-8'))
 
 		# << heading
 		# text|>>
@@ -360,22 +363,22 @@ Bla Bla bla bla
 		# heading
 		set_visual_selection(u'V', 1, 1, cursor_pos=START)
 		self.assertEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal gv')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal gv'.encode(u'utf-8'))
 
 		set_visual_selection(u'V', 1, 1, cursor_pos=END)
 		self.assertEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal gv')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal gv'.encode(u'utf-8'))
 
 		# << heading| >>
 		# text
 		# heading
 		set_visual_selection(u'V', 2, 2, cursor_pos=START)
 		self.assertEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV2ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV2ggo'.encode(u'utf-8'))
 
 		set_visual_selection(u'V', 2, 2, cursor_pos=END)
 		self.assertEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV2ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV2ggo'.encode(u'utf-8'))
 
 		# heading
 		# text
@@ -383,7 +386,7 @@ Bla Bla bla bla
 		# text >>
 		set_visual_selection(u'V', 3, 5, cursor_pos=START)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV5ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV5ggo'.encode(u'utf-8'))
 
 		# heading
 		# text
@@ -391,7 +394,7 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 3, 5, cursor_pos=END)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV3ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV3ggo'.encode(u'utf-8'))
 
 		# heading
 		# text
@@ -399,7 +402,7 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 8, 9, cursor_pos=END)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 6ggV8ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 6ggV8ggo'.encode(u'utf-8'))
 
 		# heading
 		# << text
@@ -407,11 +410,11 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 12, 14, cursor_pos=END)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 12ggV12gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 12ggV12gg'.encode(u'utf-8'))
 
 		set_visual_selection(u'V', 12, 15, cursor_pos=END)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 12ggV12gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 12ggV12gg'.encode(u'utf-8'))
 
 		# heading
 		# << |text
@@ -419,14 +422,14 @@ Bla Bla bla bla
 		# text >>
 		set_visual_selection(u'V', 12, 15, cursor_pos=START)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 10ggV15ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 10ggV15ggo'.encode(u'utf-8'))
 
 		# heading
 		# << text
 		# x. heading| >>
 		set_visual_selection(u'V', 12, 13, cursor_pos=END)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 12ggV12gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 12ggV12gg'.encode(u'utf-8'))
 
 		# heading
 		# << text
@@ -435,7 +438,7 @@ Bla Bla bla bla
 		# x. heading| >>
 		set_visual_selection(u'V', 12, 16, cursor_pos=END)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 12ggV15gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 12ggV15gg'.encode(u'utf-8'))
 
 		# << text
 		# heading
@@ -443,7 +446,7 @@ Bla Bla bla bla
 		# heading| >>
 		set_visual_selection(u'V', 15, 17, cursor_pos=END)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 15ggV16gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 15ggV16gg'.encode(u'utf-8'))
 
 		# heading
 		# << |text
@@ -452,7 +455,7 @@ Bla Bla bla bla
 		# text >>
 		set_visual_selection(u'V', 4, 8, cursor_pos=START)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV8ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV8ggo'.encode(u'utf-8'))
 
 		# heading
 		# << text
@@ -461,7 +464,7 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 4, 8, cursor_pos=END)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 4ggV5gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 4ggV5gg'.encode(u'utf-8'))
 
 		# heading
 		# << text
@@ -470,7 +473,7 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 4, 5, cursor_pos=END)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV4ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV4ggo'.encode(u'utf-8'))
 
 		# BOF
 		# << |heading
@@ -479,7 +482,7 @@ Bla Bla bla bla
 		# text >>
 		set_visual_selection(u'V', 2, 8, cursor_pos=START)
 		self.assertEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV8ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV8ggo'.encode(u'utf-8'))
 
 		# BOF
 		# heading
@@ -487,7 +490,7 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 3, 4, cursor_pos=END)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV3ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV3ggo'.encode(u'utf-8'))
 
 		# BOF
 		# << heading
@@ -495,7 +498,7 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 2, 4, cursor_pos=END)
 		self.assertNotEqual(self.navigator.previous(mode=u'visual'), None)
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV2ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV2ggo'.encode(u'utf-8'))
 
 		# << text
 		# heading
@@ -504,7 +507,7 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 8, 14, cursor_pos=END)
 		self.navigator.previous(mode=u'visual')
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 8ggV12gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 8ggV12gg'.encode(u'utf-8'))
 
 	def test_parent_movement_visual(self):
 		# selection start: <<
@@ -517,7 +520,7 @@ Bla Bla bla bla
 		# text >>
 		set_visual_selection(u'V', 4, 8, cursor_pos=START)
 		self.navigator.parent(mode=u'visual')
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal gv')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal gv'.encode(u'utf-8'))
 
 		# heading
 		# << text|
@@ -525,7 +528,7 @@ Bla Bla bla bla
 		# text >>
 		set_visual_selection(u'V', 6, 8, cursor_pos=START)
 		self.navigator.parent(mode=u'visual')
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV8ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV8ggo'.encode(u'utf-8'))
 
 		# heading
 		# << text
@@ -533,7 +536,7 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 6, 8, cursor_pos=END)
 		self.navigator.parent(mode=u'visual')
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV6ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV6ggo'.encode(u'utf-8'))
 
 		# << |heading
 		# text
@@ -548,11 +551,11 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 2, 8, cursor_pos=END)
 		self.navigator.parent(mode=u'visual')
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV5gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV5gg'.encode(u'utf-8'))
 
 		set_visual_selection(u'V', 7, 8, cursor_pos=START)
 		self.navigator.parent(mode=u'visual')
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV8ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV8ggo'.encode(u'utf-8'))
 
 		# heading
 		# heading
@@ -560,11 +563,11 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 12, 13, cursor_pos=END)
 		self.navigator.parent(mode=u'visual')
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 10ggV12ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 10ggV12ggo'.encode(u'utf-8'))
 
 		set_visual_selection(u'V', 10, 12, cursor_pos=START)
 		self.navigator.parent(mode=u'visual')
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 2ggV12ggo')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV12ggo'.encode(u'utf-8'))
 
 		# heading
 		# << text
@@ -580,7 +583,7 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 8, 14, cursor_pos=END)
 		self.navigator.parent(mode=u'visual')
-		self.assertEqual(vim.CMDHISTORY[-1], 'normal 8ggV12gg')
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 8ggV12gg'.encode(u'utf-8'))
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(NavigatorTestCase)
