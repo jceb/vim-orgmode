@@ -13,19 +13,19 @@ endif
 
 let s:i = 1
 let s:j = len(g:org_heading_highlight_colors)
-let s:shade_stars = ''
+let s:contains = ' contains=org_timestamp,org_timestamp_inactive'
 if g:org_heading_shade_leading_stars == 1
-	let s:shade_stars = ' contains=org_shade_stars'
+	let s:contains = s:contains . ',org_shade_stars'
 	syntax match org_shade_stars /^\*\{2,\}/me=e-1 contained
 	hi link org_shade_stars NonText
 endif
 
 while s:i <= g:org_heading_highlight_levels
-	exec 'syntax match org_heading' . s:i . ' /^\*\{' . s:i . '\}\s.*/' . s:shade_stars
+	exec 'syntax match org_heading' . s:i . ' /^\*\{' . s:i . '\}\s.*/' . s:contains
 	exec 'hi link org_heading' . s:i . ' ' . g:org_heading_highlight_colors[(s:i - 1) % s:j]
 	let s:i += 1
 endwhile
-unlet! s:i s:j s:shade_stars
+unlet! s:i s:j s:contains
 
 " Todo keywords
 if !exists('g:org_todo_keywords')
@@ -74,8 +74,14 @@ syn region Error matchgroup=org_properties_delimiter start=/^\s*:PROPERTIES:\s*$
 syn match org_property /^\s*:[^\t :]\+:\s\+[^\t ]/ contained contains=org_property_value
 syn match org_property_value /:\s\zs.*/ contained
 hi link org_properties_delimiter Comment
-hi link org_property Identifier
-hi link org_property_value Statement
+hi link org_property Statement
+hi link org_property_value Constant
+
+" Timestamp
+syn match org_timestamp /\(<\d\{4\}-\d\{2\}-\d\{2\} .\+>\|<\d\{4\}-\d\{2\}-\d\{2\} .\+>--<\d\{4\}-\d\{2\}-\d\{2\} .\+>\|<%%(diary-float.\+>\)/
+syn match org_timestamp_inactive /\(\[\d\{4\}-\d\{2\}-\d\{2\} .\+\]\|\[\d\{4\}-\d\{2\}-\d\{2\} .\+\]--\[\d\{4\}-\d\{2\}-\d\{2\} .\+\]\|\[%%(diary-float.\+\]\)/
+hi link org_timestamp PreProc
+hi link org_timestamp_inactive Comment
 
 " Hyperlinks
 syntax match hyperlink	"\[\{2}[^][]*\(\]\[[^][]*\)\?\]\{2}" contains=hyperlinkBracketsLeft,hyperlinkURL,hyperlinkBracketsRight containedin=ALL

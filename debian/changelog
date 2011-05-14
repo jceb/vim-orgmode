@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-46) unstable; urgency=low
+
+  * add syntax support for timestamps
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 14 May 2011 21:11:13 +0200
+
 vim-orgmode (0.1.0-45) unstable; urgency=low
 
   * add syntax support for properties
