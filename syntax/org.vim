@@ -73,7 +73,7 @@ unlet! default_group s:todo_headings
 syn region Error matchgroup=org_properties_delimiter start=/^\s*:PROPERTIES:\s*$/ end=/^\s*:END:\s*$/ contains=org_property keepend
 syn match org_property /^\s*:[^\t :]\+:\s\+[^\t ]/ contained contains=org_property_value
 syn match org_property_value /:\s\zs.*/ contained
-hi link org_properties_delimiter Comment
+hi link org_properties_delimiter PreProc
 hi link org_property Statement
 hi link org_property_value Constant
 
@@ -82,6 +82,10 @@ syn match org_timestamp /\(<\d\{4\}-\d\{2\}-\d\{2\} .\+>\|<\d\{4\}-\d\{2\}-\d\{2
 syn match org_timestamp_inactive /\(\[\d\{4\}-\d\{2\}-\d\{2\} .\+\]\|\[\d\{4\}-\d\{2\}-\d\{2\} .\+\]--\[\d\{4\}-\d\{2\}-\d\{2\} .\+\]\|\[%%(diary-float.\+\]\)/
 hi link org_timestamp PreProc
 hi link org_timestamp_inactive Comment
+
+" Deadline/Schedule
+syn match org_deadline_scheduled /^\s*\(DEADLINE\|SCHEDULED\):/
+hi link org_deadline_scheduled PreProc
 
 " Hyperlinks
 syntax match hyperlink	"\[\{2}[^][]*\(\]\[[^][]*\)\?\]\{2}" contains=hyperlinkBracketsLeft,hyperlinkURL,hyperlinkBracketsRight containedin=ALL
