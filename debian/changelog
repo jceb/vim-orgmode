@@ -1,3 +1,13 @@
+vim-orgmode (0.1.0-49) unstable; urgency=low
+
+  * general cleanup in syntax file
+  * add keyword default to all highlighting statements
+  * add syntax support for comments
+  * clear highlighting for org_shade_stars group if
+  	g:org_heading_shade_leading_stars is not set
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 14 May 2011 23:33:50 +0200
+
 vim-orgmode (0.1.0-48) unstable; urgency=low
 
   * add syntax support for tables
