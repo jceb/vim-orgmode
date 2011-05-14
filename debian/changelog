@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-48) unstable; urgency=low
+
+  * add syntax support for tables
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 14 May 2011 23:04:46 +0200
+
 vim-orgmode (0.1.0-47) unstable; urgency=low
 
   * add syntax support for DEADLINE and SCHEDULED

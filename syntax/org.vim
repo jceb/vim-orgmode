@@ -87,6 +87,12 @@ hi link org_timestamp_inactive Comment
 syn match org_deadline_scheduled /^\s*\(DEADLINE\|SCHEDULED\):/
 hi link org_deadline_scheduled PreProc
 
+" Table
+
+syn match org_table /^\s*|.*/ contains=org_timestamp,org_timestamp_inactive,hyperlink,org_table_separator,org_table_horizontal_line
+syn match org_table_separator /\(^\s*|[-+]\+|\?\||\)/ contained
+hi link org_table_separator Type
+
 " Hyperlinks
 syntax match hyperlink	"\[\{2}[^][]*\(\]\[[^][]*\)\?\]\{2}" contains=hyperlinkBracketsLeft,hyperlinkURL,hyperlinkBracketsRight containedin=ALL
 syntax match hyperlinkBracketsLeft		contained "\[\{2}" conceal
