@@ -69,6 +69,14 @@ for i in g:org_todo_keywords
 endfor
 unlet! default_group s:todo_headings
 
+" Propteries
+syn region Error matchgroup=org_properties_delimiter start=/^\s*:PROPERTIES:\s*$/ end=/^\s*:END:\s*$/ contains=org_property keepend
+syn match org_property /^\s*:[^\t :]\+:\s\+[^\t ]/ contained contains=org_property_value
+syn match org_property_value /:\s\zs.*/ contained
+hi link org_properties_delimiter Comment
+hi link org_property Identifier
+hi link org_property_value Statement
+
 " Hyperlinks
 syntax match hyperlink	"\[\{2}[^][]*\(\]\[[^][]*\)\?\]\{2}" contains=hyperlinkBracketsLeft,hyperlinkURL,hyperlinkBracketsRight containedin=ALL
 syntax match hyperlinkBracketsLeft		contained "\[\{2}" conceal

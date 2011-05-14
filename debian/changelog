@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-45) unstable; urgency=low
+
+  * add syntax support for properties
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 14 May 2011 20:52:29 +0200
+
 vim-orgmode (0.1.0-44) unstable; urgency=low
 
   * convert tests to unicode
