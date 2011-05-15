@@ -1,3 +1,36 @@
+" Variables With Default Settings:
+"
+" Define the highlighting colors/group names for headings
+" let g:org_heading_highlight_colors = ['Title', 'Question', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
+"
+" Definie the number of level of highlighting. If this number is bigger than
+" the length of g:org_heading_highlight_colors the colors of
+" g:org_heading_highlight_colors are repeated
+" let g:org_heading_highlight_levels = len(g:org_heading_highlight_colors)
+"
+" Defines if leading stars are displayed in the color of the heading or if a
+" special NonText highlighting is used that hides them from user
+" let g:org_heading_shade_leading_stars = 1
+"
+" Defines the keywords that are highlighted in headings. For more information
+" about this variable, please consult the org-mode documentation
+" (http://orgmode.org/org.html#index-org_002dtodo_002dkeywords-511)
+" let g:org_todo_keywords = ['TODO', '|', 'DONE']
+"
+" Defines special faces (styles) for displaying g:org_todo_keywords. Please
+" refer to vim documentation (topic |attr-list|) for allowed values for
+" :weight, :slant, :decoration
+" let g:org_todo_keyword_faces = []
+"
+" Examples:
+"
+" Define an additionaly keyword 'WAITING' and set the foreground color to
+" 'cyan'. Define another keyword 'CANCELED' and set the foreground color to
+" red, background to black and the weight to normal, slant to italc and
+" decoration to underline
+" let g:org_todo_keywords = [['TODO', 'WAITING', '|', 'DONE'], ['|', 'CANCELED']]
+" let g:org_todo_keyword_faces = [['WAITING', 'cyan'], ['CANCELED', [':foreground red', ':background black', ':weight bold', ':slant italic', ':decoration underline']]]
+
 " Headings
 if !exists('g:org_heading_highlight_colors')
 	let g:org_heading_highlight_colors = ['Title', 'Question', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
@@ -11,6 +44,7 @@ if !exists('g:org_heading_shade_leading_stars')
 	let g:org_heading_shade_leading_stars = 1
 endif
 
+unlet! s:i s:j s:contains
 let s:i = 1
 let s:j = len(g:org_heading_highlight_colors)
 let s:contains = ' contains=org_timestamp,org_timestamp_inactive'
@@ -50,25 +84,95 @@ while s:i <= g:org_heading_highlight_levels
 endwhile
 unlet! s:i
 
-let default_group = 'Todo'
-for i in g:org_todo_keywords
-	if i == '|'
-		let default_group = 'Question'
-		continue
-	endif
-	let group = default_group
-	for j in g:org_todo_keyword_faces
-		if j[0] == i
-			let group = 'org_todo_keyword_face_' . i
-			" TODO implement me
-			exec 'hi def ' . group . ExtendHI('Todo', '....')
-			break
+if !exists('g:loaded_org_syntax')
+	let g:loaded_org_syntax = 1
+
+	function! s:ExtendHighlightingGroup(base_group, new_group, settings)
+		let l:base_hi = ''
+		redir => l:base_hi
+		silent execute 'highlight ' . a:base_group
+		redir END
+		let l:group_hi = substitute(split(l:base_hi, '\n')[0], '^' . a:base_group . '\s\+xxx', '', '')
+		execute 'highlight ' . a:new_group . l:group_hi . ' ' . a:settings
+	endfunction
+
+	function! s:InterpretFaces(faces)
+		let l:res_faces = ''
+		if type(a:faces) == 3
+			let l:style = []
+			for l:f in a:faces
+				let l:_f = [l:f]
+				if type(l:f) == 3
+					let l:_f = l:f
+				endif
+				for l:g in l:_f
+					if type(l:g) == 1 && l:g =~ '^:'
+						if l:g !~ '[\t ]'
+							continue
+						endif
+						let l:k_v = split(l:g)
+						if l:k_v[0] == ':foreground'
+							let l:res_faces = l:res_faces . ' ctermfg=' . l:k_v[1] . ' guifg=' . l:k_v[1]
+						elseif l:k_v[0] == ':background'
+							let l:res_faces = l:res_faces . ' ctermbg=' . l:k_v[1] . ' guibg=' . l:k_v[1]
+						elseif l:k_v[0] == ':weight' || l:k_v[0] == ':slant' || l:k_v[0] == ':decoration'
+							if index(l:style, l:k_v[1]) == -1
+								call add(l:style, l:k_v[1])
+							endif
+						endif
+					elseif type(l:g) == 1
+						" TODO emacs interprets the color and automatically determines
+						" whether it should be set as foreground or background color
+						let l:res_faces = l:res_faces . ' ctermfg=' . l:k_v[1] . ' guifg=' . l:k_v[1]
+					endif
+				endfor
+			endfor
+			let l:s = ''
+			for l:i in l:style
+				if l:s == ''
+					let l:s = l:i
+				else
+					let l:s = l:s . ','. l:i
+				endif
+			endfor
+			if l:s != ''
+				let l:res_faces = l:res_faces . ' term=' . l:s . ' cterm=' . l:s . ' gui=' . l:s
+			endif
+		elseif type(a:faces) == 1
+			" TODO emacs interprets the color and automatically determines
+			" whether it should be set as foreground or background color
+			let l:res_faces = l:res_faces . ' ctermfg=' . a:faces . ' guifg=' . a:faces
 		endif
-	endfor
-	exec 'syntax match org_todo_keyword_' . i . ' /\*\{1,\}\s\{1,\}\zs' . i .'/ ' . s:todo_headings
-	exec 'hi def link org_todo_keyword_' . i . ' ' . group
-endfor
-unlet! default_group s:todo_headings
+		return l:res_faces
+	endfunction
+
+	function! s:ReadTodoKeywords(keywords, todo_headings)
+		let l:default_group = 'Todo'
+		for l:i in a:keywords
+			if type(l:i) == 3
+				call s:ReadTodoKeywords(l:i, a:todo_headings)
+				continue
+			endif
+			if l:i == '|'
+				let l:default_group = 'Question'
+				continue
+			endif
+			let l:group = l:default_group
+			for l:j in g:org_todo_keyword_faces
+				if l:j[0] == l:i
+					let l:group = 'org_todo_keyword_face_' . l:i
+					call s:ExtendHighlightingGroup(l:default_group, l:group, s:InterpretFaces(l:j[1]))
+					break
+				endif
+			endfor
+			exec 'syntax match org_todo_keyword_' . l:i . ' /\*\{1,\}\s\{1,\}\zs' . l:i .'/ ' . a:todo_headings
+			exec 'hi def link org_todo_keyword_' . l:i . ' ' . l:group
+		endfor
+	endfunction
+endif
+
+call s:ReadTodoKeywords(g:org_todo_keywords, s:todo_headings)
+unlet! s:todo_headings
 
 " Propteries
 syn region Error matchgroup=org_properties_delimiter start=/^\s*:PROPERTIES:\s*$/ end=/^\s*:END:\s*$/ contains=org_property keepend

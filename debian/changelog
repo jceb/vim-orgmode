@@ -1,3 +1,11 @@
+vim-orgmode (0.1.0-50) unstable; urgency=low
+
+  * add support for org-todo-keyword-faces
+  * add support for nested org-todo-keyword lists
+  * add descriptions and examples for variables
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 15 May 2011 12:00:41 +0200
+
 vim-orgmode (0.1.0-49) unstable; urgency=low
 
   * general cleanup in syntax file
