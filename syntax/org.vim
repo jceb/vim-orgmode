@@ -19,7 +19,9 @@
 "
 " Defines special faces (styles) for displaying g:org_todo_keywords. Please
 " refer to vim documentation (topic |attr-list|) for allowed values for
-" :weight, :slant, :decoration
+" :weight, :slant, :decoration. Muliple colors can be separated by comma for
+" :foreground and :background faces to provide different colors for gui and
+" terminal mode.
 " let g:org_todo_keyword_faces = []
 "
 " Examples:
@@ -112,9 +114,35 @@ if !exists('g:loaded_org_syntax')
 						endif
 						let l:k_v = split(l:g)
 						if l:k_v[0] == ':foreground'
-							let l:res_faces = l:res_faces . ' ctermfg=' . l:k_v[1] . ' guifg=' . l:k_v[1]
+							let l:gui_color = ''
+							let l:found_gui_color = 0
+							for l:color in split(l:k_v[1], ',')
+								if l:color =~ '^#'
+									let l:found_gui_color = 1
+									let l:res_faces = l:res_faces . ' guifg=' . l:color
+								elseif l:color != ''
+									let l:gui_color = l:color
+									let l:res_faces = l:res_faces . ' ctermfg=' . l:color
+								endif
+							endfor
+							if ! l:found_gui_color && l:gui_color != ''
+								let l:res_faces = l:res_faces . ' guifg=' . l:gui_color
+							endif
 						elseif l:k_v[0] == ':background'
-							let l:res_faces = l:res_faces . ' ctermbg=' . l:k_v[1] . ' guibg=' . l:k_v[1]
+							let l:gui_color = ''
+							let l:found_gui_color = 0
+							for l:color in split(l:k_v[1], ',')
+								if l:color =~ '^#'
+									let l:found_gui_color = 1
+									let l:res_faces = l:res_faces . ' guibg=' . l:color
+								elseif l:color != ''
+									let l:gui_color = l:color
+									let l:res_faces = l:res_faces . ' ctermbg=' . l:color
+								endif
+							endfor
+							if ! l:found_gui_color && l:gui_color != ''
+								let l:res_faces = l:res_faces . ' guibg=' . l:gui_color
+							endif
 						elseif l:k_v[0] == ':weight' || l:k_v[0] == ':slant' || l:k_v[0] == ':decoration'
 							if index(l:style, l:k_v[1]) == -1
 								call add(l:style, l:k_v[1])
