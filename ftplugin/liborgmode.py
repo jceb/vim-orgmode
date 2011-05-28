@@ -53,6 +53,12 @@ class MultiPurposeList(UserList):
 		UserList.__delslice__(self, i, j)
 		self._changed()
 
+	def __getslice__(self, i, j):
+		# fix UserList - don't return a new list of the same type but just the
+		# normal list item
+		i = max(i, 0); j = max(j, 0)
+		return self.data[i:j]
+
 	def __iadd__(self, other):
 		res = UserList.__iadd__(self, other)
 		self._changed()
@@ -77,7 +83,7 @@ class MultiPurposeList(UserList):
 		return item
 
 	def remove(self, item):
-		self.__delitem__(self.data.index(item))
+		self.__delitem__(self.index(item))
 
 	def reverse(self):
 		UserList.reverse(self)
@@ -132,7 +138,7 @@ class HeadingList(MultiPurposeList):
 		Serialize headings so that all subheadings are also marked for deletion
 		"""
 		if not self._get_document():
-			# HeadingList has not been associated yet
+			# HeadingList has not yet been associated
 			return
 
 		if type(item) in (list, tuple) or isinstance(item, UserList):
@@ -141,42 +147,70 @@ class HeadingList(MultiPurposeList):
 		else:
 			self._get_document()._deleted_headings.append(item)
 			self._add_to_deleted_headings(item.children)
+			self._get_document().set_dirty_document()
 
-	def _associate_heading(self, item, children=False):
+	def _associate_heading(self, item, previous_sibling, next_sibling, children=False):
 		"""
 		:item:		The heading or list to associate with the current heading
+		:previous_sibling:	The previous sibling of the current heading. If
+							item (heading) is a list the first item will be
+							connected with the previous sibling and the last
+							item with the next sibling. The items in between
+							will be linked with one another.
+		:next_sibling:	The next sibling of the current heading. If
+							item (heading) is a list the first item will be
+							connected with the previous sibling and the last
+							item with the next sibling. The items in between
+							will be linked with one another.
 		:children:	Marks whether children are processed in the current
 					iteration or not (should not be use, it's set automatically)
 		"""
 		# TODO this method should be externalized and moved to the Heading class
 		if type(item) in (list, tuple) or isinstance(item, UserList):
-			for i in flatten_list(item):
-				self._associate_heading(i, children=children)
+			prev = previous_sibling
+			current = None
+			for _next in flatten_list(item):
+				if current:
+					self._associate_heading(current, prev, _next, children=children)
+					prev = current
+				current = _next
+			if current:
+				self._associate_heading(current, prev, next_sibling, children=children)
 		else:
-			item.set_dirty()
 			item._orig_start = None
 			item._orig_len = None
 			d = self._get_document()
 			if item._document != d:
 				item._document = d
 			if not children:
+				# connect heading with previous and next headings
+				item._previous_sibling = previous_sibling
+				if previous_sibling:
+					previous_sibling._next_sibling = item
+				item._next_sibling = next_sibling
+				if next_sibling:
+					next_sibling._previous_sibling = item
+
 				if d == self._obj:
 					# self._obj is a Document
 					item._parent = None
 				elif item._parent != self._obj:
 					# self._obj is a Heading
 					item._parent = self._obj
+			item.set_dirty()
 
-			self._associate_heading(item.children, children=True)
+			self._associate_heading(item.children, None, None, children=True)
 
 	def __setitem__(self, i, item):
 		if not self.__class__.is_heading(item):
 			raise ValueError(u'Item is not a heading!')
-		if item in self.data:
+		if item in self:
 			raise ValueError(u'Heading is already part of this list!')
 		self._add_to_deleted_headings(self[i])
 
-		self._associate_heading(item)
+		self._associate_heading(item, \
+				self[i - 1] if i - 1 >= 0 else None, \
+				self[i + 1] if i + 1 < len(self) else None)
 		MultiPurposeList.__setitem__(self, i, item)
 
 	def __setslice__(self, i, j, other):
@@ -188,17 +222,33 @@ class HeadingList(MultiPurposeList):
 			if not self.__class__.is_heading(item):
 				raise ValueError(u'List contains items that are not a heading!')
 		i = max(i, 0); j = max(j, 0)
-		self._add_to_deleted_headings(self.data[i:j])
-		self._associate_heading(o)
+		self._add_to_deleted_headings(self[i:j])
+		self._associate_heading(o, \
+				self[i - 1] if i - 1 >= 0 and i < len(self) else None, \
+				self[j] if j >= 0 and j < len(self) else None)
 		MultiPurposeList.__setslice__(self, i, j, o)
 
 	def __delitem__(self, i):
-		self._add_to_deleted_headings(self.data[i])
+		item = self[i]
+		if item.previous_sibling:
+			item.previous_sibling._next_sibling = item.next_sibling
+		if item.next_sibling:
+			item.next_sibling._previous_sibling = item.previous_sibling
+
+		self._add_to_deleted_headings(item)
 		MultiPurposeList.__delitem__(self, i)
 
 	def __delslice__(self, i, j):
 		i = max(i, 0); j = max(j, 0)
-		self._add_to_deleted_headings(self.data[i:j])
+		items = self[i:j]
+		if items:
+			first = items[0]
+			last = items[-1]
+			if first.previous_sibling:
+				first.previous_sibling._next_sibling = last.next_sibling
+			if last.next_sibling:
+				last.next_sibling._previous_sibling = first.previous_sibling
+		self._add_to_deleted_headings(items)
 		MultiPurposeList.__delslice__(self, i, j)
 
 	def __iadd__(self, other):
@@ -208,7 +258,7 @@ class HeadingList(MultiPurposeList):
 		for item in flatten_list(o):
 			if not self.__class__.is_heading(item):
 				raise ValueError(u'List contains items that are not a heading!')
-		self._associate_heading(o)
+		self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
 		return MultiPurposeList.__iadd__(self, o)
 
 	def __imul__(self, n):
@@ -218,13 +268,15 @@ class HeadingList(MultiPurposeList):
 	def append(self, item):
 		if not self.__class__.is_heading(item):
 			raise ValueError(u'Item is not a heading!')
-		if item in self.data:
+		if item in self:
 			raise ValueError(u'Heading is already part of this list!')
-		self._associate_heading(item)
+		self._associate_heading(item, self[-1] if len(self) > 0 else None, None)
 		MultiPurposeList.append(self, item)
 
 	def insert(self, i, item):
-		self._associate_heading(item)
+		self._associate_heading(item, \
+				self[i - 1] if i - 1 >= 0 and i - 1 < len(self) else None,
+				self[i] if i >= 0 and i < len(self) else None)
 		MultiPurposeList.insert(self, i, item)
 
 	def pop(self, i=-1):
@@ -234,17 +286,27 @@ class HeadingList(MultiPurposeList):
 		return item
 
 	def remove(self, item):
-		MultiPurposeList.remove(self, item)
+		self.__delitem__(self.index(item))
 
 	def reverse(self):
-		for i in self:
-			i.set_dirty()
 		MultiPurposeList.reverse(self)
+		prev_h = None
+		for h in self:
+			h._previous_sibling = prev_h
+			h._next_sibling = None
+			prev_h._next_sibling = h
+			h.set_dirty()
+			prev_h = h
 
 	def sort(self, *args, **kwds):
-		for i in self:
-			i.set_dirty()
 		MultiPurposeList.sort(*args, **kwds)
+		prev_h = None
+		for h in self:
+			h._previous_sibling = prev_h
+			h._next_sibling = None
+			prev_h._next_sibling = h
+			h.set_dirty()
+			prev_h = h
 
 	def extend(self, other):
 		o = other
@@ -253,7 +315,7 @@ class HeadingList(MultiPurposeList):
 		for item in o:
 			if not self.__class__.is_heading(item):
 				raise ValueError(u'List contains items that are not a heading!')
-		self._associate_heading(o)
+		self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
 		MultiPurposeList.extend(self, o)
 
 REGEX_HEADING = re.compile(u'^(?P<level>\*+)(?P<todotitle>(\s+(?P<todo>[^\s]+))?(\s+(?P<title>.*?))?)\s*(\s(?P<tags>:[\w_:]+:))?$', flags=re.U|re.L)
@@ -274,6 +336,8 @@ class Heading(object):
 
 		self._document      = None
 		self._parent        = None
+		self._previous_sibling = None
+		self._next_sibling  = None
 		self._children      = HeadingList(obj=self)
 		self._orig_start    = None
 		self._orig_len      = 0
@@ -441,16 +505,22 @@ class Heading(object):
 		saving the document """
 		self._dirty_heading = True
 		self._dirty_body = True
+		if self._document:
+			self._document.set_dirty_document()
 
 	def set_dirty_heading(self):
 		u""" Mark the heading dirty so that it will be rewritten when saving the
 		document """
 		self._dirty_heading = True
+		if self._document:
+			self._document.set_dirty_document()
 
 	def set_dirty_body(self):
 		u""" Mark the heading's body dirty so that it will be rewritten when
 		saving the document """
 		self._dirty_body = True
+		if self._document:
+			self._document.set_dirty_document()
 
 	@property
 	def document(self):
@@ -478,26 +548,12 @@ class Heading(object):
 	def previous_sibling(self):
 		u""" Access to the previous heading that's a sibling of the current one
 		"""
-		if self.parent and self in self.parent.children:
-			idx = self.parent.children.index(self)
-			if idx > 0:
-				return self.parent.children[idx - 1]
-		elif not self.parent and self.document and self in self.document.headings:
-			idx = self.document.headings.index(self)
-			if idx > 0:
-				return self.document.headings[idx - 1]
+		return self._previous_sibling
 
 	@property
 	def next_sibling(self):
 		u""" Access to the next heading that's a sibling of the current one """
-		if self.parent and self in self.parent.children:
-			idx = self.parent.children.index(self)
-			if len(self.parent.children) > idx + 1:
-				return self.parent.children[idx + 1]
-		elif not self.parent and self.document and self in self.document.headings:
-			idx = self.document.headings.index(self)
-			if len(self.document.headings) > idx + 1:
-				return self.document.headings[idx + 1]
+		return self._next_sibling
 
 	@property
 	def previous_heading(self):
@@ -531,6 +587,11 @@ class Heading(object):
 		if not self.document:
 			return
 
+		# static computation of start
+		if not self.document.is_dirty:
+			return self._orig_start
+
+		# dynamic computation of start
 		def compute_start(h):
 			if h:
 				return len(h) + compute_start(h.previous_heading)
@@ -709,6 +770,7 @@ class Document(object):
 		# is a list - only the Document methods should work with this list!
 		self._content                   = None
 		self._dirty_meta_information    = False
+		self._dirty_document            = False
 		self._meta_information          = MultiPurposeList(on_change = self.set_dirty_meta_information)
 		self._orig_meta_information_len = None
 		self._headings                  = HeadingList(obj=self)
@@ -750,11 +812,12 @@ class Document(object):
 
 		:returns:	self
 	    """
-		def init_heading(heading):
+		def init_heading(_h):
 			u"""
 			:returns	the initialized heading
 			"""
-			start = heading.end + 1
+			start = _h.end + 1
+			prev_heading = None
 			while True:
 				new_heading = self.find_heading(start, heading=heading)
 
@@ -764,14 +827,17 @@ class Document(object):
 				# * Heading 2 <- heading
 				# * Heading 1 <- parent's sibling
 				if not new_heading or \
-						new_heading.level <= heading.level:
+						new_heading.level <= _h.level:
 					break
 
 				# * Heading 1 <- heading
 				#  * Heading 2 <- first child
 				#  * Heading 2 <- another child
-				new_heading._parent = heading
-				heading.children.data.append(new_heading)
+				new_heading._parent = _h
+				if prev_heading:
+					prev_heading._next_sibling = new_heading
+					new_heading._previous_sibling = prev_heading
+				_h.children.data.append(new_heading)
 				# the start and end computation is only
 				# possible when the new heading was properly
 				# added to the document structure
@@ -781,8 +847,9 @@ class Document(object):
 					start = new_heading.end_of_last_child + 1
 				else:
 					start = new_heading.end + 1
+				prev_heading = new_heading
 
-			return heading
+			return _h
 
 		h = self.find_heading(heading=heading)
 		# initialize meta information
@@ -793,9 +860,14 @@ class Document(object):
 		self._orig_meta_information_len = len(self.meta_information)
 
 		# initialize dom tree
+		prev_h = None
 		while h:
+			if prev_h:
+				prev_h._next_sibling = h
+				h._previous_sibling = prev_h
 			self.headings.data.append(h)
 			init_heading(h)
+			prev_h = h
 			h = self.find_heading(h.end_of_last_child + 1, heading=heading)
 
 		return self
@@ -847,6 +919,12 @@ class Document(object):
 		saving the document """
 		self._dirty_meta_information = True
 
+	def set_dirty_document(self):
+		u""" Mark the whole document dirty. When changing a heading this
+		method must be executed in order to changed computation of start and
+		end positions from a static to a dynamic computation """
+		self._dirty_document = True
+
 	@property
 	def is_dirty(self):
 		u"""
@@ -858,15 +936,11 @@ class Document(object):
 		if self.is_dirty_meta_information:
 			return True
 
-		if self._deleted_headings:
+		if self.is_dirty_document:
 			return True
 
-		if not self.headings:
-			return False
-
-		for h in self.all_headings():
-			if h.is_dirty:
-				return True
+		if self._deleted_headings:
+			return True
 
 		return False
 
@@ -874,6 +948,11 @@ class Document(object):
 	def is_dirty_meta_information(self):
 		u""" Return True if the meta information is marked dirty """
 		return self._dirty_meta_information
+
+	@property
+	def is_dirty_document(self):
+		u""" Return True if the document is marked dirty """
+		return self._dirty_document
 
 	def all_headings(self):
 		u""" Iterate over all headings of the current document in serialized

@@ -209,7 +209,6 @@ class VimBuffer(Document):
 			meta_end = 0 if self._orig_meta_information_len is None else self._orig_meta_information_len
 			self._content[:meta_end] = self.meta_information
 			self._orig_meta_information_len = len(self.meta_information)
-			self._dirty_meta_information = False
 
 		# remove deleted headings
 		already_deleted = []
@@ -241,9 +240,11 @@ class VimBuffer(Document):
 			h._orig_start = h.start
 			h._orig_len = len(h)
 
+		self._dirty_meta_information = False
+		self._dirty_document = False
+
 		self.update_changedtick()
 		self._orig_changedtick = self._changedtick
-		self._dirty = False
 		return True
 
 	def previous_heading(self, position=None):

@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-52) unstable; urgency=low
+
+  * fix performance issue by introducing static computation of start value
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 28 May 2011 14:51:38 +0200
+
 vim-orgmode (0.1.0-51) unstable; urgency=low
 
   * add support for multiple color definitions for :foreground and :background
