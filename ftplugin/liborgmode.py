@@ -806,7 +806,7 @@ class Document(object):
 		return locals()
 	tag_column = property(**tag_column())
 
-	def load(self, heading=Heading):
+	def init_dom(self, heading=Heading):
 		u""" Initialize all headings in document - build DOM. This method
 		should be call prior to accessing the document.
 
@@ -1001,7 +1001,6 @@ class Document(object):
 				tmp_line += 1
 		else:
 			while tmp_line >= 0 and tmp_line < len_cb:
-				print tmp_line
 				if heading.identify_heading(self._content[tmp_line]) is not None:
 					if start is None:
 						start = tmp_line

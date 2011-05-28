@@ -125,8 +125,8 @@ def indent_orgmode():
 	:returns: None
 	"""
 	line = int(vim.eval(u'v:lnum'.encode(u'utf-8')))
-	d = ORGMODE.get_document()
-	heading = d.current_heading(line - 1)
+	d = VimBuffer()
+	heading = d.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 	if heading and line != heading.start_vim:
 		vim.command((u'let b:indent_level = %d' % (heading.level + 1)).encode(u'utf-8'))
 
@@ -137,8 +137,8 @@ def fold_text():
 	:returns: None
 	"""
 	line = int(vim.eval(u'v:foldstart'.encode(u'utf-8')))
-	d = ORGMODE.get_document()
-	heading = d.current_heading(line - 1)
+	d = VimBuffer()
+	heading = d.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 	if heading:
 		str_heading = unicode(heading)
 
@@ -162,8 +162,8 @@ def fold_orgmode():
 	:returns: None
 	"""
 	line = int(vim.eval(u'v:lnum'.encode(u'utf-8')))
-	d = ORGMODE.get_document()
-	heading = d.current_heading(line - 1)
+	d = VimBuffer()
+	heading = d.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 	if heading:
 		if line == heading.start_vim:
 			vim.command((u'let b:fold_expr = ">%d"' % heading.level).encode(u'utf-8'))
@@ -196,7 +196,7 @@ class OrgMode(object):
 		if bufnr in self._documents:
 			if self._documents[bufnr].is_insync:
 				return self._documents[bufnr]
-		self._documents[bufnr] = VimBuffer(bufnr).load()
+		self._documents[bufnr] = VimBuffer(bufnr).init_dom()
 		return self._documents[bufnr]
 
 	@property

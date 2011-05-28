@@ -1,3 +1,10 @@
+vim-orgmode (0.1.0-53) unstable; urgency=low
+
+  * fix performance issue when identing/folding text
+  * rename method load to init_dom
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 28 May 2011 15:21:58 +0200
+
 vim-orgmode (0.1.0-52) unstable; urgency=low
 
   * fix performance issue by introducing static computation of start value

@@ -131,7 +131,22 @@ class VimBuffer(Document):
 		Document.__init__(self)
 		self._bufnr            = vim.current.buffer.number if bufnr == 0 else bufnr
 		self._changedtick      = -1
-		self._orig_changedtick = 0
+
+		if self._bufnr == vim.current.buffer.number:
+			self._content = VimBufferContent(vim.current.buffer)
+		else:
+			_buffer = None
+			for b in vim.buffers:
+				if self._bufnr == b.number:
+					_buffer = b
+					break
+
+			if not _buffer:
+				raise BufferNotFound(u'Unable to locate buffer number #%d' % self._bufnr)
+			self._content = VimBufferContent(_buffer)
+
+		self.update_changedtick()
+		self._orig_changedtick = self._changedtick
 
 	@property
 	def tabstop(self):
@@ -162,24 +177,6 @@ class VimBuffer(Document):
 			self._changedtick = value
 		return locals()
 	changedtick = property(**changedtick())
-
-	def load(self, heading=Heading):
-		if self._bufnr == vim.current.buffer.number:
-			self._content = VimBufferContent(vim.current.buffer)
-		else:
-			_buffer = None
-			for b in vim.buffers:
-				if self._bufnr == b.number:
-					_buffer = b
-					break
-
-			if not _buffer:
-				raise BufferNotFound(u'Unable to locate buffer number #%d' % self._bufnr)
-			self._content = VimBufferContent(_buffer)
-
-		self.update_changedtick()
-		self._orig_changedtick = self._changedtick
-		return Document.load(self, heading=Heading)
 
 	def update_changedtick(self):
 		if self._bufnr == vim.current.buffer.number:
