@@ -4,7 +4,7 @@ from orgmode import echom, ORGMODE, apply_count, repeat, realign_tags
 from orgmode.menu import Submenu, ActionEntry
 from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
-from orgmode.liborgmode import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from liborgmode import Document, DIRECTION_FORWARD, DIRECTION_BACKWARD
 
 import vim
 
@@ -51,22 +51,6 @@ class Todo(object):
 			return states[0:seperator_pos], states[seperator_pos + 1:]
 
 	@classmethod
-	def _split_heading(self, heading_text, all_states):
-		"""
-		Split the heading in 'current_state' and 'rest'.
-
-		Return tuple of state and rest.
-		state is None if it is not in current_state.
-		"""
-		if heading_text == '' or heading_text is None:
-			return None, ''
-		result = heading_text.split(' ')
-		if result[0] in all_states:
-			return result[0], ' '.join(result[1:])
-		else:
-			return None, heading_text
-
-	@classmethod
 	def _get_next_state(cls, current_state, all_states,
 			direction=DIRECTION_FORWARD):
 		"""
@@ -97,10 +81,11 @@ class Todo(object):
 
 		:returns: The changed heading
 		"""
+		d = ORGMODE.get_document()
 		lineno, colno = vim.current.window.cursor
 
 		# get heading
-		heading = Document.current_heading()
+		heading = d.current_heading()
 		if not heading:
 			vim.eval('feedkeys("^", "n")')
 			return
@@ -112,18 +97,14 @@ class Todo(object):
 			echom('No todo keywords configured.')
 			return
 
-		# current_state and rest of heading
-		current_state, rest = Todo._split_heading(heading.text, all_states)
+		# current_state
+		current_state = heading.todo
 
 		# get new state
 		new_state = Todo._get_next_state(current_state, all_states, direction)
 
 		# set new headline
-		if not new_state:
-			new_heading = ' '.join(('*' * heading.level, rest))
-		else:
-			new_heading = ' '.join(('*' * heading.level, new_state, rest))
-		vim.current.buffer[heading.start] = new_heading
+		heading.todo = new_state
 
 		# move cursor along with the inserted state only when current position
 		# is in the heading; otherwite do nothing
@@ -140,6 +121,9 @@ class Todo(object):
 		plug = 'OrgToggleTodoForward'
 		if direction == DIRECTION_BACKWARD:
 			plug = 'OrgToggleTodoBackward'
+
+		d.write()
+
 		return plug
 
 	def register(self):
