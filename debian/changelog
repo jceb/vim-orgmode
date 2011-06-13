@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-56) unstable; urgency=low
+
+  * add missing % when doing string formatting in EditStructure plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 13 Jun 2011 19:27:38 +0200
+
 vim-orgmode (0.1.0-55) unstable; urgency=low
 
   * fix encoding error in keybinding.py when evaluation self.overwrite_exisiting

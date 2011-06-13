@@ -165,7 +165,7 @@ class EditStructure(object):
 
 		def append_heading(heading, parent):
 			if heading.level <= parent.level:
-				raise ValueError('Heading level not is lower than parent level: %d ! > %d' (heading.level, parent.level))
+				raise ValueError('Heading level not is lower than parent level: %d ! > %d' % (heading.level, parent.level))
 
 			if parent.children and parent.children[-1].level < heading.level:
 				append_heading(heading, parent.children[-1])
