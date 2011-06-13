@@ -3,7 +3,7 @@
 
 import unittest
 import sys
-sys.path.append('../ftplugin')
+sys.path.append(u'../ftplugin')
 
 import vim
 
@@ -20,20 +20,17 @@ class TagsPropertiesTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
-				'exists("g:org_debug")': 0,
-				'exists("b:org_debug")': 0,
-				'exists("*repeat#set()")': 0,
-				'exists("b:org_leader")': 0,
-				'exists("g:org_leader")': 0,
-				'exists("g:org_tags_column")': 0,
-				'exists("b:org_tags_column")': 0,
-				'exists("b:org_tags_completion_ignorecase")': 0,
-				'exists("g:org_tags_completion_ignorecase")': 0,
-				"v:count": 0}
-		if not 'TagsProperties' in ORGMODE.plugins:
-			ORGMODE.register_plugin('TagsProperties')
-		self.showhide = ORGMODE.plugins['TagsProperties']
-		vim.current.buffer = """
+				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_leader")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("g:org_leader")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'b:changedtick'.encode(u'utf-8'): (u'%d' % counter).encode(u'utf-8'),
+				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
+		if not u'TagsProperties' in ORGMODE.plugins:
+			ORGMODE.register_plugin(u'TagsProperties')
+		self.showhide = ORGMODE.plugins[u'TagsProperties']
+		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 1
 Text 1
 
@@ -52,13 +49,13 @@ Bla Bla bla bla
 * Überschrift 2
 * Überschrift 3
   asdf sdf
-""".split('\n')
+""".split(u'\n') ]
 
 	def test_new_property(self):
-		""" TODO: Docstring for test_new_property
+		u""" TODO: Docstring for test_new_property
 
 		:returns: TODO
-		"""
+		u"""
 		pass
 
 def suite():

@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-57) unstable; urgency=low
+
+  * convert TagsProperties to liborgmode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 13 Jun 2011 21:48:07 +0200
+
 vim-orgmode (0.1.0-56) unstable; urgency=low
 
   * add missing % when doing string formatting in EditStructure plugin
