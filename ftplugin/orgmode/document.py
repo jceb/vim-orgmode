@@ -193,7 +193,7 @@ class VimBuffer(Document):
 		u""" write the changes to the vim buffer
 
 		:returns:	True if something was written, otherwise False
-	    """
+		"""
 		if not self.is_dirty:
 			return False
 
