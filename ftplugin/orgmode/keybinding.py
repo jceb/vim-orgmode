@@ -74,7 +74,7 @@ class Command(object):
 		u""" Register/create the command
 		"""
 		vim.command(':command%(overwrite)s -nargs=%(arguments)s %(complete)s %(name)s %(command)s' %
-				{u'overwrite': '!' if self.overwrite_exisiting.encode(u'utf-8') else '',
+				{u'overwrite': '!' if self.overwrite_exisiting else '',
 					u'arguments': self.arguments.encode(u'utf-8'),
 					u'complete': '-complete=%s' % self.complete.encode(u'utf-8') if self.complete else '',
 					u'name': self.name,

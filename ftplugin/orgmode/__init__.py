@@ -290,6 +290,7 @@ class OrgMode(object):
 				try:
 					self.register_plugin(p)
 				except Exception, e:
+					echoe('Error in %s plugin:' % p)
 					import traceback
 					traceback.print_exc()
 
