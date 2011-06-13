@@ -145,31 +145,31 @@ class HeadingList(MultiPurposeList):
 			for i in flatten_list(item):
 				self._add_to_deleted_headings(i)
 		else:
-			self._get_document()._deleted_headings.append(item)
+			self._get_document()._deleted_headings.append(item.copy(including_children=False))
 			self._add_to_deleted_headings(item.children)
 			self._get_document().set_dirty_document()
 
-	def _associate_heading(self, item, previous_sibling, next_sibling, children=False):
+	def _associate_heading(self, heading, previous_sibling, next_sibling, children=False):
 		"""
-		:item:		The heading or list to associate with the current heading
+		:heading:		The heading or list to associate with the current heading
 		:previous_sibling:	The previous sibling of the current heading. If
-							item (heading) is a list the first item will be
+							heading is a list the first heading will be
 							connected with the previous sibling and the last
-							item with the next sibling. The items in between
+							heading with the next sibling. The items in between
 							will be linked with one another.
 		:next_sibling:	The next sibling of the current heading. If
-							item (heading) is a list the first item will be
+							heading is a list the first heading will be
 							connected with the previous sibling and the last
-							item with the next sibling. The items in between
+							heading with the next sibling. The items in between
 							will be linked with one another.
 		:children:	Marks whether children are processed in the current
 					iteration or not (should not be use, it's set automatically)
 		"""
 		# TODO this method should be externalized and moved to the Heading class
-		if type(item) in (list, tuple) or isinstance(item, UserList):
+		if type(heading) in (list, tuple) or isinstance(heading, UserList):
 			prev = previous_sibling
 			current = None
-			for _next in flatten_list(item):
+			for _next in flatten_list(heading):
 				if current:
 					self._associate_heading(current, prev, _next, children=children)
 					prev = current
@@ -177,29 +177,29 @@ class HeadingList(MultiPurposeList):
 			if current:
 				self._associate_heading(current, prev, next_sibling, children=children)
 		else:
-			item._orig_start = None
-			item._orig_len = None
+			heading._orig_start = None
+			heading._orig_len = None
 			d = self._get_document()
-			if item._document != d:
-				item._document = d
+			if heading._document != d:
+				heading._document = d
 			if not children:
 				# connect heading with previous and next headings
-				item._previous_sibling = previous_sibling
+				heading._previous_sibling = previous_sibling
 				if previous_sibling:
-					previous_sibling._next_sibling = item
-				item._next_sibling = next_sibling
+					previous_sibling._next_sibling = heading
+				heading._next_sibling = next_sibling
 				if next_sibling:
-					next_sibling._previous_sibling = item
+					next_sibling._previous_sibling = heading
 
 				if d == self._obj:
 					# self._obj is a Document
-					item._parent = None
-				elif item._parent != self._obj:
+					heading._parent = None
+				elif heading._parent != self._obj:
 					# self._obj is a Heading
-					item._parent = self._obj
-			item.set_dirty()
+					heading._parent = self._obj
+			heading.set_dirty()
 
-			self._associate_heading(item.children, None, None, children=True)
+			self._associate_heading(heading.children, None, None, children=True)
 
 	def __setitem__(self, i, item):
 		if not self.__class__.is_heading(item):
@@ -395,6 +395,26 @@ class Heading(object):
 	def __len__(self):
 		# 1 is for the heading's title
 		return 1 + len(self.body)
+
+	def copy(self, including_children=True):
+		u"""
+		Create a copy of the current heading.
+
+		:including_children:	If True a copy of all children is create as well. If False the returned heading doesn't have any children.
+		"""
+		heading = self.__class__(level=self.level, title=self.title, tags=self.tags, todo=self.todo, body=self.body)
+		heading._document      = self.document
+		heading._parent        = self.parent
+		heading._previous_sibling = self.previous_sibling
+		heading._next_sibling  = self.next_sibling
+		if including_children and self.children:
+			heading._children  = HeadingList([item.__class__(item) for item in self.children], obj=self)
+		heading._orig_start    = self._orig_start
+		heading._orig_len      = self._orig_len
+
+		heading._dirty_heading = self.is_dirty_heading
+
+		return heading
 
 	@classmethod
 	def parse_heading_from_data(cls, data, document=None, orig_start=None):

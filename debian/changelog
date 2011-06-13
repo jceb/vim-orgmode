@@ -1,3 +1,12 @@
+vim-orgmode (0.1.0-54) unstable; urgency=low
+
+  * add copy method to Heading class to make a copy of the object
+  * track orig_start in Document.write method instead of the heading objects
+  * convert EditStructure plugin to liborgmode
+  * swap promote/demote meaning
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 13 Jun 2011 18:59:21 +0200
+
 vim-orgmode (0.1.0-53) unstable; urgency=low
 
   * fix performance issue when identing/folding text

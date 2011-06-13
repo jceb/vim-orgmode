@@ -15,7 +15,7 @@ import unittest
 if __name__ == '__main__':
 	tests = unittest.TestSuite()
 	tests.addTests(test_vimbuffer.suite())
-	#tests.addTests(test_edit_structure.suite())
+	tests.addTests(test_edit_structure.suite())
 	tests.addTests(test_misc.suite())
 	tests.addTests(test_navigator.suite())
 	tests.addTests(test_show_hide.suite())
