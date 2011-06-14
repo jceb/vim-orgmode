@@ -14,8 +14,11 @@ ORGMODE.debug = True
 START = True
 END = False
 
+counter = 0
 class TagsPropertiesTestCase(unittest.TestCase):
 	def setUp(self):
+		global counter
+		counter += 1
 		vim.CMDHISTORY = []
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []

@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-60) unstable; urgency=low
+
+  * add missing counter to test_edit_structure.py
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 14 Jun 2011 18:34:51 +0200
+
 vim-orgmode (0.1.0-59) unstable; urgency=low
 
   * convert Todo plugin to unicode
