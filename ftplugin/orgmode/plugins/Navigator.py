@@ -39,15 +39,14 @@ class Navigator(object):
 			return
 
 		if mode == u'visual':
-			cls._change_visual_selection(heading, heading.parent, mode, direction=DIRECTION_BACKWARD, parent=True)
+			cls._change_visual_selection(heading, heading.parent, direction=DIRECTION_BACKWARD, parent=True)
 		else:
 			vim.current.window.cursor = (heading.parent.start_vim, heading.parent.level + 1)
 		return heading.parent
 
 
 	@classmethod
-	def _change_visual_selection(cls, current_heading, heading, mode, direction=DIRECTION_FORWARD, noheadingfound=False, parent=False):
-		# TODO mode is not used, why that??
+	def _change_visual_selection(cls, current_heading, heading, direction=DIRECTION_FORWARD, noheadingfound=False, parent=False):
 		current = vim.current.window.cursor[0]
 		line_start, col_start = [ int(i) for i in vim.eval(u'getpos("\'<")'.encode(u'utf-8'))[1:3] ]
 		line_end, col_end = [ int(i) for i in vim.eval(u'getpos("\'>")'.encode(u'utf-8'))[1:3] ]
@@ -108,8 +107,8 @@ class Navigator(object):
 				line_end = f_end
 				swap_cursor = False
 
-			elif line_start > f_start or \
-					line_start == f_start and line_end <= f_end and direction == DIRECTION_BACKWARD:
+			elif (line_start > f_start or \
+					line_start == f_start) and line_end <= f_end and direction == DIRECTION_BACKWARD:
 				line_end = line_start
 				line_start = f_start
 
@@ -154,9 +153,13 @@ class Navigator(object):
 		current_heading = d.current_heading()
 		heading = current_heading
 		focus_heading = None
+		# FIXME this is just a piece of really ugly and unmaintainable code. It
+		# should be rewritten
 		if not heading:
 			if direction == DIRECTION_FORWARD and d.headings \
 					and vim.current.window.cursor[0] < d.headings[0].start_vim:
+				# the cursor is in the meta information are, therefore focus
+				# first heading
 				focus_heading = d.headings[0]
 			if not (heading or focus_heading):
 				if mode == u'visual':
@@ -167,8 +170,9 @@ class Navigator(object):
 				return
 		elif direction == DIRECTION_BACKWARD:
 			if vim.current.window.cursor[0] != heading.start_vim:
+				# the cursor is in the body of the current heading, therefore
+				# the current heading will be focused
 				if mode == u'visual':
-					# TODO maybe this has to be changed!
 					line_start, col_start = [ int(i) for i in vim.eval(u'getpos("\'<")'.encode(u'utf-8'))[1:3] ]
 					line_end, col_end = [ int(i) for i in vim.eval(u'getpos("\'>")'.encode(u'utf-8'))[1:3] ]
 					if line_start >= heading.start_vim and line_end > heading.start_vim:
@@ -176,6 +180,7 @@ class Navigator(object):
 				else:
 					focus_heading = heading
 
+		# so far no heading has been found that the next focus should be on
 		if not focus_heading:
 			if not skip_children and direction == DIRECTION_FORWARD and heading.children:
 				focus_heading = heading.children[0]
@@ -187,24 +192,16 @@ class Navigator(object):
 					while focus_heading.children:
 						focus_heading = focus_heading.children[-1]
 			else:
-				while heading.level > 1:
-					if heading.parent:
-						if direction == DIRECTION_FORWARD and heading.parent.next_sibling:
-							focus_heading = heading.parent.next_sibling
-							break
-						elif direction == DIRECTION_BACKWARD:
-							focus_heading = heading.parent
-							break
-						else:
-							heading = heading.parent
-					else:
-						break
+				if direction == DIRECTION_FORWARD:
+					focus_heading = current_heading.next_heading
+				else:
+					focus_heading = current_heading.previous_heading
 
 		noheadingfound = False
 		if not focus_heading:
 			if mode in (u'visual', u'operator'):
 				# the cursor seems to be on the last or first heading of this
-				# document and performes another next/previous-operation
+				# document and performes another next/previous operation
 				focus_heading = heading
 				noheadingfound = True
 			else:
@@ -215,7 +212,7 @@ class Navigator(object):
 				return
 
 		if mode == u'visual':
-			cls._change_visual_selection(current_heading, focus_heading, mode, direction=direction, noheadingfound=noheadingfound)
+			cls._change_visual_selection(current_heading, focus_heading, direction=direction, noheadingfound=noheadingfound)
 		elif mode == u'operator':
 			if direction == DIRECTION_FORWARD and vim.current.window.cursor[0] >= focus_heading.start_vim:
 				vim.current.window.cursor = (focus_heading.end_vim, len(vim.current.buffer[focus_heading.end]))

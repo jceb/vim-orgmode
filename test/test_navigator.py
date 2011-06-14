@@ -346,12 +346,43 @@ Bla Bla bla bla
 		# EOF
 		set_visual_selection(u'V', 18, 20, cursor_pos=END)
 		self.assertEqual(self.navigator.next(mode=u'visual'), None)
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 18ggV20gg'.encode(u'utf-8'))
 
 		# << |heading
 		# text>>
 		# EOF
 		set_visual_selection(u'V', 20, 20, cursor_pos=START)
 		self.assertEqual(self.navigator.next(mode=u'visual'), None)
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 20ggV20gg'.encode(u'utf-8'))
+
+	def test_forward_movement_visual_to_the_end_of_the_file(self):
+		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
+* Überschrift 1
+Text 1
+
+Bla bla
+** Überschrift 1.1
+Text 2
+
+Bla Bla bla
+** Überschrift 1.2
+Text 3
+
+**** Überschrift 1.2.1.falsch
+
+Bla Bla bla bla
+test
+""".split(u'\n') ]
+		# << |heading
+		# text>>
+		# EOF
+		set_visual_selection(u'V', 15, 15, cursor_pos=START)
+		self.assertEqual(self.navigator.next(mode=u'visual'), None)
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 15ggV17gg'.encode(u'utf-8'))
+
+		set_visual_selection(u'V', 15, 17, cursor_pos=END)
+		self.assertEqual(self.navigator.next(mode=u'visual'), None)
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 15ggV17gg'.encode(u'utf-8'))
 
 	def test_backward_movement_visual(self):
 		# selection start: <<
@@ -536,7 +567,7 @@ Bla Bla bla bla
 		# text| >>
 		set_visual_selection(u'V', 6, 8, cursor_pos=END)
 		self.navigator.parent(mode=u'visual')
-		self.assertEqual(vim.CMDHISTORY[-1], u'normal 2ggV6ggo'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 6ggV6ggo'.encode(u'utf-8'))
 
 		# << |heading
 		# text

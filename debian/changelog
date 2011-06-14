@@ -1,3 +1,11 @@
+vim-orgmode (0.1.0-64) unstable; urgency=low
+
+  * remove parameter mode from function change_visual_selection
+  * add more test cases for Navigator plugin, current this plugin is somehow
+  	broken
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 14 Jun 2011 20:30:45 +0200
+
 vim-orgmode (0.1.0-63) unstable; urgency=low
 
   * convert LoggingWork plugin to unicode
