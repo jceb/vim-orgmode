@@ -22,16 +22,6 @@ class Date(object):
 	month_mapping = {u'jan': 1, u'feb':2, u'mar':3, u'apr':4, u'may':5, u'jun':6,
 			u'jul': 7, u'aug': 8, u'sep': 9, u'oct': 10, u'nov': 11, u'dec': 12}
 
-	# set speeddating format that is compatible with orgmode
-	try:
-		if int(vim.eval(u'exists(":SpeedDatingFormat")')):
-			vim.command(u':1SpeedDatingFormat %Y-%m-%d %a')
-			vim.command(u':1SpeedDatingFormat %Y-%m-%d %a %H:%M')
-		else:
-			echom(u'Speeddating plugin not installed. Please install it.')
-	except:
-		echom(u'Speeddating plugin not installed. Please install it.')
-
 	def __init__(self):
 		u""" Initialize plugin """
 		object.__init__(self)
@@ -45,6 +35,16 @@ class Date(object):
 
 		# commands for this plugin
 		self.commands = []
+
+		# set speeddating format that is compatible with orgmode
+		try:
+			if int(vim.eval(u'exists(":SpeedDatingFormat")')):
+				vim.command(u':1SpeedDatingFormat %Y-%m-%d %a')
+				vim.command(u':1SpeedDatingFormat %Y-%m-%d %a %H:%M')
+			else:
+				echom(u'Speeddating plugin not installed. Please install it.')
+		except:
+			echom(u'Speeddating plugin not installed. Please install it.')
 
 	@classmethod
 	def _modify_time(cls, startdate, modifier):
