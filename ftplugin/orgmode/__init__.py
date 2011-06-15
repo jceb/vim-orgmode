@@ -193,6 +193,9 @@ class OrgMode(object):
 
 		:returns:	vim buffer instance
 		"""
+		if bufnr == 0:
+			bufnr = vim.current.buffer.number
+
 		if bufnr in self._documents:
 			if self._documents[bufnr].is_insync:
 				return self._documents[bufnr]

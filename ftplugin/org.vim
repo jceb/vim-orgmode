@@ -13,7 +13,7 @@
 
 if ! exists("b:did_ftplugin")
 	" default emacs settings
-	setlocal comments-=s1:/*,mb:*,ex:*/ cole=2 cocu=nc tabstop=8 shiftwidth=8
+	setlocal comments-=s1:/*,mb:*,ex:*/ cole=2 cocu=nc tabstop=8 shiftwidth=8 commentstring=#\ %s
 
 	" register keybindings if they don't have been registered before
 	if has('python') && exists("g:loaded_org")

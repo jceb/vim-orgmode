@@ -1,3 +1,13 @@
+vim-orgmode (0.1.0-65) unstable; urgency=low
+
+  * fix error when aktivating lazyredraw and hidden for the current buffer
+  * set commentstring to "# %s"
+  * fix error when switching buffers to get current changetick
+  * fix error when running get_document with bufnr 0 that opened to the first
+  	document that was queried instead of return the current document
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Wed, 15 Jun 2011 12:42:03 +0200
+
 vim-orgmode (0.1.0-64) unstable; urgency=low
 
   * remove parameter mode from function change_visual_selection
