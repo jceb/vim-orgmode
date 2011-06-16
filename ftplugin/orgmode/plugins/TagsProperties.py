@@ -65,7 +65,7 @@ class TagsProperties(object):
 			elif t.startswith(current_tag):
 				possible_tags.append(t)
 
-		vim.command(u'let b:org_complete_tags = [%s]' % u', '.join([u'"%s%s:%s"' % (head, i, tail) for i in possible_tags]))
+		vim.command((u'let b:org_complete_tags = [%s]' % u', '.join([u'"%s%s:%s"' % (head, i, tail) for i in possible_tags])).encode(u'utf-8'))
 
 	@classmethod
 	@repeat
@@ -149,10 +149,10 @@ if exists('b:org_complete_tags')
 else
 	return []
 endif
-endfunction""")
+endfunction""".encode(u'utf-8'))
 
 		# this is for all org files opened after this file
-		vim.command(u"au FileType org :au InsertLeave <buffer> :py ORGMODE.plugins[u'TagsProperties'].realign_tags()")
+		vim.command(u"au FileType org :au InsertLeave <buffer> :py ORGMODE.plugins[u'TagsProperties'].realign_tags()".encode(u'utf-8'))
 
 		# this is for the current file
-		vim.command(u"au InsertLeave <buffer> :py ORGMODE.plugins[u'TagsProperties'].realign_tags()")
+		vim.command(u"au InsertLeave <buffer> :py ORGMODE.plugins[u'TagsProperties'].realign_tags()".encode(u'utf-8'))

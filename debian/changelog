@@ -1,3 +1,10 @@
+vim-orgmode (0.1.0-66) unstable; urgency=low
+
+  * remove highlighting group Question from title colors
+  * fix utf-8 encoding for vim.command calls
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Thu, 16 Jun 2011 12:39:46 +0200
+
 vim-orgmode (0.1.0-65) unstable; urgency=low
 
   * fix error when aktivating lazyredraw and hidden for the current buffer

@@ -73,13 +73,13 @@ class Command(object):
 	def create(self):
 		u""" Register/create the command
 		"""
-		vim.command(':command%(overwrite)s -nargs=%(arguments)s %(complete)s %(name)s %(command)s' %
+		vim.command((':command%(overwrite)s -nargs=%(arguments)s %(complete)s %(name)s %(command)s' %
 				{u'overwrite': '!' if self.overwrite_exisiting else '',
 					u'arguments': self.arguments.encode(u'utf-8'),
 					u'complete': '-complete=%s' % self.complete.encode(u'utf-8') if self.complete else '',
 					u'name': self.name,
 					u'command': self.command}
-				)
+				).encode(u'utf-8'))
 
 class Plug(object):
 	u""" Represents a <Plug> to an abitrary command """

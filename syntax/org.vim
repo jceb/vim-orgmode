@@ -1,7 +1,7 @@
 " Variables With Default Settings:
 "
 " Define the highlighting colors/group names for headings
-" let g:org_heading_highlight_colors = ['Title', 'Question', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
+" let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
 "
 " Definie the number of level of highlighting. If this number is bigger than
 " the length of g:org_heading_highlight_colors the colors of
@@ -35,7 +35,7 @@
 
 " Headings
 if !exists('g:org_heading_highlight_colors')
-	let g:org_heading_highlight_colors = ['Title', 'Question', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
+	let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
 endif
 
 if !exists('g:org_heading_highlight_levels')

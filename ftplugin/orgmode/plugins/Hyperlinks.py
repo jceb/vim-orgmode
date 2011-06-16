@@ -76,11 +76,11 @@ class Hyperlinks(object):
 
 		if link and link[u'uri'] is not None:
 			# call UTL with the URI
-			vim.command(u'Utl %s %s %s' % (action, visual, link[u'uri']))
+			vim.command((u'Utl %s %s %s' % (action, visual, link[u'uri'])).encode(u'utf-8'))
 			return link[u'uri']
 		else:
 			# call UTL and let it decide what to do
-			vim.command(u'Utl %s %s' % (action, visual))
+			vim.command((u'Utl %s %s' % (action, visual)).encode(u'utf-8'))
 
 	@classmethod
 	@realign_tags
