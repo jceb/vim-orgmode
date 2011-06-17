@@ -24,7 +24,7 @@ class Hyperlinks(object):
 		# commands for this plugin
 		self.commands = []
 
-	uri_match = re.compile(u'^\[{2}(?P<uri>[^][]*)(\]\[(?P<description>[^][]*))?\]{2}')
+	uri_match = re.compile(r'^\[{2}(?P<uri>[^][]*)(\]\[(?P<description>[^][]*))?\]{2}')
 
 	@classmethod
 	def _get_link(cls, cursor=None):

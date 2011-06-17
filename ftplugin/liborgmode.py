@@ -318,8 +318,8 @@ class HeadingList(MultiPurposeList):
 		self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
 		MultiPurposeList.extend(self, o)
 
-REGEX_HEADING = re.compile(u'^(?P<level>\*+)(?P<todotitle>(\s+(?P<todo>[^\s]+))?(\s+(?P<title>.*?))?)\s*(\s(?P<tags>:[\w_:]+:))?$', flags=re.U|re.L)
-REGEX_TODO = re.compile(u'^[^\s]*$')
+REGEX_HEADING = re.compile(r'^(?P<level>\*+)(?P<todotitle>(\s+(?P<todo>[^\s]+))?(\s+(?P<title>.*?))?)\s*(\s(?P<tags>:[\w_:]+:))?$', flags=re.U|re.L)
+REGEX_TODO = re.compile(r'^[^\s]*$')
 
 class Heading(object):
 	u""" Structural heading object """
