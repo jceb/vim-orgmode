@@ -35,7 +35,7 @@ class Hyperlinks(object):
 		:returns: None if no link was found, otherwise {uri:URI, description:DESCRIPTION, line:LINE, start:START, end:END} or uri and description could be None if not set
 		"""
 		cursor = cursor if cursor else vim.current.window.cursor
-		line = vim.current.buffer[cursor[0] - 1]
+		line = vim.current.buffer[cursor[0] - 1].decode(u'utf-8')
 
 		# if the cursor is on the last bracket, it's not recognized as a hyperlink
 		start = line.rfind(u'[[', 0, cursor[1])
@@ -115,7 +115,7 @@ class Hyperlinks(object):
 			return
 
 		cursor = vim.current.window.cursor
-		cl = vim.current.buffer[cursor[0] - 1]
+		cl = vim.current.buffer[cursor[0] - 1].decode(u'utf-8')
 		head = cl[:cursor[1] + 1] if not link else cl[:link[u'start']]
 		tail = cl[cursor[1] + 1:] if not link else cl[link[u'end']:]
 

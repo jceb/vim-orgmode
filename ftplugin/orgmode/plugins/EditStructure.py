@@ -81,9 +81,9 @@ class EditStructure(object):
 		# TODO implement me
 		#if insert_mode and not end_of_last_child and cursor[0] == current_heading.start_vim:
 		#	if cursor[1] > current_heading.level:
-		#		tmp1 = vim.current.buffer[cursor[0] - 1][:cursor[1]]
-		#		tmp2 = vim.current.buffer[cursor[0] - 1][cursor[1]:]
-		#		vim.current.buffer[cursor[0] - 1] = tmp1
+		#		tmp1 = vim.current.buffer[cursor[0] - 1][:cursor[1]].decode(u'utf-8')
+		#		tmp2 = vim.current.buffer[cursor[0] - 1][cursor[1]:].decode(u'utf-8')
+		#		vim.current.buffer[cursor[0] - 1] = tmp1.encode(u'utf-8')
 		#	else:
 		#		tmp2 = u''
 		#	if below:

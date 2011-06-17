@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-68) unstable; urgency=low
+
+  * fix encoding error for plugins that directly access vim.current.buffer
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Thu, 16 Jun 2011 12:44:06 +0200
+
 vim-orgmode (0.1.0-67) unstable; urgency=low
 
   * change regex strings to raw strings
