@@ -49,11 +49,26 @@ Information about the license are found in the file LICENSE
    :set rtp=/usr/lib/vim/addons,&rtp
 
 ** From git checkout
-   This method is mainly used for development purposes. It's rather a stoney 
+   This method is mainly used for development purposes.
 
-   Copy the directories ftdetect, ftplugin, indent and syntax to your
-   $HOME/.vim directory or the bundle directory in case you are using
-   pathogen.
+*** You are using pathegon
+
+    Change to the bundle directory
+    $ cd ~/.vim/bundle
+
+    Clone the repository
+    $ git clone https://github.com/jceb/vim-orgmode.git
+
+    And restart vim. That's it.
+
+*** You are using no addon manager
+    Clone the repository:
+    $ git clone https://github.com/jceb/vim-orgmode.git
+
+    Copy the directories doc, ftdetect, ftplugin, indent and syntax to
+    your $HOME/.vim directory:
+    $ cd vim-orgmode
+    $ cp -r doc ftdetect ftplugin indent syntax ~/.vim/
 
 * Usage
   vim-orgmode aims to be clone of the original orgmode for Emacs. Since
@@ -95,12 +110,13 @@ Information about the license are found in the file LICENSE
    For further information please read :h text-objects-changed
 
 * Suggested plugins
-  - [[http:/www.vim.org/scripts/script.php?script_id=2332][pathogen]] for an easy management of multiple plugins.
-  - [[http://www.vim.org/scripts/script.php?script_id=2136][repeat]] to repeat some actions that would not be repeatable otherwise.
-  - [[http://www.vim.org/scripts/script.php?script_id=273][taglist]] to get an structural overview over files.
-  - [[http://www.vim.org/scripts/script.php?script_id=2120][speeddating]] to in-/decrease dates the vim way: (C-a) C-x.
-  - [[http://www.vim.org/scripts/script.php?script_id=3075][Narrow Region]] to have emacs Narrow Region feature.
-  - [[http://www.vim.org/scripts/script.php?script_id=293][Universal Text Linking]] to have 'clickable' links to other resources (files, urls, etc.).
+  - [[http:/www.vim.org/scripts/script.php?script_id=2332][pathogen]]               easy management of multiple vim plugins
+  - [[http://www.vim.org/scripts/script.php?script_id=2136][repeat]]                 repeat actions that would not be repeatable otherwise
+  - [[http://www.vim.org/scripts/script.php?script_id=273][taglist]]                display tags for the currently edited file
+  - [[http://www.vim.org/scripts/script.php?script_id=3465][tagbar]]                 a new approach to displaying tags for the currently edited file
+  - [[http://www.vim.org/scripts/script.php?script_id=2120][speeddating]]            in-/decrease dates the vim way: C-a and C-x
+  - [[http://www.vim.org/scripts/script.php?script_id=3075][Narrow Region]]          emulation of Emacs' Narrow Region feature
+  - [[http://www.vim.org/scripts/script.php?script_id=293][Universal Text Linking]] general support for text linking, the Hyperlinks feature of vim-orgmode depends on this plugin
 
 * Development
 
@@ -129,17 +145,18 @@ Information about the license are found in the file LICENSE
 ** Source code
 
 *** Files and folders
-    build_vim - Build file for the Vimball
-    ftdetect/ - Filetype detection for orgmode files
-    ftplugin/ - Home of the main part of the plugin
-    ftplugin/orgmode/ - Home for all Python code related to the plugin
+    build_vim                - Build file for the Vimball
+    ftdetect/                - Filetype detection for orgmode files
+    ftplugin/                - Home of the main part of the plugin
+    ftplugin/orgmode/        - Home for all Python code related to the plugin
     ftplugin/orgmode/plugins - Home for all orgmode plugins
-    indent/ - Indentation for orgmode files
-    LICENSE - License Information
-    Makefile - Build file for the Vimball
-    README - This file
-    syntax/ - Syntax highlighting
-    test/ - Tests to verify the consistency and correctness of the plugin
+    ftplugin/liborgmode.py   - General library for accessing and manipulating org-mode files
+    indent/                  - Indentation for orgmode files
+    LICENSE                  - License Information
+    Makefile                 - Build file for the Vimball
+    README                   - Documentation
+    syntax/                  - Syntax highlighting
+    test/                    - Tests to verify the consistency and correctness of the plugin
 
 *** Structure
     The majority of the source code is stored in folder
@@ -272,6 +289,7 @@ Information about the license are found in the file LICENSE
 *** DONE implement |fold-foldtext|
 
 ** Navigator plugin
+*** TODO add mapping to repeat the last movement, e.g. <C-l> and <C-h>
 *** TODO implement other paragraph and block text-object operators, e.g. dap, cip, dab, cib
 *** TODO implement tests for ]]
 *** implement mappings for visual and operator mode in a better way
@@ -350,8 +368,9 @@ Information about the license are found in the file LICENSE
 *** throw exception when decreasing a heading's level below or equal to the parent's level
 *** add support for specific TODO states/allow no other states
     I'm not quite sure whether this is actually need in liborgmode or should be part of a specific plugin
-*** add support for detaching a heading from a document
+*** DONE add support for detaching a heading from a document
     This is strongly linked to the changing of a heading's level. There needs to be an easy way to do that
+    Heading.copy() creates a detached copy of the current heading
 *** DONE add support for unicode
 *** DONE build a general library for parsing orgmode files
 *** DONE build a general library for parsing orgmode files
