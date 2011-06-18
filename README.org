@@ -379,9 +379,9 @@ Information about the license are found in the file LICENSE
 *** make use of maparg() and mapcheck()
 *** make a video about vim-orgmode
 *** orgmode taglist integration doesn't work with txtfmt plugin: setf org.txtfmt
-*** add support for tagbar plugin
-    tagbar is a reimplementation of the taglist plugin
 *** in original Org-mode keybindings perform different actions based on the context! This functionality should be integrated in vim-orgmode as well
+*** DONE add support for tagbar plugin
+    tagbar is a reimplementation of the taglist plugin
 *** DONE implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
     Resolved by the implementation of liborgmode
 *** DONE integrate with YankRing plugin

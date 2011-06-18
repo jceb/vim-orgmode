@@ -1,3 +1,10 @@
+vim-orgmode (0.1.0-69) unstable; urgency=low
+
+  * add support for tagbar plugin
+  * move ctags support to file ftplugin/org.cnf
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 18 Jun 2011 19:15:13 +0200
+
 vim-orgmode (0.1.0-68) unstable; urgency=low
 
   * fix encoding error for plugins that directly access vim.current.buffer

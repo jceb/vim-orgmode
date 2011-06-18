@@ -78,36 +78,24 @@ from orgmode import ORGMODE
 ORGMODE.start()
 EOF
 
-" ******************** Taglist integration ********************
+" ******************** Taglist/Tagbar integration ********************
+
+" tag-bar support for org-mode
+let g:tagbar_type_org = {
+			\ 'ctagstype' : 'org',
+			\ 'kinds'     : [
+				\ 's:sections',
+				\ 'h:hyperlinks',
+			\ ],
+			\ 'sort'    : 0,
+			\ 'deffile' : expand('<sfile>:p:h') . '/org.cnf'
+			\ }
 
 " taglist support for org-mode
-if !exists('Tlist_Ctags_Cmd')
+if !exists('g:Tlist_Ctags_Cmd')
 	finish
 endif
 
-" How many title levels are supported, default is 3.
-if !exists('g:org_taglist_level')
-	let g:org_taglist_level = 3
-endif
-
-" Orgmode tag definition start.
-let s:org_taglist_config = ' --langdef=orgmode --langmap=orgmode:.org '
-
-" Title tag definition
-let i = 1
-let j = ''
-while i <= g:org_taglist_level
-	let s:org_taglist_config .= '--regex-orgmode="/^(\*{'.i.'}\s+(.*)|\s{1}\*\s+(.*))/'.j.'\2/c,content/" '
-
-	if i == 1
-		let j = '. '
-	else
-		let j = '.'.j
-	endif
-
-	let i = i + 1
-endwhile
-
 " Pass parameters to taglist
-let tlist_org_settings = 'orgmode;c:content'
-let Tlist_Ctags_Cmd .= s:org_taglist_config
+let g:tlist_org_settings = 'org;s:section;h:hyperlinks'
+let g:Tlist_Ctags_Cmd .= ' --options=' . expand('<sfile>:p:h') . '/org.cnf '

@@ -1,0 +1,5 @@
+--langdef=org
+--langmap=org:.org
+--regex-org=/^(\*+)[[:space:]]+(.*)([[:space:]]+:[^\t ]*:)?$/\1 \2/s,sections/
+--regex-org=/\[\[([^][]+)\]\]/\1/h,hyperlinks/
+--regex-org=/\[\[[^][]+\]\[([^][]+)\]\]/\1/h,hyperlinks/
