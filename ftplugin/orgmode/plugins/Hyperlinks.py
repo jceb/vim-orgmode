@@ -101,16 +101,16 @@ class Hyperlinks(object):
 				description = link[u'description']
 
 		if uri is None:
-			uri = vim.eval(u'input("Link: ")')
+			uri = vim.eval(u'input("Link: ")').decode(u'utf-8')
 		elif link:
-			uri = vim.eval(u'input("Link: ", "%s")' % link[u'uri'])
+			uri = vim.eval(u'input("Link: ", "%s")' % link[u'uri']).decode(u'utf-8')
 		if uri is None:
 			return
 
 		if description is None:
-			description = vim.eval(u'input("Description: ")')
+			description = vim.eval(u'input("Description: ")').decode(u'utf-8')
 		elif link:
-			description = vim.eval(u'input("Description: ", "%s")' % link[u'description'])
+			description = vim.eval(u'input("Description: ", "%s")' % link[u'description']).decode(u'utf-8')
 		if description is None:
 			return
 

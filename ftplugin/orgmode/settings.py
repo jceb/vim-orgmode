@@ -24,9 +24,16 @@ def get(setting, default=None):
 	# TODO first read setting from org file which take precedence over vim
 	# variable settings
 	if int(vim.eval((u'exists("b:%s")' % setting).encode(u'utf-8'))):
-		return vim.eval((u"b:%s" % setting).encode(u'utf-8'))
+		res = vim.eval((u"b:%s" % setting).encode(u'utf-8'))
+		if type(res) in (unicode, str):
+			return res.decode(u'utf-8')
+		return res
+
 	elif int(vim.eval((u'exists("g:%s")' % setting).encode(u'utf-8'))):
-		return vim.eval((u"g:%s" % setting).encode(u'utf-8'))
+		res = vim.eval((u"g:%s" % setting).encode(u'utf-8'))
+		if type(res) in (unicode, str):
+			return res.decode(u'utf-8')
+		return res
 	elif default is not None:
 		return default
 
@@ -41,7 +48,7 @@ def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):
 	:returns: the new value in case of overwrite==False the current value
 	"""
 	if not overwrite and int(vim.eval((u'exists("%s:%s")' % (VARIABLE_LEADER[scope], setting)).encode(u'utf-8'))):
-		return vim.eval((u'%s:%s' % (VARIABLE_LEADER[scope], setting)).encode(u'utf-8'))
+		return vim.eval((u'%s:%s' % (VARIABLE_LEADER[scope], setting)).encode(u'utf-8')).decode(u'utf-8')
 	v = repr(value)
 	if type(value) == unicode:
 		# strip leading u of unicode string representations

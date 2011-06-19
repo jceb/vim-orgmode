@@ -33,7 +33,7 @@ class TagsProperties(object):
 		if not heading:
 			return
 
-		leading_portion = vim.eval(u'a:ArgLead')
+		leading_portion = vim.eval(u'a:ArgLead').decode(u'utf-8')
 		cursor = int(vim.eval(u'a:CursorPos'))
 
 		# extract currently completed tag
@@ -80,9 +80,9 @@ class TagsProperties(object):
 		# retrieve tags
 		res = None
 		if heading.tags:
-			res = vim.eval(u'input("Tags: ", ":%s:", "customlist,Org_complete_tags")' % u':'.join(heading.tags))
+			res = vim.eval(u'input("Tags: ", ":%s:", "customlist,Org_complete_tags")' % u':'.join(heading.tags)).decode(u'utf-8')
 		else:
-			res = vim.eval(u'input("Tags: ", "", "customlist,Org_complete_tags")')
+			res = vim.eval(u'input("Tags: ", "", "customlist,Org_complete_tags")').decode(u'utf-8')
 
 		if res is None:
 			# user pressed <Esc> abort any further processing
