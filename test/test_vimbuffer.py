@@ -26,7 +26,7 @@ class VimBufferTestCase(unittest.TestCase):
 				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""#Meta information
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""#Meta information
 #more meta information
 * Überschrift 1
 Text 1
@@ -95,7 +95,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0].start, 2)
 
 	def test_meta_information_read_no_meta_information(self):
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""* Überschrift 1
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""* Überschrift 1
 Text 1
 
 Bla bla
@@ -787,7 +787,7 @@ Bla Bla bla bla
 		self.assertEqual(h.end, 20)
 		self.assertEqual(h.end_of_last_child, 20)
 
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
 ** Überschrift 1.2
 Text 3
 
@@ -815,7 +815,7 @@ Bla Bla bla bla
 		self.assertEqual(h.end, 3)
 		self.assertEqual(h.end_of_last_child, 7)
 
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 2
 * Überschrift 3""".split(u'\n') ]
 		self.document = VimBuffer().init_dom()
@@ -913,7 +913,7 @@ class VimBufferTagsTestCase(unittest.TestCase):
 				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""#Meta information
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""#Meta information
 #more meta information
 * Überschrift 1     :testtag:
 Text 1
@@ -1065,7 +1065,7 @@ class VimBufferTodoTestCase(unittest.TestCase):
 				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""#Meta information
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""#Meta information
 #more meta information
 * TODO Überschrift 1     :testtag:
 Text 1

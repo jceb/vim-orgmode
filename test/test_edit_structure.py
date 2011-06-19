@@ -28,7 +28,7 @@ class EditStructureTestCase(unittest.TestCase):
 		if not u'EditStructure' in ORGMODE.plugins:
 			ORGMODE.register_plugin(u'EditStructure')
 		self.editstructure = ORGMODE.plugins[u'EditStructure']
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 1
 Text 1
 
@@ -155,7 +155,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.current.window.cursor, (13, 1))
 
 	def test_demote_last_heading(self):
-		vim.current.buffer = """
+		vim.current.buffer[:] = """
 * Überschrift 2
 * Überschrift 3""".split('\n')
 		vim.current.window.cursor = (3, 0)

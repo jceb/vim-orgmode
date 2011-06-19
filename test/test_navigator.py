@@ -45,7 +45,7 @@ class NavigatorTestCase(unittest.TestCase):
 				u'b:changedtick'.encode(u'utf-8'): (u'%d' % counter).encode(u'utf-8'),
 				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				}
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 1
 Text 1
 
@@ -356,7 +356,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-1], u'normal 20ggV20gg'.encode(u'utf-8'))
 
 	def test_forward_movement_visual_to_the_end_of_the_file(self):
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 1
 Text 1
 

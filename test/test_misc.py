@@ -29,7 +29,7 @@ class MiscTestCase(unittest.TestCase):
 				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): (u'%d' % counter).encode(u'utf-8'),
 				u"v:lnum".encode(u'utf-8'): u'0'.encode(u'utf-8')}
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 1
 Text 1
 

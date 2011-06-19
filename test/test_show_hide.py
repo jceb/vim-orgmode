@@ -27,7 +27,7 @@ class ShowHideTestCase(unittest.TestCase):
 		if not u'ShowHide' in ORGMODE.plugins:
 			ORGMODE.register_plugin(u'ShowHide')
 		self.showhide = ORGMODE.plugins[u'ShowHide']
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 1
 Text 1
 
@@ -55,7 +55,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.current.window.cursor, (1, 0))
 
 	def test_toggle_folding_first_heading_with_no_children(self):
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 1
 Text 1
 

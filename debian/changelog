@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-78) unstable; urgency=low
+
+  * fix assignment to vim.current.buffer in test cases
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 15:21:39 +0200
+
 vim-orgmode (0.1.0-77) unstable; urgency=low
 
   * improve memory usage by removing unused document objects

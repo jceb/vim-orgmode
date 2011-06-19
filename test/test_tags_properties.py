@@ -33,7 +33,7 @@ class TagsPropertiesTestCase(unittest.TestCase):
 		if not u'TagsProperties' in ORGMODE.plugins:
 			ORGMODE.register_plugin(u'TagsProperties')
 		self.showhide = ORGMODE.plugins[u'TagsProperties']
-		vim.current.buffer = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 1
 Text 1
 
