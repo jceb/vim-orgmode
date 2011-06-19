@@ -125,7 +125,7 @@ def indent_orgmode():
 	:returns: None
 	"""
 	line = int(vim.eval(u'v:lnum'.encode(u'utf-8')))
-	d = VimBuffer()
+	d = ORGMODE.get_document(allow_dirty=True)
 	heading = d.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 	if heading and line != heading.start_vim:
 		vim.command((u'let b:indent_level = %d' % (heading.level + 1)).encode(u'utf-8'))
@@ -137,7 +137,7 @@ def fold_text():
 	:returns: None
 	"""
 	line = int(vim.eval(u'v:foldstart'.encode(u'utf-8')))
-	d = VimBuffer()
+	d = ORGMODE.get_document(allow_dirty=True)
 	heading = d.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 	if heading:
 		str_heading = unicode(heading)
@@ -162,7 +162,7 @@ def fold_orgmode():
 	:returns: None
 	"""
 	line = int(vim.eval(u'v:lnum'.encode(u'utf-8')))
-	d = VimBuffer()
+	d = ORGMODE.get_document(allow_dirty=True)
 	heading = d.find_heading(line - 1, direction=DIRECTION_BACKWARD)
 	if heading:
 		if line == heading.start_vim:
@@ -187,9 +187,12 @@ class OrgMode(object):
 		# list of vim buffer objects
 		self._documents = {}
 
-	def get_document(self, bufnr=0):
+	def get_document(self, bufnr=0, allow_dirty=False):
 		""" Retrieve instance of vim buffer document. This Document should be
 		used for manipulating the vim buffer.
+
+		:bufnr:			Retrieve document with bufnr
+		:allow_dirty:	Allow the retrieved document to be dirty
 
 		:returns:	vim buffer instance
 		"""
@@ -197,7 +200,7 @@ class OrgMode(object):
 			bufnr = vim.current.buffer.number
 
 		if bufnr in self._documents:
-			if self._documents[bufnr].is_insync:
+			if allow_dirty or self._documents[bufnr].is_insync:
 				return self._documents[bufnr]
 		self._documents[bufnr] = VimBuffer(bufnr).init_dom()
 		return self._documents[bufnr]
