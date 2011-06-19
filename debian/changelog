@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-74) unstable; urgency=low
+
+  * change EditStructure mappings back to using the shift key
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 13:29:50 +0200
+
 vim-orgmode (0.1.0-73) unstable; urgency=low
 
   * fix regression introduced in version 0.1.0-71
