@@ -16,6 +16,9 @@ def get(setting, default=None):
 	u""" Evaluate setting in scope of the current buffer,
 	globally and also from the contents of the current buffer
 
+	WARNING: Only string values are converted to unicode. If a different value
+	is received, e.g. a list or dict, no conversion is done.
+
 	:setting: name of the variable to evaluate
 	:default: default value in case the variable is empty
 
@@ -40,6 +43,10 @@ def get(setting, default=None):
 def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):
 	u""" Store setting in the definied scope
 
+	WARNING: For the return value, only string are converted to unicode. If a
+	different value is received by vim.eval, e.g. a list or dict, no conversion
+	is done.
+
 	:setting: name of the setting
 	:value: the actual value, repr is called on the value to create a string representation
 	:scope: the scope o the setting/variable
@@ -48,7 +55,10 @@ def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):
 	:returns: the new value in case of overwrite==False the current value
 	"""
 	if not overwrite and int(vim.eval((u'exists("%s:%s")' % (VARIABLE_LEADER[scope], setting)).encode(u'utf-8'))):
-		return vim.eval((u'%s:%s' % (VARIABLE_LEADER[scope], setting)).encode(u'utf-8')).decode(u'utf-8')
+		res = vim.eval((u'%s:%s' % (VARIABLE_LEADER[scope], setting)).encode(u'utf-8'))
+		if type(res) in (unicode, str):
+			return res.decode(u'utf-8')
+		return res
 	v = repr(value)
 	if type(value) == unicode:
 		# strip leading u of unicode string representations

@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-73) unstable; urgency=low
+
+  * fix regression introduced in version 0.1.0-71
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 13:28:43 +0200
+
 vim-orgmode (0.1.0-72) unstable; urgency=low
 
   * change default value of g:org_tag_completion_ignorecase to &ignorecase
