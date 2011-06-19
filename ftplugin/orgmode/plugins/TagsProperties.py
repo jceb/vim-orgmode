@@ -55,7 +55,7 @@ class TagsProperties(object):
 			for t in h.tags:
 				all_tags.add(t)
 
-		ignorecase = bool(int(settings.get(u'org_tag_completion_ignorecase', u'0')))
+		ignorecase = bool(int(settings.get(u'org_tag_completion_ignorecase', int(vim.eval(u'&ignorecase')))))
 		possible_tags = []
 		current_tags = heading.tags
 		for t in all_tags:
@@ -127,7 +127,7 @@ class TagsProperties(object):
 		# an Action menu entry which binds "keybinding" to action ":action"
 		settings.set(u'org_tag_column', u'77')
 
-		settings.set(u'org_tag_completion_ignorecase', u'0')
+		settings.set(u'org_tag_completion_ignorecase', int(vim.eval(u'&ignorecase')))
 
 		settings.set(u'org_leader', u',')
 		leader = settings.get(u'org_leader', u',')
