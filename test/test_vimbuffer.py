@@ -49,6 +49,45 @@ Bla Bla bla bla
 """.split(u'\n') ]
 		self.document = VimBuffer().init_dom()
 
+	def test_write_heading_tags(self):
+		self.assertEqual(self.document.is_dirty, False)
+		h = self.document.find_heading()
+		self.assertEqual(h._orig_start, 2)
+		self.assertEqual(h.title, u'Überschrift 1')
+		h.tags = [u'test', u'tag']
+		self.assertEqual(h.tags[0], u'test')
+		self.document.write_heading(h)
+
+		# sanity check
+		d = VimBuffer().init_dom()
+		h2 = self.document.find_heading()
+		self.assertEqual(d.headings[0].title, u'Überschrift 1')
+		self.assertEqual(len(d.headings[0].tags), 2)
+		self.assertEqual(d.headings[0].tags[0], u'test')
+		self.assertEqual(d.headings[0]._orig_start, 2)
+		self.assertEqual(d.headings[0].children[0]._orig_start, 6)
+
+	def test_write_multi_heading_bodies(self):
+		self.assertEqual(self.document.is_dirty, False)
+		h = self.document.headings[0].copy()
+		self.assertEqual(h._orig_start, 2)
+		self.assertEqual(h.title, u'Überschrift 1')
+		h.body.append(u'test')
+		h.children[0].body.append(u'another line')
+		self.document.write_heading(h)
+
+		# sanity check
+		d = VimBuffer().init_dom()
+		h2 = self.document.find_heading()
+		self.assertEqual(len(d.headings[0].body), 4)
+		self.assertEqual(d.headings[0]._orig_start, 2)
+		self.assertEqual(d.headings[0].children[0]._orig_start, 7)
+		self.assertEqual(d.headings[0].children[0].title, u'Überschrift 1.1')
+		self.assertEqual(len(d.headings[0].children[0].body), 4)
+		self.assertEqual(d.headings[0].children[1]._orig_start, 12)
+		self.assertEqual(d.headings[0].children[1].title, u'Überschrift 1.2')
+		self.assertEqual(len(d.headings[0].children[1].body), 2)
+
 	def test_meta_information_assign_directly(self):
 		# read meta information from document
 		self.assertEqual(u'\n'.join(self.document.meta_information), u'#Meta information\n#more meta information')

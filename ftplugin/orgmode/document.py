@@ -244,6 +244,53 @@ class VimBuffer(Document):
 		self._orig_changedtick = self._changedtick
 		return True
 
+	def write_heading(self, heading, including_children=True):
+		""" WARNING: use this function only when you know what you are doing!
+		This function writes a heading to the vim buffer. It offers performance
+		advantages over the regular write() function. This advantage is
+		combined with no sanity checks! Whenever you use this function, make
+		sure the heading you are writing contains the right offsets
+		(Heading._orig_start, Heading._orig_len).
+
+		Usage example:
+			# Retrieve a potentially dirty document
+			d = ORGMODE.get_document(allow_dirty=True)
+			# Don't rely on the DOM, retrieve the heading afresh
+			h = d.find_heading(direction=DIRECTION_FORWARD, position=100)
+			# Update tags
+			h.tags = ['tag1', 'tag2']
+			# Write the heading
+			d.write_heading(h)
+
+		This function can't be used to delete a heading!
+
+		:heading:				Write this heading with to the vim buffer
+		:including_children:	Also include children in the update
+
+		:returns				The written heading
+		"""
+		if including_children and heading.children:
+			for child in heading.children[::-1]:
+				self.write_heading(child, including_children)
+
+		if heading.is_dirty:
+			if heading._orig_start is not None:
+				# this is a heading that existed before and was changed. It
+				# needs to be replaced
+				if heading.is_dirty_heading:
+					self._content[heading._orig_start:heading._orig_start + 1] = [unicode(heading)]
+				if heading.is_dirty_body:
+					self._content[heading._orig_start + 1:heading._orig_start + heading._orig_len] = heading.body
+			else:
+				# this is a new heading. It needs to be inserted
+				raise ValueError('Heading must contain the attribute _orig_start! %s' % heading)
+			heading._dirty_heading = False
+			heading._dirty_body = False
+		# for all headings the length offset needs to be updated
+		heading._orig_len = len(heading)
+
+		return heading
+
 	def previous_heading(self, position=None):
 		u""" Find the next heading (search forward) and return the related object
 		:returns:	 Heading object or None

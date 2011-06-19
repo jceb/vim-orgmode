@@ -397,23 +397,28 @@ class Heading(object):
 		# 1 is for the heading's title
 		return 1 + len(self.body)
 
-	def copy(self, including_children=True):
+	def copy(self, including_children=True, parent=None):
 		u"""
 		Create a copy of the current heading.
 
 		:including_children:	If True a copy of all children is create as well. If False the returned heading doesn't have any children.
 		"""
-		heading = self.__class__(level=self.level, title=self.title, tags=self.tags, todo=self.todo, body=self.body)
+		heading = self.__class__(level=self.level, title=self.title, \
+				tags=self.tags, todo=self.todo, body=self.body)
+		if parent:
+			parent.children.append(heading)
 		heading._document      = self.document
 		heading._parent        = self.parent
 		heading._previous_sibling = self.previous_sibling
 		heading._next_sibling  = self.next_sibling
 		if including_children and self.children:
-			heading._children  = HeadingList([item.__class__(item) for item in self.children], obj=self)
+			[item.copy(including_children=including_children, parent=heading) \
+					for item in self.children]
 		heading._orig_start    = self._orig_start
 		heading._orig_len      = self._orig_len
 
 		heading._dirty_heading = self.is_dirty_heading
+
 
 		return heading
 
@@ -627,7 +632,7 @@ class Heading(object):
 		if not self.document.is_dirty:
 			return self._orig_start
 
-		# dynamic computation of start
+		# dynamic computation of start, really slow!
 		def compute_start(h):
 			if h:
 				return len(h) + compute_start(h.previous_heading)
