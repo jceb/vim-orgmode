@@ -936,8 +936,29 @@ Bla Bla bla bla
   asdf sdf
 * Überschrift 4 super long long long long long long long long extremely long title	:title:long:
 * TODO Überschrift 5 super long long long long long long long long extremely long title	:title_with_todo:
+* oneword :with:tags:
+* :noword:with:tags:
+* TODO :todo:with:tags:
 """.split(u'\n') ]
 		self.document = VimBuffer().init_dom()
+
+	def test_tag_read_no_word_with_tags(self):
+		self.assertEqual(len(self.document.headings[6].tags), 3)
+		self.assertEqual(self.document.headings[6].tags[0], u'noword')
+		self.assertEqual(self.document.headings[6].title, u'')
+		self.assertEqual(self.document.headings[6].todo, None)
+
+	def test_tag_read_one_word_with_tags(self):
+		self.assertEqual(len(self.document.headings[5].tags), 2)
+		self.assertEqual(self.document.headings[5].tags[0], u'with')
+		self.assertEqual(self.document.headings[5].title, u'oneword')
+		self.assertEqual(self.document.headings[5].todo, None)
+
+	def test_tag_read_TODO_with_tags(self):
+		self.assertEqual(len(self.document.headings[7].tags), 3)
+		self.assertEqual(self.document.headings[7].tags[0], u'todo')
+		self.assertEqual(self.document.headings[7].title, u'')
+		self.assertEqual(self.document.headings[7].todo, u'TODO')
 
 	def test_tag_read_one(self):
 		self.assertEqual(len(self.document.headings[0].tags), 1)

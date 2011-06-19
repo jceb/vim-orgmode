@@ -319,6 +319,7 @@ class HeadingList(MultiPurposeList):
 		MultiPurposeList.extend(self, o)
 
 REGEX_HEADING = re.compile(r'^(?P<level>\*+)(?P<todotitle>(\s+(?P<todo>[^\s]+))?(\s+(?P<title>.*?))?)\s*(\s(?P<tags>:[\w_:]+:))?$', flags=re.U|re.L)
+REGEX_TAGS = re.compile(r'^\s*(?P<title>[^\s]*?)\s+(?P<tags>:[\w_:]+:)$', flags=re.U|re.L)
 REGEX_TODO = re.compile(r'^[^\s]*$')
 
 class Heading(object):
@@ -429,16 +430,31 @@ class Heading(object):
 		:returns:	The newly created heading
 	    """
 		def parse_title(heading_line):
+			# WARNING this regular expression fails if there is just one or no
+			# word in the heading but a tag!
 			m = REGEX_HEADING.match(heading_line)
 			if m:
 				r = m.groupdict()
 				tags = filter(lambda x: x != u'', r[u'tags'].split(u':')) if r[u'tags'] else []
-				todo = r[u'todo']
-				if not todo or todo == todo.upper():
-					title = r[u'title'] if r[u'title'] else u''
+
+				# if there is just one or no word in the heading, redo the parsing
+				mt = REGEX_TAGS.match(r[u'todotitle'])
+				if not tags and mt:
+					rt = mt.groupdict()
+					tags = filter(lambda x: x != u'', rt[u'tags'].split(u':')) if rt[u'tags'] else []
+					todo = rt[u'title']
+					if not todo or todo == todo.upper():
+						title = u''
+					else:
+						todo = None
+						title = rt[u'title'].strip()
 				else:
-					todo = None
-					title = r[u'todotitle'].strip()
+					todo = r[u'todo']
+					if not todo or todo == todo.upper():
+						title = r[u'title'] if r[u'title'] else u''
+					else:
+						todo = None
+						title = r[u'todotitle'].strip()
 				return (len(r[u'level']), todo, title, tags)
 			raise ValueError(u'Data doesn\'t start with a heading definition.')
 

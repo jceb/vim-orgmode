@@ -1,3 +1,10 @@
+vim-orgmode (0.1.0-75) unstable; urgency=low
+
+  * fix issue with tag recognition in headings that contain zero or just one
+  	word
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 14:07:29 +0200
+
 vim-orgmode (0.1.0-74) unstable; urgency=low
 
   * change EditStructure mappings back to using the shift key
