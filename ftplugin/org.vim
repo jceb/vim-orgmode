@@ -57,10 +57,19 @@ function! <SID>OrgUnregisterMenu()
 	python ORGMODE.unregister_menu()
 endfunction
 
+function! <SID>OrgDeleteUnusedDocument(bufnr)
+python << EOF
+b = int(vim.eval('a:bufnr'))
+if b in ORGMODE._documents:
+	del ORGMODE._documents[b]
+EOF
+endfunction
+
 " show and hide Org menu depending on the filetype
 augroup orgmode
 	au BufEnter		*		:if &filetype == "org" | call <SID>OrgRegisterMenu() | endif
 	au BufLeave		*		:if &filetype == "org" | call <SID>OrgUnregisterMenu() | endif
+	au BufDelete	*		:call <SID>OrgDeleteUnusedDocument(expand('<abuf>'))
 augroup END
 
 " Expand our path

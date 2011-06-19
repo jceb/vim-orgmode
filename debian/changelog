@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-77) unstable; urgency=low
+
+  * improve memory usage by removing unused document objects
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 14:33:10 +0200
+
 vim-orgmode (0.1.0-76) unstable; urgency=low
 
   * improve speed by implementing a better reuse of document objects
