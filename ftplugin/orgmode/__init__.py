@@ -126,7 +126,7 @@ def indent_orgmode():
 	"""
 	line = int(vim.eval(u'v:lnum'.encode(u'utf-8')))
 	d = ORGMODE.get_document(allow_dirty=True)
-	heading = d.find_heading(line - 1, direction=DIRECTION_BACKWARD)
+	heading = d.find_current_heading(position=line - 1)
 	if heading and line != heading.start_vim:
 		vim.command((u'let b:indent_level = %d' % (heading.level + 1)).encode(u'utf-8'))
 
@@ -138,7 +138,7 @@ def fold_text():
 	"""
 	line = int(vim.eval(u'v:foldstart'.encode(u'utf-8')))
 	d = ORGMODE.get_document(allow_dirty=True)
-	heading = d.find_heading(line - 1, direction=DIRECTION_BACKWARD)
+	heading = d.find_current_heading(position=line - 1)
 	if heading:
 		str_heading = unicode(heading)
 
@@ -163,7 +163,7 @@ def fold_orgmode():
 	"""
 	line = int(vim.eval(u'v:lnum'.encode(u'utf-8')))
 	d = ORGMODE.get_document(allow_dirty=True)
-	heading = d.find_heading(line - 1, direction=DIRECTION_BACKWARD)
+	heading = d.find_current_heading(position=line - 1)
 	if heading:
 		if line == heading.start_vim:
 			vim.command((u'let b:fold_expr = ">%d"' % heading.level).encode(u'utf-8'))

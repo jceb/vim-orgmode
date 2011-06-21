@@ -1132,6 +1132,20 @@ Bla Bla bla bla
 """.split(u'\n') ]
 		self.document = VimBuffer().init_dom()
 
+	def test_no_space_after_upper_case_single_word_heading(self):
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
+* TEST
+** Text 1
+*** Text 2
+* Text 1
+** Text 1
+   some text that is
+   no heading
+
+""".split(u'\n') ]
+		d = VimBuffer().init_dom()
+		self.assertEqual(unicode(d.headings[0]), u'* TEST')
+
 	def test_todo_read_TODO(self):
 		self.assertEqual(self.document.headings[0].todo, u'TODO')
 		self.assertEqual(self.document.headings[0].title, u'Überschrift 1')

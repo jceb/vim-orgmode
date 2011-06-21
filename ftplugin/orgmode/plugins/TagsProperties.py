@@ -80,16 +80,16 @@ class TagsProperties(object):
 		# retrieve tags
 		res = None
 		if heading.tags:
-			res = vim.eval(u'input("Tags: ", ":%s:", "customlist,Org_complete_tags")' % u':'.join(heading.tags)).decode(u'utf-8')
+			res = vim.eval(u'input("Tags: ", ":%s:", "customlist,Org_complete_tags")' % u':'.join(heading.tags))
 		else:
-			res = vim.eval(u'input("Tags: ", "", "customlist,Org_complete_tags")').decode(u'utf-8')
+			res = vim.eval(u'input("Tags: ", "", "customlist,Org_complete_tags")')
 
 		if res is None:
 			# user pressed <Esc> abort any further processing
 			return
 
 		# remove empty tags
-		heading.tags = filter(lambda x: x.strip() != u'', res.strip().strip(u':').split(u':'))
+		heading.tags = filter(lambda x: x.strip() != u'', res.decode(u'utf-8').strip().strip(u':').split(u':'))
 
 		d.write()
 
@@ -100,14 +100,14 @@ class TagsProperties(object):
 		u"""
 		Updates tags when user finished editing a heading
 		"""
-		d = ORGMODE.get_document()
-		heading = d.current_heading()
+		d = ORGMODE.get_document(allow_dirty=True)
+		heading = d.find_current_heading()
 		if not heading:
 			return
 
 		if vim.current.window.cursor[0] == heading.start_vim:
 			heading.set_dirty_heading()
-			d.write()
+			d.write_heading(heading, including_children=False)
 
 	@classmethod
 	def realign_all_tags(cls):

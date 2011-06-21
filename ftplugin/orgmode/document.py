@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from exceptions import BufferNotFound, BufferNotInSync
-from liborgmode import Document, Heading, MultiPurposeList
+from liborgmode import Document, Heading, MultiPurposeList, DIRECTION_BACKWARD
 import settings
 import vim
 from UserList import UserList
@@ -179,13 +179,13 @@ class VimBuffer(Document):
 	changedtick = property(**changedtick())
 
 	def update_changedtick(self):
-		if self._bufnr == vim.current.buffer.number:
+		if self.bufnr == vim.current.buffer.number:
 			self._changedtick = int(vim.eval(u'b:changedtick'.encode(u'utf-8')))
 		else:
 			vim.command(u'unlet! g:org_changedtick | let g:org_lz = &lz | let g:org_hidden = &hidden | set lz hidden'.encode(u'utf-8'))
 			# TODO is this likely to fail? maybe some error hangling should be added
 			vim.command((u'keepalt buffer %d | let g:org_changedtick = b:changedtick | buffer %d' % \
-					(self._bufnr, vim.current.buffer.number)).encode(u'utf-8'))
+					(self.bufnr, vim.current.buffer.number)).encode(u'utf-8'))
 			vim.command(u'let &lz = g:org_lz | let &hidden = g:org_hidden | unlet! g:org_lz g:org_hidden | redraw'.encode(u'utf-8'))
 			self._changedtick = int(vim.eval(u'g:org_changedtick'.encode(u'utf-8')))
 
@@ -316,3 +316,21 @@ class VimBuffer(Document):
 		h = self.current_heading(position=position)
 		if h:
 			return h.next_heading
+
+	def find_current_heading(self, position=None, heading=Heading):
+		u""" Find the next heading backwards from the position of the cursor.
+		The difference to the function current_heading is that the returned
+		object is not built into the DOM. In case the DOM doesn't exist or is
+		out of sync this function is much faster in fetching the current
+		heading.
+
+		:position:	The position to start the search from
+
+		:heading:	The base class for the returned heading
+
+		:returns:	 Heading object or None
+		"""
+		return self.find_heading(vim.current.window.cursor[0] - 1 \
+				if position is None else position, \
+				direction=DIRECTION_BACKWARD, heading=heading, \
+				connect_with_document=False)

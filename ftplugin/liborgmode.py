@@ -359,8 +359,9 @@ class Heading(object):
 	def __unicode__(self):
 		res = u'*' * self.level
 		if self.todo:
-			res += u' ' + self.todo
-		res += u' ' + self.title
+			res = u' '.join((res, self.todo))
+		if self.title:
+			res = u' '.join((res, self.title))
 
 		# compute position of tags
 		if self.tags:
@@ -388,6 +389,10 @@ class Heading(object):
 					spaces = tag_column - (len_heading + len_tags)
 
 			res += u'\t' * tabs + u' ' * spaces + tags
+
+		# append a trailing space when there are just * and no text
+		if len(res) == self.level:
+			res += u' '
 		return res
 
 	def __str__(self):
@@ -399,18 +404,15 @@ class Heading(object):
 
 	def copy(self, including_children=True, parent=None):
 		u"""
-		Create a copy of the current heading.
+		Create a copy of the current heading. The heading will be completely
+		detached and not even belong to a document anymore.
 
 		:including_children:	If True a copy of all children is create as well. If False the returned heading doesn't have any children.
 		"""
 		heading = self.__class__(level=self.level, title=self.title, \
-				tags=self.tags, todo=self.todo, body=self.body)
+				tags=self.tags, todo=self.todo, body=self.body[:])
 		if parent:
 			parent.children.append(heading)
-		heading._document      = self.document
-		heading._parent        = self.parent
-		heading._previous_sibling = self.previous_sibling
-		heading._next_sibling  = self.next_sibling
 		if including_children and self.children:
 			[item.copy(including_children=including_children, parent=heading) \
 					for item in self.children]
@@ -625,8 +627,8 @@ class Heading(object):
 	@property
 	def start(self):
 		u""" Access to the starting line of the heading """
-		if not self.document:
-			return
+		if self.document is None:
+			return self._orig_start
 
 		# static computation of start
 		if not self.document.is_dirty:
@@ -1011,12 +1013,14 @@ class Document(object):
 			h = h.next_heading
 		raise StopIteration()
 
-	def find_heading(self, position=0, direction=DIRECTION_FORWARD, heading=Heading):
+	def find_heading(self, position=0, direction=DIRECTION_FORWARD, \
+			heading=Heading, connect_with_document=True):
 		u""" Find heading in the given direction
 
 		:postition:	starting line, counting from 0 (in vim you start counting from 1, don't forget)
 		:direction:	downwards == DIRECTION_FORWARD, upwards == DIRECTION_BACKWARD
 		:heading:	Heading class from which new heading objects will be instanciated
+		:connect_with_document:	if True, the newly created heading will be connected with the document, otherwise not
 
 		:returns:	New heading object or None
 		"""
@@ -1054,4 +1058,5 @@ class Document(object):
 		if start is not None and end is None:
 			end = len_cb - 1
 		if start is not None and end is not None:
-			return heading.parse_heading_from_data(self._content[start:end + 1], document=self, orig_start=start)
+			return heading.parse_heading_from_data(self._content[start:end + 1], \
+					document=self if connect_with_document else None, orig_start=start)

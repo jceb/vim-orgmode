@@ -80,11 +80,11 @@ class Todo(object):
 
 		:returns: The changed heading
 		"""
-		d = ORGMODE.get_document()
+		d = ORGMODE.get_document(allow_dirty=True)
 		lineno, colno = vim.current.window.cursor
 
 		# get heading
-		heading = d.current_heading()
+		heading = d.find_current_heading()
 		if not heading:
 			vim.eval(u'feedkeys("^", "n")')
 			return
@@ -102,9 +102,6 @@ class Todo(object):
 		# get new state
 		new_state = Todo._get_next_state(current_state, all_states, direction)
 
-		# set new headline
-		heading.todo = new_state
-
 		# move cursor along with the inserted state only when current position
 		# is in the heading; otherwite do nothing
 		if heading.start_vim == lineno:
@@ -116,12 +113,15 @@ class Todo(object):
 				offset = len(current_state) - len(new_state)
 			vim.current.window.cursor = (lineno, colno + offset)
 
+		# set new headline
+		heading.todo = new_state
+
 		# plug
 		plug = u'OrgToggleTodoForward'
 		if direction == DIRECTION_BACKWARD:
 			plug = u'OrgToggleTodoBackward'
 
-		d.write()
+		d.write_heading(heading)
 
 		return plug
 

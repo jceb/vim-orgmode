@@ -1,3 +1,20 @@
+vim-orgmode (0.1.0-81) unstable; urgency=low
+
+  * fix error in TagsProperties.set_tags when None type object is returned
+  * change TagsProperties.realign_tags to use VimBuffer.write_heading instead
+  	of VimBuffer.write method
+  * add convenience function VimBuffer.find_current_heading
+  * remove trailing spaces when a heading contains a single uppercase word
+  	(pseudo TODO state)
+  * change Heading.copy to create a completely detached heading even without a
+  	connection to a document
+  * change Heading.start to reture Heading._orig_start when the heading has no
+  	connection to a document
+  * add parameter connect_with_document to Document.find_heading
+  * convert plugins and global functions to use VimBuffer.find_current_heading
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 21 Jun 2011 23:26:25 +0200
+
 vim-orgmode (0.1.0-80) unstable; urgency=low
 
   * update README
