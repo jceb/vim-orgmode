@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-80) unstable; urgency=low
+
+  * update README
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 21 Jun 2011 07:46:04 +0200
+
 vim-orgmode (0.1.0-79) unstable; urgency=low
 
   * implement VimBuffer.write_heading to just update a single heading

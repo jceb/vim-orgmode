@@ -383,6 +383,7 @@ Information about the license are found in the file LICENSE
     subdocuments and Headings. This would loosen the dependency to vim.
 
 ** Documentation
+*** bug in implementation of accessing the buffers causes weird behavior when changing the buffer
 *** add descriptions to settings
     the goal is to automatically generate most parts of the documentation
 *** generate documentation from plugin code, add short/long descriptions to keybindings
