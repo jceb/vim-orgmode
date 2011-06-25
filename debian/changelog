@@ -1,3 +1,11 @@
+vim-orgmode (0.2.0-0) unstable; urgency=low
+
+  * remove unused echo command in Makefile
+  * add vim help file doc/org.txt
+  * first release
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 17:35:31 +0200
+
 vim-orgmode (0.1.0-89) unstable; urgency=low
 
   * add separate target to generate the vba.gz archive

@@ -1,0 +1,206 @@
+*org.txt*		For Vim version 7.3		Last change: 2011 June 25
+
+==============================================================================
+Table of Contents						   *org* *org-toc*
+
+    1. Description			|org-description|
+    2. Installation			|org-installation|
+    3. Usage				|org-usage|
+    4. Links				|org-links|
+    5. Changelog			|org-changelog|
+    6. License				|org-license|
+
+==============================================================================
+Description						       *org-description*
+
+vim-orgmode is an attempt to port org-mode (http://orgmode.org) to vim.
+
+==============================================================================
+Installation						      *org-installation*
+
+Prerequisites~
+   Add the following lines to your .vimrc file to ensure that filetype plugins
+   are loaded properly:
+
+>
+	filetype on
+	filetype plugin on
+	filetype indent on
+<
+
+   Please install the Universal Text Linking
+   (http://www.vim.org/scripts/script.php?script_id=293) addon, otherwise
+   hyperlinks won't work. Other plugins that integrate well with vim orgmode
+   are listed in section Suggested plugins.
+
+From .vba file~
+   If you want to install the vim-orgmode plugin for a single user, this is
+   the preferred way.
+
+   Open the file in vim and source it. Restart vim and the plugin is active:
+
+   $ vim orgmode.vba
+>
+    :so %
+<
+
+Installation into a specific directory~
+    If you want to install the plugin into a specific directory, e.g. when you
+    are using pathogen, then just add the desired directory to the runtimepath
+    before sourcing the vba-file.
+
+    $ vim orgmode.vba.gz
+>
+    :set rtp=$HOME/.vim/bundle/orgmode,&rtp
+    :so %
+<
+
+From .deb file~
+   If you want to install the vim-orgmode plugin for all users of your
+   computer, this is the preferred way.
+
+   Install the plugin by using the Debian Package Manager:
+
+   dpkg -i vim-orgmode_X.X.X-X.deb
+
+   The plugin is installed in /usr/lib/vim/addons. Please make sure this
+   directory part of your runtimepath. By default it's not! Add the following
+   command to your .vimrc to add the path on startup:
+
+>
+   :set rtp=/usr/lib/vim/addons,&rtp
+<
+
+From git checkout~
+   This method is mainly used for development purposes.
+
+You are using pathegon~
+
+    Change to the bundle directory
+    $ cd ~/.vim/bundle
+
+    Clone the repository
+    $ git clone https://github.com/jceb/vim-orgmode.git
+
+    And restart vim. That's it.
+
+You are using no addon manager~
+    Clone the repository:
+    $ git clone https://github.com/jceb/vim-orgmode.git
+
+    Copy the directories doc, ftdetect, ftplugin, indent and syntax to
+    your $HOME/.vim directory:
+    $ cd vim-orgmode
+    $ cp -r doc ftdetect ftplugin indent syntax ~/.vim/
+
+==============================================================================
+Usage								     *org-usage*
+  vim-orgmode aims to be clone of the original orgmode for Emacs. Since Emacs
+  is not vim the clone is not aiming for 100% compatibility.  Especially in
+  terms of the keybindings there will be major differences!
+
+  You'll definitively enjoy the modal interface, this where vim's strength is.
+  Almost all keybindings for orgmode work only in normal and visual mode where
+  as in insert mode just a few are available.
+
+  Start of with vim-orgmode by open a file with the extension .org. An
+  additional menu "Org" is shown that gives an overview of the implemented
+  functionality and the keybindings.
+
+Text objects~
+   Vim offers a mighty feature called text-objects. A text-object is bound to
+   a certain character sequence that can be used in combination with all kinds
+   of editing and selection tasks. vim-orgmode offers the following
+   text-objects:
+
+   ih - inner heading, referring to the current heading excluding the heading
+        level characters (*)
+   ah - a heading, referring to the current heading including everything
+   it - inner subtree, starting with the current heading
+   at - a subtree, starting with the current heading
+   Oh - inner outer heading, referring to the parent
+   Ot - inner outer heading, including subtree, referring to the parent
+   OH - a outer heading
+   OT - a outer subtree
+
+   Movement commands can also be used for editing like text-objects:
+
+   g{ - execute command from current position to the beginning of the parent
+        heading
+   {  - execute command from current position to the beginning of the current
+        heading
+   }  - execute command from current position to the end of the current
+        heading
+   [[ - execute command from current position to the beginning of the previous
+        heading sibling
+   ]] - execute command from current position to the end of the next heading
+        sibling
+
+   For further information please read :h text-objects-changed
+
+Suggested plugins~
+  - pathogen (http:/www.vim.org/scripts/script.php?script_id=2332)
+    easy management of multiple vim plugins
+
+  - repeat (http://www.vim.org/scripts/script.php?script_id=2136)
+    repeat actions that would not be repeatable otherwise
+
+  - taglist ([http://www.vim.org/scripts/script.php?script_id=273)
+    display tags for the currently edited file
+
+  - tagbar (http://www.vim.org/scripts/script.php?script_id=3465)
+    a new approach to displaying tags for the currently edited file
+
+  - speeddating (http://www.vim.org/scripts/script.php?script_id=2120)
+    in-/decrease dates the vim way: C-a and C-x
+
+  - Narrow Region (http://www.vim.org/scripts/script.php?script_id=3075)
+    emulation of Emacs' Narrow Region feature
+
+  - Universal Text Linking
+    (http://www.vim.org/scripts/script.php?script_id=293) general support for
+    text linking, the Hyperlinks feature of vim-orgmode depends on this plugin
+
+==============================================================================
+Links								     *org-links*
+
+Original org-mode for Emacs (http://orgmode.org)
+
+VimOrganizer, another vim port of org-mode
+(http://www.vim.org/scripts/script.php?script_id=3342)
+
+==============================================================================
+Changelog							 *org-changelog*
+
+0.2.0-0, 2011-06-25 initial release
+
+==============================================================================
+License								   *org-license*
+
+Copyright (C) 2010,2011 Jan Christoph Ebersbach
+
+http://www.e-jc.de/
+
+All rights reserved.
+
+The source code of this program is made available under the terms of the GNU
+Affero General Public License version 3 (GNU AGPL V3) as published by the Free
+Software Foundation.
+
+Binary versions of this program provided by Univention to you as well as other
+copyrighted, protected or trademarked materials like Logos, graphics, fonts,
+specific documentations and configurations, cryptographic keys etc. are
+subject to a license agreement between you and Univention and not subject to
+the GNU AGPL V3.
+
+In the case you use this program under the terms of the GNU AGPL V3, the
+program is provided in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+details.
+
+You should have received a copy of the GNU Affero General Public License with
+the Debian GNU/Linux or Univention distribution in file
+/usr/share/common-licenses/AGPL-3; if not, see <http://www.gnu.org/licenses/>.
+
+ vim:tw=78:ts=8:ft=help:norl:

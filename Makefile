@@ -24,8 +24,7 @@ clean: documentation
 
 ${PLUGIN}.vba: check
 	$(MAKE) DESTDIR=$(PWD)/tmp VIMDIR= install
-	echo $(PWD)
-	find tmp -type f | sed -e 's/^tmp\/// '> tmp/files
+	find tmp -type f | sed -e 's/^tmp\///' > tmp/files
 	cp build_vim tmp
 	cd tmp && vim --cmd 'let g:plugin_name="${PLUGIN}"' -s build_vim
 	mv tmp/$@ .

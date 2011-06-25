@@ -1,9 +1,8 @@
-An attempt to build org-mode for vim [[http://orgmode.org][orgmode]].
+An attempt to port [[http://orgmode.org][org-mode]] to vim.
 
 Information about the license are found in the file LICENSE
 
 * Installation
-
 ** Prerequisites
    Add the following lines to your .vimrc file to ensure that filetype
    plugins are loaded properly:
@@ -12,8 +11,9 @@ Information about the license are found in the file LICENSE
 	filetype plugin on
 	filetype indent on
 
-  Please install the [[http://www.vim.org/scripts/script.php?script_id=293][Universal Text Linking]] addon, otherwise hyperlinks
-  will not be usable.
+   Please install the [[http://www.vim.org/scripts/script.php?script_id=293][Universal Text Linking]] addon, otherwise hyperlinks
+   won't work. Other plugins that integrate well with vim orgmode are
+   listed in section Suggested plugins.
 
 ** From .vba file
    If you want to install the vim-orgmode plugin for a single user, this
@@ -119,7 +119,6 @@ Information about the license are found in the file LICENSE
   - [[http://www.vim.org/scripts/script.php?script_id=293][Universal Text Linking]] general support for text linking, the Hyperlinks feature of vim-orgmode depends on this plugin
 
 * Development
-
 ** Building a Vimball
    Vimball is an archive format for vim plugins. It's of use when you
    want to install vim-orgmode for a single user. To build a Vimball
@@ -265,7 +264,6 @@ Information about the license are found in the file LICENSE
       vim -> :nmenu &Org.&Naviagte Headings.&Up<Tab>g{ <Plug>OrgJumpToParentNormal
 
 * Todos
-
 ** Todo/Done plugin
 *** implement keyboard shortcuts to select todo state
 *** implement switching to next/previous todo state list
@@ -438,4 +436,4 @@ Information about the license are found in the file LICENSE
 *** DONE improve tests for Heading.end_of_last_child
 *** DONE add tests for Heading.end_of_last_child
 
-    vi: ft=org:tw=72
+    vi: ft=org:tw=78
