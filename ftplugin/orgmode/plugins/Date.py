@@ -187,7 +187,7 @@ class Date(object):
 		TODO: show fancy calendar to pick the date from.
 		"""
 		today = date.today()
-		msg = u''.join([u'Insert Date: ', today.strftime(u'%Y-%m-%d %a'),
+		msg = u''.join([u'Insert Date: ', today.strftime(u'%Y-%m-%d %a'.encode(u'utf-8')),
 				u' | Change date'])
 		modifier = get_user_input(msg)
 		echom(modifier)
@@ -196,9 +196,9 @@ class Date(object):
 
 		# format
 		if isinstance(newdate, datetime):
-			newdate = newdate.strftime(u'%Y-%m-%d %a %H:%M')
+			newdate = newdate.strftime(u'%Y-%m-%d %a %H:%M').decode(u'utf-8')
 		else:
-			newdate = newdate.strftime(u'%Y-%m-%d %a')
+			newdate = newdate.strftime(u'%Y-%m-%d %a').decode(u'utf-8')
 		timestamp = u'<%s>' % newdate if active else u'[%s]' % newdate
 
 		insert_at_cursor(timestamp)
@@ -212,14 +212,18 @@ class Date(object):
 		settings.set(u'org_leader', u',')
 		leader = settings.get(u'org_leader', u',')
 
-		self.keybindings.append(Keybinding(u'%stn' % leader,
+		self.keybindings.append(Keybinding(u'%ssa' % leader,
 				Plug(u'OrgDateInsertTimestampActive',
 				u':py ORGMODE.plugins[u"Date"].insert_timestamp()<CR>')))
-		self.menu + ActionEntry(u'Timestamp', self.keybindings[-1])
+		self.menu + ActionEntry(u'Timest&amp', self.keybindings[-1])
 
-		self.keybindings.append(Keybinding(u'%sti' % leader,
+		self.keybindings.append(Keybinding(u'%ssi' % leader,
 				Plug(u'OrgDateInsertTimestampInactive',
 					u':py ORGMODE.plugins[u"Date"].insert_timestamp(False)<CR>')))
-		self.menu + ActionEntry(u'Timestamp (inactive)', self.keybindings[-1])
+		self.menu + ActionEntry(u'Timestamp (&inactive)', self.keybindings[-1])
+
+		submenu = self.menu + Submenu(u'Change &Date')
+		submenu + ActionEntry(u'Day &Earlier', u'<C-x>', u'<C-x>')
+		submenu + ActionEntry(u'Day &Later', u'<C-a>', u'<C-a>')
 
 # vim: set noexpandtab:

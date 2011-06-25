@@ -1,3 +1,13 @@
+vim-orgmode (0.1.0-82) unstable; urgency=low
+
+  * change global function insert_at_cursor to append text after cursor
+  * add support for insert mode to insert_at_cursor
+  * fix traceback in Date plugin caused by conversion to unicode
+  * change insert date mappings to ,si and ,sa
+  * add submenu Change Date to Date plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 13:00:54 +0200
+
 vim-orgmode (0.1.0-81) unstable; urgency=low
 
   * fix error in TagsProperties.set_tags when None type object is returned

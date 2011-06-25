@@ -96,17 +96,19 @@ def echoe(message):
 	# probably some escaping is needed here
 	vim.command((u':echoerr "%s"' % message).encode(u'utf-8'))
 
-def insert_at_cursor(text, move=True):
-    u"""Insert text at the position of the cursor.
+def insert_at_cursor(text, move=True, start_insertmode=False):
+	u"""Insert text at the position of the cursor.
 
-    If move==True move the cursor with the inserted text.
-    """
-    row, col = vim.current.window.cursor
-    line = vim.current.line
-    new_line = line[:col] + text + line[col:]
-    vim.current.line = new_line
-    if move:
-        vim.current.window.cursor = (row, col + len(text))
+	If move==True move the cursor with the inserted text.
+	"""
+	d = ORGMODE.get_document(allow_dirty=True)
+	line, col = vim.current.window.cursor
+	_text = d._content[line - 1]
+	d._content[line - 1] = _text[:col + 1] + text + _text[col + 1:]
+	if move:
+		vim.current.window.cursor = (line, col + len(text))
+	if start_insertmode:
+		vim.command(u'startinsert'.encode(u'utf-8'))
 
 def get_user_input(message):
     u"""Print the message and take input from the user.
