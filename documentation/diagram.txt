@@ -27,14 +27,14 @@
                                           |                                   |
                                           |                                   |
                                           +---+-------------------------------+                                  +------------+
-                                              |                                                                  | vim buffer |
+                                              |                                                                  | VimBuffer  |
                                               |                                                                  | {d}        |
                                               |                                                        /---------+ cBLU       |
                                               |                                                        |         |            |
                                               v                                                        |         +------------+
                                           +-----------------------------------+        +---------------++
-                                        1 | Document                          | 1   1  | Data access    |       +-=------------+
-                                    /-----+ cYEL                              +------->| cYEL           |       |+------------+|
+                                        1 | Document                          |        | Extend Document|       +-=------------+
+                                    /-----+ cYEL                              |<-------+ cYEL           |       |+------------+|
                                     |     | o represents an org-mode document |        | o abstraction  |       || file       ||
                                     |     | o contains links to other         |        |   of data/file |       || {d}        ||
                                     |   x |   documents                       |        |   access       +-------+| cYEL       ||

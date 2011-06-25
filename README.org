@@ -40,7 +40,7 @@ Information about the license are found in the file LICENSE
 
    Install the plugin by using the Debian Package Manager:
 
-   dpkg -i vim-orgmode.deb
+   dpkg -i vim-orgmode_X.X.X-X.deb
 
    The plugin is installed in /usr/lib/vim/addons. Please make sure this
    directory part of your runtimepath. By default it's not! Add the
@@ -80,7 +80,7 @@ Information about the license are found in the file LICENSE
   strength is. Almost all keybindings for orgmode work only in normal
   and visual mode where as in insert mode just a few are available.
 
-  To start vim-orgmode open a file with the extension .org. An
+  Start of with vim-orgmode by open a file with the extension .org. An
   additional menu "Org" is shown that gives an overview of the
   implemented functionality and the keybindings.
 
@@ -135,12 +135,12 @@ Information about the license are found in the file LICENSE
    A Debian package is of use when you want to make vim-orgmode
    available to all users on your computer. Make sure you've debhelper
    and vim installed, than run the following command from the root
-   directory of this plugin to build the package:
+   directory of this plugin to build the debian package:
 
-   fakeroot ./debian/rules clean binary
+   dpkg-buildpackage -us -uc
 
-   For installing the plugin form the resulting vim-orgmode.deb file,
-   please refer to the Installation section.
+   For installing the plugin form the resulting vim-orgmode_X.X.X-X.deb
+   file, please refer to the Installation section.
 
 ** Source code
 
@@ -289,12 +289,12 @@ Information about the license are found in the file LICENSE
 *** DONE implement |fold-foldtext|
 
 ** Navigator plugin
-*** TODO add mapping to repeat the last movement, e.g. <C-l> and <C-h>
-*** TODO implement other paragraph and block text-object operators, e.g. dap, cip, dab, cib
-*** TODO implement tests for ]]
-*** implement mappings for visual and operator mode in a better way
+*** add mapping to repeat the last movement, e.g. <C-l> and <C-h>
+*** implement sparse tree
 *** implement count for navigator mappings in visual mode
-*** implement sparse tree. is a special folding needed?
+*** implement other paragraph and block text-object operators, e.g. dap, cip, dab, cib
+*** implement tests for ]]
+*** DONE implement mappings for visual and operator mode in a better way
 *** DONE impelement repeat for text-object operators
 *** DONE implement section wise movement (skip children) by ]]
 *** DONE implement omap
@@ -303,10 +303,9 @@ Information about the license are found in the file LICENSE
 *** DONE bug in function g{, it places the cursor one character too far to the right
 
 ** EditStructure plugin
-*** TODO implement tests for move heading
-*** TODO implement tests for indenting a single heading
-*** indentation with C-t,C-d doesn't work when not on a heading
-*** implement non-relative heading changes
+*** implement tests for move heading
+*** implement tests for indenting a single heading
+*** DONE indentation with C-t,C-d doesn't work when not on a heading
 *** DONE implement a closer behavior of M-RET to orginal orgmode
 *** DONE maybe change keybinding for headings to M-RET
 *** DONE implement promotion/demotion of headings in visual mode, do I really need this? How do I promote/demote a single heading without subheadings?
@@ -319,6 +318,7 @@ Information about the license are found in the file LICENSE
 *** DONE implement promotion/demotion of headings
 
 ** TagsProperties plugin
+*** implement support for umlauts in tags
 *** DONE implement tests
     Tests for tags have been implemented in test_vimbuffer.py
 *** DONE move tags functionaly to global Heading class
@@ -336,8 +336,8 @@ Information about the license are found in the file LICENSE
 *** DONE error when pressing <Esc> while editing tags
 
 ** Dates plugin
-*** TODO implement a calendar
-*** TODO implement the agenda view by using the location list
+*** implement a calendar
+*** implement the agenda view by using the location list
 *** DONE implement active dates
 *** DONE implement intive dates
 *** DONE promt to insert dates
@@ -383,23 +383,20 @@ Information about the license are found in the file LICENSE
     subdocuments and Headings. This would loosen the dependency to vim.
 
 ** Documentation
-*** bug in implementation of accessing the buffers causes weird behavior when changing the buffer
-*** add descriptions to settings
-    the goal is to automatically generate most parts of the documentation
-*** generate documentation from plugin code, add short/long descriptions to keybindings
+*** document current functionality based on the [[http://orgmode.org/guide/index.html][Org-mode compact guide]]
 
 ** Misc
 *** autocommand for removing Org menu breaks other plugins
-*** reimplement syntax file (the current version is from hsitz)
 *** implement functionality of [[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html][Orgmode 5 Minutes Tutorial]]
 *** implement repeat for text-objects
-*** implement settings as part of the plugin
 *** figure out a way to get the keys the user pressed to activate a mapping so that feedkeys can be used properly
-*** integrate v:operator
-*** make use of maparg() and mapcheck()
+**** integrate v:operator
+**** make use of maparg() and mapcheck()
 *** make a video about vim-orgmode
 *** orgmode taglist integration doesn't work with txtfmt plugin: setf org.txtfmt
 *** in original Org-mode keybindings perform different actions based on the context! This functionality should be integrated in vim-orgmode as well
+*** DONE bug in implementation of accessing the buffers causes weird behavior when changing the buffer
+*** DONE reimplement syntax file (the current version is from hsitz)
 *** DONE add support for tagbar plugin
     tagbar is a reimplementation of the taglist plugin
 *** DONE implement better object structure for Heading.parent and Heading.children. At the moment the already created objects are not reused, especially for iterchildern this is important!
