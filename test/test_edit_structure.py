@@ -141,6 +141,62 @@ Bla Bla bla bla
 		self.assertEqual(vim.current.buffer[17], '* ')
 		self.assertEqual(vim.current.buffer[18], '* Überschrift 3')
 
+	def test_new_heading_below_split_heading_title(self):
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
+* Überschrift 1  :Tag:
+Text 1
+
+Bla bla
+** Überschrift 1.1
+Text 2
+
+Bla Bla bla
+** Überschrift 1.2
+Text 3
+
+**** Überschrift 1.2.1.falsch
+
+Bla Bla bla bla
+*** Überschrift 1.2.1
+* Überschrift 2
+* Überschrift 3
+  asdf sdf
+""".split(u'\n')]
+		vim.current.window.cursor = (2, 6)
+		self.assertNotEqual(self.editstructure.new_heading(insert_mode=True), None)
+		self.assertEqual(vim.current.buffer[0], '')
+		self.assertEqual(vim.current.buffer[1], '* Über									:Tag:')
+		self.assertEqual(vim.current.buffer[2], '* schrift 1')
+		self.assertEqual(vim.current.buffer[3], 'Text 1')
+
+	def test_new_heading_below_split_heading_title_with_todo(self):
+		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
+* TODO Überschrift 1  :Tag:
+Text 1
+
+Bla bla
+** Überschrift 1.1
+Text 2
+
+Bla Bla bla
+** Überschrift 1.2
+Text 3
+
+**** Überschrift 1.2.1.falsch
+
+Bla Bla bla bla
+*** Überschrift 1.2.1
+* Überschrift 2
+* Überschrift 3
+  asdf sdf
+""".split(u'\n')]
+		vim.current.window.cursor = (2, 5)
+		self.assertNotEqual(self.editstructure.new_heading(insert_mode=True), None)
+		self.assertEqual(vim.current.buffer[0], '')
+		self.assertEqual(vim.current.buffer[1], '* TODO									:Tag:')
+		self.assertEqual(vim.current.buffer[2], '* Überschrift 1')
+		self.assertEqual(vim.current.buffer[3], 'Text 1')
+
 	def test_demote_heading(self):
 		vim.current.window.cursor = (13, 0)
 		self.assertNotEqual(self.editstructure.demote_heading(), None)

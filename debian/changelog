@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-85) unstable; urgency=low
+
+  * add support and tests for splitting a headings title in insert mode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 15:55:16 +0200
+
 vim-orgmode (0.1.0-84) unstable; urgency=low
 
   * correct test cases for Navigator plugin

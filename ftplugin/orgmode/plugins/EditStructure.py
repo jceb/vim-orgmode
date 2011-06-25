@@ -66,6 +66,17 @@ class EditStructure(object):
 				heading.children = current_heading.children[:]
 				del current_heading.children
 
+		# if cursor is currently on a heading, insert parts of it into the
+		# newly created heading
+		if insert_mode and cursor[1] != 0 and cursor[0] == current_heading.start_vim:
+			offset = cursor[1] - current_heading.level - 1 - (len(current_heading.todo) + 1 if current_heading.todo else 0)
+			if offset < 0:
+				offset = 0
+			heading.title = current_heading.title[offset:]
+			current_heading.title = current_heading.title[:offset]
+			heading.body = current_heading.body[:]
+			current_heading.body = []
+
 		# insert newly created heading
 		l = current_heading.get_parent_list()
 		idx = current_heading.get_index_in_parent_list()
@@ -75,24 +86,6 @@ class EditStructure(object):
 			raise HeadingDomError(u'Current heading is not properly linked in DOM')
 
 		d.write()
-
-		# if cursor is currently on a heading, insert parts of it into the
-		# newly created heading
-		# TODO implement me
-		#if insert_mode and not end_of_last_child and cursor[0] == current_heading.start_vim:
-		#	if cursor[1] > current_heading.level:
-		#		tmp1 = vim.current.buffer[cursor[0] - 1][:cursor[1]].decode(u'utf-8')
-		#		tmp2 = vim.current.buffer[cursor[0] - 1][cursor[1]:].decode(u'utf-8')
-		#		vim.current.buffer[cursor[0] - 1] = tmp1.encode(u'utf-8')
-		#	else:
-		#		tmp2 = u''
-		#	if below:
-		#		vim.current.buffer[cursor[0]:cursor[0]] = [(u'%s %s' % (u'*' * level, tmp2.lstrip())).encode(u'utf-8')]
-		#		vim.current.window.cursor = (cursor[0] + 1, level + 1)
-		#	else:
-		#		# this can only happen at column 0
-		#		vim.current.buffer[cursor[0] - 1:cursor[0] - 1] = [(u'%s ' % (u'*' * level, )).encode(u'utf-8')]
-		#		vim.current.window.cursor = (cursor[0], level + 1)
 
 		if insert_mode:
 			vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
