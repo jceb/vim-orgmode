@@ -567,7 +567,7 @@ test
 		# text| >>
 		set_visual_selection(u'V', 6, 8, cursor_pos=END)
 		self.navigator.parent(mode=u'visual')
-		self.assertEqual(vim.CMDHISTORY[-1], u'normal 6ggV6ggo'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 6ggV5gg'.encode(u'utf-8'))
 
 		# << |heading
 		# text
@@ -594,7 +594,7 @@ test
 		# text| >>
 		set_visual_selection(u'V', 12, 13, cursor_pos=END)
 		self.navigator.parent(mode=u'visual')
-		self.assertEqual(vim.CMDHISTORY[-1], u'normal 10ggV12ggo'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u'normal 12ggV12gg'.encode(u'utf-8'))
 
 		set_visual_selection(u'V', 10, 12, cursor_pos=START)
 		self.navigator.parent(mode=u'visual')
