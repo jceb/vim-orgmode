@@ -97,13 +97,13 @@ class EditStructure(object):
 		if insert_mode:
 			vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
 		else:
-			vim.current.window.cursor = (cursor[0], cursor[1] + heading.level + 1)
+			vim.current.window.cursor = (heading.start_vim, cursor[1] + heading.level + 1)
 
 		# return newly created heading
 		return heading
 
 	@classmethod
-	def _change_heading_level(cls, level, including_children=True, on_heading=False):
+	def _change_heading_level(cls, level, including_children=True, on_heading=False, insert_mode=False):
 		u"""
 		Change level of heading realtively with or without including children.
 		"""
@@ -113,14 +113,18 @@ class EditStructure(object):
 			# TODO figure out the actually pressed keybinding and feed these
 			# keys instead of making keys up like this
 			if level > 0:
-				if including_children:
-					vim.eval((u'feedkeys(">]]", "n")').encode(u'utf-8'))
+				if insert_mode:
+					vim.eval(u'feedkeys("\<C-t>", "n")'.encode(u'utf-8'))
+				elif including_children:
+					vim.eval(u'feedkeys(">]]", "n")'.encode(u'utf-8'))
 				elif on_heading:
 					vim.eval(u'feedkeys(">>", "n")'.encode(u'utf-8'))
 				else:
 					vim.eval(u'feedkeys(">}", "n")'.encode(u'utf-8'))
 			else:
-				if including_children:
+				if insert_mode:
+					vim.eval(u'feedkeys("\<C-d>", "n")'.encode(u'utf-8'))
+				elif including_children:
 					vim.eval(u'feedkeys("<]]", "n")'.encode(u'utf-8'))
 				elif on_heading:
 					vim.eval(u'feedkeys("<<", "n")'.encode(u'utf-8'))
@@ -241,8 +245,8 @@ class EditStructure(object):
 	@realign_tags
 	@repeat
 	@apply_count
-	def demote_heading(cls, including_children=True, on_heading=False):
-		if cls._change_heading_level(1, including_children=including_children, on_heading=on_heading):
+	def demote_heading(cls, including_children=True, on_heading=False, insert_mode=False):
+		if cls._change_heading_level(1, including_children=including_children, on_heading=on_heading, insert_mode=insert_mode):
 			if including_children:
 				return u'OrgDemoteSubtree'
 			return u'OrgDemoteHeading'
@@ -251,8 +255,8 @@ class EditStructure(object):
 	@realign_tags
 	@repeat
 	@apply_count
-	def promote_heading(cls, including_children=True, on_heading=False):
-		if cls._change_heading_level(-1, including_children=including_children, on_heading=on_heading):
+	def promote_heading(cls, including_children=True, on_heading=False, insert_mode=False):
+		if cls._change_heading_level(-1, including_children=including_children, on_heading=on_heading, insert_mode=insert_mode):
 			if including_children:
 				return u'OrgPromoteSubtreeNormal'
 			return u'OrgPromoteHeadingNormal'
@@ -364,5 +368,5 @@ class EditStructure(object):
 		self.keybindings.append(Keybinding(u'>it', u'<Plug>OrgDemoteSubtreeNormal', mode=MODE_NORMAL))
 
 		# other keybindings
-		self.keybindings.append(Keybinding(u'<C-d>', Plug(u'OrgPromoteOnHeadingInsert', u'<C-o>:silent! py ORGMODE.plugins[u"EditStructure"].promote_heading(including_children=False, on_heading=True)<CR>', mode=MODE_INSERT)))
-		self.keybindings.append(Keybinding(u'<C-t>', Plug(u'OrgDemoteOnHeadingInsert', u'<C-o>:silent! py ORGMODE.plugins[u"EditStructure"].demote_heading(including_children=False, on_heading=True)<CR>', mode=MODE_INSERT)))
+		self.keybindings.append(Keybinding(u'<C-d>', Plug(u'OrgPromoteOnHeadingInsert', u'<C-o>:silent! py ORGMODE.plugins[u"EditStructure"].promote_heading(including_children=False, on_heading=True, insert_mode=True)<CR>', mode=MODE_INSERT)))
+		self.keybindings.append(Keybinding(u'<C-t>', Plug(u'OrgDemoteOnHeadingInsert', u'<C-o>:silent! py ORGMODE.plugins[u"EditStructure"].demote_heading(including_children=False, on_heading=True, insert_mode=True)<CR>', mode=MODE_INSERT)))

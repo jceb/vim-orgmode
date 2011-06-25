@@ -32,7 +32,7 @@ class Misc(object):
 	@classmethod
 	def edit_at_first_character(cls):
 		heading = ORGMODE.get_document().current_heading()
-		if not heading:
+		if not heading or heading.start_vim != vim.current.window.cursor[0]:
 			vim.eval(u'feedkeys("I", "n")'.encode(u'utf-8'))
 			return
 

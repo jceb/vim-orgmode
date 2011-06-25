@@ -1,3 +1,13 @@
+vim-orgmode (0.1.0-83) unstable; urgency=low
+
+  * remove LoggingWork from loaded plugins
+  * fix a problem when positioning the cursor on a newly created heading
+  * fix a problem when positioning the cursor on the first character of a
+  	non-heading line
+  * fix a problem when indenting non-heading lines in insert mode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 13:13:41 +0200
+
 vim-orgmode (0.1.0-82) unstable; urgency=low
 
   * change global function insert_at_cursor to append text after cursor
