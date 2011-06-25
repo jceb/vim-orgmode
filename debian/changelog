@@ -1,3 +1,15 @@
+vim-orgmode (0.1.0-86) unstable; urgency=low
+
+  * fix issue in EditStructure._move_heading that caused the current heading
+  	not to be removed from the list of heading
+  * improve error messages for non-allowed characters in tags or todo states
+  * allow \t and space in tags because of an automatic replacement by _ later
+  	on
+  * fix issue when creating the debian package an not all path components
+  	exist
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 16:36:39 +0200
+
 vim-orgmode (0.1.0-85) unstable; urgency=low
 
   * add support and tests for splitting a headings title in insert mode

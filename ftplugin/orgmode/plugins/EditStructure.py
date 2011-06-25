@@ -262,9 +262,9 @@ class EditStructure(object):
 		"""
 		d = ORGMODE.get_document()
 		heading = d.current_heading()
-		if not heading or \
-				direction == DIRECTION_FORWARD and not heading.next_sibling or \
-				direction == DIRECTION_BACKWARD and not heading.previous_sibling:
+		if (not heading) or \
+				(direction == DIRECTION_FORWARD and not heading.next_sibling) or \
+				(direction == DIRECTION_BACKWARD and not heading.previous_sibling):
 			return None
 
 		cursor_offset_within_the_heading_vim = vim.current.window.cursor[0] - (heading._orig_start + 1)
@@ -273,9 +273,10 @@ class EditStructure(object):
 			heading.previous_sibling.children.extend(heading.children)
 			del heading.children
 
-		heading_insert_position = 1 if direction == DIRECTION_FORWARD else -1
+		heading_insert_position = 0 if direction == DIRECTION_FORWARD else -1
 		l = heading.get_parent_list()
 		idx = heading.get_index_in_parent_list()
+		del l[idx]
 		if l is not None and idx is not None:
 			l.insert(idx + heading_insert_position, heading)
 		else:
@@ -318,11 +319,11 @@ class EditStructure(object):
 
 		self.menu + Separator()
 
-		self.keybindings.append(Keybinding(u'm{', Plug(u'OrgMoveHeadingUpward', u':silent! py ORGMODE.plugins[u"EditStructure"].move_heading_upward(including_children=False)<CR>')))
-		self.keybindings.append(Keybinding(u'm[[', Plug(u'OrgMoveSubtreeUpward', u':silent! py ORGMODE.plugins[u"EditStructure"].move_heading_upward()<CR>')))
+		self.keybindings.append(Keybinding(u'm{', Plug(u'OrgMoveHeadingUpward', u':py ORGMODE.plugins[u"EditStructure"].move_heading_upward(including_children=False)<CR>')))
+		self.keybindings.append(Keybinding(u'm[[', Plug(u'OrgMoveSubtreeUpward', u':py ORGMODE.plugins[u"EditStructure"].move_heading_upward()<CR>')))
 		self.menu + ActionEntry(u'Move Subtree &Up', self.keybindings[-1])
-		self.keybindings.append(Keybinding(u'm}', Plug(u'OrgMoveHeadingDownward', u':silent! py ORGMODE.plugins[u"EditStructure"].move_heading_downward(including_children=False)<CR>')))
-		self.keybindings.append(Keybinding(u'm]]', Plug(u'OrgMoveSubtreeDownward', u':silent! py ORGMODE.plugins[u"EditStructure"].move_heading_downward()<CR>')))
+		self.keybindings.append(Keybinding(u'm}', Plug(u'OrgMoveHeadingDownward', u':py ORGMODE.plugins[u"EditStructure"].move_heading_downward(including_children=False)<CR>')))
+		self.keybindings.append(Keybinding(u'm]]', Plug(u'OrgMoveSubtreeDownward', u':py ORGMODE.plugins[u"EditStructure"].move_heading_downward()<CR>')))
 		self.menu + ActionEntry(u'Move Subtree &Down', self.keybindings[-1])
 
 		self.menu + Separator()

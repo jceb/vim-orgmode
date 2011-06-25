@@ -720,7 +720,7 @@ class Heading(object):
 			if type(value) not in (unicode, str, type(None)):
 				raise ValueError(u'Todo state must be a string or None.')
 			if value and not REGEX_TODO.match(value):
-				raise ValueError(u'Found non allowed character in todo state!')
+				raise ValueError(u'Found non allowed character in todo state! %s' % value)
 			if not value:
 				self._todo = None
 			else:
@@ -765,11 +765,9 @@ class Heading(object):
 			v_decoded = []
 			for i in v:
 				if type(i) not in (unicode, str):
-					raise ValueError(u'Found non string value in tags!')
-				if u' ' in i \
-						or u'\t' in i \
-						or u':' in i:
-					raise ValueError(u'Found non allowed character in tag!')
+					raise ValueError(u'Found non string value in tags! %s' % unicode(i))
+				if u':' in i:
+					raise ValueError(u'Found non allowed character in tag! %s' % i)
 				i_tmp = i.strip().replace(' ', '_').replace('\t', '_')
 				if type(i) == str:
 					i_tmp = i.decode(u'utf-8')
