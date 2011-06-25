@@ -1,3 +1,9 @@
+vim-orgmode (0.1.0-89) unstable; urgency=low
+
+  * add separate target to generate the vba.gz archive
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 16:47:23 +0200
+
 vim-orgmode (0.1.0-88) unstable; urgency=low
 
   * improve error message in case ditaa is not available
