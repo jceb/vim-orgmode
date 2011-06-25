@@ -1,3 +1,9 @@
+vim-orgmode (0.2.0-1) unstable; urgency=low
+
+  * minor changes to the build files
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 17:43:48 +0200
+
 vim-orgmode (0.2.0-0) unstable; urgency=low
 
   * remove unused echo command in Makefile

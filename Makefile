@@ -8,8 +8,8 @@ all: build
 build:
 
 install:
-	for i in indent ftdetect ftplugin syntax; do \
-		find $$i -type f -name \*.py -o -type f -name \*.vim | while read f; do \
+	for i in doc indent ftdetect ftplugin syntax; do \
+		find $$i -type f -name \*.txt -o -name \*.py -o -type f -name \*.vim | while read f; do \
 			install -m 0755 -d $(DESTDIR)$(VIMDIR)/$$(dirname "$$f"); \
 			install -m 0644 $$f $(DESTDIR)$(VIMDIR)/$$f; \
 		done; \
@@ -24,7 +24,7 @@ clean: documentation
 
 ${PLUGIN}.vba: check
 	$(MAKE) DESTDIR=$(PWD)/tmp VIMDIR= install
-	find tmp -type f | sed -e 's/^tmp\///' > tmp/files
+	find tmp -type f  | sed -e 's/^tmp\///' > files
 	cp build_vim tmp
 	cd tmp && vim --cmd 'let g:plugin_name="${PLUGIN}"' -s build_vim
 	mv tmp/$@ .

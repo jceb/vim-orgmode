@@ -1,15 +1,10 @@
-" org.vim -- An implementation of Emacs org-mode in vim
+" org.vim -- An attempt to port org-mode to vim
 " @Author       : Jan Christoph Ebersbach (jceb@e-jc.de)
-" @License      : GPL (see http://www.gnu.org/licenses/gpl.txt)
+" @License      : AGPL3 (see http://www.gnu.org/licenses/agpl.txt)
 " @Created      : 2010-10-03
-" @Last Modified: Mon 04. Apr 2011 21:01:07 +0200 CEST
-" @Revision     : 0.1
+" @Last Modified: Sat 25. Jun 2011 17:39:50 +0200 CEST
+" @Revision     : 0.2
 " @vi           : ft=vim:tw=80:sw=4:ts=4
-"
-" @Description  :
-" @Usage        :
-" @TODO         :
-" @CHANGES      :
 
 if ! exists("b:did_ftplugin")
 	" default emacs settings
