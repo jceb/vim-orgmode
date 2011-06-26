@@ -1,3 +1,10 @@
+vim-orgmode (0.2.0-2) unstable; urgency=low
+
+  * add hint for updateing vim-orgmode from a previous version
+  * move all documentation related to installation and usage to doc/org.txt
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 26 Jun 2011 12:46:55 +0200
+
 vim-orgmode (0.2.0-1) unstable; urgency=low
 
   * minor changes to the build files

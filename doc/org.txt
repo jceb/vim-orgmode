@@ -49,6 +49,10 @@ Installation into a specific directory~
     are using pathogen, then just add the desired directory to the runtimepath
     before sourcing the vba-file.
 
+    When updating from a previous version I recommend deleting the whole
+    $HOME/.vim/bundle/orgmode directory to prevent out dated .pyc files
+    spoiling the update.
+
     $ vim orgmode.vba.gz
 >
     :set rtp=$HOME/.vim/bundle/orgmode,&rtp

@@ -2,121 +2,7 @@ An attempt to port [[http://orgmode.org][org-mode]] to vim.
 
 Information about the license are found in the file LICENSE
 
-* Installation
-** Prerequisites
-   Add the following lines to your .vimrc file to ensure that filetype
-   plugins are loaded properly:
-
-	filetype on
-	filetype plugin on
-	filetype indent on
-
-   Please install the [[http://www.vim.org/scripts/script.php?script_id=293][Universal Text Linking]] addon, otherwise hyperlinks
-   won't work. Other plugins that integrate well with vim orgmode are
-   listed in section Suggested plugins.
-
-** From .vba file
-   If you want to install the vim-orgmode plugin for a single user, this
-   is the preferred way.
-
-   Open the file in vim and source it. Restart vim and the plugin is
-   active:
-
-   vim orgmode.vba.gz
-   :so %
-
-*** Installation into a specific directory
-    If you want to install the plugin into a specific directory,
-    e.g. when you are using pathogen, then just add the desired
-    directory to the runtimepath before sourcing the vba-file.
-
-    vim orgmode.vba.gz
-    :set rtp=$HOME/.vim/bundle/orgmode,&rtp
-    :so %
-
-** From .deb file
-   If you want to install the vim-orgmode plugin for all users of your
-   computer, this is the preferred way.
-
-   Install the plugin by using the Debian Package Manager:
-
-   dpkg -i vim-orgmode_X.X.X-X.deb
-
-   The plugin is installed in /usr/lib/vim/addons. Please make sure this
-   directory part of your runtimepath. By default it's not! Add the
-   following command to your .vimrc to add the path on startup:
-
-   :set rtp=/usr/lib/vim/addons,&rtp
-
-** From git checkout
-   This method is mainly used for development purposes.
-
-*** You are using pathegon
-
-    Change to the bundle directory
-    $ cd ~/.vim/bundle
-
-    Clone the repository
-    $ git clone https://github.com/jceb/vim-orgmode.git
-
-    And restart vim. That's it.
-
-*** You are using no addon manager
-    Clone the repository:
-    $ git clone https://github.com/jceb/vim-orgmode.git
-
-    Copy the directories doc, ftdetect, ftplugin, indent and syntax to
-    your $HOME/.vim directory:
-    $ cd vim-orgmode
-    $ cp -r doc ftdetect ftplugin indent syntax ~/.vim/
-
-* Usage
-  vim-orgmode aims to be clone of the original orgmode for Emacs. Since
-  Emacs is not vim the clone is not aiming for 100% compatibility.
-  Especially in terms of the keybindings there will be major
-  differences!
-
-  You'll definitively enjoy the modal interface, this where vim's
-  strength is. Almost all keybindings for orgmode work only in normal
-  and visual mode where as in insert mode just a few are available.
-
-  Start of with vim-orgmode by open a file with the extension .org. An
-  additional menu "Org" is shown that gives an overview of the
-  implemented functionality and the keybindings.
-
-** Text objects
-   Vim offers a mighty feature called text-objects. A text-object is
-   bound to a certain character sequence that can be used in combination
-   with all kinds of editing and selection tasks. vim-orgmode offers the
-   following text-objects:
-
-   ih - inner heading, referring to the current heading excluding the heading level characters (*)
-   ah - a heading, referring to the current heading including everything
-   it - inner subtree, starting with the current heading
-   at - a subtree, starting with the current heading
-   Oh - inner outer heading, referring to the parent
-   Ot - inner outer heading, including subtree, referring to the parent
-   OH - a outer heading
-   OT - a outer subtree
-
-   Movement commands can also be used for editing like text-objects:
-
-   g{ - execute command from current position to the beginning of the parent heading
-   { - execute command from current position to the beginning of the current heading
-   } - execute command from current position to the end of the current heading
-   [[ - execute command from current position to the beginning of the previous heading sibling
-   ]] - execute command from current position to the end of the next heading sibling
-
-   For further information please read :h text-objects-changed
-
-* Suggested plugins
-  - [[http:/www.vim.org/scripts/script.php?script_id=2332][pathogen]]               easy management of multiple vim plugins
-  - [[http://www.vim.org/scripts/script.php?script_id=2136][repeat]]                 repeat actions that would not be repeatable otherwise
-  - [[http://www.vim.org/scripts/script.php?script_id=273][taglist]]                display tags for the currently edited file
-  - [[http://www.vim.org/scripts/script.php?script_id=3465][tagbar]]                 a new approach to displaying tags for the currently edited file
-  - [[http://www.vim.org/scripts/script.php?script_id=2120][speeddating]]            in-/decrease dates the vim way: C-a and C-x
-  - [[http://www.vim.org/scripts/script.php?script_id=3075][Narrow Region]]          emulation of Emacs' Narrow Region feature
-  - [[http://www.vim.org/scripts/script.php?script_id=293][Universal Text Linking]] general support for text linking, the Hyperlinks feature of vim-orgmode depends on this plugin
+Instructions related to installation and usage are found in doc/org.txt.
 
 * Development
 ** Building a Vimball
@@ -147,15 +33,18 @@ Information about the license are found in the file LICENSE
     build_vim                - Build file for the Vimball
     ftdetect/                - Filetype detection for orgmode files
     ftplugin/                - Home of the main part of the plugin
-    ftplugin/orgmode/        - Home for all Python code related to the plugin
+    ftplugin/orgmode/        - Home for all Python code related to the
+                               plugin
     ftplugin/orgmode/plugins - Home for all orgmode plugins
-    ftplugin/liborgmode.py   - General library for accessing and manipulating org-mode files
+    ftplugin/liborgmode.py   - General library for accessing and
+                               manipulating org-mode files
     indent/                  - Indentation for orgmode files
     LICENSE                  - License Information
     Makefile                 - Build file for the Vimball
     README                   - Documentation
     syntax/                  - Syntax highlighting
-    test/                    - Tests to verify the consistency and correctness of the plugin
+    test/                    - Tests to verify the consistency and
+                               correctness of the plugin
 
 *** Structure
     The majority of the source code is stored in folder
