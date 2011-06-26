@@ -26,7 +26,7 @@ clean: documentation
 	@rm -rf ${PLUGIN}.vba ${PLUGIN}.vba.gz tmp
 	cd $^ && $(MAKE) $@
 
-${PLUGIN}.vba: check build_vba.vim
+${PLUGIN}.vba: check build_vba.vim clean
 	$(MAKE) DESTDIR=$(PWD)/tmp VIMDIR= install
 	find tmp -type f  | sed -e 's/^tmp\///' > files
 	cp build_vba.vim tmp
