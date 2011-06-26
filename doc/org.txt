@@ -1,4 +1,4 @@
-*org.txt*		For Vim version 7.3		Last change: 2011 June 25
+*org.txt*		For Vim version 7.3		Last change: 2011 June 26
 
 ==============================================================================
 Table of Contents						   *org* *org-toc*
@@ -6,9 +6,10 @@ Table of Contents						   *org* *org-toc*
     1. Description			|org-description|
     2. Installation			|org-installation|
     3. Usage				|org-usage|
-    4. Links				|org-links|
-    5. Changelog			|org-changelog|
-    6. License				|org-license|
+    4. Customization			|org-customization|
+    5. Links				|org-links|
+    6. Changelog			|org-changelog|
+    7. License				|org-license|
 
 ==============================================================================
 Description						       *org-description*
@@ -164,6 +165,34 @@ Suggested plugins~
   - Universal Text Linking
     (http://www.vim.org/scripts/script.php?script_id=293) general support for
     text linking, the Hyperlinks feature of vim-orgmode depends on this plugin
+
+==============================================================================
+Customization						     *org-customization*
+
+Remapping shortcuts~
+  vim-orgmode provides an easy way for remapping the default keyboard
+  shortcuts. For this task it relies on vim's <Plug> mappings. All shortcuts
+  of vim-orgmode are accessible by <Plug>s.
+
+  To change a keyboard shortcut the name of the related <Plug> is needed.
+  First we need to look up the current mapping in the Org menu. The following
+  command reveals the <Plug>'s name:
+>
+  :map <current_mapping>
+<
+
+  The result should look something like this:
+>
+  :map ,t
+  n ,t @<Plug>OrgSetTags
+<
+
+  Now we can create an alternate mapping:
+  nmap <new_mapping> <the_plug>
+
+  To change the mapping for editing tags to <leader>t the vimrc entrie would
+  look like this:
+  nmap <leader>t @<Plug>OrgSetTags
 
 ==============================================================================
 Links								     *org-links*
