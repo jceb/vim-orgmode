@@ -1,3 +1,10 @@
+vim-orgmode (0.2.1-1) unstable; urgency=low
+
+  * make target installvba create the VIMPLUGINDIR before attempting the
+  	installation
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 26 Jun 2011 21:07:54 +0200
+
 vim-orgmode (0.2.1-0) unstable; urgency=low
 
   * add documentation for customizing syntax highlighting

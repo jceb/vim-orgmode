@@ -45,7 +45,9 @@ docs: documentation
 	cd $^ && $(MAKE)
 
 installvba: ${PLUGIN}.vba install_vba.vim
-	rm -rf ${VIMPLUGINDIR}
+	rm -rvf ${VIMPLUGINDIR}
+	mkdir -p "${VIMPLUGINDIR}"
 	vim --cmd "let g:installdir='${VIMPLUGINDIR}'" -s install_vba.vim $^
+	echo "Plugin was installed in ${VIMPLUGINDIR}. Make sure you are using a plugin loader like pathegon, otherwise the vim-orgmode might not work properly."
 
 .PHONY: all build test check install clean vba vba.gz docs installvba
