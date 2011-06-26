@@ -146,6 +146,6 @@ class Todo(object):
 			u':silent! py ORGMODE.plugins[u"Todo"].toggle_todo_state(False)<CR>')))
 		submenu + ActionEntry(u'&Previous keyword', self.keybindings[-1])
 
-		settings.set(u'org_todo_keywords', [u'TODO', u'|', u'DONE'])
+		settings.set(u'org_todo_keywords', [u'TODO'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')])
 
 # vim: set noexpandtab:
