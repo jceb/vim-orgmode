@@ -1,4 +1,4 @@
-*org.txt*		For Vim version 7.3		Last change: 2011 June 26
+*org.txt*		For Vim version 7.3	       Last change: 2011 June 26
 
 ==============================================================================
 Table of Contents						   *org* *org-toc*
@@ -188,11 +188,72 @@ Remapping shortcuts~
 <
 
   Now we can create an alternate mapping:
+>
   nmap <new_mapping> <the_plug>
+<
 
   To change the mapping for editing tags to <leader>t the vimrc entrie would
   look like this:
+>
   nmap <leader>t @<Plug>OrgSetTags
+<
+
+Syntax highlighting~
+Syntax highlighting is customizable to fit nicely with the user's colorscheme.
+
+					        *g:org_heading_highlight_colors*
+Define the highlighting colors/group names for headings (default):
+>
+    let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier',
+    \		'Statement', 'PreProc', 'Type', 'Special']
+<
+
+					        *g:org_heading_highlight_levels*
+Definie the number of levels of highlighting. If this number is bigger than
+the list of colors defined in of g:org_heading_highlight_colors the colors of
+g:org_heading_highlight_colors get repeated (default):
+>
+    let g:org_heading_highlight_levels = len(g:org_heading_highlight_colors)
+<
+
+					     *g:org_heading_shade_leading_stars*
+Defines if leading stars are displayed in the color of the heading or if a
+special NonText highlighting is used that hides them from user (default):
+>
+    let g:org_heading_shade_leading_stars = 1
+<
+
+				    			   *g:org_todo_keywords*
+Defines the keywords that are highlighted in headings. For more information
+about this variable, please consult the org-mode documentation
+(http://orgmode.org/org.html#index-org_002dtodo_002dkeywords-511) (default):
+>
+    let g:org_todo_keywords = ['TODO', '|', 'DONE']
+<
+
+				    		      *g:org_todo_keyword_faces*
+Defines special faces (styles) for displaying g:org_todo_keywords. Please
+refer to vim documentation (topic |attr-list|) for allowed values for
+:weight, :slant, :decoration. Muliple colors can be separated by comma for
+:foreground and :background faces to provide different colors for gui and
+terminal mode (default):
+>
+    let g:org_todo_keyword_faces = []
+<
+
+Syntax Highlighting Examples~
+Define an additionaly keyword 'WAITING' and set the foreground color to
+'cyan'. Define another keyword 'CANCELED' and set the foreground color to
+red, background to black and the weight to normal, slant to italc and
+decoration to underline:
+
+>
+    let g:org_todo_keywords = [['TODO', 'WAITING', '|', 'DONE'],
+    \		['|', 'CANCELED']]
+    let g:org_todo_keyword_faces = [['WAITING', 'cyan'], ['CANCELED',
+    \		[':foreground red', ':background black', ':weight bold',
+    \		':slant italic', ':decoration underline']]]
+<
 
 ==============================================================================
 Links								     *org-links*
@@ -205,7 +266,14 @@ VimOrganizer, another vim port of org-mode
 ==============================================================================
 Changelog							 *org-changelog*
 
-0.2.0-0, 2011-06-25 initial release
+0.2.1-0, 2011-06-26
+- fix encoding of todo states set by the Todo plugin (thanks to Daniel Carl
+  and kien for pointing out the issue)
+- add documentation for remapping shortcuts
+- add documentation for customizing syntax highlighting
+
+0.2.0-0, 2011-06-25
+- initial release
 
 ==============================================================================
 License								   *org-license*

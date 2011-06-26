@@ -1,3 +1,9 @@
+vim-orgmode (0.2.1-0) unstable; urgency=low
+
+  * add documentation for customizing syntax highlighting
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 26 Jun 2011 19:08:59 +0200
+
 vim-orgmode (0.2.0-6) unstable; urgency=low
 
   * add dependency to clean target to orgmode.vba
@@ -19,7 +25,7 @@ vim-orgmode (0.2.0-4) unstable; urgency=low
 vim-orgmode (0.2.0-3) unstable; urgency=low
 
   * fix encoding of todo states set by the Todo plugin (thanks to Daniel Carl
-  	for pointing out this issue)
+  	for pointing out the issue)
   * add target installvba to locally install orgmode.vba
   * cleanup Makefile
 

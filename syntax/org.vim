@@ -1,38 +1,3 @@
-" Variables With Default Settings:
-"
-" Define the highlighting colors/group names for headings
-" let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
-"
-" Definie the number of level of highlighting. If this number is bigger than
-" the length of g:org_heading_highlight_colors the colors of
-" g:org_heading_highlight_colors are repeated
-" let g:org_heading_highlight_levels = len(g:org_heading_highlight_colors)
-"
-" Defines if leading stars are displayed in the color of the heading or if a
-" special NonText highlighting is used that hides them from user
-" let g:org_heading_shade_leading_stars = 1
-"
-" Defines the keywords that are highlighted in headings. For more information
-" about this variable, please consult the org-mode documentation
-" (http://orgmode.org/org.html#index-org_002dtodo_002dkeywords-511)
-" let g:org_todo_keywords = ['TODO', '|', 'DONE']
-"
-" Defines special faces (styles) for displaying g:org_todo_keywords. Please
-" refer to vim documentation (topic |attr-list|) for allowed values for
-" :weight, :slant, :decoration. Muliple colors can be separated by comma for
-" :foreground and :background faces to provide different colors for gui and
-" terminal mode.
-" let g:org_todo_keyword_faces = []
-"
-" Examples:
-"
-" Define an additionaly keyword 'WAITING' and set the foreground color to
-" 'cyan'. Define another keyword 'CANCELED' and set the foreground color to
-" red, background to black and the weight to normal, slant to italc and
-" decoration to underline
-" let g:org_todo_keywords = [['TODO', 'WAITING', '|', 'DONE'], ['|', 'CANCELED']]
-" let g:org_todo_keyword_faces = [['WAITING', 'cyan'], ['CANCELED', [':foreground red', ':background black', ':weight bold', ':slant italic', ':decoration underline']]]
-
 " Headings
 if !exists('g:org_heading_highlight_colors')
 	let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
