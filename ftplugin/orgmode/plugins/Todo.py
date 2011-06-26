@@ -117,9 +117,9 @@ class Todo(object):
 		heading.todo = new_state
 
 		# plug
-		plug = u'OrgToggleTodoForward'
+		plug = u'OrgTodoForward'
 		if direction == DIRECTION_BACKWARD:
-			plug = u'OrgToggleTodoBackward'
+			plug = u'OrgTodoBackward'
 
 		d.write_heading(heading)
 
@@ -133,16 +133,16 @@ class Todo(object):
 		leader = settings.get(u'org_leader', u',')
 
 		self.keybindings.append(Keybinding(u'%sd' % leader, Plug(
-			u'OrgToggleTodoToggle',
+			u'OrgTodoToggle',
 			u':silent! py ORGMODE.plugins[u"Todo"].toggle_todo_state()<CR>')))
 		self.menu + ActionEntry(u'&TODO/DONE/-', self.keybindings[-1])
 		submenu = self.menu + Submenu(u'Select &keyword')
 		self.keybindings.append(Keybinding(u'<S-Right>', Plug(
-			u'OrgToggleTodoForward',
+			u'OrgTodoForward',
 			u':silent! py ORGMODE.plugins[u"Todo"].toggle_todo_state()<CR>')))
 		submenu + ActionEntry(u'&Next keyword', self.keybindings[-1])
 		self.keybindings.append(Keybinding(u'<S-Left>', Plug(
-			u'OrgToggleTodoBackward',
+			u'OrgTodoBackward',
 			u':silent! py ORGMODE.plugins[u"Todo"].toggle_todo_state(False)<CR>')))
 		submenu + ActionEntry(u'&Previous keyword', self.keybindings[-1])
 

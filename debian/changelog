@@ -1,3 +1,9 @@
+vim-orgmode (0.2.0-4) unstable; urgency=low
+
+  * fix <Plug> names for Todo plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 26 Jun 2011 13:24:07 +0200
+
 vim-orgmode (0.2.0-3) unstable; urgency=low
 
   * fix encoding of todo states set by the Todo plugin (thanks to Daniel Carl
