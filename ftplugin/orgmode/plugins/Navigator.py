@@ -38,12 +38,46 @@ class Navigator(object):
 				echo(u'No parent heading found')
 			return
 
-		if mode == u'visual':
-			cls._change_visual_selection(heading, heading.parent, direction=DIRECTION_BACKWARD, parent=True)
-		else:
-			vim.current.window.cursor = (heading.parent.start_vim, heading.parent.level + 1)
-		return heading.parent
+		p = heading.parent
 
+		if mode == u'visual':
+			cls._change_visual_selection(heading, p, direction=DIRECTION_BACKWARD, parent=True)
+		else:
+			vim.current.window.cursor = (p.start_vim, p.level + 1)
+		return p
+
+	@classmethod
+	@apply_count
+	def parent_next_sibling(cls, mode):
+		u"""
+		Focus the parent's next sibling
+
+		:returns: parent's next sibling heading or None
+		"""
+		heading = ORGMODE.get_document().current_heading()
+		if not heading:
+			if mode == u'visual':
+				vim.command(u'normal gv'.encode(u'utf-8'))
+			else:
+				echo(u'No heading found')
+			return
+
+		if not heading.parent or not heading.parent.next_sibling:
+			if mode == u'visual':
+				vim.command(u'normal gv'.encode(u'utf-8'))
+			else:
+				echo(u'No parent heading found')
+			return
+
+		ns = heading.parent.next_sibling
+
+		if mode == u'visual':
+			cls._change_visual_selection(heading, ns, direction=DIRECTION_FORWARD, parent=False)
+		elif mode == u'operator':
+			vim.current.window.cursor = (ns.start_vim, 0)
+		else:
+			vim.current.window.cursor = (ns.start_vim, ns.level + 1)
+		return ns
 
 	@classmethod
 	def _change_visual_selection(cls, current_heading, heading, direction=DIRECTION_FORWARD, noheadingfound=False, parent=False):
@@ -244,6 +278,8 @@ class Navigator(object):
 		# normal mode
 		self.keybindings.append(Keybinding(u'g{', Plug('OrgJumpToParentNormal', u':py ORGMODE.plugins[u"Navigator"].parent(mode=u"normal")<CR>')))
 		self.menu + ActionEntry(u'&Up', self.keybindings[-1])
+		self.keybindings.append(Keybinding(u'g}', Plug('OrgJumpToParentsSiblingNormal', u':py ORGMODE.plugins[u"Navigator"].parent_next_sibling(mode=u"normal")<CR>')))
+		self.menu + ActionEntry(u'&Down', self.keybindings[-1])
 		self.keybindings.append(Keybinding(u'{', Plug(u'OrgJumpToPreviousNormal', u':py ORGMODE.plugins[u"Navigator"].previous(mode=u"normal")<CR>')))
 		self.menu + ActionEntry(u'&Previous', self.keybindings[-1])
 		self.keybindings.append(Keybinding(u'}', Plug(u'OrgJumpToNextNormal', u':py ORGMODE.plugins[u"Navigator"].next(mode=u"normal")<CR>')))
@@ -251,11 +287,13 @@ class Navigator(object):
 
 		# visual mode
 		self.keybindings.append(Keybinding(u'g{', Plug(u'OrgJumpToParentVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Navigator"].parent(mode=u"visual")<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'g}', Plug('OrgJumpToParentsSiblingVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Navigator"].parent_next_sibling(mode=u"visual")<CR>', mode=MODE_VISUAL)))
 		self.keybindings.append(Keybinding(u'{', Plug(u'OrgJumpToPreviousVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Navigator"].previous(mode=u"visual")<CR>', mode=MODE_VISUAL)))
 		self.keybindings.append(Keybinding(u'}', Plug(u'OrgJumpToNextVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Navigator"].next(mode=u"visual")<CR>', mode=MODE_VISUAL)))
 
 		# operator-pending mode
 		self.keybindings.append(Keybinding(u'g{', Plug(u'OrgJumpToParentOperator', u':<C-u>py ORGMODE.plugins[u"Navigator"].parent(mode=u"operator")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding(u'g}', Plug('OrgJumpToParentsSiblingOperator', u':<C-u>py ORGMODE.plugins[u"Navigator"].parent_next_sibling(mode=u"operator")<CR>', mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding(u'{', Plug(u'OrgJumpToPreviousOperator', u':<C-u>py ORGMODE.plugins[u"Navigator"].previous(mode=u"operator")<CR>', mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding(u'}', Plug(u'OrgJumpToNextOperator', u':<C-u>py ORGMODE.plugins[u"Navigator"].next(mode=u"operator")<CR>', mode=MODE_OPERATOR)))
 

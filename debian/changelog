@@ -1,3 +1,10 @@
+vim-orgmode (0.2.1-5) unstable; urgency=low
+
+  * implement shortcut for moving to the partent's next sibling
+  * closes Issue #22
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 03 Jul 2011 13:21:04 +0200
+
 vim-orgmode (0.2.1-4) unstable; urgency=low
 
   * fix duplication of children when inserting a new heading

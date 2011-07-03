@@ -213,6 +213,12 @@ Bla Bla bla bla
 		self.navigator.parent(mode=u'normal')
 		self.assertEqual(vim.current.window.cursor, (2, 2))
 
+	def test_next_parent_movement(self):
+		# test movement to parent
+		vim.current.window.cursor = (6, 0)
+		self.assertNotEqual(self.navigator.parent_next_sibling(mode=u'normal'), None)
+		self.assertEqual(vim.current.window.cursor, (17, 2))
+
 	def test_forward_movement_visual(self):
 		# selection start: <<
 		# selection end:   >>
