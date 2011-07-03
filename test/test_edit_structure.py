@@ -68,6 +68,10 @@ Bla Bla bla bla
 		self.assertEqual(vim.current.buffer[4], 'Bla bla')
 		self.assertEqual(vim.current.buffer[5], '* ')
 		self.assertEqual(vim.current.buffer[6], '** Überschrift 1.1')
+		self.assertEqual(vim.current.buffer[10], '** Überschrift 1.2')
+		self.assertEqual(vim.current.buffer[13], '**** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[16], '*** Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[17], '* Überschrift 2')
 
 	def test_new_heading_below_in_the_middle(self):
 		vim.current.window.cursor = (10, 0)
