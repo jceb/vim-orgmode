@@ -1,3 +1,10 @@
+vim-orgmode (0.2.1-7) unstable; urgency=low
+
+  * fix error in setting tags
+  * closes Issue #25
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Mon, 04 Jul 2011 12:56:27 +0200
+
 vim-orgmode (0.2.1-6) unstable; urgency=low
 
   * improve split of heading

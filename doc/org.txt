@@ -267,7 +267,8 @@ VimOrganizer, another vim port of org-mode
 Changelog							 *org-changelog*
 
 0.3.0-0
-- improve split of heading
+- fix error in setting tags (Issue #25)
+- improve split of heading (Issue #24)
 - add variable g:org_improve_split_heading to enable/disable improve the split
   of headings (Issue #24)
 - implement shortcut for moving to the partent's next sibling (g}) (Issue #22)

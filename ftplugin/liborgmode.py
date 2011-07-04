@@ -757,10 +757,10 @@ class Heading(object):
 			return self._tags
 		def fset(self, value):
 			v = value
-			if type(v) not in (list, tuple) or isinstance(v, UserList):
-				v = list(unicode(v))
 			if type(v) in (unicode, str):
-				v = list(v)
+				v = list(unicode(v))
+			if type(v) not in (list, tuple) and not isinstance(v, UserList):
+				v = list(unicode(v))
 			v = flatten_list(v)
 			v_decoded = []
 			for i in v:
