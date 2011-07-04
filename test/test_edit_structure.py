@@ -17,8 +17,10 @@ class EditStructureTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
+				u'exists("g:org_improve_split_heading")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_improve_split_heading")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): (u'%d' % counter).encode(u'utf-8'),
 				u'&ts'.encode(u'utf-8'): u'8'.encode(u'utf-8'),
@@ -56,17 +58,54 @@ Bla Bla bla bla
 		self.assertEqual(vim.current.buffer[1], '* Überschrift 1')
 
 	def test_new_heading_above_normal_behavior(self):
-		vim.current.window.cursor = (1, 0)
+		vim.current.window.cursor = (1, 1)
 		self.assertNotEqual(self.editstructure.new_heading(below=False), None)
 		self.assertEqual(vim.current.buffer[0], '* ')
 		self.assertEqual(vim.current.buffer[1], '* Überschrift 1')
 
 	def test_new_heading_below(self):
 		vim.current.window.cursor = (2, 0)
-		self.assertNotEqual(self.editstructure.new_heading(below=True, insert_mode=True), None)
+		self.assertNotEqual(self.editstructure.new_heading(below=True, insert_mode=False), None)
 		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 6gg"|startinsert!')
 		self.assertEqual(vim.current.buffer[4], 'Bla bla')
 		self.assertEqual(vim.current.buffer[5], '* ')
+		self.assertEqual(vim.current.buffer[6], '** Überschrift 1.1')
+		self.assertEqual(vim.current.buffer[10], '** Überschrift 1.2')
+		self.assertEqual(vim.current.buffer[13], '**** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[16], '*** Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[17], '* Überschrift 2')
+
+	def test_new_heading_below_insert_mode(self):
+		vim.current.window.cursor = (2, 1)
+		self.assertNotEqual(self.editstructure.new_heading(below=True, insert_mode=True), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 3gg"|startinsert!')
+		self.assertEqual(vim.current.buffer[2], '* Überschrift 1')
+		self.assertEqual(vim.current.buffer[5], 'Bla bla')
+		self.assertEqual(vim.current.buffer[6], '** Überschrift 1.1')
+		self.assertEqual(vim.current.buffer[10], '** Überschrift 1.2')
+		self.assertEqual(vim.current.buffer[13], '**** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[16], '*** Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[17], '* Überschrift 2')
+
+	def test_new_heading_below_split_text_at_the_end(self):
+		vim.current.buffer[1] = u'* Überschriftx1'
+		vim.current.window.cursor = (2, 14)
+		self.assertNotEqual(self.editstructure.new_heading(below=True, insert_mode=True), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 3gg"|startinsert!')
+		self.assertEqual(vim.current.buffer[2], '* ')
+		self.assertEqual(vim.current.buffer[5], 'Bla bla')
+		self.assertEqual(vim.current.buffer[6], '** Überschrift 1.1')
+		self.assertEqual(vim.current.buffer[10], '** Überschrift 1.2')
+		self.assertEqual(vim.current.buffer[13], '**** Überschrift 1.2.1.falsch')
+		self.assertEqual(vim.current.buffer[16], '*** Überschrift 1.2.1')
+		self.assertEqual(vim.current.buffer[17], '* Überschrift 2')
+
+	def test_new_heading_below_split_text_at_the_end_insert_parts(self):
+		vim.current.window.cursor = (2, 14)
+		self.assertNotEqual(self.editstructure.new_heading(below=True, insert_mode=True), None)
+		self.assertEqual(vim.CMDHISTORY[-1], 'exe "normal 3gg"|startinsert!')
+		self.assertEqual(vim.current.buffer[2], '* 1')
+		self.assertEqual(vim.current.buffer[5], 'Bla bla')
 		self.assertEqual(vim.current.buffer[6], '** Überschrift 1.1')
 		self.assertEqual(vim.current.buffer[10], '** Überschrift 1.2')
 		self.assertEqual(vim.current.buffer[13], '**** Überschrift 1.2.1.falsch')

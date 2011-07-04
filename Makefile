@@ -31,7 +31,7 @@ ${PLUGIN}.vba: check build_vba.vim clean
 	find tmp -type f  | sed -e 's/^tmp\///' > files
 	cp build_vba.vim tmp
 	cd tmp && vim --cmd 'let g:plugin_name="${PLUGIN}"' -s build_vba.vim
-	[ -e tmp/orgmode.vmb ] && mv tmp/orgmode.vmb tmp/$@
+	[ -e tmp/${PLUGIN}.vmb ] && mv tmp/${PLUGIN}.vmb tmp/$@
 	mv tmp/$@ .
 
 ${PLUGIN}.vba.gz: ${PLUGIN}.vba
@@ -49,6 +49,6 @@ installvba: ${PLUGIN}.vba install_vba.vim
 	rm -rvf ${VIMPLUGINDIR}
 	mkdir -p "${VIMPLUGINDIR}"
 	vim --cmd "let g:installdir='${VIMPLUGINDIR}'" -s install_vba.vim $^
-	@echo "Plugin was installed in ${VIMPLUGINDIR}. Make sure you are using a plugin loader like pathegon, otherwise the vim-orgmode might not work properly."
+	@echo "Plugin was installed in ${VIMPLUGINDIR}. Make sure you are using a plugin loader like pathegon, otherwise the ${PLUGIN} might not work properly."
 
 .PHONY: all build test check install clean vba vba.gz docs installvba

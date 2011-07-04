@@ -5,6 +5,7 @@ from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_INSERT, MODE_NORMAL
 from liborgmode import Heading
 from orgmode.exceptions import HeadingDomError
+from orgmode import settings
 
 import vim
 
@@ -44,11 +45,7 @@ class EditStructure(object):
 			d.headings.insert(0, heading)
 			del d.meta_information[pos:]
 			d.write()
-
-			if insert_mode:
-				vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
-			else:
-				vim.current.window.cursor = (pos + 1, heading.level + 1)
+			vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
 			return heading
 
 		heading = Heading(level=current_heading.level)
@@ -69,9 +66,14 @@ class EditStructure(object):
 		# if cursor is currently on a heading, insert parts of it into the
 		# newly created heading
 		if insert_mode and cursor[1] != 0 and cursor[0] == current_heading.start_vim:
-			offset = cursor[1] - current_heading.level - 1 - (len(current_heading.todo) + 1 if current_heading.todo else 0)
+			offset = cursor[1] - current_heading.level - 1 - (len(current_heading.todo) \
+					+ 1 if current_heading.todo else 0)
 			if offset < 0:
 				offset = 0
+			if int(settings.get(u'org_improve_split_heading', u'1')) and \
+					offset > 0 and len(current_heading.title) == offset + 1 \
+					and current_heading.title[offset - 1] not in (u' ', u'\t'):
+				offset += 1
 			heading.title = current_heading.title[offset:]
 			current_heading.title = current_heading.title[:offset]
 			heading.body = current_heading.body[:]
@@ -86,7 +88,6 @@ class EditStructure(object):
 			raise HeadingDomError(u'Current heading is not properly linked in DOM')
 
 		d.write()
-
 		vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
 
 		# return newly created heading
@@ -303,6 +304,8 @@ class EditStructure(object):
 		u"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
+		settings.set(u'org_improve_split_heading', u'1')
+
 		self.keybindings.append(Keybinding(u'<C-S-CR>', Plug(u'OrgNewHeadingAboveNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=False)<CR>')))
 		self.menu + ActionEntry(u'New Heading &above', self.keybindings[-1])
 		self.keybindings.append(Keybinding(u'<S-CR>', Plug(u'OrgNewHeadingBelowNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=True)<CR>')))
