@@ -19,9 +19,9 @@ from orgmode import indent_orgmode
 indent_orgmode()
 EOF
 	if exists('b:indent_level')
-		let tmp = b:indent_level
+		let l:tmp = b:indent_level
 		unlet b:indent_level
-		return tmp
+		return l:tmp
 	else
 		return -1
 	endif
@@ -33,9 +33,9 @@ from orgmode import fold_orgmode
 fold_orgmode()
 EOF
 	if exists('b:fold_expr')
-		let tmp = b:fold_expr
+		let l:tmp = b:fold_expr
 		unlet b:fold_expr
-		return tmp
+		return l:tmp
 	else
 		return -1
 	endif
@@ -47,8 +47,8 @@ from orgmode import fold_text
 fold_text()
 EOF
 	if exists('b:foldtext')
-		let tmp = b:foldtext
+		let l:tmp = b:foldtext
 		unlet b:foldtext
-		return tmp
+		return l:tmp
 	endif
 endfunction

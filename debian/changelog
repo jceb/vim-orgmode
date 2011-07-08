@@ -1,3 +1,10 @@
+vim-orgmode (0.2.1-9) unstable; urgency=low
+
+  * fix folded text for headings containing backslashes or double quotes
+  * closes Issue #26
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 08 Jul 2011 23:21:07 +0200
+
 vim-orgmode (0.2.1-8) unstable; urgency=low
 
   * add Document.get_todo_states() and Document.get_all_todo_states()

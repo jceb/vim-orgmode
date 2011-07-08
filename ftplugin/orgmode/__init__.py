@@ -150,10 +150,11 @@ def fold_text():
 		if idx != -1:
 			tabs, spaces = divmod(idx, ts)
 
-			str_heading = str_heading.replace(u'\t', u' '*(ts - spaces), 1)
-			str_heading = str_heading.replace(u'\t', u' '*ts)
+			str_heading = str_heading.replace(u'\t', u' ' * (ts - spaces), 1)
+			str_heading = str_heading.replace(u'\t', u' ' * ts)
 
-		vim.command((u'let b:foldtext = "%s... "' % (str_heading, )).encode('utf-8'))
+		vim.command((u'let b:foldtext = "%s... "' % \
+				(str_heading.replace(u'\\', u'\\\\').replace(u'"', u'\\"'), )).encode('utf-8'))
 
 def fold_orgmode():
 	u""" Set the fold expression/value for the current line in the variable b:fold_expr

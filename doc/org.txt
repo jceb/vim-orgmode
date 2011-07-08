@@ -267,6 +267,8 @@ VimOrganizer, another vim port of org-mode
 Changelog							 *org-changelog*
 
 0.3.0-0
+- fix folded text for headings containing backslashes or double quotes (closes
+  Issue #26)
 - add Document.get_todo_states() and Document.get_all_todo_states()
 - don't confuse upper case words at the beginning of a heading with a todo
     state (closes Issue #28)
