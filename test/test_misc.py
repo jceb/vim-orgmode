@@ -23,6 +23,11 @@ class MiscTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
+				# no org_todo_keywords for b
+				u'exists("b:org_todo_keywords")'.encode(u'utf-8'): '0'.encode(u'utf-8'),
+				# global values for org_todo_keywords
+				u'exists("g:org_todo_keywords")'.encode(u'utf-8'): '1'.encode(u'utf-8'),
+				u'g:org_todo_keywords'.encode(u'utf-8'): [u'TODO'.encode(u'utf-8'), u'DONE'.encode(u'utf-8'), u'|'.encode(u'utf-8')],
 				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),

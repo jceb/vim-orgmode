@@ -178,6 +178,44 @@ class VimBuffer(Document):
 		return locals()
 	changedtick = property(**changedtick())
 
+	def get_todo_states(self, strip_access_key=True):
+		u""" Returns a list containing a tuple of two lists of allowed todo
+		states split by todo and done states. Multiple todo-done state
+		sequences can be defined.
+
+		:returns:	[([todo states], [done states]), ..]
+		"""
+		states = settings.get(u'org_todo_keywords', [])
+		if type(states) not in (list, tuple):
+			return []
+
+		def parse_states(s, stop=0):
+			res = []
+			if not s:
+				return res
+			if type(s[0]) in (unicode, str):
+				for i in s:
+					_i = i
+					if type(_i) == str:
+						_i = _i.decode(u'utf-8')
+					if type(_i) == unicode:
+						if strip_access_key and u'(' in _i:
+							res.append(_i[:_i.index(u'(')])
+						else:
+							res.append(_i)
+				if not u'|' in res:
+					res = (res[:-1], res[-1])
+				else:
+					seperator_pos = res.index(u'|')
+					res = (res[0:seperator_pos], res[seperator_pos + 1:])
+			elif type(s) in (list, tuple) and not stop:
+				r = parse_states(s, stop=1)
+				if r:
+					res.append(r)
+			return res
+
+		return parse_states(states)
+
 	def update_changedtick(self):
 		if self.bufnr == vim.current.buffer.number:
 			self._changedtick = int(vim.eval(u'b:changedtick'.encode(u'utf-8')))

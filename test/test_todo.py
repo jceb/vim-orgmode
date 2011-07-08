@@ -54,6 +54,13 @@ class TodoTestCase(unittest.TestCase):
 		Todo.toggle_todo_state()
 		self.assertEqual(vim.current.buffer[0], u'')
 
+	def test_todo_toggle_NOTODO(self):
+		vim.current.window.cursor = (2, 0)
+		vim.current.buffer[1] = u'** NOTODO Überschrift 1.1'.encode(u'utf-8')
+
+		Todo.toggle_todo_state()
+		self.assertEqual(vim.current.buffer[1], u'** TODO NOTODO Überschrift 1.1'.encode(u'utf-8'))
+
 	def test_toggle_todo_in_heading_with_no_todo_state_different_levels(self):
 		# level 1
 		vim.current.window.cursor = (2, 0)

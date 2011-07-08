@@ -318,8 +318,8 @@ class HeadingList(MultiPurposeList):
 		self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
 		MultiPurposeList.extend(self, o)
 
-REGEX_HEADING = re.compile(r'^(?P<level>\*+)(?P<todotitle>(\s+(?P<todo>[^\s]+))?(\s+(?P<title>.*?))?)\s*(\s(?P<tags>:[\w_:]+:))?$', flags=re.U|re.L)
-REGEX_TAGS = re.compile(r'^\s*(?P<title>[^\s]*?)\s+(?P<tags>:[\w_:]+:)$', flags=re.U|re.L)
+REGEX_HEADING = re.compile(r'^(?P<level>\*+)(\s+(?P<title>.*?))?\s*(\s(?P<tags>:[\w_:]+:))?$', flags=re.U|re.L)
+REGEX_TAGS = re.compile(r'^\s*((?P<title>[^\s]*?)\s+)?(?P<tags>:[\w_:]+:)$', flags=re.U|re.L)
 REGEX_TODO = re.compile(r'^[^\s]*$')
 
 class Heading(object):
@@ -425,7 +425,7 @@ class Heading(object):
 		return heading
 
 	@classmethod
-	def parse_heading_from_data(cls, data, document=None, orig_start=None):
+	def parse_heading_from_data(cls, data, allowed_todo_states, document=None, orig_start=None):
 		u""" Construct a new heading from the provided data
 
 		:document:		The document object this heading belongs to
@@ -442,27 +442,25 @@ class Heading(object):
 			m = REGEX_HEADING.match(heading_line)
 			if m:
 				r = m.groupdict()
+				level = len(r[u'level'])
+				todo = None
+				title = u''
 				tags = filter(lambda x: x != u'', r[u'tags'].split(u':')) if r[u'tags'] else []
 
 				# if there is just one or no word in the heading, redo the parsing
-				mt = REGEX_TAGS.match(r[u'todotitle'])
+				mt = REGEX_TAGS.match(r[u'title'])
 				if not tags and mt:
-					rt = mt.groupdict()
-					tags = filter(lambda x: x != u'', rt[u'tags'].split(u':')) if rt[u'tags'] else []
-					todo = rt[u'title']
-					if not todo or todo == todo.upper():
-						title = u''
+					r = mt.groupdict()
+					tags = filter(lambda x: x != u'', r[u'tags'].split(u':')) if r[u'tags'] else []
+				if r[u'title'] is not None:
+					_todo_title = [ i.strip() for i in r[u'title'].split(None, 1) ]
+					if _todo_title and _todo_title[0] in allowed_todo_states:
+						todo = _todo_title[0]
+						if len(_todo_title) > 1:
+							title = _todo_title[1]
 					else:
-						todo = None
-						title = rt[u'title'].strip()
-				else:
-					todo = r[u'todo']
-					if not todo or todo == todo.upper():
-						title = r[u'title'] if r[u'title'] else u''
-					else:
-						todo = None
-						title = r[u'todotitle'].strip()
-				return (len(r[u'level']), todo, title, tags)
+						title = r[u'title'].strip()
+				return (level, todo, title, tags)
 			raise ValueError(u'Data doesn\'t start with a heading definition.')
 
 		if not data:
@@ -821,6 +819,8 @@ class Document(object):
 		self._tabstop                    = 8
 		self._tag_column                 = 77
 
+		self.todo_states                 = [u'TODO', u'DONE']
+
 	def __unicode__(self):
 		if self.meta_information is None:
 			return '\n'.join(self.all_headings())
@@ -829,8 +829,25 @@ class Document(object):
 	def __str__(self):
 		return self.__unicode__().encode(u'utf-8')
 
+	def get_all_todo_states(self):
+		u""" Convenience function that returns all todo and done states and
+		sequences in one big list.
+
+		:returns:	[all todo/done states]
+		"""
+		return flatten_list(self.get_todo_states())
+
+	def get_todo_states(self):
+		u""" Returns a list containing a tuple of two lists of allowed todo
+		states split by todo and done states. Multiple todo-done state
+		sequences can be defined.
+
+		:returns:	[([todo states], [done states]), ..]
+		"""
+		return self.todo_states
+
 	def tabstop():
-		""" Tabstop for this document """
+		u""" Tabstop for this document """
 		def fget(self):
 			return self._tabstop
 		def fset(self, value):
@@ -839,7 +856,7 @@ class Document(object):
 	tabstop = property(**tabstop())
 
 	def tag_column():
-		""" The column all tags are right-aligned to """
+		u""" The column all tags are right-aligned to """
 		def fget(self):
 			return self._tag_column
 		def fset(self, value):
@@ -1056,5 +1073,5 @@ class Document(object):
 		if start is not None and end is None:
 			end = len_cb - 1
 		if start is not None and end is not None:
-			return heading.parse_heading_from_data(self._content[start:end + 1], \
+			return heading.parse_heading_from_data(self._content[start:end + 1], self.get_all_todo_states(), \
 					document=self if connect_with_document else None, orig_start=start)

@@ -17,6 +17,11 @@ class ShowHideTestCase(unittest.TestCase):
 		vim.CMDRESULTS = {}
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
+				# no org_todo_keywords for b
+				u'exists("b:org_todo_keywords")'.encode(u'utf-8'): '0'.encode(u'utf-8'),
+				# global values for org_todo_keywords
+				u'exists("g:org_todo_keywords")'.encode(u'utf-8'): '1'.encode(u'utf-8'),
+				u'g:org_todo_keywords'.encode(u'utf-8'): [u'TODO'.encode(u'utf-8'), u'DONE'.encode(u'utf-8'), u'|'.encode(u'utf-8')],
 				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("b:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
@@ -64,12 +69,12 @@ Bla bla
 * Überschrift 3
   asdf sdf
 """.split(u'\n') ]
-		vim.EVALRESULTS = {
+		vim.EVALRESULTS.update({
 				u'foldclosed(2)'.encode(u'utf-8'): u'2'.encode(u'utf-8'),
 				u'foldclosed(6)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(7)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				}
+				})
 		vim.current.window.cursor = (2, 0)
 
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
@@ -78,10 +83,10 @@ Bla bla
 
 	def test_toggle_folding_close_one(self):
 		vim.current.window.cursor = (13, 0)
-		vim.EVALRESULTS = {
+		vim.EVALRESULTS.update({
 				u'foldclosed(13)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				}
+				})
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 2)
 		self.assertEqual(vim.CMDHISTORY[-2], u'13,15foldclose!'.encode(u'utf-8'))
@@ -90,10 +95,10 @@ Bla bla
 
 	def test_toggle_folding_open_one(self):
 		vim.current.window.cursor = (10, 0)
-		vim.EVALRESULTS = {
+		vim.EVALRESULTS.update({
 				u'foldclosed(10)'.encode(u'utf-8'): u'10'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				}
+				})
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		self.assertEqual(vim.CMDHISTORY[-1], u'normal 1zo'.encode(u'utf-8'))
@@ -101,14 +106,14 @@ Bla bla
 
 	def test_toggle_folding_close_multiple_all_open(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS = {
+		vim.EVALRESULTS.update({
 				u'foldclosed(2)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(6)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(10)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(13)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				}
+				})
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		self.assertEqual(vim.CMDHISTORY[-1], u'2,16foldclose!'.encode(u'utf-8'))
@@ -116,10 +121,10 @@ Bla bla
 
 	def test_toggle_folding_open_multiple_all_closed(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS = {
+		vim.EVALRESULTS.update({
 				u'foldclosed(2)'.encode(u'utf-8'): u'2'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				}
+				})
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		self.assertEqual(vim.CMDHISTORY[-1], u'normal 1zo'.encode(u'utf-8'))
@@ -127,14 +132,14 @@ Bla bla
 
 	def test_toggle_folding_open_multiple_first_level_open(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS = {
+		vim.EVALRESULTS.update({
 				u'foldclosed(2)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(6)'.encode(u'utf-8'): u'6'.encode(u'utf-8'),
 				u'foldclosed(10)'.encode(u'utf-8'): u'10'.encode(u'utf-8'),
 				u'foldclosed(13)'.encode(u'utf-8'): u'13'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'16'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				}
+				})
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 2)
 		self.assertEqual(vim.CMDHISTORY[-2], u'normal 6gg1zo'.encode(u'utf-8'))
@@ -143,14 +148,14 @@ Bla bla
 
 	def test_toggle_folding_open_multiple_second_level_half_open(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS = {
+		vim.EVALRESULTS.update({
 				u'foldclosed(2)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(6)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(10)'.encode(u'utf-8'): u'10'.encode(u'utf-8'),
 				u'foldclosed(13)'.encode(u'utf-8'): u'13'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'16'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				}
+				})
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 4)
 		self.assertEqual(vim.CMDHISTORY[-4], u'normal 6gg2zo'.encode(u'utf-8'))
@@ -161,14 +166,14 @@ Bla bla
 
 	def test_toggle_folding_open_multiple_other_second_level_half_open(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS = {
+		vim.EVALRESULTS.update({
 				u'foldclosed(2)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(6)'.encode(u'utf-8'): u'6'.encode(u'utf-8'),
 				u'foldclosed(10)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(13)'.encode(u'utf-8'): u'13'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'16'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				}
+				})
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 4)
 		self.assertEqual(vim.CMDHISTORY[-4], u'normal 6gg2zo'.encode(u'utf-8'))
@@ -179,14 +184,14 @@ Bla bla
 
 	def test_toggle_folding_open_multiple_third_level_half_open(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS = {
+		vim.EVALRESULTS.update({
 				u'foldclosed(2)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(6)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(10)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(13)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'16'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				}
+				})
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 4)
 		self.assertEqual(vim.CMDHISTORY[-4], u'normal 6gg3zo'.encode(u'utf-8'))
@@ -197,14 +202,14 @@ Bla bla
 
 	def test_toggle_folding_open_multiple_other_third_level_half_open(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS = {
+		vim.EVALRESULTS.update({
 				u'foldclosed(2)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(6)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(10)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(13)'.encode(u'utf-8'): u'13'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				}
+				})
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 4)
 		self.assertEqual(vim.CMDHISTORY[-4], u'normal 6gg3zo'.encode(u'utf-8'))
@@ -215,14 +220,14 @@ Bla bla
 
 	def test_toggle_folding_open_multiple_other_third_level_half_open_second_level_half_closed(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS = {
+		vim.EVALRESULTS.update({
 				u'foldclosed(2)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(6)'.encode(u'utf-8'): u'6'.encode(u'utf-8'),
 				u'foldclosed(10)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(13)'.encode(u'utf-8'): u'13'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				}
+				})
 		self.assertNotEqual(self.showhide.toggle_folding(), None)
 		self.assertEqual(len(vim.CMDHISTORY), 4)
 		self.assertEqual(vim.CMDHISTORY[-4], u'normal 6gg3zo'.encode(u'utf-8'))

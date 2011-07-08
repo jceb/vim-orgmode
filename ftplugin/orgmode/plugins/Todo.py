@@ -38,18 +38,6 @@ class Todo(object):
 		self.keybindings = []
 
 	@classmethod
-	def _get_states(cls):
-		u"""
-		Return the next states divided in TODO states and DONE states.
-		"""
-		states = settings.get(u'org_todo_keywords', [])
-		if not u'|' in states:
-			return states[:-1], [states[-1]]
-		else:
-			seperator_pos = states.index(u'|')
-			return states[0:seperator_pos], states[seperator_pos + 1:]
-
-	@classmethod
 	def _get_next_state(cls, current_state, all_states,
 			direction=DIRECTION_FORWARD):
 		u"""
@@ -90,8 +78,7 @@ class Todo(object):
 			return
 
 		# get todo states
-		todo_states, done_states = Todo._get_states()
-		all_states = todo_states + done_states
+		all_states = d.get_all_todo_states()
 		if len(all_states) < 2:
 			echom(u'No todo keywords configured.')
 			return
