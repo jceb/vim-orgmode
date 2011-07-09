@@ -155,13 +155,13 @@ class TodoTestCase(unittest.TestCase):
 	def test_get_states_without_seperator(self):
 		u"""The last element in the todostates shouold be used as DONE-state when no sperator is given"""
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = VimBuffer().get_todo_states()
+		states_todo, states_done = VimBuffer().get_todo_states()[0]
 		expected_todo, expected_done = [u'TODO'], [u'DONE']
 		self.assertEqual(states_todo, expected_todo)
 		self.assertEqual(states_done, expected_done)
 
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'INPROGRESS'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = VimBuffer().get_todo_states()
+		states_todo, states_done = VimBuffer().get_todo_states()[0]
 		expected_todo = [u'TODO', u'INPROGRESS']
 		expected_done = [u'DONE']
 		self.assertEqual(states_todo, expected_todo)
@@ -169,7 +169,7 @@ class TodoTestCase(unittest.TestCase):
 
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'INPROGRESS'.encode(u'utf-8'),
 				u'DUMMY'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = VimBuffer().get_todo_states()
+		states_todo, states_done = VimBuffer().get_todo_states()[0]
 		expected_todo  = [u'TODO', u'INPROGRESS', u'DUMMY']
 		expected_done = [u'DONE']
 		self.assertEqual(states_todo, expected_todo)
@@ -177,7 +177,7 @@ class TodoTestCase(unittest.TestCase):
 
 	def test_get_states_with_seperator(self):
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = VimBuffer().get_todo_states()
+		states_todo, states_done = VimBuffer().get_todo_states()[0]
 		expected_todo = [u'TODO']
 		expected_done = [u'DONE']
 		self.assertEqual(states_todo, expected_todo)
@@ -185,7 +185,7 @@ class TodoTestCase(unittest.TestCase):
 
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'INPROGRESS'.encode(u'utf-8'), u'|'.encode(u'utf-8'),
 				u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = VimBuffer().get_todo_states()
+		states_todo, states_done = VimBuffer().get_todo_states()[0]
 		expected_todo = [u'TODO', u'INPROGRESS']
 		expected_done = [u'DONE']
 		self.assertEqual(states_todo, expected_todo)
@@ -193,7 +193,7 @@ class TodoTestCase(unittest.TestCase):
 
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'INPROGRESS'.encode(u'utf-8'),
 				u'DUMMY'.encode(u'utf-8'), u'|'.encode(u'utf-8'),  u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = VimBuffer().get_todo_states()
+		states_todo, states_done = VimBuffer().get_todo_states()[0]
 		expected_todo = [u'TODO', u'INPROGRESS', u'DUMMY']
 		expected_done = [u'DONE']
 		self.assertEqual(states_todo, expected_todo)
@@ -201,7 +201,7 @@ class TodoTestCase(unittest.TestCase):
 
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'INPROGRESS'.encode(u'utf-8'),
 				u'DUMMY'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DELEGATED'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = VimBuffer().get_todo_states()
+		states_todo, states_done = VimBuffer().get_todo_states()[0]
 		expected_todo =[u'TODO', u'INPROGRESS', u'DUMMY']
 		expected_done = [u'DELEGATED', u'DONE']
 		self.assertEqual(states_todo, expected_todo)
@@ -209,60 +209,70 @@ class TodoTestCase(unittest.TestCase):
 
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONEX'.encode(u'utf-8'),
 				u'DUMMY'.encode(u'utf-8'), u'DELEGATED'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = VimBuffer().get_todo_states()
+		states_todo, states_done = VimBuffer().get_todo_states()[0]
 		expected_todo = [u'TODO']
 		expected_done = [u'DONEX', u'DUMMY', u'DELEGATED', u'DONE']
 		self.assertEqual(states_todo, expected_todo)
 		self.assertEqual(states_done, expected_done)
 
+		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [[u'TODO(t)'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONEX'.encode(u'utf-8')],
+				[u'DUMMY'.encode(u'utf-8'), u'DELEGATED'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]]
+		states_todo, states_done = VimBuffer().get_todo_states()[0]
+		expected_todo = [u'TODO']
+		expected_done = [u'DONEX']
+		self.assertEqual(states_todo, expected_todo)
+		self.assertEqual(states_done, expected_done)
+
 	# get_next_state
 	def test_get_next_state_with_no_current_state(self):
-		states = [u'TODO', u'DONE']
+		states = [((u'TODO', ), (u'DONE', ))]
 		current_state = u''
 		self.assertEquals(Todo._get_next_state(current_state, states), u'TODO')
 
-		states = [u'TODO', u'DELEGATED', u'DONE']
+		states = [((u'TODO', u'NEXT'), (u'DELEGATED', u'DONE'))]
 		self.assertEquals(Todo._get_next_state(current_state, states), u'TODO')
-		states = [u'NEXT', u'DELEGATED', u'DONE']
+
+		states = [((u'NEXT', ), (u'DELEGATED', u'DONE'))]
 		self.assertEquals(Todo._get_next_state(current_state, states), u'NEXT')
 
 	def test_get_next_state_backward_with_no_current_state(self):
-		states = [u'TODO', u'DONE']
+		states = [((u'TODO', ), (u'DONE', ))]
 		current_state = u''
 		self.assertEquals(Todo._get_next_state(current_state, states, False), u'DONE')
 
-		states = [u'TODO', u'NEXT', u'DELEGATED', u'DONE']
+		states = [((u'TODO', u'NEXT'), (u'DELEGATED', u'DONE'))]
 		self.assertEquals(Todo._get_next_state(current_state, states, False), u'DONE')
 
-		states = [u'NEXT', u'DELEGATED', u'DONE']
+		states = [((u'NEXT', ), (u'DELEGATED', u'DONE'))]
 		self.assertEquals(Todo._get_next_state(current_state, states, False), u'DONE')
 
 	def test_get_next_state_with_invalid_current_state(self):
-		states = [u'TODO', u'DONE']
+		states = [((u'TODO', ), (u'DONE', ))]
 		current_state = u'STI'
 		self.assertEquals(Todo._get_next_state(current_state, states), u'TODO')
 
-		states = [u'TODO', u'NEXT', u'DELEGATED', u'DONE']
+		states = [((u'TODO', u'NEXT'), (u'DELEGATED', u'DONE'))]
 		self.assertEquals(Todo._get_next_state(current_state, states), u'TODO')
-		states = [u'NEXT', u'DELEGATED', u'DONE']
+
+		states = [((u'NEXT', ), (u'DELEGATED', u'DONE'))]
 		self.assertEquals(Todo._get_next_state(current_state, states), u'NEXT')
 
 	def test_get_next_state_backward_with_invalid_current_state(self):
-		states = [u'TODO', u'DONE']
+		states = [((u'TODO', ), (u'DONE', ))]
 		current_state = u'STI'
 		result = Todo._get_next_state(current_state, states, False)
 		self.assertEquals(result, u'DONE')
 
-		states = [u'TODO', u'NEXT', u'DELEGATED', u'DONE']
+		states = [((u'TODO', u'NEXT'), (u'DELEGATED', u'DONE'))]
 		result = Todo._get_next_state(current_state, states, False)
 		self.assertEquals(result, u'DONE')
 
-		states = [u'NEXT', u'DELEGATED', u'DONE']
+		states = [((u'NEXT', ), (u'DELEGATED', u'DONE'))]
 		result = Todo._get_next_state(current_state, states, False)
 		self.assertEquals(result, u'DONE')
 
 	def test_get_next_state_with_current_state_equals_todo_state(self):
-		states = [u'TODO', u'NEXT', u'NOW', u'DELEGATED', u'DONE']
+		states = [((u'TODO', u'NEXT', u'NOW'), (u'DELEGATED', u'DONE'))]
 		current_state = u'TODO'
 		self.assertEquals(Todo._get_next_state(current_state, states), u'NEXT')
 
@@ -270,13 +280,13 @@ class TodoTestCase(unittest.TestCase):
 		self.assertEquals(Todo._get_next_state(current_state, states), u'NOW')
 
 	def test_get_next_state_backward_with_current_state_equals_todo_state(self):
-		states = [u'TODO', u'NEXT', u'NOW', u'DELEGATED', u'DONE']
+		states = [((u'TODO', u'NEXT', u'NOW'), (u'DELEGATED', u'DONE'))]
 		current_state = u'TODO'
 		result = Todo._get_next_state(current_state, states, False)
 		self.assertEquals(result, None)
 
 	def test_get_next_state_backward_misc(self):
-		states = [u'TODO', u'NEXT', u'NOW', u'DELEGATED', u'DONE']
+		states = [((u'TODO', u'NEXT', u'NOW'), (u'DELEGATED', u'DONE'))]
 		current_state = u'DONE'
 		result = Todo._get_next_state(current_state, states, False)
 		self.assertEquals(result, u'DELEGATED')
@@ -302,14 +312,38 @@ class TodoTestCase(unittest.TestCase):
 		self.assertEquals(result, u'DONE')
 
 	def test_get_next_state_with_jump_from_todo_to_done(self):
-		states = [u'TODO', u'NEXT', u'NOW', u'DELEGATED', u'DONE']
+		states = [((u'TODO', u'NEXT', u'NOW'), (u'DELEGATED', u'DONE'))]
 		current_state = u'NOW'
 		self.assertEquals(Todo._get_next_state(current_state, states), u'DELEGATED')
 
 	def test_get_next_state_with_jump_from_done_to_todo(self):
-		states = [u'TODO', u'NEXT', u'NOW', u'DELEGATED', u'DONE']
+		states = [((u'TODO', u'NEXT', u'NOW'), (u'DELEGATED', u'DONE'))]
 		current_state = u'DONE'
 		self.assertEquals(Todo._get_next_state(current_state, states), None)
+
+	def test_get_next_state_in_current_sequence(self):
+		states = [((u'TODO', u'NEXT', u'NOW'), (u'DELEGATED', u'DONE')), ((u'QA', ), (u'RELEASED', ))]
+		current_state = u'QA'
+		result = Todo._get_next_state(current_state, states, True)
+		self.assertEquals(result, u'RELEASED')
+
+	def test_get_next_state_in_current_sequence_with_access_keys(self):
+		states = [((u'TODO(t)', u'NEXT(n)', u'NOW(w)'), (u'DELEGATED(g)', u'DONE(d)')), ((u'QA(q)', ), (u'RELEASED(r)', ))]
+		current_state = u'QA'
+		result = Todo._get_next_state(current_state, states, True)
+		self.assertEquals(result, u'RELEASED')
+
+		current_state = u'NEXT'
+		result = Todo._get_next_state(current_state, states, True)
+		self.assertEquals(result, u'NOW')
+
+		current_state = u'TODO'
+		result = Todo._get_next_state(current_state, states, False)
+		self.assertEquals(result, None)
+
+		current_state = None
+		result = Todo._get_next_state(current_state, states, False)
+		self.assertEquals(result, u'DONE')
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(TodoTestCase)

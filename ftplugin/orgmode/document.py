@@ -194,24 +194,34 @@ class VimBuffer(Document):
 			if not s:
 				return res
 			if type(s[0]) in (unicode, str):
+				r = []
 				for i in s:
 					_i = i
 					if type(_i) == str:
 						_i = _i.decode(u'utf-8')
-					if type(_i) == unicode:
+					if type(_i) == unicode and _i:
 						if strip_access_key and u'(' in _i:
-							res.append(_i[:_i.index(u'(')])
+							_i = _i[:_i.index(u'(')]
+							if _i:
+								r.append(_i)
 						else:
-							res.append(_i)
-				if not u'|' in res:
-					res = (res[:-1], [res[-1]])
+							r.append(_i)
+				if not u'|' in r:
+					if not stop:
+						res.append((r[:-1], [r[-1]]))
+					else:
+						res = (r[:-1], [r[-1]])
 				else:
-					seperator_pos = res.index(u'|')
-					res = (res[0:seperator_pos], res[seperator_pos + 1:])
+					seperator_pos = r.index(u'|')
+					if not stop:
+						res.append((r[0:seperator_pos], r[seperator_pos + 1:]))
+					else:
+						res = (r[0:seperator_pos], r[seperator_pos + 1:])
 			elif type(s) in (list, tuple) and not stop:
-				r = parse_states(s, stop=1)
-				if r:
-					res.append(r)
+				for i in s:
+					r = parse_states(i, stop=1)
+					if r:
+						res.append(r)
 			return res
 
 		return parse_states(states)

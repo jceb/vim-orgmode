@@ -150,16 +150,19 @@ if !exists('g:loaded_org_syntax')
 				let l:default_group = 'Question'
 				continue
 			endif
+			" strip access key
+			let l:_i = substitute(l:i, "\(.*$", "", "")
+
 			let l:group = l:default_group
 			for l:j in g:org_todo_keyword_faces
-				if l:j[0] == l:i
-					let l:group = 'org_todo_keyword_face_' . l:i
+				if l:j[0] == l:_i
+					let l:group = 'org_todo_keyword_face_' . l:_i
 					call s:ExtendHighlightingGroup(l:default_group, l:group, s:InterpretFaces(l:j[1]))
 					break
 				endif
 			endfor
-			exec 'syntax match org_todo_keyword_' . l:i . ' /\*\{1,\}\s\{1,\}\zs' . l:i .'/ ' . a:todo_headings
-			exec 'hi def link org_todo_keyword_' . l:i . ' ' . l:group
+			exec 'syntax match org_todo_keyword_' . l:_i . ' /\*\{1,\}\s\{1,\}\zs' . l:_i .'/ ' . a:todo_headings
+			exec 'hi def link org_todo_keyword_' . l:_i . ' ' . l:group
 		endfor
 	endfunction
 endif
