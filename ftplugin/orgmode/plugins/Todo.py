@@ -91,7 +91,7 @@ class Todo(object):
 			ci = find_current_todo_state(current_state, all_states)
 
 			if not ci:
-				if next_set and direction == DIRECTION_BACKWARD:
+				if next_set:
 					return current_state
 
 				return split_access_key(all_states[0][0][0] if all_states[0][0] else all_states[0][1][0])[0] \
@@ -125,6 +125,8 @@ class Todo(object):
 					elif ci[1] and len(all_states[ci[0]][ci[1] - 1]) + next_pos < len(all_states[ci[0]][ci[1] - 1]):
 						# finished done states, jump to todo states
 						return split_access_key(all_states[ci[0]][ci[1] - 1][len(all_states[ci[0]][ci[1] - 1]) + next_pos])[0]
+		else:
+			pass
 
 	@classmethod
 	@realign_tags

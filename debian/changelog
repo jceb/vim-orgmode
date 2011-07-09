@@ -1,3 +1,9 @@
+vim-orgmode (0.2.1-14) unstable; urgency=low
+
+  * make switching to the next todo sequence more consistent
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 09 Jul 2011 17:38:18 +0200
+
 vim-orgmode (0.2.1-13) unstable; urgency=low
 
   * fix minor issues related to switching to the next todo sequence
