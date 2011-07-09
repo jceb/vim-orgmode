@@ -1,3 +1,10 @@
+vim-orgmode (0.2.1-10) unstable; urgency=low
+
+  * fix todo tests broken by version 0.2.1-8
+  * fix DONE result of VimBuffer.get_todo_states.parse_states
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 09 Jul 2011 09:49:07 +0200
+
 vim-orgmode (0.2.1-9) unstable; urgency=low
 
   * fix folded text for headings containing backslashes or double quotes

@@ -2,6 +2,7 @@
 
 import unittest
 import sys
+from orgmode.document import VimBuffer
 sys.path.append(u'../ftplugin')
 
 import vim
@@ -154,13 +155,13 @@ class TodoTestCase(unittest.TestCase):
 	def test_get_states_without_seperator(self):
 		u"""The last element in the todostates shouold be used as DONE-state when no sperator is given"""
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = Todo._get_states()
+		states_todo, states_done = VimBuffer().get_todo_states()
 		expected_todo, expected_done = [u'TODO'], [u'DONE']
 		self.assertEqual(states_todo, expected_todo)
 		self.assertEqual(states_done, expected_done)
 
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'INPROGRESS'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = Todo._get_states()
+		states_todo, states_done = VimBuffer().get_todo_states()
 		expected_todo = [u'TODO', u'INPROGRESS']
 		expected_done = [u'DONE']
 		self.assertEqual(states_todo, expected_todo)
@@ -168,7 +169,7 @@ class TodoTestCase(unittest.TestCase):
 
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'INPROGRESS'.encode(u'utf-8'),
 				u'DUMMY'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = Todo._get_states()
+		states_todo, states_done = VimBuffer().get_todo_states()
 		expected_todo  = [u'TODO', u'INPROGRESS', u'DUMMY']
 		expected_done = [u'DONE']
 		self.assertEqual(states_todo, expected_todo)
@@ -176,7 +177,7 @@ class TodoTestCase(unittest.TestCase):
 
 	def test_get_states_with_seperator(self):
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = Todo._get_states()
+		states_todo, states_done = VimBuffer().get_todo_states()
 		expected_todo = [u'TODO']
 		expected_done = [u'DONE']
 		self.assertEqual(states_todo, expected_todo)
@@ -184,7 +185,7 @@ class TodoTestCase(unittest.TestCase):
 
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'INPROGRESS'.encode(u'utf-8'), u'|'.encode(u'utf-8'),
 				u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = Todo._get_states()
+		states_todo, states_done = VimBuffer().get_todo_states()
 		expected_todo = [u'TODO', u'INPROGRESS']
 		expected_done = [u'DONE']
 		self.assertEqual(states_todo, expected_todo)
@@ -192,7 +193,7 @@ class TodoTestCase(unittest.TestCase):
 
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'INPROGRESS'.encode(u'utf-8'),
 				u'DUMMY'.encode(u'utf-8'), u'|'.encode(u'utf-8'),  u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = Todo._get_states()
+		states_todo, states_done = VimBuffer().get_todo_states()
 		expected_todo = [u'TODO', u'INPROGRESS', u'DUMMY']
 		expected_done = [u'DONE']
 		self.assertEqual(states_todo, expected_todo)
@@ -200,7 +201,7 @@ class TodoTestCase(unittest.TestCase):
 
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'INPROGRESS'.encode(u'utf-8'),
 				u'DUMMY'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DELEGATED'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = Todo._get_states()
+		states_todo, states_done = VimBuffer().get_todo_states()
 		expected_todo =[u'TODO', u'INPROGRESS', u'DUMMY']
 		expected_done = [u'DELEGATED', u'DONE']
 		self.assertEqual(states_todo, expected_todo)
@@ -208,7 +209,7 @@ class TodoTestCase(unittest.TestCase):
 
 		vim.EVALRESULTS[u'g:org_todo_keywords'.encode(u'utf-8')] = [u'TODO'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONEX'.encode(u'utf-8'),
 				u'DUMMY'.encode(u'utf-8'), u'DELEGATED'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')]
-		states_todo, states_done = Todo._get_states()
+		states_todo, states_done = VimBuffer().get_todo_states()
 		expected_todo = [u'TODO']
 		expected_done = [u'DONEX', u'DUMMY', u'DELEGATED', u'DONE']
 		self.assertEqual(states_todo, expected_todo)

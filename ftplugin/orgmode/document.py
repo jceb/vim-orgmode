@@ -204,7 +204,7 @@ class VimBuffer(Document):
 						else:
 							res.append(_i)
 				if not u'|' in res:
-					res = (res[:-1], res[-1])
+					res = (res[:-1], [res[-1]])
 				else:
 					seperator_pos = res.index(u'|')
 					res = (res[0:seperator_pos], res[seperator_pos + 1:])
