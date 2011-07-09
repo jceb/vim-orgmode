@@ -18,4 +18,4 @@
   Information about the license are found in the file LICENSE.
 
 * Installation
-  Installation and usage instructions are found in file [[doc/org.txt]].
+  Installation and usage instructions are found in file [[vim-orgmode/blob/master/doc/org.txt][doc/org.txt]].
