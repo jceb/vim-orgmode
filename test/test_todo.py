@@ -349,7 +349,7 @@ class TodoTestCase(unittest.TestCase):
 		states = [((u'TODO(t)', u'NEXT(n)', u'NOW(w)'), (u'DELEGATED(g)', u'DONE(d)')), ((u'QA(q)', ), (u'RELEASED(r)', ))]
 		current_state = None
 		result = Todo._get_next_state(current_state, states, True, next_set=True)
-		self.assertEquals(result, None)
+		self.assertEquals(result, u'TODO')
 
 		current_state = None
 		result = Todo._get_next_state(current_state, states, False, next_set=True)

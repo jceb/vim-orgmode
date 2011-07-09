@@ -91,7 +91,8 @@ class Todo(object):
 			ci = find_current_todo_state(current_state, all_states)
 
 			if not ci:
-				if next_set:
+				if next_set and direction == DIRECTION_BACKWARD:
+					echom(u'Already at the first keyword set')
 					return current_state
 
 				return split_access_key(all_states[0][0][0] if all_states[0][0] else all_states[0][1][0])[0] \
@@ -99,9 +100,11 @@ class Todo(object):
 						split_access_key(all_states[0][1][-1] if all_states[0][1] else all_states[0][0][-1])[0]
 			elif next_set:
 				if direction == DIRECTION_FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
+					echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] + 1][0]), u', '.join(all_states[ci[0] + 1][1])))
 					return split_access_key(all_states[ci[0] + 1][0][0] \
 							if all_states[ci[0] + 1][0] else all_states[ci[0] + 1][1][0])[0]
 				elif current_state is not None and direction == DIRECTION_BACKWARD and ci[0] - 1 >= 0:
+					echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] - 1][0]), u', '.join(all_states[ci[0] - 1][1])))
 					return split_access_key(all_states[ci[0] - 1][0][0] \
 							if all_states[ci[0] - 1][0] else all_states[ci[0] - 1][1][0])[0]
 				else:
@@ -126,6 +129,10 @@ class Todo(object):
 						# finished done states, jump to todo states
 						return split_access_key(all_states[ci[0]][ci[1] - 1][len(all_states[ci[0]][ci[1] - 1]) + next_pos])[0]
 		else:
+			# create new window
+			# make window a scratch window, leaving the window is not possible!
+			# map access keys to callback that updates current heading
+			# map selection keys
 			pass
 
 	@classmethod
@@ -162,7 +169,9 @@ class Todo(object):
 		# move cursor along with the inserted state only when current position
 		# is in the heading; otherwite do nothing
 		if heading.start_vim == lineno:
-			if current_state is None:
+			if current_state is None and new_state is None:
+				offset = 0
+			elif current_state is None:
 				offset = len(new_state)
 			elif new_state is None:
 				offset = -len(current_state)
