@@ -23,7 +23,7 @@ check: test/run_tests.py
 	cd test && python run_tests.py
 
 clean: documentation
-	@rm -rf ${PLUGIN}.vba ${PLUGIN}.vba.gz tmp
+	@rm -rf ${PLUGIN}.vba ${PLUGIN}.vba.gz tmp files
 	cd $^ && $(MAKE) $@
 
 ${PLUGIN}.vba: check build_vba.vim clean
