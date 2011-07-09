@@ -345,6 +345,48 @@ class TodoTestCase(unittest.TestCase):
 		result = Todo._get_next_state(current_state, states, False)
 		self.assertEquals(result, u'DONE')
 
+	def test_get_next_keyword_sequence(self):
+		states = [((u'TODO(t)', u'NEXT(n)', u'NOW(w)'), (u'DELEGATED(g)', u'DONE(d)')), ((u'QA(q)', ), (u'RELEASED(r)', ))]
+		current_state = None
+		result = Todo._get_next_state(current_state, states, True, next_set=True)
+		self.assertEquals(result, u'TODO')
+
+		current_state = None
+		result = Todo._get_next_state(current_state, states, False, next_set=True)
+		self.assertEquals(result, None)
+
+		current_state = u'TODO'
+		result = Todo._get_next_state(current_state, states, False, next_set=True)
+		self.assertEquals(result, u'TODO')
+
+		current_state = u'TODO'
+		result = Todo._get_next_state(current_state, states, True, next_set=True)
+		self.assertEquals(result, u'QA')
+
+		current_state = u'NOW'
+		result = Todo._get_next_state(current_state, states, True, next_set=True)
+		self.assertEquals(result, u'QA')
+
+		current_state = u'DELEGATED'
+		result = Todo._get_next_state(current_state, states, True, next_set=True)
+		self.assertEquals(result, u'QA')
+
+		current_state = u'QA'
+		result = Todo._get_next_state(current_state, states, False, next_set=True)
+		self.assertEquals(result, u'TODO')
+
+		current_state = u'QA'
+		result = Todo._get_next_state(current_state, states, True, next_set=True)
+		self.assertEquals(result, u'QA')
+
+		current_state = u'RELEASED'
+		result = Todo._get_next_state(current_state, states, True, next_set=True)
+		self.assertEquals(result, u'RELEASED')
+
+		current_state = u'RELEASED'
+		result = Todo._get_next_state(current_state, states, False, next_set=True)
+		self.assertEquals(result, u'TODO')
+
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(TodoTestCase)
 

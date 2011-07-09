@@ -91,6 +91,9 @@ class Todo(object):
 			ci = find_current_todo_state(current_state, all_states)
 
 			if not ci:
+				if next_set and direction == DIRECTION_BACKWARD:
+					return current_state
+
 				return split_access_key(all_states[0][0][0] if all_states[0][0] else all_states[0][1][0])[0] \
 						if direction == DIRECTION_FORWARD else \
 						split_access_key(all_states[0][1][-1] if all_states[0][1] else all_states[0][0][-1])[0]
@@ -98,7 +101,7 @@ class Todo(object):
 				if direction == DIRECTION_FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
 					return split_access_key(all_states[ci[0] + 1][0][0] \
 							if all_states[ci[0] + 1][0] else all_states[ci[0] + 1][1][0])[0]
-				elif direction == DIRECTION_BACKWARD and ci[0] - 1 >= 0:
+				elif current_state is not None and direction == DIRECTION_BACKWARD and ci[0] - 1 >= 0:
 					return split_access_key(all_states[ci[0] - 1][0][0] \
 							if all_states[ci[0] - 1][0] else all_states[ci[0] - 1][1][0])[0]
 				else:
