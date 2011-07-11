@@ -31,7 +31,7 @@ ${PLUGIN}.vba: check build_vba.vim clean
 	find tmp -type f  | sed -e 's/^tmp\///' > files
 	cp build_vba.vim tmp
 	cd tmp && vim --cmd 'let g:plugin_name="${PLUGIN}"' -s build_vba.vim
-	[ -e tmp/${PLUGIN}.vmb ] && mv tmp/${PLUGIN}.vmb tmp/$@
+	[ -e tmp/${PLUGIN}.vmb ] && mv tmp/${PLUGIN}.vmb tmp/$@ || true
 	mv tmp/$@ .
 
 ${PLUGIN}.vba.gz: ${PLUGIN}.vba

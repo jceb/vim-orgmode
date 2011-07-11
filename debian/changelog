@@ -1,3 +1,9 @@
+vim-orgmode (0.2.1-16) unstable; urgency=low
+
+  * update installvba target to also work with older vim version
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Mon, 11 Jul 2011 08:23:18 +0200
+
 vim-orgmode (0.2.1-15) unstable; urgency=low
 
   * make switching to the next todo sequence more convenient
