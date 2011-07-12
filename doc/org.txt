@@ -434,6 +434,7 @@ LINKS								     *org-links*
 CHANGELOG							 *org-changelog*
 
 0.3.0-0
+- fix encoding issues in Date plugin
 - add general support for multiple todo sequences (closes Issue #46)
 - fix folded text for headings containing backslashes or double quotes (closes
   Issue #26)

@@ -38,7 +38,7 @@ class Date(object):
 
 		# set speeddating format that is compatible with orgmode
 		try:
-			if int(vim.eval(u'exists(":SpeedDatingFormat")')):
+			if int(vim.eval(u'exists(":SpeedDatingFormat")'.encode(u'utf-8'))):
 				vim.command(u':1SpeedDatingFormat %Y-%m-%d %a'.encode(u'utf-8'))
 				vim.command(u':1SpeedDatingFormat %Y-%m-%d %a %H:%M'.encode(u'utf-8'))
 			else:
@@ -190,15 +190,14 @@ class Date(object):
 		msg = u''.join([u'Insert Date: ', today.strftime(u'%Y-%m-%d %a'.encode(u'utf-8')),
 				u' | Change date'])
 		modifier = get_user_input(msg)
-		echom(modifier)
 
 		newdate = cls._modify_time(today, modifier)
 
 		# format
 		if isinstance(newdate, datetime):
-			newdate = newdate.strftime(u'%Y-%m-%d %a %H:%M').decode(u'utf-8')
+			newdate = newdate.strftime(u'%Y-%m-%d %a %H:%M'.encode(u'utf-8')).decode(u'utf-8')
 		else:
-			newdate = newdate.strftime(u'%Y-%m-%d %a').decode(u'utf-8')
+			newdate = newdate.strftime(u'%Y-%m-%d %a'.encode(u'utf-8')).decode(u'utf-8')
 		timestamp = u'<%s>' % newdate if active else u'[%s]' % newdate
 
 		insert_at_cursor(timestamp)
