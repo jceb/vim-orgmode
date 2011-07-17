@@ -63,12 +63,12 @@ class Export(object):
 		self.keybindings.append(Keybinding(u'%sep' % leader,
 				Plug(u'OrgExportToPDF',
 				u':py ORGMODE.plugins[u"Export"].topdf()<CR>')))
-		self.menu + ActionEntry(u'To PDF', self.keybindings[-1])
+		self.menu + ActionEntry(u'To PDF (via Emacs)', self.keybindings[-1])
 
 		# to HTML
 		self.keybindings.append(Keybinding(u'%seh' % leader,
 				Plug(u'OrgExportToHTML',
 				u':py ORGMODE.plugins[u"Export"].tohtml()<CR>')))
-		self.menu + ActionEntry(u'To HTML', self.keybindings[-1])
+		self.menu + ActionEntry(u'To HTML (via Emacs)', self.keybindings[-1])
 
 # vim: set noexpandtab:
