@@ -97,6 +97,11 @@ class EditStructure(object):
 	def _change_heading_level(cls, level, including_children=True, on_heading=False, insert_mode=False):
 		u"""
 		Change level of heading realtively with or without including children.
+
+		:level:					the number of levels to promote/demote heading
+		:including_children:	True if should should be included in promoting/demoting
+		:on_heading:			True if promoting/demoting should only happen when the cursor is on the heading
+		:insert_mode:			True if vim is in insert mode
 		"""
 		d = ORGMODE.get_document()
 		current_heading = d.current_heading()
@@ -148,7 +153,7 @@ class EditStructure(object):
 		indent_end_vim = current_heading.end_of_last_child_vim if including_children else current_heading.end_vim
 		indent(current_heading, including_children)
 
-		# when changing the level of a heading, it's position in the DOM
+		# when changing the level of a heading, its position in the DOM
 		# needs to be updated. It's likely that the heading gets a new
 		# parent and new children when demoted or promoted
 
@@ -191,9 +196,9 @@ class EditStructure(object):
 				# parent heading and it's siblings
 				if not including_children:
 					for h in current_heading.children[:]:
-						if h.level <= nhl:
+						if h and h.level <= nhl:
+							append_heading(h.copy(), p if p else np)
 							current_heading.children.remove(h)
-							append_heading(h, p)
 		else:
 			# promotion
 			if p and nhl <= p.level:
