@@ -1,3 +1,10 @@
+vim-orgmode (0.2.1-23) unstable; urgency=low
+
+  * more precise regex for dates - pull request by sotte
+  * closes issue #52
+
+ -- Roman Asendorf <roman.asendorf@gmail.com> Wed, 03 Aug 2011 22:40:48 +0200
+
 vim-orgmode (0.2.1-22) unstable; urgency=low
 
   * implement interactive todo state selection
