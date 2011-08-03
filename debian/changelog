@@ -1,7 +1,14 @@
+vim-orgmode (0.2.1-19) unstable; urgency=low
+
+  * add orgmode group to au commands in TagProperties plugin
+  * closes issue #53
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Wed, 03 Aug 2011 20:02:08 +0200
+
 vim-orgmode (0.2.1-18) unstable; urgency=low
 
   * allow demotion of first level headings
-  * closed issue #27
+  * closes issue #27
 
  -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 01 Aug 2011 21:59:32 +0200
 
