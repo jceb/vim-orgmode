@@ -9,6 +9,6 @@ Homepage: http://www.e-jc.de/
 Package: vim-orgmode
 Architecture: all
 Depends: python, vim-common, vim
-Suggests:
+Suggests: emacs
 Description: Clone of Org-mode for Vim
  Clone of Org-mode for Vim
