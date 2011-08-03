@@ -1,3 +1,10 @@
+vim-orgmode (0.2.1-20) unstable; urgency=low
+
+  * simple export via emacs for pdf and html - pull request by sotte
+  * closes issue #54
+
+-- Roman Asendorf <roman.asendorf@gmail.com> Wed, 03 Aug 2011 21:43:15 +0200
+
 vim-orgmode (0.2.1-19) unstable; urgency=low
 
   * add orgmode group to au commands in TagProperties plugin
