@@ -54,7 +54,7 @@ unlet! s:i
 if !exists('g:loaded_org_syntax')
 	let g:loaded_org_syntax = 1
 
-	function! s:ExtendHighlightingGroup(base_group, new_group, settings)
+	function! OrgExtendHighlightingGroup(base_group, new_group, settings)
 		let l:base_hi = ''
 		redir => l:base_hi
 		silent execute 'highlight ' . a:base_group
@@ -63,7 +63,7 @@ if !exists('g:loaded_org_syntax')
 		execute 'highlight ' . a:new_group . l:group_hi . ' ' . a:settings
 	endfunction
 
-	function! s:InterpretFaces(faces)
+	function! OrgInterpretFaces(faces)
 		let l:res_faces = ''
 		if type(a:faces) == 3
 			let l:style = []
@@ -157,7 +157,7 @@ if !exists('g:loaded_org_syntax')
 			for l:j in g:org_todo_keyword_faces
 				if l:j[0] == l:_i
 					let l:group = 'org_todo_keyword_face_' . l:_i
-					call s:ExtendHighlightingGroup(l:default_group, l:group, s:InterpretFaces(l:j[1]))
+					call OrgExtendHighlightingGroup(l:default_group, l:group, OrgInterpretFaces(l:j[1]))
 					break
 				endif
 			endfor

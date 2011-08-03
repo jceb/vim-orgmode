@@ -1,3 +1,10 @@
+vim-orgmode (0.2.1-22) unstable; urgency=low
+
+  * implement interactive todo state selection
+  * closes issue #5
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Wed, 03 Aug 2011 22:23:14 +0200
+
 vim-orgmode (0.2.1-21) unstable; urgency=low
 
   * added emacs as suggested package - pull request by sotte
