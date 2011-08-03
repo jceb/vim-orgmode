@@ -434,6 +434,7 @@ LINKS								     *org-links*
 CHANGELOG							 *org-changelog*
 
 0.3.0-0
+- implement interactive todo state selection (closes issue #5)
 - add orgmode group to au commands in TagProperties plugin (closes issue #53)
 - allow demotion of first level headings (closes issue #27)
 - fix encoding issues in Date plugin

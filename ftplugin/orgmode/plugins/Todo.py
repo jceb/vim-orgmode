@@ -7,6 +7,21 @@ from orgmode.keybinding import Keybinding, Plug
 
 import vim
 
+# temporary todo states for differnent orgmode buffers
+ORGTODOSTATES = {}
+
+def split_access_key(t):
+	u"""
+	:t:		todo state
+
+	:return:	todo state and access key separated (TODO, ACCESS_KEY)
+	"""
+	if type(t) != unicode:
+		return (None, None)
+
+	idx = t.find(u'(')
+	v, k = ((t[:idx], t[idx + 1:-1]) if t[idx + 1:-1] else (t, None)) if idx != -1 else (t, None)
+	return (v, k)
 
 class Todo(object):
 	u"""
@@ -55,16 +70,6 @@ class Todo(object):
 		if not all_states:
 			return
 
-		def split_access_key(t):
-			u"""
-			:t:		todo state
-
-			:return:	todo state and access key separated (TODO, ACCESS_KEY)
-			"""
-			idx = t.find(u'(')
-			t, k = (t[:idx], t[idx + 1:-1] if t[idx + 1:-1] else None) if idx != -1 else (t, None)
-			return (t, k)
-
 		def find_current_todo_state(c, a, stop=0):
 			u"""
 			:c:		current todo state
@@ -87,53 +92,46 @@ class Todo(object):
 					if c == _i:
 						return [i]
 
-		if not interactive:
-			ci = find_current_todo_state(current_state, all_states)
+		ci = find_current_todo_state(current_state, all_states)
 
-			if not ci:
-				if next_set and direction == DIRECTION_BACKWARD:
-					echom(u'Already at the first keyword set')
-					return current_state
+		if not ci:
+			if next_set and direction == DIRECTION_BACKWARD:
+				echom(u'Already at the first keyword set')
+				return current_state
 
-				return split_access_key(all_states[0][0][0] if all_states[0][0] else all_states[0][1][0])[0] \
-						if direction == DIRECTION_FORWARD else \
-						split_access_key(all_states[0][1][-1] if all_states[0][1] else all_states[0][0][-1])[0]
-			elif next_set:
-				if direction == DIRECTION_FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
-					echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] + 1][0]), u', '.join(all_states[ci[0] + 1][1])))
-					return split_access_key(all_states[ci[0] + 1][0][0] \
-							if all_states[ci[0] + 1][0] else all_states[ci[0] + 1][1][0])[0]
-				elif current_state is not None and direction == DIRECTION_BACKWARD and ci[0] - 1 >= 0:
-					echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] - 1][0]), u', '.join(all_states[ci[0] - 1][1])))
-					return split_access_key(all_states[ci[0] - 1][0][0] \
-							if all_states[ci[0] - 1][0] else all_states[ci[0] - 1][1][0])[0]
-				else:
-					echom(u'Already at the %s keyword set' % (u'first' if direction == DIRECTION_BACKWARD else u'last'))
-					return current_state
+			return split_access_key(all_states[0][0][0] if all_states[0][0] else all_states[0][1][0])[0] \
+					if direction == DIRECTION_FORWARD else \
+					split_access_key(all_states[0][1][-1] if all_states[0][1] else all_states[0][0][-1])[0]
+		elif next_set:
+			if direction == DIRECTION_FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
+				echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] + 1][0]), u', '.join(all_states[ci[0] + 1][1])))
+				return split_access_key(all_states[ci[0] + 1][0][0] \
+						if all_states[ci[0] + 1][0] else all_states[ci[0] + 1][1][0])[0]
+			elif current_state is not None and direction == DIRECTION_BACKWARD and ci[0] - 1 >= 0:
+				echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] - 1][0]), u', '.join(all_states[ci[0] - 1][1])))
+				return split_access_key(all_states[ci[0] - 1][0][0] \
+						if all_states[ci[0] - 1][0] else all_states[ci[0] - 1][1][0])[0]
 			else:
-				next_pos = ci[2] + 1 if direction == DIRECTION_FORWARD else ci[2] - 1
-				if direction == DIRECTION_FORWARD:
-					if next_pos < len(all_states[ci[0]][ci[1]]):
-						# select next state within done or todo states
-						return split_access_key(all_states[ci[0]][ci[1]][next_pos])[0]
-
-					elif not ci[1] and next_pos - len(all_states[ci[0]][ci[1]]) < len(all_states[ci[0]][ci[1] + 1]):
-						# finished todo states, jump to done states
-						return split_access_key(all_states[ci[0]][ci[1] + 1][next_pos - len(all_states[ci[0]][ci[1]])])[0]
-				else:
-					if next_pos >= 0:
-						# select previous state within done or todo states
-						return split_access_key(all_states[ci[0]][ci[1]][next_pos])[0]
-
-					elif ci[1] and len(all_states[ci[0]][ci[1] - 1]) + next_pos < len(all_states[ci[0]][ci[1] - 1]):
-						# finished done states, jump to todo states
-						return split_access_key(all_states[ci[0]][ci[1] - 1][len(all_states[ci[0]][ci[1] - 1]) + next_pos])[0]
+				echom(u'Already at the %s keyword set' % (u'first' if direction == DIRECTION_BACKWARD else u'last'))
+				return current_state
 		else:
-			# create new window
-			# make window a scratch window, leaving the window is not possible!
-			# map access keys to callback that updates current heading
-			# map selection keys
-			pass
+			next_pos = ci[2] + 1 if direction == DIRECTION_FORWARD else ci[2] - 1
+			if direction == DIRECTION_FORWARD:
+				if next_pos < len(all_states[ci[0]][ci[1]]):
+					# select next state within done or todo states
+					return split_access_key(all_states[ci[0]][ci[1]][next_pos])[0]
+
+				elif not ci[1] and next_pos - len(all_states[ci[0]][ci[1]]) < len(all_states[ci[0]][ci[1] + 1]):
+					# finished todo states, jump to done states
+					return split_access_key(all_states[ci[0]][ci[1] + 1][next_pos - len(all_states[ci[0]][ci[1]])])[0]
+			else:
+				if next_pos >= 0:
+					# select previous state within done or todo states
+					return split_access_key(all_states[ci[0]][ci[1]][next_pos])[0]
+
+				elif ci[1] and len(all_states[ci[0]][ci[1] - 1]) + next_pos < len(all_states[ci[0]][ci[1] - 1]):
+					# finished done states, jump to todo states
+					return split_access_key(all_states[ci[0]][ci[1] - 1][len(all_states[ci[0]][ci[1] - 1]) + next_pos])[0]
 
 	@classmethod
 	@realign_tags
@@ -145,7 +143,6 @@ class Todo(object):
 		:returns: The changed heading
 		"""
 		d = ORGMODE.get_document(allow_dirty=True)
-		lineno, colno = vim.current.window.cursor
 
 		# get heading
 		heading = d.find_current_heading()
@@ -159,37 +156,107 @@ class Todo(object):
 			echom(u'No todo keywords configured.')
 			return
 
-		# current_state
 		current_state = heading.todo
 
 		# get new state
-		new_state = Todo._get_next_state(current_state, todo_states, \
-				direction=direction, interactive=interactive, next_set=next_set)
-
-		# move cursor along with the inserted state only when current position
-		# is in the heading; otherwite do nothing
-		if heading.start_vim == lineno:
-			if current_state is None and new_state is None:
-				offset = 0
-			elif current_state is None:
-				offset = len(new_state)
-			elif new_state is None:
-				offset = -len(current_state)
-			else:
-				offset = len(current_state) - len(new_state)
-			vim.current.window.cursor = (lineno, colno + offset)
-
-		# set new headline
-		heading.todo = new_state
+		if interactive:
+			# pass todo states to new window
+			ORGTODOSTATES[d.bufnr] = todo_states
+			# create a new window
+			vim.command((u'keepalt %dsp org:todo/%d' % (len(todo_states), d.bufnr)).encode(u'utf-8'))
+		else:
+			new_state = Todo._get_next_state(current_state, todo_states, \
+					direction=direction, interactive=interactive, next_set=next_set)
+			cls.set_todo_state(new_state)
 
 		# plug
 		plug = u'OrgTodoForward'
 		if direction == DIRECTION_BACKWARD:
 			plug = u'OrgTodoBackward'
 
+		return plug
+
+	@classmethod
+	def set_todo_state(cls, state):
+		u""" Set todo state for buffer.
+
+		:bufnr:		Number of buffer the todo state should be updated for
+		:state:		The new todo state
+		"""
+		lineno, colno = vim.current.window.cursor
+		d = ORGMODE.get_document(allow_dirty=True)
+		heading = d.find_current_heading()
+
+		if not heading:
+			return
+
+		current_state = heading.todo
+
+		# move cursor along with the inserted state only when current position
+		# is in the heading; otherwite do nothing
+		if heading.start_vim == lineno:
+			if current_state is None and state is None:
+				offset = 0
+			elif current_state is None:
+				offset = len(state)
+			elif state is None:
+				offset = -len(current_state)
+			else:
+				offset = len(current_state) - len(state)
+			vim.current.window.cursor = (lineno, colno + offset)
+
+		# set new headline
+		heading.todo = state
 		d.write_heading(heading)
 
-		return plug
+		vim.command(u'set timeoutlen=1000'.encode(u'utf-8'))
+		vim.command(u'doau orgmode BufEnter'.encode(u'utf-8'))
+
+	@classmethod
+	def init_org_todo(cls):
+		u""" Initialize org todo selection window.
+		"""
+		# make window a scratch window, leaving the window is not possible!
+		vim.command(u'setlocal tabstop=16 buftype=nofile timeout timeoutlen=1'.encode(u'utf-8'))
+		vim.command(u'nnoremap <silent> <buffer> <Esc> :bw<CR>'.encode(u'utf-8'))
+		vim.command((u'nnoremap <silent> <buffer> <CR> :let g:org_state = fnameescape(expand("<cword>"))<Bar>bw<Bar>exec "py ORGMODE.plugins[u\'Todo\'].set_todo_state(\'".g:org_state."\')"<Bar>unlet! g:org_state<CR>').encode(u'utf-8') )
+		vim.command(u'au orgmode BufLeave <buffer> :silent! %sbw' % \
+				(vim.eval(u'bufnr("%")'.encode(u'utf-8')).decode(u'utf-8')).encode(u'utf-8'))
+		bufnr = int(vim.current.buffer.name.split('/')[-1])
+		all_states = ORGTODOSTATES.get(bufnr, None)
+
+		if all_states is None:
+			vim.command(u'bw'.encode(u'utf-8'))
+			echom(u'No todo states avaiable for buffer %s' % vim.current.buffer.name)
+
+		for l in xrange(0, len(all_states)):
+			res = u''
+			did_done = False
+			for j in xrange(0, 2):
+				if j < len(all_states[l]):
+					for i in all_states[l][j]:
+						if type(i) != unicode:
+							continue
+						v, k = split_access_key(i)
+						if k:
+							res += (u'\t' if res else u'') + u'[%s] %s' % (k, v)
+							# map access keys to callback that updates current heading
+							# map selection keys
+							vim.command((u'nnoremap <silent> <buffer> %s :bw<Bar>py ORGMODE.plugins[u"Todo"].set_todo_state("%s".decode(u"utf-8"))<CR>' % (k, v)).encode(u'utf-8') )
+						elif v:
+							res += (u'\t' if res else u'') + v
+			if res:
+				if l == 0:
+					vim.current.buffer[0] = res.encode(u'utf-8')
+				else:
+					vim.current.buffer.append(res.encode(u'utf-8'))
+
+		# finally make buffer non modifiable
+		vim.command(u'setf orgtodo'.encode(u'utf-8'))
+		vim.command(u'setlocal nomodifiable'.encode(u'utf-8'))
+
+		# remove temporary todo states for the current buffer
+		del ORGTODOSTATES[bufnr]
 
 	def register(self):
 		u"""
@@ -225,5 +292,7 @@ class Todo(object):
 		submenu + ActionEntry(u'Previous &keyword set', self.keybindings[-1])
 
 		settings.set(u'org_todo_keywords', [u'TODO'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')])
+
+		vim.command(u'au orgmode BufReadCmd org:todo/* :py ORGMODE.plugins[u"Todo"].init_org_todo()'.encode(u'utf-8'))
 
 # vim: set noexpandtab:
