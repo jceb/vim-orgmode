@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from exceptions import BufferNotFound, BufferNotInSync
-from liborgmode import Document, Heading, MultiPurposeList, DIRECTION_BACKWARD
+from liborgmode import Document, Heading, MultiPurposeList, Direction
 import settings
 import vim
 from UserList import UserList
@@ -304,7 +304,7 @@ class VimBuffer(Document):
 			# Retrieve a potentially dirty document
 			d = ORGMODE.get_document(allow_dirty=True)
 			# Don't rely on the DOM, retrieve the heading afresh
-			h = d.find_heading(direction=DIRECTION_FORWARD, position=100)
+			h = d.find_heading(direction=Direction.FORWARD, position=100)
 			# Update tags
 			h.tags = ['tag1', 'tag2']
 			# Write the heading
@@ -380,5 +380,5 @@ class VimBuffer(Document):
 		"""
 		return self.find_heading(vim.current.window.cursor[0] - 1 \
 				if position is None else position, \
-				direction=DIRECTION_BACKWARD, heading=heading, \
+				direction=Direction.BACKWARD, heading=heading, \
 				connect_with_document=False)

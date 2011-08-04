@@ -3,7 +3,7 @@
 from orgmode import echo, ORGMODE, apply_count
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_OPERATOR, Plug
-from liborgmode import DIRECTION_FORWARD, DIRECTION_BACKWARD
+from liborgmode import Direction
 
 import vim
 
@@ -41,7 +41,7 @@ class Navigator(object):
 		p = heading.parent
 
 		if mode == u'visual':
-			cls._change_visual_selection(heading, p, direction=DIRECTION_BACKWARD, parent=True)
+			cls._change_visual_selection(heading, p, direction=Direction.BACKWARD, parent=True)
 		else:
 			vim.current.window.cursor = (p.start_vim, p.level + 1)
 		return p
@@ -72,7 +72,7 @@ class Navigator(object):
 		ns = heading.parent.next_sibling
 
 		if mode == u'visual':
-			cls._change_visual_selection(heading, ns, direction=DIRECTION_FORWARD, parent=False)
+			cls._change_visual_selection(heading, ns, direction=Direction.FORWARD, parent=False)
 		elif mode == u'operator':
 			vim.current.window.cursor = (ns.start_vim, 0)
 		else:
@@ -80,7 +80,7 @@ class Navigator(object):
 		return ns
 
 	@classmethod
-	def _change_visual_selection(cls, current_heading, heading, direction=DIRECTION_FORWARD, noheadingfound=False, parent=False):
+	def _change_visual_selection(cls, current_heading, heading, direction=Direction.FORWARD, noheadingfound=False, parent=False):
 		current = vim.current.window.cursor[0]
 		line_start, col_start = [ int(i) for i in vim.eval(u'getpos("\'<")'.encode(u'utf-8'))[1:3] ]
 		line_end, col_end = [ int(i) for i in vim.eval(u'getpos("\'>")'.encode(u'utf-8'))[1:3] ]
@@ -92,7 +92,7 @@ class Navigator(object):
 		# << |visual start
 		# selection end >>
 		if current == line_start:
-			if (direction == DIRECTION_FORWARD and line_end < f_start) or noheadingfound and not direction == DIRECTION_BACKWARD:
+			if (direction == Direction.FORWARD and line_end < f_start) or noheadingfound and not direction == Direction.BACKWARD:
 				swap_cursor = False
 
 			# focus heading HERE
@@ -102,7 +102,7 @@ class Navigator(object):
 			# << |visual start
 			# focus heading HERE
 			# selection end >>
-			if f_start < line_start and direction == DIRECTION_BACKWARD:
+			if f_start < line_start and direction == Direction.BACKWARD:
 				if current_heading.start_vim < line_start and not parent:
 					line_start = current_heading.start_vim
 				else:
@@ -115,7 +115,7 @@ class Navigator(object):
 			# selection end >>
 			# focus heading HERE
 			else:
-				if direction == DIRECTION_FORWARD:
+				if direction == Direction.FORWARD:
 					if line_end < f_start and not line_start == f_start - 1 and current_heading:
 						# focus end of previous heading instead of beginning of next heading
 						line_start = line_end
@@ -124,7 +124,7 @@ class Navigator(object):
 						# focus end of next heading
 						line_start = line_end
 						line_end = f_end
-				elif direction == DIRECTION_BACKWARD:
+				elif direction == Direction.BACKWARD:
 					if line_end < f_end:
 						pass
 				else:
@@ -142,7 +142,7 @@ class Navigator(object):
 				swap_cursor = False
 
 			elif (line_start > f_start or \
-					line_start == f_start) and line_end <= f_end and direction == DIRECTION_BACKWARD:
+					line_start == f_start) and line_end <= f_end and direction == Direction.BACKWARD:
 				line_end = line_start
 				line_start = f_start
 
@@ -157,7 +157,7 @@ class Navigator(object):
 			# selection end| >>
 			# focus heading HERE
 			else:
-				if direction == DIRECTION_FORWARD:
+				if direction == Direction.FORWARD:
 					if line_end < f_start - 1:
 						# focus end of previous heading instead of beginning of next heading
 						line_end = f_start - 1
@@ -176,7 +176,7 @@ class Navigator(object):
 				(line_start, move_col_start, vim.eval(u'visualmode()'.encode(u'utf-8')), line_end, move_col_end, swap)).encode(u'utf-8'))
 
 	@classmethod
-	def _focus_heading(cls, mode, direction=DIRECTION_FORWARD, skip_children=False):
+	def _focus_heading(cls, mode, direction=Direction.FORWARD, skip_children=False):
 		u"""
 		Focus next or previous heading in the given direction
 
@@ -190,7 +190,7 @@ class Navigator(object):
 		# FIXME this is just a piece of really ugly and unmaintainable code. It
 		# should be rewritten
 		if not heading:
-			if direction == DIRECTION_FORWARD and d.headings \
+			if direction == Direction.FORWARD and d.headings \
 					and vim.current.window.cursor[0] < d.headings[0].start_vim:
 				# the cursor is in the meta information are, therefore focus
 				# first heading
@@ -202,7 +202,7 @@ class Navigator(object):
 				else:
 					echo(u'No heading found')
 				return
-		elif direction == DIRECTION_BACKWARD:
+		elif direction == Direction.BACKWARD:
 			if vim.current.window.cursor[0] != heading.start_vim:
 				# the cursor is in the body of the current heading, therefore
 				# the current heading will be focused
@@ -216,17 +216,17 @@ class Navigator(object):
 
 		# so far no heading has been found that the next focus should be on
 		if not focus_heading:
-			if not skip_children and direction == DIRECTION_FORWARD and heading.children:
+			if not skip_children and direction == Direction.FORWARD and heading.children:
 				focus_heading = heading.children[0]
-			elif direction == DIRECTION_FORWARD and heading.next_sibling:
+			elif direction == Direction.FORWARD and heading.next_sibling:
 				focus_heading = heading.next_sibling
-			elif direction == DIRECTION_BACKWARD and heading.previous_sibling:
+			elif direction == Direction.BACKWARD and heading.previous_sibling:
 				focus_heading = heading.previous_sibling
 				if not skip_children:
 					while focus_heading.children:
 						focus_heading = focus_heading.children[-1]
 			else:
-				if direction == DIRECTION_FORWARD:
+				if direction == Direction.FORWARD:
 					focus_heading = current_heading.next_heading
 				else:
 					focus_heading = current_heading.previous_heading
@@ -239,7 +239,7 @@ class Navigator(object):
 				focus_heading = heading
 				noheadingfound = True
 			else:
-				if direction == DIRECTION_FORWARD:
+				if direction == Direction.FORWARD:
 					echo(u'Already focussing last heading')
 				else:
 					echo(u'Already focussing first heading')
@@ -248,7 +248,7 @@ class Navigator(object):
 		if mode == u'visual':
 			cls._change_visual_selection(current_heading, focus_heading, direction=direction, noheadingfound=noheadingfound)
 		elif mode == u'operator':
-			if direction == DIRECTION_FORWARD and vim.current.window.cursor[0] >= focus_heading.start_vim:
+			if direction == Direction.FORWARD and vim.current.window.cursor[0] >= focus_heading.start_vim:
 				vim.current.window.cursor = (focus_heading.end_vim, len(vim.current.buffer[focus_heading.end].decode(u'utf-8')))
 			else:
 				vim.current.window.cursor = (focus_heading.start_vim, 0)
@@ -264,7 +264,7 @@ class Navigator(object):
 		u"""
 		Focus previous heading
 		"""
-		return cls._focus_heading(mode, direction=DIRECTION_BACKWARD, skip_children=skip_children)
+		return cls._focus_heading(mode, direction=Direction.BACKWARD, skip_children=skip_children)
 
 	@classmethod
 	@apply_count
@@ -272,7 +272,7 @@ class Navigator(object):
 		u"""
 		Focus next heading
 		"""
-		return cls._focus_heading(mode, direction=DIRECTION_FORWARD, skip_children=skip_children)
+		return cls._focus_heading(mode, direction=Direction.FORWARD, skip_children=skip_children)
 
 	def register(self):
 		# normal mode

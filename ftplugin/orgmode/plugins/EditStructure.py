@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import ORGMODE, apply_count, repeat, realign_tags, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode import ORGMODE, apply_count, repeat, realign_tags
+from orgmode import Direction
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_INSERT, MODE_NORMAL
 from liborgmode import Heading
@@ -258,7 +259,7 @@ class EditStructure(object):
 			return u'OrgPromoteHeadingNormal'
 
 	@classmethod
-	def _move_heading(cls, direction=DIRECTION_FORWARD, including_children=True):
+	def _move_heading(cls, direction=Direction.FORWARD, including_children=True):
 		u""" Move heading up or down
 
 		:returns: heading or None
@@ -266,8 +267,8 @@ class EditStructure(object):
 		d = ORGMODE.get_document()
 		heading = d.current_heading()
 		if (not heading) or \
-				(direction == DIRECTION_FORWARD and not heading.next_sibling) or \
-				(direction == DIRECTION_BACKWARD and not heading.previous_sibling):
+				(direction == Direction.FORWARD and not heading.next_sibling) or \
+				(direction == Direction.BACKWARD and not heading.previous_sibling):
 			return None
 
 		cursor_offset_within_the_heading_vim = vim.current.window.cursor[0] - (heading._orig_start + 1)
@@ -276,7 +277,7 @@ class EditStructure(object):
 			heading.previous_sibling.children.extend(heading.children)
 			del heading.children
 
-		heading_insert_position = 0 if direction == DIRECTION_FORWARD else -1
+		heading_insert_position = 0 if direction == Direction.FORWARD else -1
 		l = heading.get_parent_list()
 		idx = heading.get_index_in_parent_list()
 		del l[idx]
@@ -295,14 +296,14 @@ class EditStructure(object):
 	@repeat
 	@apply_count
 	def move_heading_upward(cls, including_children=True):
-		if cls._move_heading(direction=DIRECTION_BACKWARD, including_children=including_children):
+		if cls._move_heading(direction=Direction.BACKWARD, including_children=including_children):
 			return u'OrgMoveHeadingUpward'
 
 	@classmethod
 	@repeat
 	@apply_count
 	def move_heading_downward(cls, including_children=True):
-		if cls._move_heading(direction=DIRECTION_FORWARD, including_children=including_children):
+		if cls._move_heading(direction=Direction.FORWARD, including_children=including_children):
 			return u'OrgMoveHeadingDownward'
 
 	def register(self):
