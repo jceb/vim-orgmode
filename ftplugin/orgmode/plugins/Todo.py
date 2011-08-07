@@ -158,12 +158,16 @@ class Todo(object):
 
 		current_state = heading.todo
 
-		# get new state
+		# get new state interactively
 		if interactive:
 			# pass todo states to new window
 			ORGTODOSTATES[d.bufnr] = todo_states
-			# create a new window
-			vim.command((u'keepalt %dsp org:todo/%d' % (len(todo_states), d.bufnr)).encode(u'utf-8'))
+			if bool(int(vim.eval(( u'bufexists("org:todo/%d")' % (d.bufnr, ) ).encode(u'utf-8')))):
+				# if the buffer already exists, reuse it
+				vim.command((u'sbuffer org:todo/%d' % (d.bufnr, )).encode(u'utf-8'))
+			else:
+				# create a new window
+				vim.command((u'keepalt %dsp org:todo/%d' % (len(todo_states), d.bufnr)).encode(u'utf-8'))
 		else:
 			new_state = Todo._get_next_state(current_state, todo_states, \
 					direction=direction, interactive=interactive, next_set=next_set)
@@ -209,21 +213,22 @@ class Todo(object):
 		heading.todo = state
 		d.write_heading(heading)
 
-		vim.command(u'set timeoutlen=1000'.encode(u'utf-8'))
-		vim.command(u'doau orgmode BufEnter'.encode(u'utf-8'))
-
 	@classmethod
 	def init_org_todo(cls):
 		u""" Initialize org todo selection window.
 		"""
-		# make window a scratch window, leaving the window is not possible!
-		vim.command(u'setlocal tabstop=16 buftype=nofile timeout timeoutlen=1'.encode(u'utf-8'))
-		vim.command(u'nnoremap <silent> <buffer> <Esc> :bw<CR>'.encode(u'utf-8'))
-		vim.command((u'nnoremap <silent> <buffer> <CR> :let g:org_state = fnameescape(expand("<cword>"))<Bar>bw<Bar>exec "py ORGMODE.plugins[u\'Todo\'].set_todo_state(\'".g:org_state."\')"<Bar>unlet! g:org_state<CR>').encode(u'utf-8') )
-		vim.command(u'au orgmode BufLeave <buffer> :silent! %sbw' % \
-				(vim.eval(u'bufnr("%")'.encode(u'utf-8')).decode(u'utf-8')).encode(u'utf-8'))
 		bufnr = int(vim.current.buffer.name.split('/')[-1])
 		all_states = ORGTODOSTATES.get(bufnr, None)
+
+		# because timeoutlen can only be set globally it needs to be stored and restored later
+		vim.command(u'let g:org_sav_timeoutlen=&timeoutlen'.encode(u'utf-8'))
+		vim.command(u'au orgmode BufEnter <buffer> :if ! exists("g:org_sav_timeoutlen")|let g:org_sav_timeoutlen=&timeoutlen|set timeoutlen=1|endif'.encode(u'utf-8'))
+		vim.command(u'au orgmode BufLeave <buffer> :if exists("g:org_sav_timeoutlen")|let &timeoutlen=g:org_sav_timeoutlen|unlet g:org_sav_timeoutlen|endif'.encode(u'utf-8'))
+		# make window a scratch window and set the statusline differently
+		vim.command(u'setlocal tabstop=16 buftype=nofile timeout timeoutlen=1 winfixheight'.encode(u'utf-8'))
+		vim.command((u'setlocal statusline=Org\\ todo\\ (%s)' % vim.eval((u'fnameescape(fnamemodify(bufname(%d), ":t"))' % bufnr).encode(u'utf-8'))).encode(u'utf-8'))
+		vim.command((u'nnoremap <silent> <buffer> <Esc> :%sbw<CR>' % (vim.eval(u'bufnr("%")'.encode(u'utf-8')), )).encode(u'utf-8'))
+		vim.command(u'nnoremap <silent> <buffer> <CR> :let g:org_state = fnameescape(expand("<cword>"))<Bar>bw<Bar>exec "py ORGMODE.plugins[u\'Todo\'].set_todo_state(\'".g:org_state."\')"<Bar>unlet! g:org_state<CR>'.encode(u'utf-8'))
 
 		if all_states is None:
 			vim.command(u'bw'.encode(u'utf-8'))

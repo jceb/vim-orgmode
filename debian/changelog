@@ -1,3 +1,9 @@
+vim-orgmode (0.2.1-24) unstable; urgency=low
+
+  * improve implementation todo state selection (issue #5)
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 07 Aug 2011 19:55:06 +0200
+
 vim-orgmode (0.2.1-23) unstable; urgency=low
 
   * more precise regex for dates - pull request by sotte
@@ -17,14 +23,14 @@ vim-orgmode (0.2.1-21) unstable; urgency=low
   * added emacs as suggested package - pull request by sotte
   * closes issue #54
 
--- Roman Asendorf <roman.asendorf@gmail.com> Wed, 03 Aug 2011 21:52:15 +0200
+ -- Roman Asendorf <roman.asendorf@gmail.com> Wed, 03 Aug 2011 21:52:15 +0200
 
 vim-orgmode (0.2.1-20) unstable; urgency=low
 
   * simple export via emacs for pdf and html - pull request by sotte
   * closes issue #54
 
--- Roman Asendorf <roman.asendorf@gmail.com> Wed, 03 Aug 2011 21:43:15 +0200
+ -- Roman Asendorf <roman.asendorf@gmail.com> Wed, 03 Aug 2011 21:43:15 +0200
 
 vim-orgmode (0.2.1-19) unstable; urgency=low
 
