@@ -1,2 +1,2 @@
-autocmd BufNewFile,BufRead *.org set filetype=org
-autocmd BufNewFile,BufRead org:todo/* set filetype=orgtodo
+autocmd BufNewFile,BufReadPost *.org setfiletype org
+"autocmd BufNewFile,BufReadPost org:todo* setfiletype orgtodo

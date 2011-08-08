@@ -1,6 +1,12 @@
+vim-orgmode (0.2.1-25) unstable; urgency=low
+
+  * playing around with ftdetect vs. setfiletype
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 08 Aug 2011 08:11:23 +0200
+
 vim-orgmode (0.2.1-24) unstable; urgency=low
 
-  * improve implementation todo state selection (issue #5)
+  * improve implementation of todo state selection (issue #5)
 
  -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 07 Aug 2011 19:55:06 +0200
 

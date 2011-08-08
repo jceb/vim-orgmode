@@ -257,7 +257,7 @@ class Todo(object):
 					vim.current.buffer.append(res.encode(u'utf-8'))
 
 		# finally make buffer non modifiable
-		vim.command(u'setf orgtodo'.encode(u'utf-8'))
+		vim.command(u'setfiletype orgtodo'.encode(u'utf-8'))
 		vim.command(u'setlocal nomodifiable'.encode(u'utf-8'))
 
 		# remove temporary todo states for the current buffer
