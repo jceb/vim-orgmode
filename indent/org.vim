@@ -41,6 +41,10 @@ EOF
 	endif
 endfunction
 
+function! SetOrgFoldtext(text)
+	let b:foldtext = a:text
+endfunction
+
 function! GetOrgFoldtext()
 python << EOF
 from orgmode import fold_text

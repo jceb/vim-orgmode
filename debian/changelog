@@ -1,3 +1,11 @@
+vim-orgmode (0.3.0-0) unstable; urgency=low
+
+  * fix completion menu popup that disappeared because of the usage of
+  	vim.command
+  * closes issue #48
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 09 Aug 2011 08:25:03 +0200
+
 vim-orgmode (0.2.1-25) unstable; urgency=low
 
   * playing around with ftdetect vs. setfiletype

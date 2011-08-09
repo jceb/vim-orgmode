@@ -153,8 +153,11 @@ def fold_text():
 			str_heading = str_heading.replace(u'\t', u' ' * (ts - spaces), 1)
 			str_heading = str_heading.replace(u'\t', u' ' * ts)
 
-		vim.command((u'let b:foldtext = "%s... "' % \
-				(str_heading.replace(u'\\', u'\\\\').replace(u'"', u'\\"'), )).encode('utf-8'))
+		# Workaround for vim.command seems to break the completion menu
+		vim.eval((u'SetOrgFoldtext("%s")' \
+				% (str_heading.replace(u'\\', u'\\\\').replace(u'"', u'\\"'), )).encode(u'utf-8'))
+		#vim.command((u'let b:foldtext = "%s... "' % \
+		#		(str_heading.replace(u'\\', u'\\\\').replace(u'"', u'\\"'), )).encode('utf-8'))
 
 def fold_orgmode():
 	u""" Set the fold expression/value for the current line in the variable b:fold_expr
