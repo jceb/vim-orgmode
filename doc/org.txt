@@ -57,6 +57,8 @@ From .vba file~
 >
     :so %
 <
+   Attention: All .pyc files of former versions of vim-orgmode need to be
+   deleted beforehand!
 
 Installation into a specific directory~
     If you want to install the plugin into a specific directory, e.g. when you
@@ -160,7 +162,7 @@ Text objects~
    For further information please read :h text-objects-changed
 
 Suggested plugins~
-  - pathogen (http:/www.vim.org/scripts/script.php?script_id=2332)
+  - pathogen (http://www.vim.org/scripts/script.php?script_id=2332)
     easy management of multiple vim plugins
 
   - repeat (http://www.vim.org/scripts/script.php?script_id=2136)
