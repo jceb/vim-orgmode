@@ -57,7 +57,7 @@ From .vba file~
 >
     :so %
 <
-   Attention: All .pyc files of former versions of vim-orgmode need to be
+   ATTENTION: All .pyc files of former versions of vim-orgmode need to be
    deleted beforehand!
 
 Installation into a specific directory~
@@ -74,6 +74,36 @@ Installation into a specific directory~
     :set rtp=$HOME/.vim/bundle/orgmode,&rtp
     :so %
 <
+   ATTENTION: All .pyc files of former versions of vim-orgmode need to be
+   deleted beforehand!
+
+From git checkout~
+   This method is mainly used for development purposes.
+
+You are using pathegon~
+
+    Change to the bundle directory
+    $ cd ~/.vim/bundle
+
+    Clone the repository
+    $ git clone https://github.com/jceb/vim-orgmode.git
+
+    And restart vim. That's it.
+
+    ATTENTION: All .pyc files of former versions of vim-orgmode need to be
+    deleted beforehand!
+
+You are using no addon manager~
+    Clone the repository:
+    $ git clone https://github.com/jceb/vim-orgmode.git
+
+    Copy the directories doc, ftdetect, ftplugin, indent and syntax to
+    your $HOME/.vim directory:
+    $ cd vim-orgmode
+    $ cp -r doc ftdetect ftplugin indent syntax ~/.vim/
+
+    ATTENTION: All .pyc files of former versions of vim-orgmode need to be
+    deleted beforehand!
 
 From .deb file~
    If you want to install the vim-orgmode plugin for all users of your
@@ -90,28 +120,6 @@ From .deb file~
 >
    :set rtp=/usr/lib/vim/addons,&rtp
 <
-
-From git checkout~
-   This method is mainly used for development purposes.
-
-You are using pathegon~
-
-    Change to the bundle directory
-    $ cd ~/.vim/bundle
-
-    Clone the repository
-    $ git clone https://github.com/jceb/vim-orgmode.git
-
-    And restart vim. That's it.
-
-You are using no addon manager~
-    Clone the repository:
-    $ git clone https://github.com/jceb/vim-orgmode.git
-
-    Copy the directories doc, ftdetect, ftplugin, indent and syntax to
-    your $HOME/.vim directory:
-    $ cd vim-orgmode
-    $ cp -r doc ftdetect ftplugin indent syntax ~/.vim/
 
 ==============================================================================
 USAGE								     *org-usage*
