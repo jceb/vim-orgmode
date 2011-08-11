@@ -11,10 +11,10 @@ from orgmode.plugins.Date import Date
 
 
 class DateTestCase(unittest.TestCase):
-	u"""Tests all the functionality of the Date plugin.
+	u"""Tests the functionality of the Date plugin.
 
 	Also see:
-	http://orgmode.org/manual/The-date_002ftime-prompt.html#The-date_002ftime-prompt
+	http://orgmode.org/manual/The-date_002ftime-prompt.html
 	"""
 
 	def setUp(self):
@@ -107,7 +107,7 @@ class DateTestCase(unittest.TestCase):
 				(u'feb 15', date(2007, 2, 15)),
 				(u'jan 1', date(2007, 1, 1)),
 				(u'7/5', date(2006, 07, 05)),
-				(u'2/5', date(2007, 02, 05)),]
+				(u'2/5', date(2007, 02, 05))]
 
 		for modifier, expected in test_data:
 			self.assertEquals(expected, Date._modify_time(cust_date, modifier))
@@ -116,7 +116,7 @@ class DateTestCase(unittest.TestCase):
 		cust_date = date(2006, 6, 13)
 		test_data = [(u'12:45', datetime(2006, 06, 13, 12, 45)),
 				(u'1:45', datetime(2006, 06, 13, 1, 45)),
-				(u'1:05', datetime(2006, 06, 13, 1, 5)),]
+				(u'1:05', datetime(2006, 06, 13, 1, 5))]
 
 		for modifier, expected in test_data:
 			res = Date._modify_time(cust_date, modifier)
@@ -129,7 +129,7 @@ class DateTestCase(unittest.TestCase):
 				(u'12-2-28', date(2012, 2, 28)),
 				(u'2/5/3', date(2003, 02, 05)),
 				(u'sep 12 9', date(2009, 9, 12)),
-				(u'jan 2 99', date(2099, 1, 2)),]
+				(u'jan 2 99', date(2099, 1, 2))]
 
 		for modifier, expected in test_data:
 			self.assertEquals(expected, Date._modify_time(cust_date, modifier))
@@ -139,7 +139,7 @@ class DateTestCase(unittest.TestCase):
 		test_data = [(u'14', date(2006, 06, 14)),
 				(u'12', date(2006, 07, 12)),
 				(u'1', date(2006, 07, 1)),
-				(u'29', date(2006, 06, 29)),]
+				(u'29', date(2006, 06, 29))]
 		for modifier, expected in test_data:
 			self.assertEquals(expected, Date._modify_time(cust_date, modifier))
 
