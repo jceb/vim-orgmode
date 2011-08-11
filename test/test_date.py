@@ -123,7 +123,7 @@ class DateTestCase(unittest.TestCase):
 			self.assertTrue(isinstance(res, datetime))
 			self.assertEquals(expected, res)
 
-	def test_modify_time_with_full_dates(self):
+	def test_modify_time_with_custom_full_dates(self):
 		cust_date = date(2006, 6, 13)
 		test_data = [(u'3-2-5', date(2003, 2, 05)),
 				(u'12-2-28', date(2012, 2, 28)),
