@@ -19,8 +19,8 @@ class Date(object):
 	date_regex = r"\d\d\d\d-\d\d-\d\d"
 	datetime_regex = r"[A-Z]\w\w \d\d\d\d-\d\d-\d\d \d\d:\d\d>"
 
-	month_mapping = {u'jan': 1, u'feb':2, u'mar':3, u'apr':4, u'may':5,
-			u'jun':6, u'jul': 7, u'aug': 8, u'sep': 9, u'oct': 10, u'nov': 11,
+	month_mapping = {u'jan': 1, u'feb': 2, u'mar': 3, u'apr': 4, u'may': 5,
+			u'jun': 6, u'jul': 7, u'aug': 8, u'sep': 9, u'oct': 10, u'nov': 11,
 			u'dec': 12}
 
 	def __init__(self):
@@ -91,7 +91,7 @@ class Date(object):
 			newdate = date(startdate.year, int(month), int(day))
 			# date should be always in the future
 			if newdate < startdate:
-				newdate = date(startdate.year+1, int(month), int(day))
+				newdate = date(startdate.year + 1, int(month), int(day))
 			return newdate
 
 		# check full date, seperated with 'space'
@@ -135,9 +135,9 @@ class Date(object):
 			return startdate + timedelta(days=diff)
 
 		# check for month day
-		modifier_lc = modifier.lower()
-		match = re.search(u'(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec) (\d{1,2})',
-				modifier_lc)
+		match = re.search(
+				u'(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec) (\d{1,2})',
+				modifier.lower())
 		if match:
 			month = cls.month_mapping[match.groups()[0]]
 			day = int(match.groups()[1])
@@ -145,7 +145,7 @@ class Date(object):
 			newdate = date(startdate.year, int(month), int(day))
 			# date should be always in the future
 			if newdate < startdate:
-				newdate = date(startdate.year+1, int(month), int(day))
+				newdate = date(startdate.year + 1, int(month), int(day))
 			return newdate
 
 		# check for time: HH:MM
@@ -209,10 +209,13 @@ class Date(object):
 
 		# format
 		if isinstance(newdate, datetime):
-			newdate = newdate.strftime(u'%Y-%m-%d %a %H:%M'.encode(u'utf-8')).decode(u'utf-8')
+			newdate = newdate.strftime(
+					u'%Y-%m-%d %a %H:%M'.encode(u'utf-8')).decode(u'utf-8')
 		else:
-			newdate = newdate.strftime(u'%Y-%m-%d %a'.encode(u'utf-8')).decode(u'utf-8')
+			newdate = newdate.strftime(
+					u'%Y-%m-%d %a'.encode(u'utf-8')).decode(u'utf-8')
 		timestamp = u'<%s>' % newdate if active else u'[%s]' % newdate
+
 		insert_at_cursor(timestamp)
 
 	def register(self):
