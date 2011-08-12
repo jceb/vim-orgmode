@@ -111,13 +111,16 @@ def insert_at_cursor(text, move=True, start_insertmode=False):
 		vim.command(u'startinsert'.encode(u'utf-8'))
 
 def get_user_input(message):
-    u"""Print the message and take input from the user.
-    Return the input.
-    """
-    vim.command(u'call inputsave()'.encode(u'utf-8'))
-    vim.command((u"let user_input = input('" + message + u": ')").encode(u'utf-8'))
-    vim.command(u'call inputrestore()'.encode(u'utf-8'))
-    return vim.eval(u'user_input'.encode(u'utf-8')).decode(u'utf-8')
+	u"""Print the message and take input from the user.
+	Return the input or None if there is no input.
+	"""
+	vim.command(u'call inputsave()'.encode(u'utf-8'))
+	vim.command((u"let user_input = input('" + message + u": ')").encode(u'utf-8'))
+	vim.command(u'call inputrestore()'.encode(u'utf-8'))
+	try:
+		return vim.eval(u'user_input'.encode(u'utf-8')).decode(u'utf-8')
+	except:
+		return None
 
 def indent_orgmode():
 	u""" Set the indent value for the current line in the variable b:indent_level
@@ -309,3 +312,5 @@ class OrgMode(object):
 		return plugins
 
 ORGMODE = OrgMode()
+
+# vim: set noexpandtab:
