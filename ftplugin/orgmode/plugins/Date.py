@@ -19,8 +19,9 @@ class Date(object):
 	date_regex = r"\d\d\d\d-\d\d-\d\d"
 	datetime_regex = r"[A-Z]\w\w \d\d\d\d-\d\d-\d\d \d\d:\d\d>"
 
-	month_mapping = {u'jan': 1, u'feb':2, u'mar':3, u'apr':4, u'may':5, u'jun':6,
-			u'jul': 7, u'aug': 8, u'sep': 9, u'oct': 10, u'nov': 11, u'dec': 12}
+	month_mapping = {u'jan': 1, u'feb':2, u'mar':3, u'apr':4, u'may':5,
+			u'jun':6, u'jul': 7, u'aug': 8, u'sep': 9, u'oct': 10, u'nov': 11,
+			u'dec': 12}
 
 	def __init__(self):
 		u""" Initialize plugin """
@@ -48,7 +49,8 @@ class Date(object):
 
 	@classmethod
 	def _modify_time(cls, startdate, modifier):
-		u"""Modify the given startdate according to modifier. Return the new time.
+		u"""Modify the given startdate according to modifier. Return the new
+		date or datetime.
 
 		See http://orgmode.org/manual/The-date_002ftime-prompt.html
 		"""
@@ -153,8 +155,14 @@ class Date(object):
 			return datetime(startdate.year, startdate.month, startdate.day,
 					int(match.groups()[0]), int(match.groups()[1]))
 
-		# check for days modifier
+		# check for days modifier with appended d
 		match = re.search(u'\+(\d*)d', modifier)
+		if match:
+			days = int(match.groups()[0])
+			return startdate + timedelta(days=days)
+
+		# check for days modifier without appended d
+		match = re.search(u'\+(\d*)$', modifier)
 		if match:
 			days = int(match.groups()[0])
 			return startdate + timedelta(days=days)

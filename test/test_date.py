@@ -43,6 +43,19 @@ class DateTestCase(unittest.TestCase):
 		for modifier, expected in test_data:
 			self.assertEquals(expected, Date._modify_time(self.d, modifier))
 
+	def test_modify_time_with_given_relative_days_without_d(self):
+		# modifier and expected result
+		test_data = [(u'+0', self.d),
+				(u'+1', date(2011, 5, 23)),
+				(u'+2', date(2011, 5, 24)),
+				(u'+7', date(2011, 5, 29)),
+				(u'+9', date(2011, 5, 31)),
+				(u'+10', date(2011, 6, 1))]
+
+		for modifier, expected in test_data:
+			result = Date._modify_time(self.d, modifier)
+			self.assertEquals(expected, result)
+
 	def test_modify_time_with_given_relative_weeks(self):
 		# modifier and expected result
 		test_data = [(u'+1w', date(2011, 5, 29)),
