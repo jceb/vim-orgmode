@@ -50,9 +50,9 @@ class Date(object):
 	def _modify_time(cls, startdate, modifier):
 		u"""Modify the given startdate according to modifier. Return the new time.
 
-		See http://orgmode.org/manual/The-date_002ftime-prompt.html#The-date_002ftime-prompt
+		See http://orgmode.org/manual/The-date_002ftime-prompt.html
 		"""
-		if modifier is None:
+		if modifier is None or modifier == '' or modifier == '.':
 			return startdate
 
 		# check real date
@@ -182,14 +182,20 @@ class Date(object):
 	@classmethod
 	def insert_timestamp(cls, active=True):
 		u"""
-		Insert a timestamp (today) at the cursor position.
+		Insert a timestamp at the cursor position.
 
 		TODO: show fancy calendar to pick the date from.
+		TODO: add all modifier of orgmode.
 		"""
 		today = date.today()
-		msg = u''.join([u'Insert Date: ', today.strftime(u'%Y-%m-%d %a'.encode(u'utf-8')),
-				u' | Change date'])
+		msg = u''.join([u'Inserting ',
+				today.strftime(u'%Y-%m-%d %a'.encode(u'utf-8')),
+				u' | Modify date'])
 		modifier = get_user_input(msg)
+
+		# abort if the user canceled the input promt
+		if modifier is None:
+			return
 
 		newdate = cls._modify_time(today, modifier)
 
@@ -199,7 +205,6 @@ class Date(object):
 		else:
 			newdate = newdate.strftime(u'%Y-%m-%d %a'.encode(u'utf-8')).decode(u'utf-8')
 		timestamp = u'<%s>' % newdate if active else u'[%s]' % newdate
-
 		insert_at_cursor(timestamp)
 
 	def register(self):
