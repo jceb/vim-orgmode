@@ -59,33 +59,33 @@ class Date(object):
 
 		# check real date
 		date_regex = r"(\d\d\d\d)-(\d\d)-(\d\d)"
-		match = re. search(date_regex, modifier)
+		match = re.search(date_regex, modifier)
 		if match:
 			year, month, day = match.groups()
-			t = date(int(year), int(month), int(day))
-			return t
+			newdate = date(int(year), int(month), int(day))
+			return newdate
 
 		# check abbreviated date, seperated with '-'
 		date_regex = u"(\d{1,2})-(\d+)-(\d+)"
-		match = re. search(date_regex, modifier)
+		match = re.search(date_regex, modifier)
 		if match:
 			year, month, day = match.groups()
-			t = date(2000 + int(year), int(month), int(day))
-			return t
+			newdate = date(2000 + int(year), int(month), int(day))
+			return newdate
 
 		# check abbreviated date, seperated with '/'
 		# month/day/year
 		date_regex = u"(\d{1,2})/(\d+)/(\d+)"
-		match = re. search(date_regex, modifier)
+		match = re.search(date_regex, modifier)
 		if match:
 			month, day, year = match.groups()
-			t = date(2000 + int(year), int(month), int(day))
-			return t
+			newdate = date(2000 + int(year), int(month), int(day))
+			return newdate
 
 		# check abbreviated date, seperated with '/'
 		# month/day
 		date_regex = u"(\d{1,2})/(\d{1,2})"
-		match = re. search(date_regex, modifier)
+		match = re.search(date_regex, modifier)
 		if match:
 			month, day = match.groups()
 			newdate = date(startdate.year, int(month), int(day))
@@ -98,17 +98,18 @@ class Date(object):
 		# month day year
 		# 'sep 12 9' --> 2009 9 12
 		date_regex = u"(\w\w\w) (\d{1,2}) (\d{1,2})"
-		match = re. search(date_regex, modifier)
+		match = re.search(date_regex, modifier)
 		if match:
 			gr = match.groups()
 			day = int(gr[1])
 			month = int(cls.month_mapping[gr[0]])
 			year = 2000 + int(gr[2])
-			return date(year, int(month), int(day))
+			newdate = date(year, int(month), int(day))
+			return newdate
 
 		# check days as integers
 		date_regex = u"^(\d{1,2})$"
-		match = re. search(date_regex, modifier)
+		match = re.search(date_regex, modifier)
 		if match:
 			newday, = match.groups()
 			newday = int(newday)
@@ -131,8 +132,8 @@ class Date(object):
 			# use next weeks weekday if current weekday is the same as modifier
 			if diff == 0:
 				diff = 7
-
-			return startdate + timedelta(days=diff)
+			newdate = startdate + timedelta(days=diff)
+			return newdate
 
 		# check for month day
 		match = re.search(
@@ -148,42 +149,51 @@ class Date(object):
 				newdate = date(startdate.year + 1, int(month), int(day))
 			return newdate
 
-		# check for time: HH:MM
-		# '12:45' --> datetime(2006,06,13, 12,45))
-		match = re.search(u'(\d{1,2}):(\d\d)', modifier)
-		if match:
-			return datetime(startdate.year, startdate.month, startdate.day,
-					int(match.groups()[0]), int(match.groups()[1]))
-
 		# check for days modifier with appended d
 		match = re.search(u'\+(\d*)d', modifier)
 		if match:
 			days = int(match.groups()[0])
-			return startdate + timedelta(days=days)
+			newdate = startdate + timedelta(days=days)
+			return newdate
 
 		# check for days modifier without appended d
 		match = re.search(u'\+(\d*)$', modifier)
 		if match:
 			days = int(match.groups()[0])
-			return startdate + timedelta(days=days)
+			newdate = startdate + timedelta(days=days)
+			return newdate
 
 		# check for week modifier
 		match = re.search(u'\+(\d+)w', modifier)
 		if match:
 			weeks = int(match.groups()[0])
-			return startdate + timedelta(weeks=weeks)
+			newdate = startdate + timedelta(weeks=weeks)
+			return newdate
 
 		# check for week modifier
 		match = re.search(u'\+(\d+)m', modifier)
 		if match:
 			months = int(match.groups()[0])
-			return date(startdate.year, startdate.month + months, startdate.day)
+			newdate = date(startdate.year, startdate.month + months, startdate.day)
+			return newdate
 
 		# check for year modifier
 		match = re.search(u'\+(\d*)y', modifier)
 		if match:
 			years = int(match.groups()[0])
-			return date(startdate.year + years, startdate.month, startdate.day)
+			newdate = date(startdate.year + years, startdate.month, startdate.day)
+			return newdate
+
+		# check for time: HH:MM
+		# '12:45' --> datetime(2006, 06, 13, 12, 45))
+		match = re.search(u'(\d{1,2}):(\d\d)', modifier)
+		if match:
+			try:
+				startdate = newdate
+			except:
+				pass
+			return datetime(startdate.year, startdate.month, startdate.day,
+					int(match.groups()[0]), int(match.groups()[1]))
 
 		return startdate
 
