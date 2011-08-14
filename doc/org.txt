@@ -446,6 +446,7 @@ CHANGELOG							 *org-changelog*
 0.3.1-0
 - demoting a newly created second level heading doesn't cause all children to
   be deleted anymore (closes issue #65)
+- add error message for missing dependencies (closes issue #59)
 
 0.3.0-0, 2011-08-09
 - fix completion menu popup that disappeared because of the usage of vim.command
