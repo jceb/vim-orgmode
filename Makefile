@@ -19,8 +19,8 @@ install: doc indent ftdetect ftplugin syntax
 
 test: check
 
-check: test/run_tests.py
-	cd test && python run_tests.py
+check: tests/run_tests.py
+	cd tests && python run_tests.py
 
 clean: documentation
 	@rm -rf ${PLUGIN}.vba ${PLUGIN}.vba.gz tmp files

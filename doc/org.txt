@@ -444,6 +444,7 @@ LINKS								     *org-links*
 CHANGELOG							 *org-changelog*
 
 0.4.0-0
+- rename tests directory
 - change licensing of the documentation to GNU Free Documentation License
 - integrate orgguide (closes issue #57)
 - replace DIRECTION_* with an enum (closes issue #56 and issue #49)
