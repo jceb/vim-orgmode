@@ -3,8 +3,10 @@
 import re
 from UserList import UserList
 
-DIRECTION_FORWARD  = True
-DIRECTION_BACKWARD = False
+class Direction():
+    FORWARD = 1
+    BACKWARD = 2
+
 
 def flatten_list(l):
 	res = []
@@ -1028,13 +1030,13 @@ class Document(object):
 			h = h.next_heading
 		raise StopIteration()
 
-	def find_heading(self, position=0, direction=DIRECTION_FORWARD, \
+	def find_heading(self, position=0, direction=Direction.FORWARD, \
 			heading=Heading, connect_with_document=True):
 		u""" Find heading in the given direction
 
-		:postition:	starting line, counting from 0 (in vim you start counting from 1, don't forget)
-		:direction:	downwards == DIRECTION_FORWARD, upwards == DIRECTION_BACKWARD
-		:heading:	Heading class from which new heading objects will be instanciated
+		:postition: starting line, counting from 0 (in vim you start counting from 1, don't forget)
+		:direction: downwards == Direction.FORWARD, upwards == Direction.BACKWARD
+		:heading:   Heading class from which new heading objects will be instanciated
 		:connect_with_document:	if True, the newly created heading will be connected with the document, otherwise not
 
 		:returns:	New heading object or None
@@ -1049,7 +1051,7 @@ class Document(object):
 		end = None
 
 		# Search heading upwards
-		if direction == DIRECTION_FORWARD:
+		if direction == Direction.FORWARD:
 			while tmp_line < len_cb:
 				if heading.identify_heading(self._content[tmp_line]) is not None:
 					if start is None:

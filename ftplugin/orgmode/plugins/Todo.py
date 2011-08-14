@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echom, ORGMODE, apply_count, repeat, realign_tags, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode import echom, ORGMODE, apply_count, repeat, realign_tags
+from orgmode import Direction
 from orgmode.menu import Submenu, ActionEntry
 from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
 
 import vim
+
 
 # temporary todo states for differnent orgmode buffers
 ORGTODOSTATES = {}
@@ -54,7 +56,7 @@ class Todo(object):
 
 	@classmethod
 	def _get_next_state(cls, current_state, all_states,
-			direction=DIRECTION_FORWARD, interactive=False, next_set=False):
+			direction=Direction.FORWARD, interactive=False, next_set=False):
 		u"""
 		:current_state:		the current todo state
 		:all_states:		a list containing all todo states within sublists.
@@ -95,28 +97,28 @@ class Todo(object):
 		ci = find_current_todo_state(current_state, all_states)
 
 		if not ci:
-			if next_set and direction == DIRECTION_BACKWARD:
+			if next_set and direction == Direction.BACKWARD:
 				echom(u'Already at the first keyword set')
 				return current_state
 
 			return split_access_key(all_states[0][0][0] if all_states[0][0] else all_states[0][1][0])[0] \
-					if direction == DIRECTION_FORWARD else \
+					if direction == Direction.FORWARD else \
 					split_access_key(all_states[0][1][-1] if all_states[0][1] else all_states[0][0][-1])[0]
 		elif next_set:
-			if direction == DIRECTION_FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
+			if direction == Direction.FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
 				echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] + 1][0]), u', '.join(all_states[ci[0] + 1][1])))
 				return split_access_key(all_states[ci[0] + 1][0][0] \
 						if all_states[ci[0] + 1][0] else all_states[ci[0] + 1][1][0])[0]
-			elif current_state is not None and direction == DIRECTION_BACKWARD and ci[0] - 1 >= 0:
+			elif current_state is not None and direction == Direction.BACKWARD and ci[0] - 1 >= 0:
 				echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] - 1][0]), u', '.join(all_states[ci[0] - 1][1])))
 				return split_access_key(all_states[ci[0] - 1][0][0] \
 						if all_states[ci[0] - 1][0] else all_states[ci[0] - 1][1][0])[0]
 			else:
-				echom(u'Already at the %s keyword set' % (u'first' if direction == DIRECTION_BACKWARD else u'last'))
+				echom(u'Already at the %s keyword set' % (u'first' if direction == Direction.BACKWARD else u'last'))
 				return current_state
 		else:
-			next_pos = ci[2] + 1 if direction == DIRECTION_FORWARD else ci[2] - 1
-			if direction == DIRECTION_FORWARD:
+			next_pos = ci[2] + 1 if direction == Direction.FORWARD else ci[2] - 1
+			if direction == Direction.FORWARD:
 				if next_pos < len(all_states[ci[0]][ci[1]]):
 					# select next state within done or todo states
 					return split_access_key(all_states[ci[0]][ci[1]][next_pos])[0]
@@ -137,7 +139,7 @@ class Todo(object):
 	@realign_tags
 	@repeat
 	@apply_count
-	def toggle_todo_state(cls, direction=DIRECTION_FORWARD, interactive=False, next_set=False):
+	def toggle_todo_state(cls, direction=Direction.FORWARD, interactive=False, next_set=False):
 		u""" Toggle state of TODO item
 
 		:returns: The changed heading
@@ -175,7 +177,7 @@ class Todo(object):
 
 		# plug
 		plug = u'OrgTodoForward'
-		if direction == DIRECTION_BACKWARD:
+		if direction == Direction.BACKWARD:
 			plug = u'OrgTodoBackward'
 
 		return plug
@@ -283,7 +285,7 @@ class Todo(object):
 
 		self.keybindings.append(Keybinding(u'<S-Left>', Plug(
 			u'OrgTodoBackward',
-			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=False)<CR>')))
+			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=2)<CR>')))
 		submenu + ActionEntry(u'&Previous keyword', self.keybindings[-1])
 
 		self.keybindings.append(Keybinding(u'<C-S-Right>', Plug(
@@ -293,7 +295,7 @@ class Todo(object):
 
 		self.keybindings.append(Keybinding(u'<C-S-Left>', Plug(
 			u'OrgTodoSetBackward',
-			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=False, next_set=True)<CR>')))
+			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=2, next_set=True)<CR>')))
 		submenu + ActionEntry(u'Previous &keyword set', self.keybindings[-1])
 
 		settings.set(u'org_todo_keywords', [u'TODO'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')])
