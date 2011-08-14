@@ -13,7 +13,8 @@ import orgmode.settings
 from orgmode.document   import VimBuffer
 from orgmode.exceptions import PluginError
 
-from liborgmode import DIRECTION_FORWARD, DIRECTION_BACKWARD
+from liborgmode import Direction
+
 
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
 TAGSPROPERTIES_EXISTS = False
