@@ -1,4 +1,4 @@
-*orgguide.txt*     For Vim version 7.3   Last change: 2011 August 5
+*orgguide.txt*          For Vim version 7.3          Last change: 2011 August 14
 
 ==============================================================================
 TABLE OF CONTENTS                                        *orgguide* *orgguide-toc*
@@ -24,21 +24,21 @@ ORG MODE GUIDE                                                  *orgguide-about*
 
 Copyright © 2010 Free Software Foundation
 
-  Permission is granted to copy, distribute and/or modify this document
-  under the terms of the GNU Free Documentation License, Version 1.3 or
-  any later version published by the Free Software Foundation; with no
-  Invariant Sections, with the Front-Cover texts being “A GNU Manual,”
-  and with the Back-Cover Texts as in (a) below. A copy of the license
-  is included in the section entitled “GNU Free Documentation License.”
+  Permission is granted to copy, distribute and/or modify this document under
+  the terms of the GNU Free Documentation License, Version 1.3 or any later
+  version published by the Free Software Foundation; with no Invariant
+  Sections, with the Front-Cover texts being “A GNU Manual,” and with the
+  Back-Cover Texts as in (a) below. A copy of the license is included in the
+  section entitled “GNU Free Documentation License.”
 
-  (a) The FSF’s Back-Cover Text is: “You have the freedom to copy and
-  modify this GNU manual. Buying copies from the FSF supports it in
-  developing GNU and promoting software freedom.”
+  (a) The FSF’s Back-Cover Text is: “You have the freedom to copy and modify
+  this GNU manual. Buying copies from the FSF supports it in developing GNU and
+  promoting software freedom.”
 
   This document is part of a collection distributed under the GNU Free
-  Documentation License. If you want to distribute this document
-  separately from the collection, you can do so by adding a copy of the
-  license to the document, as described in section 6 of the license.
+  Documentation License. If you want to distribute this document separately
+  from the collection, you can do so by adding a copy of the license to the
+  document, as described in section 6 of the license.
 
 ==============================================================================
 INTRODUCTION                                             *orgguide-introduction*
@@ -49,7 +49,7 @@ Preface~
    an authoring and publishing system.
 
    This document is a a copy of the orgmode-guide for emacs with modifications
-   for vim. It contains all basic features and commands, along with important 
+   for vim. It contains all basic features and commands, along with important
    hints for customization.
 
 
@@ -63,7 +63,7 @@ Feedback~
    If you find problems with Org, or if you have questions, remarks, or
    ideas about it, please create a ticket on
    https://github.com/jceb/vim-orgmode
-   
+
 
 ==============================================================================
 DOCUMENT STRUCTURE                                       *orgguide-docstructure*
@@ -228,3 +228,5 @@ TODO
 MISCELLANEOUS                                                    *orgguide-misc*
 
 TODO
+
+ vim:tw=78:ts=8:ft=help:norl:
