@@ -443,6 +443,9 @@ LINKS								     *org-links*
 ==============================================================================
 CHANGELOG							 *org-changelog*
 
+0.4.0-0
+- replace DIRECTION_* with an enum (closed issue #56 and issue #49)
+
 0.3.0-0, 2011-08-09
 - fix completion menu popup that disappeared because of the usage of vim.command
   (closes issue #48)
