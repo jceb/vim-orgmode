@@ -6,12 +6,17 @@
 " @Revision     : 0.2
 " @vi           : ft=vim:tw=80:sw=4:ts=4
 
+if ! has('python') || v:version < 703
+	echoerr "Unable to start orgmode. Orgmode depends on Vim >= 7.3 with Python support complied in."
+	finish
+endif
+
 if ! exists("b:did_ftplugin")
 	" default emacs settings
 	setlocal comments-=s1:/*,mb:*,ex:*/ cole=2 cocu=nc tabstop=8 shiftwidth=8 commentstring=#\ %s
 
 	" register keybindings if they don't have been registered before
-	if has('python') && exists("g:loaded_org")
+	if exists("g:loaded_org")
 		python ORGMODE.register_keybindings()
 	endif
 endif
@@ -21,12 +26,6 @@ if &cp || exists("g:loaded_org")
     finish
 endif
 let g:loaded_org = 1
-
-" display error message if python is not available
-if ! has('python')
-	echom 'Python not found, orgmode plugin is not usable.'
-	finish
-endif
 
 " general setting plugins that should be loaded and their order
 if ! exists('g:org_plugins') && ! exists('b:org_plugins')

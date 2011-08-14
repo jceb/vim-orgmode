@@ -444,6 +444,7 @@ LINKS								     *org-links*
 CHANGELOG							 *org-changelog*
 
 0.4.0-0
+- add error message for missing dependencies (closes issue #59)
 - rename tests directory
 - change licensing of the documentation to GNU Free Documentation License
 - integrate orgguide (closes issue #57)
