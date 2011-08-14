@@ -444,6 +444,8 @@ LINKS								     *org-links*
 CHANGELOG							 *org-changelog*
 
 0.4.0-0
+- demoting a newly created second level heading doesn't cause all children to
+  be deleted anymore (closes issue #65)
 - add error message for missing dependencies (closes issue #59)
 - rename tests directory
 - change licensing of the documentation to GNU Free Documentation License
