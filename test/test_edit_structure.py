@@ -280,6 +280,28 @@ Bla Bla bla bla
 		self.assertEqual(vim.current.buffer[16], u'**** Überschrift 1.2.1'.encode(u'utf-8'))
 		self.assertEqual(vim.current.buffer[17], u'* Überschrift 2'.encode(u'utf-8'))
 
+	def test_demote_newly_created_level_two_heading(self):
+		vim.current.window.cursor = (10, 0)
+		self.assertNotEqual(self.editstructure.new_heading(below=True), None)
+		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1'.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[5], u'** Überschrift 1.1'.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[9], u'** Überschrift 1.2'.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[12], u'** '.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[13], u'**** Überschrift 1.2.1.falsch'.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[16], u'*** Überschrift 1.2.1'.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[17], u'* Überschrift 2'.encode(u'utf-8'))
+
+		vim.current.window.cursor = (13, 3)
+		self.assertNotEqual(self.editstructure.demote_heading(including_children=False, on_heading=True), None)
+		self.assertEqual(vim.CMDHISTORY[-1], u'exe "normal 13gg"|startinsert!'.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1'.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[5], u'** Überschrift 1.1'.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[9], u'** Überschrift 1.2'.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[12], u'*** '.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[13], u'**** Überschrift 1.2.1.falsch'.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[16], u'*** Überschrift 1.2.1'.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[17], u'* Überschrift 2'.encode(u'utf-8'))
+
 	def test_demote_last_heading(self):
 		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
 * Überschrift 2

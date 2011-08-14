@@ -197,7 +197,7 @@ class EditStructure(object):
 				if not including_children:
 					for h in current_heading.children[:]:
 						if h and h.level <= nhl:
-							append_heading(h.copy(), p if p else np)
+							append_heading(h.copy(), np if np else p)
 							current_heading.children.remove(h)
 		else:
 			# promotion
