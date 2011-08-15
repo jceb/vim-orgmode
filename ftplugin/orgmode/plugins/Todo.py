@@ -12,6 +12,7 @@ import vim
 # temporary todo states for differnent orgmode buffers
 ORGTODOSTATES = {}
 
+
 def split_access_key(t):
 	u"""
 	:t:		todo state
@@ -24,6 +25,7 @@ def split_access_key(t):
 	idx = t.find(u'(')
 	v, k = ((t[:idx], t[idx + 1:-1]) if t[idx + 1:-1] else (t, None)) if idx != -1 else (t, None)
 	return (v, k)
+
 
 class Todo(object):
 	u"""
@@ -175,6 +177,11 @@ class Todo(object):
 				vim.command((
 					u'keepalt botright %dsplit org:todo/%d'
 					% (len(todo_states), d.bufnr)).encode(u'utf-8'))
+
+			# move cursor to the current todo position
+			cbuf = vim.buffers[d.bufnr]
+			current_todo_pos = cbuf[0].index(current_state)
+			vim.windows[d.bufnr].cursor = (1, current_todo_pos)
 		else:
 			new_state = Todo._get_next_state(current_state, todo_states,
 					direction=direction, interactive=interactive,
@@ -185,7 +192,6 @@ class Todo(object):
 		plug = u'OrgTodoForward'
 		if direction == Direction.BACKWARD:
 			plug = u'OrgTodoBackward'
-
 		return plug
 
 	@classmethod
