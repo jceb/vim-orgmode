@@ -164,15 +164,21 @@ class Todo(object):
 		if interactive:
 			# pass todo states to new window
 			ORGTODOSTATES[d.bufnr] = todo_states
-			if bool(int(vim.eval(( u'bufexists("org:todo/%d")' % (d.bufnr, ) ).encode(u'utf-8')))):
+			todo_buffer_exists = bool(int(vim.eval((u'bufexists("org:todo/%d")'
+					% (d.bufnr, )).encode(u'utf-8'))))
+			if todo_buffer_exists:
 				# if the buffer already exists, reuse it
-				vim.command((u'sbuffer org:todo/%d' % (d.bufnr, )).encode(u'utf-8'))
+				vim.command((u'botright sbuffer org:todo/%d'
+						% (d.bufnr, )).encode(u'utf-8'))
 			else:
 				# create a new window
-				vim.command((u'keepalt %dsp org:todo/%d' % (len(todo_states), d.bufnr)).encode(u'utf-8'))
+				vim.command((
+					u'keepalt botright %dsplit org:todo/%d'
+					% (len(todo_states), d.bufnr)).encode(u'utf-8'))
 		else:
-			new_state = Todo._get_next_state(current_state, todo_states, \
-					direction=direction, interactive=interactive, next_set=next_set)
+			new_state = Todo._get_next_state(current_state, todo_states,
+					direction=direction, interactive=interactive,
+					next_set=next_set)
 			cls.set_todo_state(new_state)
 
 		# plug
