@@ -164,19 +164,23 @@ class Todo(object):
 
 		# get new state interactively
 		if interactive:
+			# determine position of the interactive prompt
+			prompt_pos = settings.get(u'org_todo_prompt_position', u'botright')
+			if not prompt_pos in [u'botright', u'topleft']:
+				prompt_pos = u'botright'
+
 			# pass todo states to new window
 			ORGTODOSTATES[d.bufnr] = todo_states
 			todo_buffer_exists = bool(int(vim.eval((u'bufexists("org:todo/%d")'
 					% (d.bufnr, )).encode(u'utf-8'))))
 			if todo_buffer_exists:
 				# if the buffer already exists, reuse it
-				vim.command((u'botright sbuffer org:todo/%d'
-						% (d.bufnr, )).encode(u'utf-8'))
+				vim.command((u'%s sbuffer org:todo/%d' %
+						(prompt_pos, d.bufnr, )).encode(u'utf-8'))
 			else:
 				# create a new window
-				vim.command((
-					u'keepalt botright %dsplit org:todo/%d'
-					% (len(todo_states), d.bufnr)).encode(u'utf-8'))
+				vim.command((u'keepalt %s %dsplit org:todo/%d' %
+						(prompt_pos, len(todo_states), d.bufnr)).encode(u'utf-8'))
 
 			# move cursor to the current todo position
 			cbuf = vim.buffers[d.bufnr]
@@ -311,6 +315,8 @@ class Todo(object):
 		submenu + ActionEntry(u'Previous &keyword set', self.keybindings[-1])
 
 		settings.set(u'org_todo_keywords', [u'TODO'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')])
+
+		settings.set(u'org_todo_prompt_position', u'botright')
 
 		vim.command(u'au orgmode BufReadCmd org:todo/* :py ORGMODE.plugins[u"Todo"].init_org_todo()'.encode(u'utf-8'))
 
