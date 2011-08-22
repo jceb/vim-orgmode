@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 from datetime import timedelta, date, datetime
+import calendar
 
 import vim
 from orgmode import ORGMODE, settings, echom, insert_at_cursor, get_user_input
@@ -12,8 +13,10 @@ class Date(object):
 	u"""
 	Handles all date and timestamp related tasks.
 
-	TODO: extend functionality (calendar, repetitions, ranges). See
-			http://orgmode.org/guide/Dates-and-Times.html#Dates-and-Times
+	TODO: extend functionality calendar view
+	TODO: extend functionality repetitions
+	TODO: extend functionality ranges.
+	See http://orgmode.org/guide/Dates-and-Times.html#Dates-and-Times
 	"""
 
 	date_regex = r"\d\d\d\d-\d\d-\d\d"
@@ -237,6 +240,84 @@ class Date(object):
 
 		insert_at_cursor(timestamp)
 
+	@classmethod
+	def show_calendar(cls):
+		"""
+		Show a calendar for the next three month at the bottom of the
+		screen.
+		"""
+		# ensure we always start with a fresh buffer
+		if bool(int(vim.eval(u'bufexists("org:calendar_view")'))):
+			vim.command(u'au orgmode BufLeave <buffer> bwipeout org:calendar_view')
+
+		# create a new calendar window
+		# setup
+		vim.command(u'setlocal noshowcmd')
+		cmds = [u'botright 8split org:calendar_view',
+				u'setlocal buftype=nofile',
+				u'setlocal winfixheight',
+				u'setlocal statusline=Calendar\\ no_functionality_yet',
+				u'setlocal number',
+				u'setlocal nonumber',
+				u'setlocal nohlsearch',  # don't highlight search strings
+				u'setlocal noinsertmode',  # don't make Insert mode the default
+				u'setlocal noshowcmd',  # don't show command info on last line
+				u'setlocal report=9999',  # don't show "X lines changed" reports
+				u'setlocal sidescroll=0',  # don't sidescroll in jumps
+				u'setlocal sidescrolloff=0',  # don't sidescroll automatically
+				u'setlocal noequalalways',  # don't auto-balance window sizes
+				u'setfiletype org_calendar',
+				u'au orgmode BufLeave <buffer> bwipeout org:calendar_view',
+				# mappings
+				u'nnoremap <silent> <buffer> j w',  # jump to next day on j
+				u'nnoremap <silent> <buffer> k b',  # jump to prev. day on k
+				u'nnoremap <silent> <buffer> <Esc> :bwipeout org:calendar_view<CR>'
+		]
+		map(vim.command, cmds)
+
+		# create the content of the calendar
+		today = datetime.today()
+		cal_str = Date._get_calendar_str(today.year, today.month)
+		vim.current.buffer[:] = cal_str
+
+		# set cursor to current day
+		for row, row_data in enumerate(cal_str):
+			# only look in the first month
+			this_day = str(today.day)
+			if this_day in row_data[:22]:
+				col = row_data.index(this_day)
+				break
+		vim.current.window.cursor = (row + 1, col)
+
+		# final setup
+		cmds = [u'setlocal nomodifiable']
+		map(vim.command, cmds)
+
+	@classmethod
+	def _get_calendar_str(cls, year, month):
+		"""Generate a formated calendar string for the next three month."""
+
+		# generate the first month str
+		first = calendar.month(year, month, 2)
+
+		# generate the second month str: inceremnt month (and year)
+		month, year = (month + 1, year) if month < 12 else (1, year + 1)
+		second = calendar.month(year, month, 2)
+
+		# generate the third month str: incerment month (and year)
+		month, year = (month + 1, year) if month < 12 else (1, year + 1)
+		third = calendar.month(year, month, 2)
+
+		# reformat them so that they are in one line
+		result = []
+		for m1, m2, m3 in zip(first.split('\n'), second.split('\n'),
+				third.split('\n')):
+			# append spaces if the line is too short
+			m1 += (' ' * (25 - len(m1)))
+			m2 += (' ' * (25 - len(m2)))
+			result.append("".join([m1, m2, m3]))
+		return result
+
 	def register(self):
 		u"""
 		Registration of the plugin.
@@ -255,6 +336,11 @@ class Date(object):
 				Plug(u'OrgDateInsertTimestampInactive',
 					u':py ORGMODE.plugins[u"Date"].insert_timestamp(False)<CR>')))
 		self.menu + ActionEntry(u'Timestamp (&inactive)', self.keybindings[-1])
+
+		# TODO: rm this for release
+		self.keybindings.append(Keybinding(u'%ssss' % leader,
+				Plug(u'OrgShowCalendar',
+				u':py ORGMODE.plugins[u"Date"].show_calendar()<CR>')))
 
 		submenu = self.menu + Submenu(u'Change &Date')
 		submenu + ActionEntry(u'Day &Earlier', u'<C-x>', u'<C-x>')
