@@ -228,10 +228,12 @@ Timestamps~
     A timestamp is a specification of a date (possibly with a time or a
     range of times) in a special format, either <2003-09-16 Tue> or
     <2003-09-16 Tue 09:39> or <2003-09-16 Tue 12:00-12:30>. A timestamp
-    can appear anywhere in the headline or body of an Org tree entry. Its
-    presence causes entries to be shown on specific dates in the agenda (see
-    section [[#Weekly_002fdaily-agenda][The weekly/daily agenda]]). We
-    distinguish:
+    can appear anywhere in the headline or body of an Org tree entry.
+
+    TODO: Its presence causes entries to be shown on specific dates in the 
+    agenda (see section [[#Weekly_002fdaily-agenda][The weekly/daily agenda]]).
+
+    We distinguish:
 
     Plain timestamp; Event; Appointment ~
         A simple timestamp just assigns a date/time to an item. This is just
@@ -334,7 +336,50 @@ TODO
 ==============================================================================
 AGENDA VIEWS                                                   *orgguide-agenda*
 
-TODO
+Due to the way Org works, TODO items, time-stamped items, and tagged headlines
+can be scattered throughout a file or even a number of files.  To get an
+overview of open action items, or of events that are important for
+a particular date, this information must be collected, sorted and displayed in
+an organized way. There are several different views, see below.
+
+The extracted information is displayed in a special agenda buffer.  This
+buffer is read-only, but provides commands to visit the corresponding
+locations in the original Org files, and even to edit these files remotely.
+Remote editing from the agenda buffer means, for example, that you can change
+the dates of deadlines and appointments from the agenda buffer. The commands
+available in the Agenda buffer are listed in |orgguide-agenda-commands|.
+
+- |orgguide-agenda-files|          Files being searched for agenda information
+- |orgguide-agenda-dispatcher|     Keyboard access to agenda views
+- |orgguide-agenda-builtin-views|  What is available out of the box?
+- |orgguide-agenda-commands|       Remote editing of Org trees
+- |orgguide-agenda-custom|         Defining special searches and views
+
+------------------------------------------------------------------------------
+Agenda files~
+                                                         *orgguide-agenda-files*
+  TODO
+
+------------------------------------------------------------------------------
+The agenda dispatcher ~
+                                                    *orgguide-agenda-dispatcher*
+  TODO
+
+------------------------------------------------------------------------------
+The built-in agenda views ~
+                                                 *orgguide-agenda-builtin-views*
+  TODO
+
+------------------------------------------------------------------------------
+Commands in the agenda buffer~
+
+                                                      *orgguide-agenda-commands*
+  TODO
+
+------------------------------------------------------------------------------
+Custom agenda views~
+                                                        *orgguide-agenda-custom*
+  TODO
 
 ==============================================================================
 MARKUP FOR RICH EXPORT                                     *orgguide-richexport*
@@ -356,4 +401,4 @@ MISCELLANEOUS                                                    *orgguide-misc*
 
 TODO
 
- vim:tw=78:ts=8:expandtab:ft=help:norl:
+vim:tw=78:ts=2:sw=2:expandtab:ft=help:norl:
