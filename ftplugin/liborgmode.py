@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 
+"""
+liborgmode
+==========
+
+TODO: explain this :)
+"""
 import re
 from UserList import UserList
 
+
 class Direction():
-    FORWARD = 1
-    BACKWARD = 2
+	FORWARD = 1
+	BACKWARD = 2
 
 
 def flatten_list(l):
@@ -430,8 +437,9 @@ class Heading(object):
 	def parse_heading_from_data(cls, data, allowed_todo_states, document=None, orig_start=None):
 		u""" Construct a new heading from the provided data
 
-		:document:		The document object this heading belongs to
 		:data:			List of lines
+        :allowed_todo_states: TODO???
+		:document:		The document object this heading belongs to
 		:orig_start:	The original start of the heading in case it was read
 						from a document. If orig_start is provided, the
 						resulting heading will not be marked dirty.
@@ -799,12 +807,20 @@ class Heading(object):
 	body = property(**body())
 
 class Document(object):
-	u""" Representation of a whole org-mode document """
+	u"""
+	Representation of a whole org-mode document.
+
+	A Document consists basically of headings (see Headings) and some metadata.
+
+	TODO: explain the 'dirty' mechanism
+	"""
 
 	def __init__(self):
 		u"""
 		Don't call this constructor directly but use one of the concrete
 		implementations.
+
+		TODO: what are the concrete implementatiions?
 		"""
 		object.__init__(self)
 
@@ -1077,3 +1093,5 @@ class Document(object):
 		if start is not None and end is not None:
 			return heading.parse_heading_from_data(self._content[start:end + 1], self.get_all_todo_states(), \
 					document=self if connect_with_document else None, orig_start=start)
+
+# vim: set noexpandtab:
