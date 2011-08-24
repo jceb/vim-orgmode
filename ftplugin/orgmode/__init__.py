@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
 
+"""
+	VIM ORGMODE
+	~~~~~~~~~~~~
+
+	TODO
+"""
+
+import imp
+import types
+
 import vim
 
-import types
-import imp
-
-import orgmode.plugins
-import orgmode.menu
 import orgmode.keybinding
+import orgmode.menu
+import orgmode.plugins
 import orgmode.settings
-from orgmode.document   import VimBuffer
 from orgmode.exceptions import PluginError
-
-from liborgmode.documents import Direction
+from orgmode.vimbuffer import VimBuffer
 
 
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))

@@ -1,128 +1,32 @@
 # -*- coding: utf-8 -*-
 
-from exceptions import BufferNotFound, BufferNotInSync
-from liborgmode.headings import Heading
-from liborgmode.documents import Document, MultiPurposeList, Direction
-import settings
-import vim
+"""
+	vimbuffer
+	~~~~~~~~~~
+
+	VimBuffer and VimBufferContest are the interface between liborgmode and
+	vim.
+
+	VimBuffer extends the liborgmode.document.Document().
+	Document() is just a general implementation for loading an org file. It
+	has no interface to an actual file or vim buffer. This is the task of
+	vimbuffer.VimBuffer(). It is the interfaces to vim. The main tasks for
+	VimBuffer are to provide read and write access to a real vim buffer.
+
+	VimBufferContent is a helper class for VimBuffer. Basically, it hides the
+	details of encoding - everything read from or written to VimBufferContent
+	is UTF-8.
+"""
+
 from UserList import UserList
 
-class VimBufferContent(MultiPurposeList):
-	u""" Vim Buffer Content is a UTF-8 wrapper around a vim buffer. When
-	retrieving or setting items in the buffer an automatic conversion is
-	performed.
+import vim
 
-	This ensures UTF-8 usage on the side of liborgmode and the vim plugin
-	vim-orgmode.
-	"""
+import settings
+from exceptions import BufferNotFound, BufferNotInSync
+from liborgmode.documents import Document, MultiPurposeList, Direction
+from liborgmode.headings import Heading
 
-	def __init__(self, vimbuffer, on_change=None):
-		MultiPurposeList.__init__(self, on_change=on_change)
-
-		# replace data with vimbuffer to make operations change the actual
-		# buffer
-		self.data = vimbuffer
-
-	def __contains__(self, item):
-		i = item
-		if type(i) is unicode:
-			i = item.encode(u'utf-8')
-		return MultiPurposeList.__contains__(self, i)
-
-	def __getitem__(self, i):
-		item = MultiPurposeList.__getitem__(self, i)
-		if type(item) is str:
-			return item.decode(u'utf-8')
-		return item
-
-	def __getslice__(self, i, j):
-		return [item.decode(u'utf-8') if type(item) is str else item \
-				for item in MultiPurposeList.__getslice__(self, i, j)]
-
-	def __setitem__(self, i, item):
-		_i = item
-		if type(_i) is unicode:
-			_i = item.encode(u'utf-8')
-
-		MultiPurposeList.__setitem__(self, i, _i)
-
-	def __setslice__(self, i, j, other):
-		o = []
-		o_tmp = other
-		if type(o_tmp) not in (list, tuple) and not isinstance(o_tmp, UserList):
-			o_tmp = list(o_tmp)
-		for item in o_tmp:
-			if type(item) == unicode:
-				o.append(item.encode(u'utf-8'))
-			else:
-				o.append(item)
-		MultiPurposeList.__setslice__(self, i, j, o)
-
-	def __add__(self, other):
-		raise NotImplementedError()
-		# TODO: implement me
-		if isinstance(other, UserList):
-			return self.__class__(self.data + other.data)
-		elif isinstance(other, type(self.data)):
-			return self.__class__(self.data + other)
-		else:
-			return self.__class__(self.data + list(other))
-
-	def __radd__(self, other):
-		raise NotImplementedError()
-		# TODO: implement me
-		if isinstance(other, UserList):
-			return self.__class__(other.data + self.data)
-		elif isinstance(other, type(self.data)):
-			return self.__class__(other + self.data)
-		else:
-			return self.__class__(list(other) + self.data)
-
-	def __iadd__(self, other):
-		o = []
-		o_tmp = other
-		if type(o_tmp) not in (list, tuple) and not isinstance(o_tmp, UserList):
-			o_tmp = list(o_tmp)
-		for i in o_tmp:
-			if type(i) is unicode:
-				o.append(i.encode(u'utf-8'))
-			else:
-				o.append(i)
-
-		return MultiPurposeList.__iadd__(self, o)
-
-	def append(self, item):
-		i = item
-		if type(item) is str:
-			i = item.encode(u'utf-8')
-		MultiPurposeList.append(self, i)
-
-	def insert(self, i, item):
-		_i = item
-		if type(_i) is str:
-			_i = item.encode(u'utf-8')
-		MultiPurposeList.insert(self, i, _i)
-
-	def index(self, item, *args):
-		i = item
-		if type(i) is unicode:
-			i = item.encode(u'utf-8')
-		MultiPurposeList.index(self, i, *args)
-
-	def pop(self, i=-1):
-		return MultiPurposeList.pop(self, i).decode(u'utf-8')
-
-	def extend(self, other):
-		o = []
-		o_tmp = other
-		if type(o_tmp) not in (list, tuple) and not isinstance(o_tmp, UserList):
-			o_tmp = list(o_tmp)
-		for i in o_tmp:
-			if type(i) is unicode:
-				o.append(i.encode(u'utf-8'))
-			else:
-				o.append(i)
-		MultiPurposeList.extend(self, o)
 
 class VimBuffer(Document):
 	def __init__(self, bufnr=0):
@@ -383,3 +287,124 @@ class VimBuffer(Document):
 				if position is None else position, \
 				direction=Direction.BACKWARD, heading=heading, \
 				connect_with_document=False)
+
+
+class VimBufferContent(MultiPurposeList):
+	u""" Vim Buffer Content is a UTF-8 wrapper around a vim buffer. When
+	retrieving or setting items in the buffer an automatic conversion is
+	performed.
+
+	This ensures UTF-8 usage on the side of liborgmode and the vim plugin
+	vim-orgmode.
+	"""
+
+	def __init__(self, vimbuffer, on_change=None):
+		MultiPurposeList.__init__(self, on_change=on_change)
+
+		# replace data with vimbuffer to make operations change the actual
+		# buffer
+		self.data = vimbuffer
+
+	def __contains__(self, item):
+		i = item
+		if type(i) is unicode:
+			i = item.encode(u'utf-8')
+		return MultiPurposeList.__contains__(self, i)
+
+	def __getitem__(self, i):
+		item = MultiPurposeList.__getitem__(self, i)
+		if type(item) is str:
+			return item.decode(u'utf-8')
+		return item
+
+	def __getslice__(self, i, j):
+		return [item.decode(u'utf-8') if type(item) is str else item \
+				for item in MultiPurposeList.__getslice__(self, i, j)]
+
+	def __setitem__(self, i, item):
+		_i = item
+		if type(_i) is unicode:
+			_i = item.encode(u'utf-8')
+
+		MultiPurposeList.__setitem__(self, i, _i)
+
+	def __setslice__(self, i, j, other):
+		o = []
+		o_tmp = other
+		if type(o_tmp) not in (list, tuple) and not isinstance(o_tmp, UserList):
+			o_tmp = list(o_tmp)
+		for item in o_tmp:
+			if type(item) == unicode:
+				o.append(item.encode(u'utf-8'))
+			else:
+				o.append(item)
+		MultiPurposeList.__setslice__(self, i, j, o)
+
+	def __add__(self, other):
+		raise NotImplementedError()
+		# TODO: implement me
+		if isinstance(other, UserList):
+			return self.__class__(self.data + other.data)
+		elif isinstance(other, type(self.data)):
+			return self.__class__(self.data + other)
+		else:
+			return self.__class__(self.data + list(other))
+
+	def __radd__(self, other):
+		raise NotImplementedError()
+		# TODO: implement me
+		if isinstance(other, UserList):
+			return self.__class__(other.data + self.data)
+		elif isinstance(other, type(self.data)):
+			return self.__class__(other + self.data)
+		else:
+			return self.__class__(list(other) + self.data)
+
+	def __iadd__(self, other):
+		o = []
+		o_tmp = other
+		if type(o_tmp) not in (list, tuple) and not isinstance(o_tmp, UserList):
+			o_tmp = list(o_tmp)
+		for i in o_tmp:
+			if type(i) is unicode:
+				o.append(i.encode(u'utf-8'))
+			else:
+				o.append(i)
+
+		return MultiPurposeList.__iadd__(self, o)
+
+	def append(self, item):
+		i = item
+		if type(item) is str:
+			i = item.encode(u'utf-8')
+		MultiPurposeList.append(self, i)
+
+	def insert(self, i, item):
+		_i = item
+		if type(_i) is str:
+			_i = item.encode(u'utf-8')
+		MultiPurposeList.insert(self, i, _i)
+
+	def index(self, item, *args):
+		i = item
+		if type(i) is unicode:
+			i = item.encode(u'utf-8')
+		MultiPurposeList.index(self, i, *args)
+
+	def pop(self, i=-1):
+		return MultiPurposeList.pop(self, i).decode(u'utf-8')
+
+	def extend(self, other):
+		o = []
+		o_tmp = other
+		if type(o_tmp) not in (list, tuple) and not isinstance(o_tmp, UserList):
+			o_tmp = list(o_tmp)
+		for i in o_tmp:
+			if type(i) is unicode:
+				o.append(i.encode(u'utf-8'))
+			else:
+				o.append(i)
+		MultiPurposeList.extend(self, o)
+
+
+# vim: set noexpandtab:
