@@ -66,3 +66,5 @@ def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):
 
 	vim.command((u'let %s:%s = %s' % (VARIABLE_LEADER[scope], setting, v)).encode(u'utf-8'))
 	return value
+
+# vim: set noexpandtab:

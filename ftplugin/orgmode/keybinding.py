@@ -205,3 +205,6 @@ class Keybinding(object):
 		except Exception, e:
 			if ORGMODE.debug:
 				echom(u'Failed to register key binding %s %s' % (self._key, self._action))
+
+
+# vim: set noexpandtab:

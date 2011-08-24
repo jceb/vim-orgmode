@@ -15,3 +15,5 @@ class BufferNotInSync(Exception):
 class HeadingDomError(Exception):
 	def __init__(self, message):
 		Exception.__init__(self, message)
+
+# vim: set noexpandtab:
