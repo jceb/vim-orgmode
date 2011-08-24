@@ -358,7 +358,13 @@ available in the Agenda buffer are listed in |orgguide-agenda-commands|.
 ------------------------------------------------------------------------------
 Agenda files~
                                                          *orgguide-agenda-files*
-  TODO
+  The information to be shown is normally collected from all /agenda
+  files/, the files listed in the variable *g:org_agenda_files*
+>
+    let g:org_agenda_files = ['~/org/index.org', ~/org/project.org']
+<
+
+  TODO: add functionality and extend.
 
 ------------------------------------------------------------------------------
 The agenda dispatcher ~
@@ -369,6 +375,21 @@ The agenda dispatcher ~
 The built-in agenda views ~
                                                  *orgguide-agenda-builtin-views*
   TODO
+
+  The weekly/daily agenda~
+    TODO
+
+  The global TODO list~
+    TODO
+
+  Matching tags and properties~
+    TODO
+
+  Timeline for a single file~
+    TODO
+
+  Search view~
+    TODO
 
 ------------------------------------------------------------------------------
 Commands in the agenda buffer~
