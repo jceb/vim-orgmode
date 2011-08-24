@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from exceptions import BufferNotFound, BufferNotInSync
-from liborgmode import Document, Heading, MultiPurposeList, Direction
+from orgmode.liborgmode.liborgmode import Document, Heading, MultiPurposeList, Direction
 import settings
 import vim
 from UserList import UserList
