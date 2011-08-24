@@ -365,6 +365,8 @@ class Heading(object):
 		self._body          = MultiPurposeList(on_change=self.set_dirty_body)
 		if body: self.body  = body
 
+		self._active_date   = None
+
 	def __unicode__(self):
 		res = u'*' * self.level
 		if self.todo:
@@ -430,7 +432,6 @@ class Heading(object):
 
 		heading._dirty_heading = self.is_dirty_heading
 
-
 		return heading
 
 	@classmethod
@@ -470,24 +471,34 @@ class Heading(object):
 							title = _todo_title[1]
 					else:
 						title = r[u'title'].strip()
+
 				return (level, todo, title, tags)
 			raise ValueError(u'Data doesn\'t start with a heading definition.')
 
 		if not data:
 			raise ValueError(u'Unable to create heading, no data provided.')
 
-		h = cls()
-		h.level, h.todo, h.title, h.tags = parse_title(data[0])
-		h.body = data[1:]
+		new_heading = cls()
+		new_heading.level, new_heading.todo, new_heading.title, new_heading.tags = parse_title(data[0])
+		new_heading.body = data[1:]
 		if orig_start is not None:
-			h._dirty_heading = False
-			h._dirty_body    = False
-			h._orig_start    = orig_start
-			h._orig_len      = len(h)
+			new_heading._dirty_heading = False
+			new_heading._dirty_body    = False
+			new_heading._orig_start    = orig_start
+			new_heading._orig_len      = len(new_heading)
 		if document:
-			h._document = document
+			new_heading._document = document
 
-		return h
+		# try to find active dates dates
+		# look at every line and take the first occurrence
+		new_heading.active_date = None
+		for row in data:
+			date_match = re.search(r'\d\d\d\d-\d\d\-\d\d', row)
+			if date_match:
+				new_heading.active_date = date_match.group()
+				break
+
+		return new_heading
 
 	@classmethod
 	def identify_heading(cls, line):
@@ -741,6 +752,24 @@ class Heading(object):
 			self.todo = None
 		return locals()
 	todo = property(**todo())
+
+	def active_date():
+		u"""
+		active date of the hearing.
+
+		active dates are used in the agenda view. they can be part of the
+		heading and/or the body.
+		"""
+		def fget(self):
+			return self._active_date
+
+		def fset(self, value):
+			self._active_date = value
+
+		def fdel(self):
+			self._active_date = None
+		return locals()
+	active_date = property(**active_date())
 
 	def title():
 		u""" Title of current heading """

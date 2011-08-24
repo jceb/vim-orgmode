@@ -9,12 +9,16 @@ import test_show_hide
 import test_tags_properties
 import test_todo
 import test_date
+import test_heading
 
 import unittest
 
 if __name__ == '__main__':
 	tests = unittest.TestSuite()
+
 	tests.addTests(test_vimbuffer.suite())
+	tests.addTests(test_heading.suite())
+
 	tests.addTests(test_edit_structure.suite())
 	tests.addTests(test_misc.suite())
 	tests.addTests(test_navigator.suite())
