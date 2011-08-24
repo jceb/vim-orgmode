@@ -32,19 +32,19 @@ class Document(object):
 		object.__init__(self)
 
 		# is a list - only the Document methods should work with this list!
-		self._content                   = None
-		self._dirty_meta_information    = False
-		self._dirty_document            = False
-		self._meta_information          = MultiPurposeList(on_change = self.set_dirty_meta_information)
+		self._content = None
+		self._dirty_meta_information = False
+		self._dirty_document = False
+		self._meta_information = MultiPurposeList(on_change = self.set_dirty_meta_information)
 		self._orig_meta_information_len = None
-		self._headings                  = HeadingList(obj=self)
-		self._deleted_headings          = []
+		self._headings = HeadingList(obj=self)
+		self._deleted_headings = []
 
 		# settings needed to align tags properly
-		self._tabstop                    = 8
-		self._tag_column                 = 77
+		self._tabstop = 8
+		self._tag_column = 77
 
-		self.todo_states                 = [u'TODO', u'DONE']
+		self.todo_states = [u'TODO', u'DONE']
 
 	def __unicode__(self):
 		if self.meta_information is None:
@@ -75,8 +75,10 @@ class Document(object):
 		u""" Tabstop for this document """
 		def fget(self):
 			return self._tabstop
+
 		def fset(self, value):
 			self._tabstop = value
+
 		return locals()
 	tabstop = property(**tabstop())
 
@@ -84,8 +86,10 @@ class Document(object):
 		u""" The column all tags are right-aligned to """
 		def fget(self):
 			return self._tag_column
+
 		def fset(self, value):
 			self._tag_column = value
+
 		return locals()
 	tag_column = property(**tag_column())
 
@@ -94,7 +98,7 @@ class Document(object):
 		should be call prior to accessing the document.
 
 		:returns:	self
-	    """
+		"""
 		def init_heading(_h):
 			u"""
 			:returns	the initialized heading
@@ -160,7 +164,7 @@ class Document(object):
 		Meta information is text that precedes all headings in an org-mode
 		document. It might contain additional information about the document,
 		e.g. author
-		 """
+		"""
 		def fget(self):
 			return self._meta_information
 
@@ -174,8 +178,10 @@ class Document(object):
 			elif type(value) in (unicode, ):
 				self._meta_information[:] = value.split(u'\n')
 			self.set_dirty_meta_information()
+
 		def fdel(self):
 			self.meta_information = u''
+
 		return locals()
 	meta_information = property(**meta_information())
 
@@ -183,10 +189,13 @@ class Document(object):
 		u""" List of top level headings """
 		def fget(self):
 			return self._headings
+
 		def fset(self, value):
 			self._headings[:] = value
+
 		def fdel(self):
 			del self.headings[:]
+
 		return locals()
 	headings = property(**headings())
 
@@ -257,10 +266,14 @@ class Document(object):
 			heading=Heading, connect_with_document=True):
 		u""" Find heading in the given direction
 
-		:postition: starting line, counting from 0 (in vim you start counting from 1, don't forget)
-		:direction: downwards == Direction.FORWARD, upwards == Direction.BACKWARD
-		:heading:   Heading class from which new heading objects will be instanciated
-		:connect_with_document:	if True, the newly created heading will be connected with the document, otherwise not
+		:postition: starting line, counting from 0 (in vim you start
+				counting from 1, don't forget)
+		:direction: downwards == Direction.FORWARD,
+				upwards == Direction.BACKWARD
+		:heading:   Heading class from which new heading objects will be
+				instanciated
+		:connect_with_document: if True, the newly created heading will be
+				connected with the document, otherwise not
 
 		:returns:	New heading object or None
 		"""

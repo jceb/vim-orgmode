@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
 """
-    base
-    ~~~~~~~~~~
+	base
+	~~~~~~~~~~
 
-    Here are really basic data structures that are uset througout the liborgmode.
+	Here are some really basic data structures that are used throughout
+	the liborgmode.
 """
 
 from UserList import UserList
 
 
 def flatten_list(l):
+	"""TODO"""
 	res = []
 	if type(l) in (tuple, list) or isinstance(l, UserList):
 		for i in l:
@@ -22,13 +24,19 @@ def flatten_list(l):
 
 
 class Direction():
+	u"""
+	Direction is used to indicate the direction of certain actions.
+
+	Example: it defines the direction headings get parted in.
+	"""
 	FORWARD = 1
 	BACKWARD = 2
 
 
 class MultiPurposeList(UserList):
-	u""" A Multi Purpose List is a list that calls a user defined hook on
-	change. The impelementation is very basic - the hook is called without any
+	u"""
+	A Multi Purpose List is a list that calls a user defined hook on
+	change. The implementation is very basic - the hook is called without any
 	parameters. Otherwise the Multi Purpose List can be used like any other
 	list.
 
@@ -66,7 +74,8 @@ class MultiPurposeList(UserList):
 	def __getslice__(self, i, j):
 		# fix UserList - don't return a new list of the same type but just the
 		# normal list item
-		i = max(i, 0); j = max(j, 0)
+		i = max(i, 0)
+		j = max(j, 0)
 		return self.data[i:j]
 
 	def __iadd__(self, other):

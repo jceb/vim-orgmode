@@ -13,8 +13,11 @@ from UserList import UserList
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list
 
 
-REGEX_HEADING = re.compile(r'^(?P<level>\*+)(\s+(?P<title>.*?))?\s*(\s(?P<tags>:[\w_:]+:))?$', flags=re.U|re.L)
-REGEX_TAGS = re.compile(r'^\s*((?P<title>[^\s]*?)\s+)?(?P<tags>:[\w_:]+:)$', flags=re.U|re.L)
+REGEX_HEADING = re.compile(
+		r'^(?P<level>\*+)(\s+(?P<title>.*?))?\s*(\s(?P<tags>:[\w_:]+:))?$',
+		flags=re.U | re.L)
+REGEX_TAGS = re.compile(r'^\s*((?P<title>[^\s]*?)\s+)?(?P<tags>:[\w_:]+:)$',
+		flags=re.U | re.L)
 REGEX_TODO = re.compile(r'^[^\s]*$')
 
 
@@ -31,28 +34,39 @@ class Heading(object):
 		"""
 		object.__init__(self)
 
-		self._document      = None
-		self._parent        = None
+		self._document = None
+		self._parent = None
 		self._previous_sibling = None
-		self._next_sibling  = None
-		self._children      = HeadingList(obj=self)
-		self._orig_start    = None
-		self._orig_len      = 0
+		self._next_sibling = None
+		self._children = HeadingList(obj=self)
+		self._orig_start = None
+		self._orig_len = 0
 
 		self._dirty_heading = False
-		self._level         = level
-		self._todo          = None
-		if todo: self.todo  = todo
-		self._tags          = MultiPurposeList(on_change=self.set_dirty_heading)
-		self._title         = u''
-		if title: self.title = title
-		if tags: self.tags   = tags
+		self._level = level
 
-		self._dirty_body    = False
-		self._body          = MultiPurposeList(on_change=self.set_dirty_body)
-		if body: self.body  = body
+		# todo
+		self._todo = None
+		if todo:
+			self.todo = todo
 
-		self._active_date   = None
+		# tags
+		self._tags = MultiPurposeList(on_change=self.set_dirty_heading)
+		if tags:
+			self.tags = tags
+
+		# title
+		self._title = u''
+		if title:
+			self.title = title
+
+		# body
+		self._dirty_body = False
+		self._body = MultiPurposeList(on_change=self.set_dirty_body)
+		if body:
+			self.body = body
+
+		self._active_date = None
 
 	def __unicode__(self):
 		res = u'*' * self.level
@@ -76,10 +90,11 @@ class Heading(object):
 			len_heading = len(res)
 			len_tags = len(tags)
 			if len_heading + spaces + len_tags < tag_column:
-				spaces_to_next_tabstop =  ts - divmod(len_heading, ts)[1]
+				spaces_to_next_tabstop = ts - divmod(len_heading, ts)[1]
 
 				if len_heading + spaces_to_next_tabstop + len_tags < tag_column:
-					tabs, spaces = divmod(tag_column - (len_heading + spaces_to_next_tabstop + len_tags), ts)
+					tabs, spaces = divmod(tag_column -
+							(len_heading + spaces_to_next_tabstop + len_tags), ts)
 
 					if spaces_to_next_tabstop:
 						tabs += 1
@@ -105,7 +120,8 @@ class Heading(object):
 		Create a copy of the current heading. The heading will be completely
 		detached and not even belong to a document anymore.
 
-		:including_children:	If True a copy of all children is create as well. If False the returned heading doesn't have any children.
+		:including_children:	If True a copy of all children is create as
+				well. If False the returned heading doesn't have any children.
 		"""
 		heading = self.__class__(level=self.level, title=self.title, \
 				tags=self.tags, todo=self.todo, body=self.body[:])
@@ -114,26 +130,27 @@ class Heading(object):
 		if including_children and self.children:
 			[item.copy(including_children=including_children, parent=heading) \
 					for item in self.children]
-		heading._orig_start    = self._orig_start
-		heading._orig_len      = self._orig_len
+		heading._orig_start = self._orig_start
+		heading._orig_len = self._orig_len
 
 		heading._dirty_heading = self.is_dirty_heading
 
 		return heading
 
 	@classmethod
-	def parse_heading_from_data(cls, data, allowed_todo_states, document=None, orig_start=None):
+	def parse_heading_from_data(cls, data, allowed_todo_states, document=None,
+			orig_start=None):
 		u""" Construct a new heading from the provided data
 
 		:data:			List of lines
-        :allowed_todo_states: TODO???
+		:allowed_todo_states: TODO???
 		:document:		The document object this heading belongs to
 		:orig_start:	The original start of the heading in case it was read
 						from a document. If orig_start is provided, the
 						resulting heading will not be marked dirty.
 
 		:returns:	The newly created heading
-	    """
+		"""
 		def parse_title(heading_line):
 			# WARNING this regular expression fails if there is just one or no
 			# word in the heading but a tag!
@@ -151,7 +168,7 @@ class Heading(object):
 					r = mt.groupdict()
 					tags = filter(lambda x: x != u'', r[u'tags'].split(u':')) if r[u'tags'] else []
 				if r[u'title'] is not None:
-					_todo_title = [ i.strip() for i in r[u'title'].split(None, 1) ]
+					_todo_title = [i.strip() for i in r[u'title'].split(None, 1)]
 					if _todo_title and _todo_title[0] in allowed_todo_states:
 						todo = _todo_title[0]
 						if len(_todo_title) > 1:
@@ -165,14 +182,15 @@ class Heading(object):
 		if not data:
 			raise ValueError(u'Unable to create heading, no data provided.')
 
+		# create new heaing
 		new_heading = cls()
 		new_heading.level, new_heading.todo, new_heading.title, new_heading.tags = parse_title(data[0])
 		new_heading.body = data[1:]
 		if orig_start is not None:
 			new_heading._dirty_heading = False
-			new_heading._dirty_body    = False
-			new_heading._orig_start    = orig_start
-			new_heading._orig_len      = len(new_heading)
+			new_heading._dirty_body = False
+			new_heading._orig_start = orig_start
+			new_heading._orig_len = len(new_heading)
 		if document:
 			new_heading._document = document
 
@@ -201,7 +219,7 @@ class Heading(object):
 		for i in xrange(0, len(line)):
 			if line[i] == u'*':
 				level += 1
-				if len(line) > (i + 1) and line[i+1] in (u'\t', u' '):
+				if len(line) > (i + 1) and line[i + 1] in (u'\t', u' '):
 					return level
 			else:
 				return None
@@ -227,7 +245,7 @@ class Heading(object):
 
 		:returns:	Index value or None if heading doesn't have a
 					parent/document or is not in the list of headings
-	    """
+		"""
 		if self.parent:
 			if self in self.parent.children:
 				return self.parent.children.index(self)
@@ -241,7 +259,7 @@ class Heading(object):
 
 		:returns:	List of headings or None if heading doesn't have a
 					parent/document or is not in the list of headings
-	    """
+		"""
 		if self.parent:
 			if self in self.parent.children:
 				return self.parent.children
@@ -344,7 +362,8 @@ class Heading(object):
 		def compute_start(h):
 			if h:
 				return len(h) + compute_start(h.previous_heading)
-			return len(self.document.meta_information) if self.document.meta_information else 0
+			return len(self.document.meta_information) if \
+					self.document.meta_information else 0
 		return compute_start(self.previous_heading)
 
 	@property
@@ -381,13 +400,16 @@ class Heading(object):
 		u""" Subheadings of the current heading """
 		def fget(self):
 			return self._children
+
 		def fset(self, value):
 			v = value
 			if type(v) in (list, tuple) or isinstance(v, UserList):
 				v = flatten_list(v)
 			self._children[:] = v
+
 		def fdel(self):
 			del self.children[:]
+
 		return locals()
 	children = property(**children())
 
@@ -407,11 +429,14 @@ class Heading(object):
 		u""" Access to the heading level """
 		def fget(self):
 			return self._level
+
 		def fset(self, value):
 			self._level = int(value)
 			self.set_dirty_heading()
+
 		def fdel(self):
 			self.level = None
+
 		return locals()
 	level = property(**level())
 
@@ -421,6 +446,7 @@ class Heading(object):
 		def fget(self):
 			# extract todo state from heading
 			return self._todo
+
 		def fset(self, value):
 			# update todo state
 			if type(value) not in (unicode, str, type(None)):
@@ -435,8 +461,10 @@ class Heading(object):
 					v = v.decode(u'utf-8')
 				self._todo = v.upper()
 			self.set_dirty_heading()
+
 		def fdel(self):
 			self.todo = None
+
 		return locals()
 	todo = property(**todo())
 
@@ -462,6 +490,7 @@ class Heading(object):
 		u""" Title of current heading """
 		def fget(self):
 			return self._title.strip()
+
 		def fset(self, value):
 			if type(value) not in (unicode, str):
 				raise ValueError(u'Title must be a string.')
@@ -470,8 +499,10 @@ class Heading(object):
 				v = v.decode(u'utf-8')
 			self._title = v.strip()
 			self.set_dirty_heading()
+
 		def fdel(self):
 			self.title = u''
+
 		return locals()
 	title = property(**title())
 
@@ -479,6 +510,7 @@ class Heading(object):
 		u""" Tags of the current heading """
 		def fget(self):
 			return self._tags
+
 		def fset(self, value):
 			v = value
 			if type(v) in (unicode, str):
@@ -498,8 +530,10 @@ class Heading(object):
 				v_decoded.append(i_tmp)
 
 			self._tags[:] = v_decoded
+
 		def fdel(self):
 			self.tags = []
+
 		return locals()
 	tags = property(**tags())
 
@@ -517,8 +551,10 @@ class Heading(object):
 				self._body[:] = value.split(u'\n')
 			else:
 				self.body = list(unicode(value))
+
 		def fdel(self):
 			self.body = []
+
 		return locals()
 	body = property(**body())
 
@@ -571,11 +607,13 @@ class HeadingList(MultiPurposeList):
 			for i in flatten_list(item):
 				self._add_to_deleted_headings(i)
 		else:
-			self._get_document()._deleted_headings.append(item.copy(including_children=False))
+			self._get_document()._deleted_headings.append(
+					item.copy(including_children=False))
 			self._add_to_deleted_headings(item.children)
 			self._get_document().set_dirty_document()
 
-	def _associate_heading(self, heading, previous_sibling, next_sibling, children=False):
+	def _associate_heading(self, heading, previous_sibling, next_sibling,
+			children=False):
 		"""
 		:heading:		The heading or list to associate with the current heading
 		:previous_sibling:	The previous sibling of the current heading. If
@@ -647,7 +685,8 @@ class HeadingList(MultiPurposeList):
 		for item in o:
 			if not self.__class__.is_heading(item):
 				raise ValueError(u'List contains items that are not a heading!')
-		i = max(i, 0); j = max(j, 0)
+		i = max(i, 0)
+		j = max(j, 0)
 		self._add_to_deleted_headings(self[i:j])
 		self._associate_heading(o, \
 				self[i - 1] if i - 1 >= 0 and i < len(self) else None, \
@@ -665,7 +704,8 @@ class HeadingList(MultiPurposeList):
 		MultiPurposeList.__delitem__(self, i)
 
 	def __delslice__(self, i, j):
-		i = max(i, 0); j = max(j, 0)
+		i = max(i, 0)
+		j = max(j, 0)
 		items = self[i:j]
 		if items:
 			first = items[0]
