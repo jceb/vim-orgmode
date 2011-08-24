@@ -4,7 +4,7 @@ import unittest
 import sys
 sys.path.append(u'../ftplugin')
 
-from orgmode.liborgmode.liborgmode import Heading
+from orgmode.liborgmode.headings import Heading
 
 
 class TestHeading(unittest.TestCase):

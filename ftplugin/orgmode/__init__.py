@@ -12,7 +12,7 @@ import orgmode.settings
 from orgmode.document   import VimBuffer
 from orgmode.exceptions import PluginError
 
-from liborgmode.liborgmode import Direction
+from liborgmode.documents import Direction
 
 
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
