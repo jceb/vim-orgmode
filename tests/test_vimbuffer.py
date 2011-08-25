@@ -7,7 +7,7 @@ sys.path.append(u'../ftplugin')
 import vim
 
 from orgmode.liborgmode.headings import Heading
-from orgmode.document import VimBuffer
+from orgmode.vimbuffer import VimBuffer
 
 
 counter = 0

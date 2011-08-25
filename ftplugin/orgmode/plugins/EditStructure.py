@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from orgmode import ORGMODE, apply_count, repeat, realign_tags
-from orgmode import Direction
-from orgmode.menu import Submenu, Separator, ActionEntry
-from orgmode.keybinding import Keybinding, Plug, MODE_INSERT, MODE_NORMAL
-from orgmode.liborgmode.headings import Heading
-from orgmode.exceptions import HeadingDomError
 from orgmode import settings
+from orgmode.exceptions import HeadingDomError
+from orgmode.keybinding import Keybinding, Plug, MODE_INSERT, MODE_NORMAL
+from orgmode.menu import Submenu, Separator, ActionEntry
+from orgmode.liborgmode.base import Direction
+from orgmode.liborgmode.headings import Heading
 
 import vim
 

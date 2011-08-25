@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echom, ORGMODE, apply_count, repeat, realign_tags
-from orgmode import Direction
+from orgmode import echom, ORGMODE, apply_count, repeat, realign_tags, settings
+from orgmode.liborgmode.base import Direction
 from orgmode.menu import Submenu, ActionEntry
-from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
 
 import vim

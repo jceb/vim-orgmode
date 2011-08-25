@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+
 import sys
-from orgmode.document import VimBuffer
-from orgmode import Direction
 sys.path.append(u'../ftplugin')
+
+import unittest
+from orgmode.liborgmode.base import Direction
+from orgmode.vimbuffer import VimBuffer
+from orgmode.plugins.Todo import Todo
 
 import vim
 
-from orgmode.plugins.Todo import Todo
-
 counter = 0
+
 class TodoTestCase(unittest.TestCase):
 	u"""Tests all the functionality of the TODO module."""
 
@@ -415,6 +417,7 @@ class TodoTestCase(unittest.TestCase):
 		result = Todo._get_next_state(current_state, states,
 				Direction.BACKWARD, next_set=True)
 		self.assertEquals(result, u'TODO')
+
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(TodoTestCase)
