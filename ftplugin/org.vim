@@ -29,7 +29,8 @@ let g:loaded_org = 1
 
 " general setting plugins that should be loaded and their order
 if ! exists('g:org_plugins') && ! exists('b:org_plugins')
-	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|', 'Export']
+	"let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|', 'Export']
+	let g:org_plugins = ['ShowHide', '|', 'Navigator', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|', 'Export']
 endif
 
 if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_highlight_leading_stars')
@@ -71,11 +72,11 @@ python << EOF
 import vim, os, sys
 
 for p in vim.eval("&runtimepath").split(','):
-   dname = os.path.join(p, "ftplugin")
-   if os.path.exists(os.path.join(dname, "orgmode")):
-      if dname not in sys.path:
-         sys.path.append(dname)
-      break
+	dname = os.path.join(p, "ftplugin")
+	if os.path.exists(os.path.join(dname, "orgmode")):
+		if dname not in sys.path:
+			sys.path.append(dname)
+			break
 
 from orgmode import ORGMODE
 ORGMODE.start()
