@@ -24,7 +24,13 @@ class Agenda(object):
 
 	@classmethod
 	def test(cls):
-		pass
+		agenda = ORGMODE.get_agenda()
+		print len(agenda)
+		for i, item in enumerate(agenda):
+			print i,
+			print item
+			pass
+
 
 	def register(self):
 		u"""

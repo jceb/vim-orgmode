@@ -18,6 +18,7 @@ import orgmode.plugins
 import orgmode.settings
 from orgmode.exceptions import PluginError
 from orgmode.vimbuffer import VimBuffer
+from orgmode.liborgmode.agenda import AgendaManager
 
 
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
@@ -209,6 +210,12 @@ class OrgMode(object):
 		self._plugins = {}
 		# list of vim buffer objects
 		self._documents = {}
+
+		# agenda manager
+		self._agenda_manager = AgendaManager()
+
+	def get_agenda(self, files=None):
+		return self._agenda_manager.get_agenda(self.get_document())
 
 	def get_document(self, bufnr=0, allow_dirty=False):
 		""" Retrieve instance of vim buffer document. This Document should be
