@@ -198,9 +198,18 @@ class Heading(object):
 		# look at every line and take the first occurrence
 		new_heading.active_date = None
 		for row in data:
-			date_match = re.search(r'\d\d\d\d-\d\d\-\d\d', row)
+			# date times
+			match = re.search(
+					r'\<(\d\d\d\d-\d\d\-\d\d) \w\w\w (\d\d):(\d\d)\>', row)
+			if match:
+				datestr, hours, minutes = match.groups()
+				new_heading.active_date = "%s-%s-%s" % (datestr, hours, minutes)
+				break
+			# dates
+			date_match = re.search(
+					r'\<(\d\d\d\d-\d\d\-\d\d) \w\w\w\>', row)
 			if date_match:
-				new_heading.active_date = date_match.group()
+				new_heading.active_date = date_match.groups()[0]
 				break
 
 		return new_heading

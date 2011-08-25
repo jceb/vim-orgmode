@@ -7,24 +7,68 @@ sys.path.append(u'../ftplugin')
 from orgmode.liborgmode.headings import Heading
 
 
-class TestHeading(unittest.TestCase):
+class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 
 	def setUp(self):
-		pass
+		self.allowed_todo_states = ["TODO"]
 
-	def test_heading_parsing(self):
-		allowed_todo_states = ["TODO"]
-
+	def test_heading_parsing_no_date(self):
+		"""""
+		'text' doesn't contain any valid date.
+		"""
 		text = ["* TODO This is a test :hallo:"]
-		heading = Heading.parse_heading_from_data(text, allowed_todo_states)
-		self.assertEqual(None, heading.active_date)
+		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
+		self.assertEqual(None, h.active_date)
 
+		text = ["* TODO This is a test <2011-08-25>"]
+		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
+		self.assertEqual(None, h.active_date)
+
+		text = ["* TODO This is a test <2011-08-25 Wednesday>"]
+		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
+		self.assertEqual(None, h.active_date)
+
+		text = ["* TODO This is a test <20110825>"]
+		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
+		self.assertEqual(None, h.active_date)
+
+	def test_heading_parsing_with_date(self):
+		"""""
+		'text' does contain valid dates.
+		"""
 		text = ["* TODO This is a test <2011-08-24 Wed> :hallo:"]
-		heading = Heading.parse_heading_from_data(text, allowed_todo_states)
-		self.assertEqual("2011-08-24", heading.active_date)
+		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
+		self.assertEqual("2011-08-24", h.active_date)
+
+		text = ["* TODO This is a test <2011-08-25 Thu 10:10> :hallo:"]
+		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
+		self.assertEqual("2011-08-25-10-10", h.active_date)
+
+	def test_heading_parsing_with_date_and_body(self):
+		"""""
+		'text' contains valid dates (in the body).
+		"""
+		text = ["* TODO This is a test <2011-08-25 Thu 10:10> :hallo:",
+				"some body text",
+				"some body text"]
+		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
+		self.assertEqual("2011-08-25-10-10", h.active_date)
+
+		text = ["* TODO This is a test  :hallo:",
+				"some body text",
+				"some body text<2011-08-25 Thu 10:10>"]
+		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
+		self.assertEqual("2011-08-25-10-10", h.active_date)
+
+		text = ["* TODO This is a test  :hallo:",
+				"some body text <2011-08-24 Wed>",
+				"some body text<2011-08-25 Thu 10:10>"]
+		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
+		self.assertEqual("2011-08-24", h.active_date)
 
 
 def suite():
-	return unittest.TestLoader().loadTestsFromTestCase(TestHeading)
+	return unittest.TestLoader().loadTestsFromTestCase(
+			TestHeadingRecognizeDatesInHeading)
 
 # vim: set noexpandtab:
