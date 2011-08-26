@@ -450,6 +450,7 @@ LINKS								     *org-links*
 CHANGELOG							 *org-changelog*
 
 0.4.0-0
+- fix cursor positioning when selecting todo states
 - improve date plugin
 - update vba targets to its new name vmb
 - demoting a newly created second level heading doesn't cause all children to

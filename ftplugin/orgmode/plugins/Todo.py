@@ -208,22 +208,29 @@ class Todo(object):
 
 		current_state = heading.todo
 
-		# move cursor along with the inserted state only when current position
-		# is in the heading; otherwite do nothing
-		if heading.start_vim == lineno:
-			if current_state is None and state is None:
-				offset = 0
-			elif current_state is None:
-				offset = len(state)
-			elif state is None:
-				offset = -len(current_state)
-			else:
-				offset = len(current_state) - len(state)
-			vim.current.window.cursor = (lineno, colno + offset)
-
 		# set new headline
 		heading.todo = state
 		d.write_heading(heading)
+
+		# move cursor along with the inserted state only when current position
+		# is in the heading; otherwite do nothing
+		if heading.start_vim == lineno and colno > heading.level:
+			if current_state is not None and \
+					colno <= heading.level + len(current_state):
+				# the cursor is actually on the todo keyword
+				# move it back to the beginning of the keyword in that case
+				vim.current.window.cursor = (lineno, heading.level + 1)
+			else:
+				# the cursor is somewhere in the text, move it along
+				if current_state is None and state is None:
+					offset = 0
+				elif current_state is None and state is not None:
+					offset = len(state) + 1
+				elif current_state is not None and state is None:
+					offset = -len(current_state) - 1
+				else:
+					offset = len(state) - len(current_state)
+				vim.current.window.cursor = (lineno, colno + offset)
 
 	@classmethod
 	def init_org_todo(cls):
