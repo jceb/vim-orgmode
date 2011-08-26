@@ -450,6 +450,7 @@ LINKS								     *org-links*
 CHANGELOG							 *org-changelog*
 
 0.4.0-0
+- improve date plugin
 - update vba targets to its new name vmb
 - demoting a newly created second level heading doesn't cause all children to
   be deleted anymore (closes issue #65)
@@ -488,6 +489,14 @@ CHANGELOG							 *org-changelog*
 
 0.2.0-0, 2011-06-25
 - initial release
+
+==============================================================================
+CONTRIBUTORS						      *org-contributors*
+
+Thanks to all how contributed to vim-orgmode. All contributors are name here in
+alphabetic order:
+
+- Stefan Otte
 
 ==============================================================================
 LICENSE								   *org-license*
