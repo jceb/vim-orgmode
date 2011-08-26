@@ -12,6 +12,7 @@ import vim
 # temporary todo states for differnent orgmode buffers
 ORGTODOSTATES = {}
 
+
 def split_access_key(t):
 	u"""
 	:t:		todo state
@@ -24,6 +25,7 @@ def split_access_key(t):
 	idx = t.find(u'(')
 	v, k = ((t[:idx], t[idx + 1:-1]) if t[idx + 1:-1] else (t, None)) if idx != -1 else (t, None)
 	return (v, k)
+
 
 class Todo(object):
 	u"""
@@ -162,19 +164,28 @@ class Todo(object):
 
 		# get new state interactively
 		if interactive:
+			# determine position of the interactive prompt
+			prompt_pos = settings.get(u'org_todo_prompt_position', u'botright')
+			if not prompt_pos in [u'botright', u'topleft']:
+				prompt_pos = u'botright'
+
 			# pass todo states to new window
 			ORGTODOSTATES[d.bufnr] = todo_states
 			todo_buffer_exists = bool(int(vim.eval((u'bufexists("org:todo/%d")'
 					% (d.bufnr, )).encode(u'utf-8'))))
 			if todo_buffer_exists:
 				# if the buffer already exists, reuse it
-				vim.command((u'botright sbuffer org:todo/%d'
-						% (d.bufnr, )).encode(u'utf-8'))
+				vim.command((u'%s sbuffer org:todo/%d' %
+						(prompt_pos, d.bufnr, )).encode(u'utf-8'))
 			else:
 				# create a new window
-				vim.command((
-					u'keepalt botright %dsplit org:todo/%d'
-					% (len(todo_states), d.bufnr)).encode(u'utf-8'))
+				vim.command((u'keepalt %s %dsplit org:todo/%d' %
+						(prompt_pos, len(todo_states), d.bufnr)).encode(u'utf-8'))
+
+			# move cursor to the current todo position
+			cbuf = vim.buffers[d.bufnr]
+			current_todo_pos = cbuf[0].index(current_state)
+			vim.windows[d.bufnr].cursor = (1, current_todo_pos)
 		else:
 			new_state = Todo._get_next_state(current_state, todo_states,
 					direction=direction, interactive=interactive,
@@ -185,7 +196,6 @@ class Todo(object):
 		plug = u'OrgTodoForward'
 		if direction == Direction.BACKWARD:
 			plug = u'OrgTodoBackward'
-
 		return plug
 
 	@classmethod
@@ -305,6 +315,8 @@ class Todo(object):
 		submenu + ActionEntry(u'Previous &keyword set', self.keybindings[-1])
 
 		settings.set(u'org_todo_keywords', [u'TODO'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')])
+
+		settings.set(u'org_todo_prompt_position', u'botright')
 
 		vim.command(u'au orgmode BufReadCmd org:todo/* :py ORGMODE.plugins[u"Todo"].init_org_todo()'.encode(u'utf-8'))
 
