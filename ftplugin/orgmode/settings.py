@@ -2,17 +2,19 @@
 
 import vim
 
+SCOPE_ALL = 1
+
 # for all vim-orgmode buffers
-SCOPE_GLOBAL = True
+SCOPE_GLOBAL = 2
 
 # just for the current buffer - has priority before the global settings
-SCOPE_BUFFER = False
+SCOPE_BUFFER = 4
 
 VARIABLE_LEADER = {SCOPE_GLOBAL: u'g', SCOPE_BUFFER: u'b'}
 
 u""" Evaluate and store settings """
 
-def get(setting, default=None):
+def get(setting, default=None, scope=SCOPE_ALL):
 	u""" Evaluate setting in scope of the current buffer,
 	globally and also from the contents of the current buffer
 
@@ -26,19 +28,18 @@ def get(setting, default=None):
 	"""
 	# TODO first read setting from org file which take precedence over vim
 	# variable settings
-	if int(vim.eval((u'exists("b:%s")' % setting).encode(u'utf-8'))):
+	if scope & SCOPE_ALL | SCOPE_BUFFER and int(vim.eval((u'exists("b:%s")' % setting).encode(u'utf-8'))):
 		res = vim.eval((u"b:%s" % setting).encode(u'utf-8'))
 		if type(res) in (unicode, str):
 			return res.decode(u'utf-8')
 		return res
 
-	elif int(vim.eval((u'exists("g:%s")' % setting).encode(u'utf-8'))):
+	elif scope & SCOPE_ALL | SCOPE_GLOBAL and int(vim.eval((u'exists("g:%s")' % setting).encode(u'utf-8'))):
 		res = vim.eval((u"g:%s" % setting).encode(u'utf-8'))
 		if type(res) in (unicode, str):
 			return res.decode(u'utf-8')
 		return res
-	elif default is not None:
-		return default
+	return default
 
 def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):
 	u""" Store setting in the definied scope
@@ -65,4 +66,15 @@ def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):
 		v = v[1:]
 
 	vim.command((u'let %s:%s = %s' % (VARIABLE_LEADER[scope], setting, v)).encode(u'utf-8'))
+	return value
+
+def unset(setting, scope=SCOPE_GLOBAL):
+	u""" Unset setting int the definied scope
+	:setting: name of the setting
+	:scope: the scope o the setting/variable
+
+	:returns: last value of setting
+	"""
+	value = get(setting, scope=scope)
+	vim.command((u'unlet! %s:%s' % (VARIABLE_LEADER[scope], setting)).encode(u'utf-8'))
 	return value
