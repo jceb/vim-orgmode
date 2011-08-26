@@ -450,6 +450,8 @@ LINKS								     *org-links*
 CHANGELOG							 *org-changelog*
 
 0.4.0-0
+- move cursor to the current todo state when selecting the todo state
+  interactively (closes issue #61)
 - add parameter scope to method settings.get
 - add method settings.unset
 - fix cursor positioning when selecting todo states

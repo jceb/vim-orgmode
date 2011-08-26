@@ -169,6 +169,8 @@ class Todo(object):
 
 			# pass todo states to new window
 			ORGTODOSTATES[d.bufnr] = todo_states
+			settings.set(u'org_current_state_%d' % d.bufnr, \
+					current_state if current_state is not None else u'', overwrite=True)
 			todo_buffer_exists = bool(int(vim.eval((u'bufexists("org:todo/%d")'
 					% (d.bufnr, )).encode(u'utf-8'))))
 			if todo_buffer_exists:
@@ -271,9 +273,25 @@ class Todo(object):
 							res += (u'\t' if res else u'') + v
 			if res:
 				if l == 0:
-					vim.current.buffer[0] = res.encode(u'utf-8')
-				else:
-					vim.current.buffer.append(res.encode(u'utf-8'))
+					# WORKAROUND: the cursor can not be positioned properly on
+					# the first line. Another line is just inserted and it
+					# works great
+					vim.current.buffer[0] = u''.encode(u'utf-8')
+				vim.current.buffer.append(res.encode(u'utf-8'))
+
+		# position the cursor of the current todo item
+		vim.command(u'normal G'.encode(u'utf-8'))
+		current_state = settings.unset(u'org_current_state_%d' % bufnr)
+		found = False
+		if current_state is not None and current_state != '':
+			for i in xrange(0, len(vim.current.buffer)):
+				idx = vim.current.buffer[i].find(current_state)
+				if idx != -1:
+					vim.current.window.cursor = (i + 1, idx)
+					found = True
+					break
+		if not found:
+			vim.current.window.cursor = (2, 4)
 
 		# finally make buffer non modifiable
 		vim.command(u'setfiletype orgtodo'.encode(u'utf-8'))
