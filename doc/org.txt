@@ -52,14 +52,14 @@ Prerequisites~
    hyperlinks won't work. Other plugins that integrate well with vim orgmode
    are listed in section Suggested plugins.
 
-From .vba file~
+From .vbm file~
    If you want to install the vim-orgmode plugin for a single user, this is
    the preferred way. The stable releases can be downloaded at
    http://www.vim.org/scripts/script.php?script_id=3642
 
    Open the file in vim and source it. Restart vim and the plugin is active:
 
-   $ vim orgmode.vba
+   $ vim orgmode.vbm
 >
     :so %
 <
@@ -69,13 +69,13 @@ From .vba file~
 Installation into a specific directory~
     If you want to install the plugin into a specific directory, e.g. when you
     are using pathogen, then just add the desired directory to the runtimepath
-    before sourcing the vba-file.
+    before sourcing the vbm-file.
 
     When updating from a previous version I recommend deleting the whole
     $HOME/.vim/bundle/orgmode directory to prevent out dated .pyc files
     spoiling the update.
 
-    $ vim orgmode.vba.gz
+    $ vim orgmode.vbm.gz
 >
     :set rtp=$HOME/.vim/bundle/orgmode,&rtp
     :so %
@@ -296,9 +296,9 @@ Building a Vimball~
    following command in the root folder of this plugin.  Please make sure that
    vim is installed on your computer:
 
-   make vba
+   make vbm
 
-   For installing the plugin form the resulting orgmode.vba.gz file, please
+   For installing the plugin form the resulting orgmode.vbm.gz file, please
    refer to the Installation section.
 
 Building a Debian Package~
@@ -329,9 +329,9 @@ Source code~
     test/                    - Tests to verify the consistency and correctness
                                of the plugin
     syntax/                  - Syntax highlighting
-    build_vba.vim            - Build file for creating a Vimball
-    install_vba.vim          - Local installation of vba via make target
-                               installvba
+    build_vbm.vim            - Build file for creating a Vimball
+    install_vbm.vim          - Local installation of vbm via make target
+                               installvbm
     LICENSE                  - License Information
     README.org               - Documentation
     Makefile
@@ -450,6 +450,7 @@ LINKS								     *org-links*
 CHANGELOG							 *org-changelog*
 
 0.4.0-0
+- update vba targets to its new name vmb
 - demoting a newly created second level heading doesn't cause all children to
   be deleted anymore (closes issue #65)
 - add error message for missing dependencies (closes issue #59)
