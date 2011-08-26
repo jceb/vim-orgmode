@@ -1,4 +1,4 @@
 :exec 'set rtp='.g:installdir
-:e orgmode.vbm
+:e orgmode.vmb
 :so %
 :q!
