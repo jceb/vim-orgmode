@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+
 import sys
-sys.path.append(u'../ftplugin')
-
+import unittest
 from datetime import date
-from datetime import datetime
 
-from orgmode.liborgmode.orgdate import get_orgdate
-from orgmode.liborgmode.orgdate import OrgDate
+sys.path.append(u'../ftplugin')
+from orgmode.liborgmode.orgdate import get_orgdate, OrgDate
 
 
 class OrgDateTestCase(unittest.TestCase):
 	u"""
-    Tests all the functionality of the OrgDate
+	Tests all the functionality of the OrgDate
 	"""
 
 	def setUp(self):
@@ -44,7 +42,6 @@ class OrgDateTestCase(unittest.TestCase):
 		od = OrgDate(False, self.year, self.month, self.day)
 		self.assertEqual(self.textinactive, str(od))
 
-
 	def test_get_orgdate_parsing(self):
 		"""
 		get_orgdate should recognice all orgdates in a given text
@@ -60,6 +57,45 @@ class OrgDateTestCase(unittest.TestCase):
 		datestr = "This date <2011-08-30 Tue> is embedded"
 		self.assertTrue(isinstance(get_orgdate(datestr), OrgDate))
 
+	def test_get_orgdate_parsing_with_list_of_texts(self):
+		"""
+		get_orgdate should return the first date in the list.
+		"""
+		datelist = ["<2011-08-29 Mon>"]
+		result = get_orgdate(datelist)
+		self.assertIsNotNone(result)
+		self.assertTrue(isinstance(result, OrgDate))
+		self.assertEqual(result.year, 2011)
+		self.assertEqual(result.month, 8)
+		self.assertEqual(result.day, 29)
+
+		datelist = ["<2011-08-29 Mon>",
+				"<2012-03-30 Fri>"]
+		result = get_orgdate(datelist)
+		self.assertIsNotNone(result)
+		self.assertTrue(isinstance(result, OrgDate))
+		self.assertEqual(result.year, 2011)
+		self.assertEqual(result.month, 8)
+		self.assertEqual(result.day, 29)
+
+		datelist = ["some <2011-08-29 Mon>text",
+				"<2012-03-30 Fri> is here"]
+		result = get_orgdate(datelist)
+		self.assertIsNotNone(result)
+		self.assertTrue(isinstance(result, OrgDate))
+		self.assertEqual(result.year, 2011)
+		self.assertEqual(result.month, 8)
+		self.assertEqual(result.day, 29)
+
+		datelist = ["here is no date",
+				"some <2011-08-29 Mon>text",
+				"<2012-03-30 Fri> is here"]
+		result = get_orgdate(datelist)
+		self.assertIsNotNone(result)
+		self.assertTrue(isinstance(result, OrgDate))
+		self.assertEqual(result.year, 2011)
+		self.assertEqual(result.month, 8)
+		self.assertEqual(result.day, 29)
 
 	def test_get_orgdate_parsing_with_invalid_input(self):
 		self.assertIsNone(get_orgdate("NONSENSE"))
@@ -75,7 +111,6 @@ class OrgDateTestCase(unittest.TestCase):
 		self.assertIsNone(get_orgdate("wrong date embedded <2011-08-29 mon>"))
 		self.assertIsNone(get_orgdate("wrong date <2011-08-29 mon>embedded "))
 
-
 	def test_get_orgdate_parsing_with_invalid_dates(self):
 		"""Something like <2011-14-29 Mon> should not be parsed"""
 		datestr = "<2011-14-30 Tue>"
@@ -83,6 +118,7 @@ class OrgDateTestCase(unittest.TestCase):
 
 		datestr = "<2012-03-40 Tue>"
 		self.assertIsNone(get_orgdate(datestr))
+
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(OrgDateTestCase)
