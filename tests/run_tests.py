@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import test_vimbuffer
+import test_orgdate
+
 import test_edit_structure
 import test_misc
 import test_navigator
@@ -18,6 +20,7 @@ if __name__ == '__main__':
 
 	tests.addTests(test_vimbuffer.suite())
 	tests.addTests(test_heading.suite())
+	tests.addTests(test_orgdate.suite())
 
 	tests.addTests(test_edit_structure.suite())
 	tests.addTests(test_misc.suite())
