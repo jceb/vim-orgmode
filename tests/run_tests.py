@@ -3,6 +3,7 @@
 
 import test_vimbuffer
 import test_orgdate
+import test_orgdate_parsing
 
 import test_edit_structure
 import test_misc
@@ -21,6 +22,7 @@ if __name__ == '__main__':
 	tests.addTests(test_vimbuffer.suite())
 	tests.addTests(test_heading.suite())
 	tests.addTests(test_orgdate.suite())
+	tests.addTests(test_orgdate_parsing.suite())
 
 	tests.addTests(test_edit_structure.suite())
 	tests.addTests(test_misc.suite())

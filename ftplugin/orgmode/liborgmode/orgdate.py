@@ -26,7 +26,7 @@ def get_orgdate(data):
 	Parse the given data. Return an OrgDate if data contains a string
 	representation of an OrgDate; otherwise return None.
 
-	data also can be a list.
+	data can be a string or a list containing strings.
 	"""
 	if isinstance(data, list):
 		return _findfirst(_text2orgdate, data)
