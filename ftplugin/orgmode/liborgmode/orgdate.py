@@ -19,6 +19,7 @@ import re
 
 
 _DATE_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>")
+_DATETIME_REGEX = re.compile(r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w\]")
 
 
 def get_orgdate(data):
@@ -53,6 +54,16 @@ def _text2orgdate(string):
 	Return an OrgDate if data contains a string representation of an OrgDate;
 	otherwise return None.
 	"""
+	# datetime handling
+	result = _DATETIME_REGEX.search(string)
+	if result:
+		try:
+			year, month, day = [int(m) for m in result.groups()]
+			return OrgDate(False, year, month, day)
+		except Exception:
+			pass
+
+	# date handling
 	result = _DATE_REGEX.search(string)
 	if result:
 		try:
@@ -60,10 +71,6 @@ def _text2orgdate(string):
 			return OrgDate(True, year, month, day)
 		except Exception:
 			pass
-			#return None
-	else:
-		pass
-		#return None
 
 
 class OrgDate(datetime.date):

@@ -12,14 +12,14 @@ class OrgDateParsingTestCase(unittest.TestCase):
 	u"""
 	Tests the functionality of the parsing function of OrgDate.
 
-    Mostly get_orgdate().
+	Mostly function get_orgdate().
 	"""
 
 	def setUp(self):
 		self.text = '<2011-08-29 Mon>'
 		self.textinactive = '[2011-08-29 Mon]'
 
-	def test_get_orgdate_parsing(self):
+	def test_get_orgdate_parsing_active(self):
 		"""
 		get_orgdate should recognice all orgdates in a given text
 		"""
@@ -30,8 +30,25 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		self.assertEqual(get_orgdate("<2011-08-30 Tue>").year, 2011)
 		self.assertEqual(get_orgdate("<2011-08-30 Tue>").month, 8)
 		self.assertEqual(get_orgdate("<2011-08-30 Tue>").day, 30)
+		self.assertTrue(get_orgdate("<2011-08-30 Tue>").active)
 
 		datestr = "This date <2011-08-30 Tue> is embedded"
+		self.assertTrue(isinstance(get_orgdate(datestr), OrgDate))
+
+	def test_get_orgdate_parsing_inactive(self):
+		"""
+		get_orgdate should recognice all inactive orgdates in a given text
+		"""
+		result = get_orgdate(self.textinactive)
+		self.assertIsNotNone(result)
+		self.assertTrue(isinstance(result, OrgDate))
+		self.assertTrue(isinstance(get_orgdate("[2011-08-30 Tue]"), OrgDate))
+		self.assertEqual(get_orgdate("[2011-08-30 Tue]").year, 2011)
+		self.assertEqual(get_orgdate("[2011-08-30 Tue]").month, 8)
+		self.assertEqual(get_orgdate("[2011-08-30 Tue]").day, 30)
+		self.assertFalse(get_orgdate("[2011-08-30 Tue]").active)
+
+		datestr = "This date [2011-08-30 Tue] is embedded"
 		self.assertTrue(isinstance(get_orgdate(datestr), OrgDate))
 
 	def test_get_orgdate_parsing_with_list_of_texts(self):
@@ -100,4 +117,4 @@ class OrgDateParsingTestCase(unittest.TestCase):
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(OrgDateParsingTestCase)
 
-# vi: noexpandtab
+# vim: noexpandtab
