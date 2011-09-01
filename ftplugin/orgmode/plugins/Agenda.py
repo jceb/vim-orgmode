@@ -2,7 +2,7 @@
 from orgmode import ORGMODE, settings, echom
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry
-
+import vim
 
 class Agenda(object):
 	def __init__(self):
@@ -29,23 +29,43 @@ class Agenda(object):
 		for i, item in enumerate(agenda):
 			echom(item.title)
 
+	@classmethod
+	def _switch_to(cls, bufname, vim_commands=None):
+		"""
+		Swicht to the buffer with bufname.
+
+		A list of vim.commands (if given) gets executed as well.
+
+		TODO: this should be extracted and imporved to create an easy to use
+		way to create buffers/jump to buffers. Otherwise there are going to be
+		quite a few ways to open buffers in vimorgmode.
+		"""
+		cmds = [u'botright split org:%s' % bufname,
+				u'setlocal buftype=nofile',
+				u'setlocal statusline=Org\\ %s' % bufname
+				]
+		if vim_commands:
+			cmds.extend(vim_commands)
+		for cmd in cmds:
+			vim.command(cmd)
 
 	@classmethod
 	def list_all_todos(cls):
 		agenda = ORGMODE.get_agenda_TODO()
-		print "TODO agenda"
-		print "=" * 30
-		print
-		# create buffer at bottom
-		# ORG_AGENDA
 
+		# create buffer at bottom
+		cmd = [u'setlocal filetype=orgtodo']
+		cls._switch_to('AGENDA', cmd)
+
+		final_agenda = []
 		# format text for agenda
-		print len(agenda)
-		for i, item in enumerate(agenda):
-			echom(item.title)
+		for i, h in enumerate(agenda):
+			tmp = "%s %s" % (str(h.todo), str(h.title))
+			final_agenda.append(tmp)
 
 		# show agenda
-
+		vim.current.buffer[:] = final_agenda
+		vim.command(u'setlocal nomodifiable')
 
 	def register(self):
 		u"""
