@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-import re
-
-import vim
-from orgmode import ORGMODE, settings, echom, insert_at_cursor, get_user_input
+from orgmode import ORGMODE, settings, echom
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry
 
@@ -25,11 +22,29 @@ class Agenda(object):
 	@classmethod
 	def test(cls):
 		agenda = ORGMODE.get_agenda()
+		print "test agenda"
+		print "=" * 30
+		print
 		print len(agenda)
 		for i, item in enumerate(agenda):
-			print i,
-			print item
-			pass
+			echom(item.title)
+
+
+	@classmethod
+	def list_all_todos(cls):
+		agenda = ORGMODE.get_agenda_TODO()
+		print "TODO agenda"
+		print "=" * 30
+		print
+		# create buffer at bottom
+		# ORG_AGENDA
+
+		# format text for agenda
+		print len(agenda)
+		for i, item in enumerate(agenda):
+			echom(item.title)
+
+		# show agenda
 
 
 	def register(self):
@@ -44,6 +59,11 @@ class Agenda(object):
 		self.keybindings.append(Keybinding(u'%sca' % leader,
 				Plug(u'OrgAgendaTest',
 				u':py ORGMODE.plugins[u"Agenda"].test()<CR>')))
+		self.menu + ActionEntry(u'Test', self.keybindings[-1])
+
+		self.keybindings.append(Keybinding(u'%scat' % leader,
+				Plug(u'OrgAgendaTodo',
+				u':py ORGMODE.plugins[u"Agenda"].list_all_todos()<CR>')))
 		self.menu + ActionEntry(u'Test', self.keybindings[-1])
 
 # vim: set noexpandtab:

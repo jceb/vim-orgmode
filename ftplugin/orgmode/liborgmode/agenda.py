@@ -15,34 +15,55 @@ class AgendaManager(object):
 	"""Simple parsing of Documents to create an agenda."""
 	def __init__(self):
 		super(AgendaManager, self).__init__()
-
 		self.agenda = []
 
-	def get_agenda(self, document):
+	def get_agenda_todo(self, document):
+		"""
+		Get the todo agenda.
+		"""
+		# empty agenda
+		self.agenda[:] = []
+		# setup todo filter
+		self.all_criteria = [self.criteria_todo]
+		# filter and return headings
+		return filter(self.meets_criteria, document.all_headings())
+
+	def get_agenda(self, document, criteria=None):
 		""""
 		Get an agenda.
-
-		No filter support yet.
 		"""
+		self.document = document
+		self.active_todo_states = document.get_todo_states()[0]
 
+		# empty agenda
 		self.agenda[:] = []
-		# select items
-		for heading in document.headings:
-			self._select_items(heading)
 
-		# sort items
-		return self.agenda
+		# setup filter
+		self.all_criteria = [
+				self.criteria_active_todo,
+				self.criteria_active_date
+				]
+		# filter headings
+		return filter(self.meets_criteria, document.all_headings())
 
-	def _select_items(self, heading):
+
+	def meets_criteria(self, heading):
+		for fn in self.all_criteria:
+			if fn(heading):
+				return True
+		return False
+
+	def criteria_active_todo(self, heading):
 		"""
-		recursively select new items for the agenda for a given heading.
+		Return True if heading contains an active TODO.
 		"""
-		# print info if exist
-		if heading.active_date:
-			result = heading.active_date + " " + heading.title
-			self.agenda.append(result)
-		# select items of children
-		for child in heading.children:
-			self._select_items(child)
+		TODO, DONE = self.active_todo_states
+		return heading.todo == "TODO"
+
+	def criteria_active_date(self, heading):
+		"""
+		Return True if heading contains an active date.
+		"""
+		return not heading.active_date is None
 
 # vim: set noexpandtab:
