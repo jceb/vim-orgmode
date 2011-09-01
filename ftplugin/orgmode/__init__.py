@@ -53,7 +53,8 @@ def repeat(f):
 	def r(*args, **kwargs):
 		res = f(*args, **kwargs)
 		if REPEAT_EXISTS and isinstance(res, basestring):
-			vim.command((u'silent! call repeat#set("\\<Plug>%s")' % res).encode(u'utf-8'))
+			vim.command((u'silent! call repeat#set("\\<Plug>%s")' % res)
+					.encode(u'utf-8'))
 		return res
 	return r
 
@@ -126,16 +127,22 @@ def insert_at_cursor(text, move=True, start_insertmode=False):
 
 def get_user_input(message):
 	u"""Print the message and take input from the user.
-	Return the input.
+	Return the input or None if there is no input.
 	"""
 	vim.command(u'call inputsave()'.encode(u'utf-8'))
-	vim.command((u"let user_input = input('" + message + u": ')").encode(u'utf-8'))
+	vim.command((u"let user_input = input('" + message + u": ')")
+			.encode(u'utf-8'))
 	vim.command(u'call inputrestore()'.encode(u'utf-8'))
-	return vim.eval(u'user_input'.encode(u'utf-8')).decode(u'utf-8')
+	try:
+		return vim.eval(u'user_input'.encode(u'utf-8')).decode(u'utf-8')
+	except:
+		return None
 
 
 def indent_orgmode():
-	u""" Set the indent value for the current line in the variable b:indent_level
+	u""" Set the indent value for the current line in the variable
+	b:indent_level
+
 	Vim prerequisites:
 		:setlocal indentexpr=Method-which-calls-indent_orgmode
 
@@ -145,7 +152,9 @@ def indent_orgmode():
 	d = ORGMODE.get_document(allow_dirty=True)
 	heading = d.find_current_heading(position=line - 1)
 	if heading and line != heading.start_vim:
-		vim.command((u'let b:indent_level = %d' % (heading.level + 1)).encode(u'utf-8'))
+		vim.command((u'let b:indent_level = %d' % (heading.level + 1))
+				.encode(u'utf-8'))
+
 
 
 def fold_text():
@@ -165,19 +174,22 @@ def fold_text():
 		idx = str_heading.find(u'\t')
 		if idx != -1:
 			tabs, spaces = divmod(idx, ts)
-
 			str_heading = str_heading.replace(u'\t', u' ' * (ts - spaces), 1)
 			str_heading = str_heading.replace(u'\t', u' ' * ts)
 
 		# Workaround for vim.command seems to break the completion menu
-		vim.eval((u'SetOrgFoldtext("%s")' \
-				% (str_heading.replace(u'\\', u'\\\\').replace(u'"', u'\\"'), )).encode(u'utf-8'))
+		vim.eval((u'SetOrgFoldtext("%s")' % (str_heading.replace(
+				u'\\', u'\\\\').replace(u'"', u'\\"'), )).encode(u'utf-8'))
 		#vim.command((u'let b:foldtext = "%s... "' % \
-		#		(str_heading.replace(u'\\', u'\\\\').replace(u'"', u'\\"'), )).encode('utf-8'))
+		#		(str_heading.replace(u'\\', u'\\\\')
+		#		.replace(u'"', u'\\"'), )).encode('utf-8'))
+
 
 
 def fold_orgmode():
-	u""" Set the fold expression/value for the current line in the variable b:fold_expr
+	u""" Set the fold expression/value for the current line in the variable
+	b:fold_expr
+
 	Vim prerequisites:
 		:setlocal foldmethod=expr
 		:setlocal foldexpr=Method-which-calls-fold_orgmode

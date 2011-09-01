@@ -43,6 +43,19 @@ class DateTestCase(unittest.TestCase):
 		for modifier, expected in test_data:
 			self.assertEquals(expected, Date._modify_time(self.d, modifier))
 
+	def test_modify_time_with_given_relative_days_without_d(self):
+		# modifier and expected result
+		test_data = [(u'+0', self.d),
+				(u'+1', date(2011, 5, 23)),
+				(u'+2', date(2011, 5, 24)),
+				(u'+7', date(2011, 5, 29)),
+				(u'+9', date(2011, 5, 31)),
+				(u'+10', date(2011, 6, 1))]
+
+		for modifier, expected in test_data:
+			result = Date._modify_time(self.d, modifier)
+			self.assertEquals(expected, result)
+
 	def test_modify_time_with_given_relative_weeks(self):
 		# modifier and expected result
 		test_data = [(u'+1w', date(2011, 5, 29)),
@@ -72,14 +85,6 @@ class DateTestCase(unittest.TestCase):
 		for modifier, expected in test_data:
 			self.assertEquals(expected, Date._modify_time(self.d, modifier))
 
-	def test_modify_time_with_full_dates(self):
-		res = Date._modify_time(self.d, u'2011-01-12')
-		expected = date(2011, 1, 12)
-		self.assertEquals(expected, res)
-
-		res = Date._modify_time(self.d, u'2015-03-12')
-		expected = date(2015, 3, 12)
-		self.assertEquals(expected, res)
 
 	def test_modify_time_with_given_weekday(self):
 		# use custom day instead of self.d to ease testing
@@ -124,6 +129,14 @@ class DateTestCase(unittest.TestCase):
 			self.assertEquals(expected, res)
 
 	def test_modify_time_with_full_dates(self):
+		result = Date._modify_time(self.d, u'2011-01-12')
+		expected = date(2011, 1, 12)
+		self.assertEquals(expected, result)
+
+		reults = Date._modify_time(self.d, u'2015-03-12')
+		expected = date(2015, 3, 12)
+		self.assertEquals(expected, reults)
+
 		cust_date = date(2006, 6, 13)
 		test_data = [(u'3-2-5', date(2003, 2, 05)),
 				(u'12-2-28', date(2012, 2, 28)),
@@ -143,6 +156,15 @@ class DateTestCase(unittest.TestCase):
 		for modifier, expected in test_data:
 			self.assertEquals(expected, Date._modify_time(cust_date, modifier))
 
+	def test_modify_time_with_day_and_time(self):
+		cust_date = date(2006, 6, 13)
+		test_data = [(u'+1 10:20', datetime(2006, 06, 14, 10, 20)),
+				(u'+1w 10:20', datetime(2006, 06, 20, 10, 20)),
+				(u'+2 10:30', datetime(2006, 06, 15, 10, 30)),
+				(u'+2d 10:30', datetime(2006, 06, 15, 10, 30))]
+		for modifier, expected in test_data:
+			result = Date._modify_time(cust_date, modifier)
+			self.assertEquals(expected, result)
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(DateTestCase)

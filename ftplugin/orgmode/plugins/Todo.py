@@ -161,17 +161,29 @@ class Todo(object):
 
 		# get new state interactively
 		if interactive:
+			# determine position of the interactive prompt
+			prompt_pos = settings.get(u'org_todo_prompt_position', u'botright')
+			if not prompt_pos in [u'botright', u'topleft']:
+				prompt_pos = u'botright'
+
 			# pass todo states to new window
 			ORGTODOSTATES[d.bufnr] = todo_states
-			if bool(int(vim.eval(( u'bufexists("org:todo/%d")' % (d.bufnr, ) ).encode(u'utf-8')))):
+			settings.set(u'org_current_state_%d' % d.bufnr, \
+					current_state if current_state is not None else u'', overwrite=True)
+			todo_buffer_exists = bool(int(vim.eval((u'bufexists("org:todo/%d")'
+					% (d.bufnr, )).encode(u'utf-8'))))
+			if todo_buffer_exists:
 				# if the buffer already exists, reuse it
-				vim.command((u'sbuffer org:todo/%d' % (d.bufnr, )).encode(u'utf-8'))
+				vim.command((u'%s sbuffer org:todo/%d' %
+						(prompt_pos, d.bufnr, )).encode(u'utf-8'))
 			else:
 				# create a new window
-				vim.command((u'keepalt %dsp org:todo/%d' % (len(todo_states), d.bufnr)).encode(u'utf-8'))
+				vim.command((u'keepalt %s %dsplit org:todo/%d' %
+						(prompt_pos, len(todo_states), d.bufnr)).encode(u'utf-8'))
 		else:
-			new_state = Todo._get_next_state(current_state, todo_states, \
-					direction=direction, interactive=interactive, next_set=next_set)
+			new_state = Todo._get_next_state(current_state, todo_states,
+					direction=direction, interactive=interactive,
+					next_set=next_set)
 			cls.set_todo_state(new_state)
 
 		# plug
@@ -197,22 +209,29 @@ class Todo(object):
 
 		current_state = heading.todo
 
-		# move cursor along with the inserted state only when current position
-		# is in the heading; otherwite do nothing
-		if heading.start_vim == lineno:
-			if current_state is None and state is None:
-				offset = 0
-			elif current_state is None:
-				offset = len(state)
-			elif state is None:
-				offset = -len(current_state)
-			else:
-				offset = len(current_state) - len(state)
-			vim.current.window.cursor = (lineno, colno + offset)
-
 		# set new headline
 		heading.todo = state
 		d.write_heading(heading)
+
+		# move cursor along with the inserted state only when current position
+		# is in the heading; otherwite do nothing
+		if heading.start_vim == lineno and colno > heading.level:
+			if current_state is not None and \
+					colno <= heading.level + len(current_state):
+				# the cursor is actually on the todo keyword
+				# move it back to the beginning of the keyword in that case
+				vim.current.window.cursor = (lineno, heading.level + 1)
+			else:
+				# the cursor is somewhere in the text, move it along
+				if current_state is None and state is None:
+					offset = 0
+				elif current_state is None and state is not None:
+					offset = len(state) + 1
+				elif current_state is not None and state is None:
+					offset = -len(current_state) - 1
+				else:
+					offset = len(state) - len(current_state)
+				vim.current.window.cursor = (lineno, colno + offset)
 
 	@classmethod
 	def init_org_todo(cls):
@@ -253,9 +272,25 @@ class Todo(object):
 							res += (u'\t' if res else u'') + v
 			if res:
 				if l == 0:
-					vim.current.buffer[0] = res.encode(u'utf-8')
-				else:
-					vim.current.buffer.append(res.encode(u'utf-8'))
+					# WORKAROUND: the cursor can not be positioned properly on
+					# the first line. Another line is just inserted and it
+					# works great
+					vim.current.buffer[0] = u''.encode(u'utf-8')
+				vim.current.buffer.append(res.encode(u'utf-8'))
+
+		# position the cursor of the current todo item
+		vim.command(u'normal G'.encode(u'utf-8'))
+		current_state = settings.unset(u'org_current_state_%d' % bufnr)
+		found = False
+		if current_state is not None and current_state != '':
+			for i in xrange(0, len(vim.current.buffer)):
+				idx = vim.current.buffer[i].find(current_state)
+				if idx != -1:
+					vim.current.window.cursor = (i + 1, idx)
+					found = True
+					break
+		if not found:
+			vim.current.window.cursor = (2, 4)
 
 		# finally make buffer non modifiable
 		vim.command(u'setfiletype orgtodo'.encode(u'utf-8'))
@@ -298,6 +333,8 @@ class Todo(object):
 		submenu + ActionEntry(u'Previous &keyword set', self.keybindings[-1])
 
 		settings.set(u'org_todo_keywords', [u'TODO'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')])
+
+		settings.set(u'org_todo_prompt_position', u'botright')
 
 		vim.command(u'au orgmode BufReadCmd org:todo/* :py ORGMODE.plugins[u"Todo"].init_org_todo()'.encode(u'utf-8'))
 

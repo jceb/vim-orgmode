@@ -23,32 +23,32 @@ check: tests/run_tests.py
 	cd tests && python run_tests.py
 
 clean: documentation
-	@rm -rf ${PLUGIN}.vba ${PLUGIN}.vba.gz tmp files
+	@rm -rf ${PLUGIN}.vmb ${PLUGIN}.vmb.gz tmp files
 	cd $^ && $(MAKE) $@
 
-${PLUGIN}.vba: check build_vba.vim clean
+${PLUGIN}.vmb: check build_vmb.vim clean
 	$(MAKE) DESTDIR=$(PWD)/tmp VIMDIR= install
 	find tmp -type f  | sed -e 's/^tmp\///' > files
-	cp build_vba.vim tmp
-	cd tmp && vim --cmd 'let g:plugin_name="${PLUGIN}"' -s build_vba.vim
-	[ -e tmp/${PLUGIN}.vmb ] && mv tmp/${PLUGIN}.vmb tmp/$@ || true
+	cp build_vmb.vim tmp
+	cd tmp && vim --cmd 'let g:plugin_name="${PLUGIN}"' -s build_vmb.vim
+	[ -e tmp/${PLUGIN}.vba ] && mv tmp/${PLUGIN}.vba tmp/$@ || true
 	mv tmp/$@ .
 
-${PLUGIN}.vba.gz: ${PLUGIN}.vba
-	@rm -f ${PLUGIN}.vba.gz
+${PLUGIN}.vmb.gz: ${PLUGIN}.vmb
+	@rm -f ${PLUGIN}.vmb.gz
 	gzip $^
 
-vba: ${PLUGIN}.vba
+vmb: ${PLUGIN}.vmb
 
-vba.gz: ${PLUGIN}.vba.gz
+vmb.gz: ${PLUGIN}.vmb.gz
 
 docs: documentation
 	cd $^ && $(MAKE)
 
-installvba: ${PLUGIN}.vba install_vba.vim
+installvmb: ${PLUGIN}.vmb install_vmb.vim
 	rm -rvf ${VIMPLUGINDIR}
 	mkdir -p "${VIMPLUGINDIR}"
-	vim --cmd "let g:installdir='${VIMPLUGINDIR}'" -s install_vba.vim $^
+	vim --cmd "let g:installdir='${VIMPLUGINDIR}'" -s install_vmb.vim $^
 	@echo "Plugin was installed in ${VIMPLUGINDIR}. Make sure you are using a plugin loader like pathegon, otherwise the ${PLUGIN} might not work properly."
 
-.PHONY: all build test check install clean vba vba.gz docs installvba
+.PHONY: all build test check install clean vmb vmb.gz docs installvmb

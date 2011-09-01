@@ -70,7 +70,7 @@ class TodoTestCase(unittest.TestCase):
 		vim.current.window.cursor = (2, 0)
 		Todo.toggle_todo_state()
 		self.assertEqual(vim.current.buffer[1], u'* TODO Heading 1')
-		self.assertEqual((2, 4), vim.current.window.cursor)
+		self.assertEqual((2, 0), vim.current.window.cursor)
 
 		# level 2
 		vim.current.window.cursor = (3, 0)
@@ -81,7 +81,7 @@ class TodoTestCase(unittest.TestCase):
 		vim.current.window.cursor = (4, 4)
 		Todo.toggle_todo_state()
 		self.assertEqual(vim.current.buffer[3], u'*** TODO Text 2')
-		self.assertEqual((4, 8), vim.current.window.cursor)
+		self.assertEqual((4, 9), vim.current.window.cursor)
 
 	def test_circle_through_todo_states(self):
 		# * Heading 1 -->
@@ -94,11 +94,11 @@ class TodoTestCase(unittest.TestCase):
 
 		Todo.toggle_todo_state()
 		self.assertEqual(vim.current.buffer[1], u'* TODO Heading 1')
-		self.assertEqual((2, 10), vim.current.window.cursor)
+		self.assertEqual((2, 11), vim.current.window.cursor)
 
 		Todo.toggle_todo_state()
 		self.assertEqual(vim.current.buffer[1], u'* DONE Heading 1')
-		self.assertEqual((2, 10), vim.current.window.cursor)
+		self.assertEqual((2, 11), vim.current.window.cursor)
 
 		Todo.toggle_todo_state()
 		self.assertEqual(vim.current.buffer[1], u'* Heading 1')
@@ -106,12 +106,11 @@ class TodoTestCase(unittest.TestCase):
 
 		Todo.toggle_todo_state()
 		self.assertEqual(vim.current.buffer[1], u'* TODO Heading 1')
-		self.assertEqual((2, 10), vim.current.window.cursor)
+		self.assertEqual((2, 11), vim.current.window.cursor)
 
 		Todo.toggle_todo_state()
 		self.assertEqual(vim.current.buffer[1], u'* DONE Heading 1')
-		self.assertEqual((2, 10), vim.current.window.cursor)
-		self.assertEqual((2, 10), vim.current.window.cursor)
+		self.assertEqual((2, 11), vim.current.window.cursor)
 
 		Todo.toggle_todo_state()
 		self.assertEqual(vim.current.buffer[1], u'* Heading 1')
