@@ -96,15 +96,4 @@ class OrgDate(datetime.date):
 			return self.strftime(u'[%Y-%m-%d %a]')
 
 
-class OrgDateRange(object):
-	"""
-	OrgDate represents a range of dates like
-	* <2011-08-29 Mon>--<2011-08-30 Tue>
-	* <2011-08-29 Mon 10:12>--<2011-08-29 Mon 14:30>
-	* [2011-08-29 Mon]--[2011-08-30 Tue]
-	* [2011-08-29 Mon 12:00]--[2011-08-30 Tue 14:00]
-	"""
-	def __init__(self):
-		super(OrgDateRange, self).__init__()
-
 # vim: set noexpandtab:
