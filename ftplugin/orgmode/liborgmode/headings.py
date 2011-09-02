@@ -11,6 +11,7 @@ import re
 from UserList import UserList
 
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list
+from orgmode.liborgmode.orgdate import get_orgdate
 
 
 REGEX_HEADING = re.compile(
@@ -24,13 +25,15 @@ REGEX_TODO = re.compile(r'^[^\s]*$')
 class Heading(object):
 	u""" Structural heading object """
 
-	def __init__(self, level=1, title=u'', tags=None, todo=None, body=None):
+	def __init__(self, level=1, title=u'', tags=None, todo=None, body=None,
+			active_date=None):
 		u"""
 		:level:		Level of the heading
 		:title:		Title of the heading
 		:tags:		Tags of the heading
 		:todo:		Todo state of the heading
 		:body:		Body of the heading
+		:active_date: active date that is used in the agenda
 		"""
 		object.__init__(self)
 
@@ -66,7 +69,10 @@ class Heading(object):
 		if body:
 			self.body = body
 
-		self._active_date = None
+		# active date
+		self._active_date = active_date
+		if active_date:
+			self.active_date = active_date
 
 	def __unicode__(self):
 		res = u'*' * self.level
@@ -194,23 +200,8 @@ class Heading(object):
 		if document:
 			new_heading._document = document
 
-		# try to find active dates dates
-		# look at every line and take the first occurrence
-		new_heading.active_date = None
-		for row in data:
-			# date times
-			match = re.search(
-					r'\<(\d\d\d\d-\d\d\-\d\d) \w\w\w (\d\d):(\d\d)\>', row)
-			if match:
-				datestr, hours, minutes = match.groups()
-				new_heading.active_date = "%s-%s-%s" % (datestr, hours, minutes)
-				break
-			# dates
-			date_match = re.search(
-					r'\<(\d\d\d\d-\d\d\-\d\d) \w\w\w\>', row)
-			if date_match:
-				new_heading.active_date = date_match.groups()[0]
-				break
+		# try to find active dates
+		new_heading.active_date = get_orgdate(data)
 
 		return new_heading
 
