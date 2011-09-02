@@ -11,7 +11,9 @@
 	* datetime
 	* timerange
 
-	They can be active or inactive
+	They can be active or inactive.
+
+	TODO: implement OrgDateTime class.
 """
 
 import datetime
@@ -24,8 +26,8 @@ _DATETIME_REGEX = re.compile(r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w\]")
 
 def get_orgdate(data):
 	"""
-	Parse the given data. Return an OrgDate if data contains a string
-	representation of an OrgDate; otherwise return None.
+	Parse the given data (can be a string or list). Return an OrgDate if data
+	contains a string representation of an OrgDate; otherwise return None.
 
 	data can be a string or a list containing strings.
 	"""
