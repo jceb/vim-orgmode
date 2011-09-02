@@ -224,13 +224,7 @@ class OrgMode(object):
 		self._documents = {}
 
 		# agenda manager
-		self._agenda_manager = AgendaManager()
-
-	def get_agenda(self, files=None):
-		return self._agenda_manager.get_agenda(self.get_document())
-
-	def get_agenda_TODO(self, files=None):
-		return self._agenda_manager.get_agenda(self.get_document())
+		self.agenda_manager = AgendaManager()
 
 	def get_document(self, bufnr=0, allow_dirty=False):
 		""" Retrieve instance of vim buffer document. This Document should be
