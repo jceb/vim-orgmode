@@ -30,14 +30,15 @@ class AgendaManager(object):
 		filtered = filter_items(document.all_headings(), [contains_active_todo])
 		return filtered
 
-	def get_next_week(self, document):
+	def get_next_week_and_active_todo(self, document):
 		"""
 		Get the agenda for next week.
 		"""
 		# empty agenda
 		self.agenda[:] = []
 		# filter and return headings
-		filtered = filter_items(document.all_headings(), [is_within_week])
+		filtered = filter_items(document.all_headings(),
+				[is_within_week_and_active_todo])
 		return filtered
 
 

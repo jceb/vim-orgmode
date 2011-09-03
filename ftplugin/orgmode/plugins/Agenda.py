@@ -20,16 +20,6 @@ class Agenda(object):
 		self.commands = []
 
 	@classmethod
-	def test(cls):
-		agenda = ORGMODE.get_agenda()
-		print "test agenda"
-		print "=" * 30
-		print
-		print len(agenda)
-		for i, item in enumerate(agenda):
-			echom(item.title)
-
-	@classmethod
 	def _switch_to(cls, bufname, vim_commands=None):
 		"""
 		Swicht to the buffer with bufname.
@@ -42,6 +32,7 @@ class Agenda(object):
 		"""
 		cmds = [u'botright split org:%s' % bufname,
 				u'setlocal buftype=nofile',
+				u'setlocal modifiable',
 				u'setlocal statusline=Org\\ %s' % bufname
 				]
 		if vim_commands:
@@ -50,8 +41,8 @@ class Agenda(object):
 			vim.command(cmd)
 
 	@classmethod
-	def list_all_todos(cls):
-		agenda = ORGMODE.get_agenda_TODO()
+	def list_next_week(cls):
+		agenda = ORGMODE.agenda_manager.get_next_week_and_active_todo(ORGMODE.get_document())
 
 		# create buffer at bottom
 		cmd = [u'setlocal filetype=orgtodo']
@@ -67,6 +58,24 @@ class Agenda(object):
 		vim.current.buffer[:] = final_agenda
 		vim.command(u'setlocal nomodifiable')
 
+	@classmethod
+	def list_all_todos(cls):
+		agenda = ORGMODE.agenda_manager.get_todo(ORGMODE.get_document())
+
+		# create buffer at bottom
+		cmd = [u'setlocal filetype=orgtodo']
+		cls._switch_to('AGENDA', cmd)
+
+		final_agenda = []
+		# format text for agenda
+		for i, h in enumerate(agenda):
+			tmp = "%s %s" % (str(h.todo).encode(u'utf-8'), str(h.title).encode(u'utf-8'))
+			final_agenda.append(tmp)
+
+		# show agenda
+		vim.current.buffer[:] = final_agenda
+		vim.command(u'setlocal nomodifiable')
+
 	def register(self):
 		u"""
 		Registration of the plugin.
@@ -76,14 +85,14 @@ class Agenda(object):
 		settings.set(u'org_leader', u',')
 		leader = settings.get(u'org_leader', u',')
 
-		self.keybindings.append(Keybinding(u'%sca' % leader,
-				Plug(u'OrgAgendaTest',
-				u':py ORGMODE.plugins[u"Agenda"].test()<CR>')))
-		self.menu + ActionEntry(u'Test', self.keybindings[-1])
-
 		self.keybindings.append(Keybinding(u'%scat' % leader,
 				Plug(u'OrgAgendaTodo',
 				u':py ORGMODE.plugins[u"Agenda"].list_all_todos()<CR>')))
-		self.menu + ActionEntry(u'Test', self.keybindings[-1])
+		self.menu + ActionEntry(u'Agenda for all TODOs', self.keybindings[-1])
+
+		self.keybindings.append(Keybinding(u'%scaa' % leader,
+				Plug(u'OrgAgendaWeek',
+				u':py ORGMODE.plugins[u"Agenda"].list_next_week()<CR>')))
+		self.menu + ActionEntry(u'Agenda for the week', self.keybindings[-1])
 
 # vim: set noexpandtab:

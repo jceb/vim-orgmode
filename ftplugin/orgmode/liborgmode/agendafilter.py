@@ -52,6 +52,14 @@ def is_within_week(heading):
 			return True
 
 
+def is_within_week_and_active_todo(heading):
+	"""
+	REturn True if heading contains an active TODO and the date is within a
+	week.
+	"""
+	return is_within_week(heading) and contains_active_todo(heading)
+
+
 def contains_active_todo(heading):
 	"""
 	Return True if heading contains an active TODO.

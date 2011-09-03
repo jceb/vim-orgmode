@@ -106,7 +106,10 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		self.assertIsNone(get_orgdate("wrong date <2011-08-29 mon>embedded "))
 
 	def test_get_orgdate_parsing_with_invalid_dates(self):
-		"""Something like <2011-14-29 Mon> should not be parsed"""
+		"""
+		Something like <2011-14-29 Mon> (invalid dates, they don't exist)
+		should not be parsed
+		"""
 		datestr = "<2011-14-30 Tue>"
 		self.assertIsNone(get_orgdate(datestr))
 

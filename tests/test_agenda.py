@@ -13,6 +13,7 @@ from orgmode.liborgmode.orgdate import OrgDate
 from orgmode.liborgmode.agendafilter import contains_active_todo
 from orgmode.liborgmode.agendafilter import contains_active_date
 from orgmode.liborgmode.agendafilter import is_within_week
+from orgmode.liborgmode.agendafilter import is_within_week_and_active_todo
 from orgmode.liborgmode.agendafilter import filter_items
 
 
@@ -92,5 +93,27 @@ class AgendaTestCase(unittest.TestCase):
 				contains_active_todo])
 		self.assertEqual([], filtered)
 
+	def test_filter_items_with_some_todos_and_dates(self):
+		"""
+		Only the headings with todo and dates should be retunrned.
+		"""
+		tmp = ["* TODO OrgMode Demo und Tests"
+				"<2011-08-22 Mon>"]
+		headings = [Heading.parse_heading_from_data(tmp, ['TODO'])]
+		filtered = filter_items(headings, [is_within_week_and_active_todo])
+		self.assertEqual(len(filtered), 1)
+		self.assertEqual(headings, filtered)
 
+		tmp = [Heading.parse_heading_from_data(["** DONE something <2011-08-10 Wed>"], ['TODO']),
+				Heading.parse_heading_from_data(["*** TODO rsitenaoritns more <2011-08-25 Thu>"], ['TODO']),
+				Heading.parse_heading_from_data(["*** DONE some more <2011-08-25 Thu>"], ['TODO']),
+				Heading.parse_heading_from_data(["*** TODO some more <2011-08-25 Thu>"], ['TODO']),
+				Heading.parse_heading_from_data(["** DONE something2 <2011-08-10 Wed>"], ['TODO'])
+		]
+		for h in tmp:
+			headings.append(h)
+
+		filtered = filter_items(headings, [is_within_week_and_active_todo])
+		self.assertEqual(len(filtered), 3)
+		self.assertEqual(filtered, [headings[0], headings[2], headings[4]])
 # vim: set noexpandtab:
