@@ -63,7 +63,7 @@ def _text2orgdate(string):
 			year, month, day = [int(m) for m in result.groups()]
 			return OrgDate(False, year, month, day)
 		except Exception:
-			pass
+			return None
 
 	# date handling
 	result = _DATE_REGEX.search(string)
@@ -72,7 +72,7 @@ def _text2orgdate(string):
 			year, month, day = [int(m) for m in result.groups()]
 			return OrgDate(True, year, month, day)
 		except Exception:
-			pass
+			return None
 
 
 class OrgDate(datetime.date):
