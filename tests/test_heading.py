@@ -72,6 +72,38 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 		odate = OrgDate(True, 2011, 8, 24)
 		self.assertEqual(odate, h.active_date)
 
+	def test_sorting_of_headings(self):
+		"""Headings should be sortable."""
+		# setup some fixtures
+		tmp = ["* This heading is earlier  <2011-08-24 Wed>"]
+		h1 = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
+		tmp = ["* This heading is later <2011-08-25 Thu>"]
+		h2 = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
+		tmp = ["* This heading has no date and should be later than the rest"]
+		h_no_date = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
+
+		self.assertLess(h1, h2)
+		self.assertLess(h1, h_no_date)
+		self.assertLess(h2, h_no_date)
+
+		self.assertLessEqual(h1, h2)
+		self.assertLessEqual(h1, h_no_date)
+		self.assertLessEqual(h2, h_no_date)
+
+		self.assertGreater(h2, h1)
+		self.assertGreater(h_no_date, h1)
+		self.assertGreater(h_no_date, h2)
+
+		self.assertGreaterEqual(h2, h1)
+		self.assertGreaterEqual(h_no_date, h1)
+		self.assertGreaterEqual(h_no_date, h2)
+
+		# test sorting
+		self.assertEqual([h1, h2], sorted([h2, h1]))
+		self.assertEqual([h1, h2], sorted([h1, h2]))
+		self.assertEqual([h1, h_no_date], sorted([h1, h_no_date]))
+		self.assertEqual([h1, h_no_date], sorted([h_no_date, h1]))
+		self.assertEqual([h1, h2, h_no_date], sorted([h2, h_no_date, h1]))
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(

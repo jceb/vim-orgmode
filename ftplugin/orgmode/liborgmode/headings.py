@@ -121,6 +121,85 @@ class Heading(object):
 		# 1 is for the heading's title
 		return 1 + len(self.body)
 
+	def __lt__(self, other):
+		"""
+		Headings can be sorted by date.
+		"""
+		try:
+			if self.active_date < other.active_date:
+				return True
+			elif self.active_date == other.active_date:
+				return False
+			elif self.active_date > other.active_date:
+				return False
+		except:
+			print "EXCEPTION"
+			if self.active_date and not other.active_date:
+				return True
+			elif not self.active_date and other.active_date:
+				return False
+			elif not self.active_date and not other.active:
+				return False
+
+	def __le__(self, other):
+		"""
+		Headings can be sorted by date.
+		"""
+		try:
+			if self.active_date < other.active_date:
+				return True
+			elif self.active_date == other.active_date:
+				return True
+			elif self.active_date > other.active_date:
+				return False
+		except:
+			print "EXCEPTION"
+			if self.active_date and not other.active_date:
+				return True
+			elif not self.active_date and other.active_date:
+				return False
+			elif not self.active_date and not other.active:
+				return True
+
+	def __ge__(self, other):
+		"""
+		Headings can be sorted by date.
+		"""
+		try:
+			if self.active_date > other.active_date:
+				return True
+			elif self.active_date == other.active_date:
+				return True
+			elif self.active_date < other.active_date:
+				return False
+		except:
+			print "EXCEPTION"
+			if not self.active_date and other.active_date:
+				return True
+			elif self.active_date and not other.active_date:
+				return False
+			elif not self.active_date and not other.active:
+				return True
+
+	def __gt__(self, other):
+		"""
+		Headings can be sorted by date.
+		"""
+		try:
+			if self.active_date > other.active_date:
+				return True
+			elif self.active_date == other.active_date:
+				return False
+			elif self.active_date < other.active_date:
+				return False
+		except:
+			print "EXCEPTION"
+			if not self.active_date and other.active_date:
+				return True
+			elif self.active_date and not other.active_date:
+				return False
+			elif not self.active_date and not other.active:
+				return False
 	def copy(self, including_children=True, parent=None):
 		u"""
 		Create a copy of the current heading. The heading will be completely
