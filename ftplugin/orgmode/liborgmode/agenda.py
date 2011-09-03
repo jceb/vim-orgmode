@@ -19,26 +19,30 @@ class AgendaManager(object):
 	def __init__(self):
 		super(AgendaManager, self).__init__()
 		self.agenda = []
+		self.agenda_files = []
 
-	def get_todo(self, document):
+	def get_todo(self, documents):
 		"""
-		Get the todo agenda.
+		Get the todo agenda for the given documents (list of document).
 		"""
-		# empty agenda
-		self.agenda[:] = []
-		# filter and return headings
-		filtered = filter_items(document.all_headings(), [contains_active_todo])
+		filtered = []
+		for i, document in enumerate(documents):
+			# filter and return headings
+			tmp = filter_items(document.all_headings(), [contains_active_todo])
+			filtered.extend(tmp)
 		return sorted(filtered)
 
-	def get_next_week_and_active_todo(self, document):
+	def get_next_week_and_active_todo(self, documents):
 		"""
-		Get the agenda for next week.
+		Get the agenda for next week for the given documents (list of
+		document).
 		"""
-		# empty agenda
-		self.agenda[:] = []
-		# filter and return headings
-		filtered = filter_items(document.all_headings(),
+		filtered = []
+		for i, document in enumerate(documents):
+			# filter and return headings
+			tmp = filter_items(document.all_headings(),
 				[is_within_week_and_active_todo])
+			filtered.extend(tmp)
 		return sorted(filtered)
 
 

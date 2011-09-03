@@ -45,19 +45,28 @@ class Agenda(object):
 
 	@classmethod
 	def list_next_week(cls):
-		agenda = ORGMODE.agenda_manager.get_next_week_and_active_todo(ORGMODE.get_document())
+		agenda_files = settings.get(u'org_agenda_files', u',')
+		for agenda_file in agenda_files:
+			vim.command('badd %s' % agenda_file)
+		# TODO: this only works when orgmode is started with one orgfile
+		# how can I get the number of a buffer with a given name
+		agenda_documents = [ORGMODE.get_document(i+1) for i in range(len(agenda_files))]
+
+		# get agenda
+		raw_agenda = ORGMODE.agenda_manager.get_next_week_and_active_todo(agenda_documents)
 
 		# create buffer at bottom
 		cmd = [u'setlocal filetype=orgtodo']
 		cls._switch_to('AGENDA', cmd)
 
-		last_date = agenda[0].active_date
-		final_agenda = [str(last_date)]
 		# format text for agenda
-		for i, h in enumerate(agenda):
+		last_date = raw_agenda[0].active_date
+		final_agenda = [str(last_date)]
+		for i, h in enumerate(raw_agenda):
 			# insert date information for every new date
 			if h.active_date != last_date:
 				today = date.today()
+				# insert additional "TODAY" string
 				if h.active_date.year == today.year and \
 						h.active_date.month == today.month and \
 						h.active_date.day == today.day:
@@ -79,15 +88,24 @@ class Agenda(object):
 
 	@classmethod
 	def list_all_todos(cls):
-		agenda = ORGMODE.agenda_manager.get_todo(ORGMODE.get_document())
+		# make sure the agenda file is loaded
+		agenda_files = settings.get(u'org_agenda_files', u',')
+		for agenda_file in agenda_files:
+			vim.command('badd %s' % agenda_file)
+		# TODO: this only works when orgmode is started with one orgfile
+		# how can I get the number of a buffer with a given name
+		agenda_documents = [ORGMODE.get_document(i+1) for i in range(len(agenda_files))]
+
+		# get agenda
+		raw_agenda = ORGMODE.agenda_manager.get_todo(agenda_documents)
 
 		# create buffer at bottom
 		cmd = [u'setlocal filetype=orgtodo']
 		cls._switch_to('AGENDA', cmd)
 
+		# format text of agenda
 		final_agenda = []
-		# format text for agenda
-		for i, h in enumerate(agenda):
+		for i, h in enumerate(raw_agenda):
 			tmp = "%s %s" % (str(h.todo).encode(u'utf-8'), str(h.title).encode(u'utf-8'))
 			final_agenda.append(tmp)
 
@@ -114,4 +132,6 @@ class Agenda(object):
 				u':py ORGMODE.plugins[u"Agenda"].list_next_week()<CR>')))
 		self.menu + ActionEntry(u'Agenda for the week', self.keybindings[-1])
 
+		# set agend files
+		settings.set(u'org_agenda_files', [u'~/org/index.org'.encode(u'utf-8'), '~/org/TodaY.org'.encode(u'utf-8')])
 # vim: set noexpandtab:
