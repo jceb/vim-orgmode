@@ -28,7 +28,7 @@ class AgendaManager(object):
 		self.agenda[:] = []
 		# filter and return headings
 		filtered = filter_items(document.all_headings(), [contains_active_todo])
-		return filtered
+		return sorted(filtered)
 
 	def get_next_week_and_active_todo(self, document):
 		"""
@@ -39,7 +39,7 @@ class AgendaManager(object):
 		# filter and return headings
 		filtered = filter_items(document.all_headings(),
 				[is_within_week_and_active_todo])
-		return filtered
+		return sorted(filtered)
 
 
 # vim: set noexpandtab:
