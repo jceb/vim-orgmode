@@ -2,3 +2,5 @@
 *.swp
 tags
 .ropeproject
+.cover*
+cover*

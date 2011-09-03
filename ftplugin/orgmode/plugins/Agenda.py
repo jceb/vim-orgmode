@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from orgmode import ORGMODE, settings, echom
+
+from datetime import date
+
+from orgmode import ORGMODE, settings
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry
 import vim
@@ -48,13 +51,29 @@ class Agenda(object):
 		cmd = [u'setlocal filetype=orgtodo']
 		cls._switch_to('AGENDA', cmd)
 
-		final_agenda = []
+		last_date = agenda[0].active_date
+		final_agenda = [str(last_date)]
 		# format text for agenda
 		for i, h in enumerate(agenda):
-			tmp = "%s %s" % (str(h.todo), str(h.title))
+			# insert date information for every new date
+			if h.active_date != last_date:
+				today = date.today()
+				if h.active_date.year == today.year and \
+						h.active_date.month == today.month and \
+						h.active_date.day == today.day:
+					section = str(h.active_date) + " TODAY"
+				else:
+					section = str(h.active_date)
+				final_agenda.append(section)
+
+				# update last_date
+				last_date = h.active_date
+
+			tmp = "  %s %s" % (str(h.todo), str(h.title))
 			final_agenda.append(tmp)
 
 		# show agenda
+		print final_agenda
 		vim.current.buffer[:] = final_agenda
 		vim.command(u'setlocal nomodifiable')
 
