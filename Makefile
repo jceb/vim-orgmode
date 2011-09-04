@@ -22,6 +22,9 @@ test: check
 check: tests/run_tests.py
 	cd tests && python run_tests.py
 
+coverage:
+	cd tests && nosetests --with-coverage --cover-html .
+
 clean: documentation
 	@rm -rf ${PLUGIN}.vmb ${PLUGIN}.vmb.gz tmp files
 	cd $^ && $(MAKE) $@
