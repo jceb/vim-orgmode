@@ -82,7 +82,6 @@ class Agenda(object):
 			final_agenda.append(tmp)
 
 		# show agenda
-		print final_agenda
 		vim.current.buffer[:] = final_agenda
 		vim.command(u'setlocal nomodifiable')
 

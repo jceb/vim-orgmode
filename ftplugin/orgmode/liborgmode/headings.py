@@ -133,7 +133,6 @@ class Heading(object):
 			elif self.active_date > other.active_date:
 				return False
 		except:
-			print "EXCEPTION"
 			if self.active_date and not other.active_date:
 				return True
 			elif not self.active_date and other.active_date:
@@ -153,7 +152,6 @@ class Heading(object):
 			elif self.active_date > other.active_date:
 				return False
 		except:
-			print "EXCEPTION"
 			if self.active_date and not other.active_date:
 				return True
 			elif not self.active_date and other.active_date:
@@ -173,7 +171,6 @@ class Heading(object):
 			elif self.active_date < other.active_date:
 				return False
 		except:
-			print "EXCEPTION"
 			if not self.active_date and other.active_date:
 				return True
 			elif self.active_date and not other.active_date:
@@ -193,7 +190,6 @@ class Heading(object):
 			elif self.active_date < other.active_date:
 				return False
 		except:
-			print "EXCEPTION"
 			if not self.active_date and other.active_date:
 				return True
 			elif self.active_date and not other.active_date:
