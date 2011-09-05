@@ -165,7 +165,6 @@ def indent_orgmode():
 				.encode(u'utf-8'))
 
 
-
 def fold_text():
 	u""" Set the fold text
 		:setlocal foldtext=Method-which-calls-foldtext
@@ -192,7 +191,6 @@ def fold_text():
 		#vim.command((u'let b:foldtext = "%s... "' % \
 		#		(str_heading.replace(u'\\', u'\\\\')
 		#		.replace(u'"', u'\\"'), )).encode('utf-8'))
-
 
 
 def fold_orgmode():
