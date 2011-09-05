@@ -343,7 +343,9 @@ a particular date, this information must be collected, sorted and displayed in
 an organized way. There are several different views, see below.
 
 The extracted information is displayed in a special agenda buffer.  This
-buffer is read-only, but provides commands to visit the corresponding
+buffer is read-only. 
+
+TODO: ... but provides commands to visit the corresponding
 locations in the original Org files, and even to edit these files remotely.
 Remote editing from the agenda buffer means, for example, that you can change
 the dates of deadlines and appointments from the agenda buffer. The commands
@@ -358,42 +360,60 @@ available in the Agenda buffer are listed in |orgguide-agenda-commands|.
 ------------------------------------------------------------------------------
 Agenda files~
                                                          *orgguide-agenda-files*
-  The information to be shown is normally collected from all /agenda
-  files/, the files listed in the variable *g:org_agenda_files*
+  The information to be shown is normally collected from all 'agendafiles',
+  the files listed in the variable *g:org_agenda_files*.
+
+  You can change the list of agenda files like this:
 >
     let g:org_agenda_files = ['~/org/index.org', ~/org/project.org']
 <
 
-  TODO: add functionality and extend.
-
 ------------------------------------------------------------------------------
 The agenda dispatcher ~
                                                     *orgguide-agenda-dispatcher*
-  TODO
+  TODO: not implemented yet.
 
 ------------------------------------------------------------------------------
 The built-in agenda views ~
                                                  *orgguide-agenda-builtin-views*
-  TODO
 
   The weekly/daily agenda~
-    TODO
+    The purpose of the weekly/daily 'agenda' is to act like a page of a
+    paper agenda, showing all the tasks for the current week or day.
+
+    <leader>caa         Compile an agenda for the current week from a list of
+                        Org files. The agenda shows the entries for each day.
 
   The global TODO list~
-    TODO
+    The global TODO list contains all unfinished TODO items formatted and
+    collected into a single place. 
+
+    TODO: Remote editing of TODO items lets you 
+    change the state of a TODO entry with a single key press. The commands
+    available in the TODO list are described in |agenda-commands|
+
+   <leader>cat          Show the global TODO list. This collects the TODO
+                        items from all agenda files into a single buffer.
+
+   TODO: <leader>caT    Like the above, but allows selection of a specific
+                        TODO keyword.
 
   Matching tags and properties~
     TODO
 
   Timeline for a single file~
-    TODO
+    The timeline summarizes all time-stamped items from a single Org mode
+    file in a /time-sorted view/. The main purpose of this command is to
+    give an overview over events in a project.
+
+    <leader>caL         Show a time-sorted view of the Org file, with all
+                        time-stamped items.
 
   Search view~
     TODO
 
 ------------------------------------------------------------------------------
 Commands in the agenda buffer~
-
                                                       *orgguide-agenda-commands*
   TODO
 
