@@ -12,6 +12,12 @@ import vim
 
 
 class Agenda(object):
+	u"""
+	The Agenda Plugin uses liborgmode.agenda to display the agenda views.
+
+	The main task is to format the agenda from liborgmode.agenda.
+	"""
+
 	def __init__(self):
 		u""" Initialize plugin """
 		object.__init__(self)
@@ -28,7 +34,7 @@ class Agenda(object):
 
 	@classmethod
 	def _switch_to(cls, bufname, vim_commands=None):
-		"""
+		u"""
 		Swicht to the buffer with bufname.
 
 		A list of vim.commands (if given) gets executed as well.
@@ -49,17 +55,20 @@ class Agenda(object):
 
 	@classmethod
 	def _get_agendadocuments(self):
-		"""
+		u"""
 		Return the org documents of the agenda files; return None if no
 		agenda documents are defined.
+
+		TODO: maybe turn this into an decorator?
 		"""
 		# load org files of agenda
 		agenda_files = settings.get(u'org_agenda_files', u',')
 		if not agenda_files or agenda_files == ',':
-			echoe("No org_agenda_files defined. Use ':let org_agenda_files=['~/org/index.org'] to define some files for the agenda view.")
+			echoe("No org_agenda_files defined. Use \
+					':let org_agenda_files=['~/org/index.org'] to define \
+					some files for the agenda view.")
 			return
 		agenda_files = [os.path.expanduser(f) for f in agenda_files]
-
 		for agenda_file in agenda_files:
 			vim.command('badd %s' % agenda_file)
 
