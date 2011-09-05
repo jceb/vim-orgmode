@@ -16,6 +16,7 @@ from orgmode.liborgmode.agendafilter import *
 
 class AgendaManager(object):
 	"""Simple parsing of Documents to create an agenda."""
+
 	def __init__(self):
 		super(AgendaManager, self).__init__()
 		self.agenda = []
@@ -45,5 +46,16 @@ class AgendaManager(object):
 			filtered.extend(tmp)
 		return sorted(filtered)
 
-
+	def get_timestamped_items(self, documents):
+		"""
+		Get all time-stamped items in a time-sorted way for the given
+		documents (list of document).
+		"""
+		filtered = []
+		for i, document in enumerate(documents):
+			# filter and return headings
+			tmp = filter_items(document.all_headings(),
+				[contains_active_date])
+			filtered.extend(tmp)
+		return sorted(filtered)
 # vim: set noexpandtab:

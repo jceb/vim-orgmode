@@ -139,6 +139,30 @@ class Agenda(object):
 		vim.current.buffer[:] = final_agenda
 		vim.command(u'setlocal nomodifiable')
 
+	@classmethod
+	def list_timeline(cls):
+		"""
+		List a timeline of the current buffer to get an overview of the
+		current file.
+		"""
+		raw_agenda = ORGMODE.agenda_manager.get_timestamped_items(
+				[ORGMODE.get_document()])
+
+		# create buffer at bottom
+		cmd = [u'setlocal filetype=orgagenda']
+		cls._switch_to('AGENDA', cmd)
+
+		# format text of agenda
+		final_agenda = []
+		for i, h in enumerate(raw_agenda):
+			tmp = "%s %s" % (str(h.todo).encode(u'utf-8'),
+					str(h.title).encode(u'utf-8'))
+			final_agenda.append(tmp)
+
+		# show agenda
+		vim.current.buffer[:] = final_agenda
+		vim.command(u'setlocal nomodifiable')
+
 	def register(self):
 		u"""
 		Registration of the plugin.
@@ -158,5 +182,10 @@ class Agenda(object):
 				u':py ORGMODE.plugins[u"Agenda"].list_next_week()<CR>')))
 		self.menu + ActionEntry(u'Agenda for the week', self.keybindings[-1])
 
+		self.keybindings.append(Keybinding(u'%scaL' % leader,
+				Plug(u'OrgAgendaTimeline',
+				u':py ORGMODE.plugins[u"Agenda"].list_timeline()<CR>')))
+		self.menu + ActionEntry(u'Timeline for this buffer',
+				self.keybindings[-1])
 
 # vim: set noexpandtab:
