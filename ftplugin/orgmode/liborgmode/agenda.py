@@ -19,8 +19,6 @@ class AgendaManager(object):
 
 	def __init__(self):
 		super(AgendaManager, self).__init__()
-		self.agenda = []
-		self.agenda_files = []
 
 	def get_todo(self, documents):
 		"""
