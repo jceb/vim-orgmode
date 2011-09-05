@@ -47,6 +47,9 @@ class Agenda(object):
 				u'setlocal buftype=nofile',
 				u'setlocal modifiable',
 				u'setlocal nonumber',
+				# call opendoc() on enter
+				u'nnoremap <silent> <buffer> <CR> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc()"<CR>'.encode(u'utf-8'),
+				# statusline
 				u'setlocal statusline=Org\\ %s' % bufname
 				]
 		if vim_commands:
@@ -106,7 +109,6 @@ class Agenda(object):
 
 		# create buffer at bottom
 		cmd = [u'setlocal filetype=orgagenda',
-				u'nnoremap <silent> <buffer> <CR> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc()"<CR>'.encode(u'utf-8')
 				]
 		cls._switch_to('AGENDA', cmd)
 
@@ -152,6 +154,7 @@ class Agenda(object):
 			return
 		raw_agenda = ORGMODE.agenda_manager.get_todo(agenda_documents)
 
+		cls.line2doc = {}
 		# create buffer at bottom
 		cmd = [u'setlocal filetype=orgagenda']
 		cls._switch_to('AGENDA', cmd)
@@ -162,6 +165,7 @@ class Agenda(object):
 			tmp = "%s %s" % (str(h.todo).encode(u'utf-8'),
 					str(h.title).encode(u'utf-8'))
 			final_agenda.append(tmp)
+			cls.line2doc[len(final_agenda)] = (h.document.bufnr, h.start)
 
 		# show agenda
 		vim.current.buffer[:] = final_agenda
@@ -180,12 +184,14 @@ class Agenda(object):
 		cmd = [u'setlocal filetype=orgagenda']
 		cls._switch_to('AGENDA', cmd)
 
+		cls.line2doc = {}
 		# format text of agenda
 		final_agenda = []
 		for i, h in enumerate(raw_agenda):
 			tmp = "%s %s" % (str(h.todo).encode(u'utf-8'),
 					str(h.title).encode(u'utf-8'))
 			final_agenda.append(tmp)
+			cls.line2doc[len(final_agenda)] = (h.document.bufnr, h.start)
 
 		# show agenda
 		vim.current.buffer[:] = final_agenda
