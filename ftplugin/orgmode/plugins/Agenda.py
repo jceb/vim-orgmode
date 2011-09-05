@@ -46,6 +46,7 @@ class Agenda(object):
 		cmds = [u'botright split org:%s' % bufname,
 				u'setlocal buftype=nofile',
 				u'setlocal modifiable',
+				u'setlocal nonumber',
 				u'setlocal statusline=Org\\ %s' % bufname
 				]
 		if vim_commands:
@@ -87,12 +88,12 @@ class Agenda(object):
 				agenda_documents)
 
 		# create buffer at bottom
-		cmd = [u'setlocal filetype=orgtodo']
+		cmd = [u'setlocal filetype=orgagenda']
 		cls._switch_to('AGENDA', cmd)
 
 		# format text for agenda
 		last_date = raw_agenda[0].active_date
-		final_agenda = [str(last_date)]
+		final_agenda = ['Week Agenda:', str(last_date)]
 		for i, h in enumerate(raw_agenda):
 			# insert date information for every new date
 			if h.active_date != last_date:
@@ -124,7 +125,7 @@ class Agenda(object):
 		raw_agenda = ORGMODE.agenda_manager.get_todo(agenda_documents)
 
 		# create buffer at bottom
-		cmd = [u'setlocal filetype=orgtodo']
+		cmd = [u'setlocal filetype=orgagenda']
 		cls._switch_to('AGENDA', cmd)
 
 		# format text of agenda
