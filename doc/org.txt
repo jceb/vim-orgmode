@@ -7,7 +7,7 @@
 
 
 ==============================================================================
-TABLE OF CONTENTS						   *org* *org-toc*
+TABLE OF CONTENTS                                                  *org* *org-toc*
 
     1. Description			|org-description|
     2. Installation			|org-installation|
@@ -19,7 +19,7 @@ TABLE OF CONTENTS						   *org* *org-toc*
     8. License				|org-license|
 
 ==============================================================================
-DESCRIPTION						       *org-description*
+DESCRIPTION                                                    *org-description*
 
 Text outlining and task management for Vim based on Emacs' Org-Mode.
 
@@ -35,11 +35,12 @@ line tools*.
   It encapsulates all functionality for parsing and modifying Org-Mode files.
 
 ==============================================================================
-INSTALLATION						      *org-installation*
+INSTALLATION                                                  *org-installation*
 
+------------------------------------------------------------------------------
 Prerequisites~
-   Add the following lines to your .vimrc file to ensure that filetype plugins
-   are loaded properly:
+  Add the following lines to your .vimrc file to ensure that filetype plugins
+  are loaded properly:
 
 >
 	filetype on
@@ -47,134 +48,12 @@ Prerequisites~
 	filetype indent on
 <
 
-   Please install the Universal Text Linking
-   (http://www.vim.org/scripts/script.php?script_id=293) addon, otherwise
-   hyperlinks won't work. Other plugins that integrate well with vim orgmode
-   are listed in section Suggested plugins.
+  Please install the Universal Text Linking
+  (http://www.vim.org/scripts/script.php?script_id=293) addon, otherwise
+  hyperlinks won't work. Other plugins that integrate well with vim orgmode
+  are listed in the following section.
 
-From .vbm file~
-   If you want to install the vim-orgmode plugin for a single user, this is
-   the preferred way. The stable releases can be downloaded at
-   http://www.vim.org/scripts/script.php?script_id=3642
-
-   Open the file in vim and source it. Restart vim and the plugin is active:
-
-   $ vim orgmode.vbm
->
-    :so %
-<
-   ATTENTION: All .pyc files of former versions of vim-orgmode need to be
-   deleted beforehand!
-
-Installation into a specific directory~
-    If you want to install the plugin into a specific directory, e.g. when you
-    are using pathogen, then just add the desired directory to the runtimepath
-    before sourcing the vbm-file.
-
-    When updating from a previous version I recommend deleting the whole
-    $HOME/.vim/bundle/orgmode directory to prevent out dated .pyc files
-    spoiling the update.
-
-    $ vim orgmode.vbm.gz
->
-    :set rtp=$HOME/.vim/bundle/orgmode,&rtp
-    :so %
-<
-   ATTENTION: All .pyc files of former versions of vim-orgmode need to be
-   deleted beforehand!
-
-From git checkout~
-   This method is mainly used for development purposes.
-
-You are using pathegon~
-
-    Change to the bundle directory
-    $ cd ~/.vim/bundle
-
-    Clone the repository
-    $ git clone https://github.com/jceb/vim-orgmode.git
-
-    And restart vim. That's it.
-
-    ATTENTION: All .pyc files of former versions of vim-orgmode need to be
-    deleted beforehand!
-
-You are using no addon manager~
-    Clone the repository:
-    $ git clone https://github.com/jceb/vim-orgmode.git
-
-    Copy the directories doc, ftdetect, ftplugin, indent and syntax to
-    your $HOME/.vim directory:
-    $ cd vim-orgmode
-    $ cp -r doc ftdetect ftplugin indent syntax ~/.vim/
-
-    ATTENTION: All .pyc files of former versions of vim-orgmode need to be
-    deleted beforehand!
-
-From .deb file~
-   If you want to install the vim-orgmode plugin for all users of your
-   computer, this is the preferred way.
-
-   Install the plugin by using the Debian Package Manager:
-
-   dpkg -i vim-orgmode_X.X.X-X.deb
-
-   The plugin is installed in /usr/lib/vim/addons. Please make sure this
-   directory part of your runtimepath. By default it's not! Add the following
-   command to your .vimrc to add the path on startup:
-
->
-   :set rtp=/usr/lib/vim/addons,&rtp
-<
-
-==============================================================================
-USAGE								     *org-usage*
-
-  vim-orgmode aims to be clone of the original orgmode for Emacs. Since Emacs
-  is not vim the clone is not aiming for 100% compatibility.  Especially in
-  terms of the keybindings there will be major differences!
-
-  You'll definitively enjoy the modal interface, this where vim's strength is.
-  Almost all keybindings for orgmode work only in normal and visual mode where
-  as in insert mode just a few are available.
-
-  Start of with vim-orgmode by open a file with the extension .org. An
-  additional menu "Org" is shown that gives an overview of the implemented
-  functionality and the keybindings.
-
-Text objects~
-   Vim offers a mighty feature called text-objects. A text-object is bound to
-   a certain character sequence that can be used in combination with all kinds
-   of editing and selection tasks. vim-orgmode offers the following
-   text-objects:
-
-   ih - inner heading, referring to the current heading excluding the heading
-        level characters (*)
-   ah - a heading, referring to the current heading including everything
-   it - inner subtree, starting with the current heading
-   at - a subtree, starting with the current heading
-   Oh - inner outer heading, referring to the parent
-   Ot - inner outer heading, including subtree, referring to the parent
-   OH - a outer heading
-   OT - a outer subtree
-
-   Movement commands can also be used for editing like text-objects:
-
-   g{ - execute command from current position to the beginning of the parent
-        heading
-   g} - execute command from current position to the beginning of the parent's
-        next sibling
-   {  - execute command from current position to the beginning of the current
-        heading
-   }  - execute command from current position to the end of the current
-        heading
-   [[ - execute command from current position to the beginning of the previous
-        heading sibling
-   ]] - execute command from current position to the end of the next heading
-        sibling
-
-   For further information please read :h text-objects-changed
-
+------------------------------------------------------------------------------
 Suggested plugins~
   - pathogen (http://www.vim.org/scripts/script.php?script_id=2332)
     easy management of multiple vim plugins
@@ -198,9 +77,140 @@ Suggested plugins~
     (http://www.vim.org/scripts/script.php?script_id=293) general support for
     text linking, the Hyperlinks feature of vim-orgmode depends on this plugin
 
-==============================================================================
-CUSTOMIZATION						     *org-customization*
+------------------------------------------------------------------------------
+Installation from .vbm file~
+  If you want to install the vim-orgmode plugin for a single user, this is
+  the preferred way. The stable releases can be downloaded at
+  http://www.vim.org/scripts/script.php?script_id=3642
 
+  Open the file in vim and source it. Restart vim and the plugin is active:
+
+  $ vim orgmode.vbm
+>
+    :so %
+<
+  ATTENTION: All .pyc files of former versions of vim-orgmode need to be
+  deleted beforehand!
+
+------------------------------------------------------------------------------
+Installation into a specific directory~
+  If you want to install the plugin into a specific directory, e.g. when you
+  are using pathogen, then just add the desired directory to the runtimepath
+  before sourcing the vbm-file.
+
+  When updating from a previous version I recommend deleting the whole
+  $HOME/.vim/bundle/orgmode directory to prevent out dated .pyc files
+  spoiling the update.
+
+  $ vim orgmode.vbm.gz
+>
+    :set rtp=$HOME/.vim/bundle/orgmode,&rtp
+    :so %
+<
+  ATTENTION: All .pyc files of former versions of vim-orgmode need to be
+  deleted beforehand!
+
+  Install from git checkout~
+    This method is mainly used for development purposes.
+
+  You are using pathegon~
+
+    Change to the bundle directory
+    $ cd ~/.vim/bundle
+
+    Clone the repository
+    $ git clone https://github.com/jceb/vim-orgmode.git
+
+    And restart vim. That's it.
+
+    ATTENTION: All .pyc files of former versions of vim-orgmode need to be
+    deleted beforehand!
+
+  You are using no addon manager~
+    Clone the repository:
+    $ git clone https://github.com/jceb/vim-orgmode.git
+
+    Copy the directories doc, ftdetect, ftplugin, indent and syntax to
+    your $HOME/.vim directory:
+    $ cd vim-orgmode
+    $ cp -r doc ftdetect ftplugin indent syntax ~/.vim/
+
+    ATTENTION: All .pyc files of former versions of vim-orgmode need to be
+    deleted beforehand!
+
+------------------------------------------------------------------------------
+Installation from .deb file~
+  If you want to install the vim-orgmode plugin for all users of your
+  computer, this is the preferred way.
+
+  Install the plugin by using the Debian Package Manager:
+
+  dpkg -i vim-orgmode_X.X.X-X.deb
+
+  The plugin is installed in /usr/lib/vim/addons. Please make sure this
+  directory part of your runtimepath. By default it's not! Add the following
+  command to your .vimrc to add the path on startup:
+
+>
+   :set rtp=/usr/lib/vim/addons,&rtp
+<
+
+==============================================================================
+USAGE                                                                *org-usage*
+
+  The main desciption of how to use vim-orgmode is the |orgguide|.
+
+  vim-orgmode aims to be clone of the original orgmode for Emacs. Since Emacs
+  is not vim the clone is not aiming for 100% compatibility.  Especially in
+  terms of the keybindings there will be major differences!
+
+  You'll definitively enjoy the modal interface, this where vim's strength is.
+  Almost all keybindings for orgmode work only in normal and visual mode where
+  as in insert mode just a few are available.
+
+  Start of with vim-orgmode by open a file with the extension .org. An
+  additional menu "Org" is shown that gives an overview of the implemented
+  functionality and the keybindings. To get an overview of the functionality
+  also check out |orgguide|.
+
+------------------------------------------------------------------------------
+Text objects~
+  Vim offers a mighty feature called text-objects. A text-object is bound to
+  a certain character sequence that can be used in combination with all kinds
+  of editing and selection tasks. vim-orgmode offers the following
+  text-objects:
+
+  ih - inner heading, referring to the current heading excluding the heading
+       level characters (*)
+  ah - a heading, referring to the current heading including everything
+  it - inner subtree, starting with the current heading
+  at - a subtree, starting with the current heading
+  Oh - inner outer heading, referring to the parent
+  Ot - inner outer heading, including subtree, referring to the parent
+  OH - a outer heading
+  OT - a outer subtree
+
+  Movement commands can also be used for editing like text-objects:
+
+  g{ - execute command from current position to the beginning of the parent
+       heading
+  g} - execute command from current position to the beginning of the parent's
+       next sibling
+  {  - execute command from current position to the beginning of the current
+       heading
+  }  - execute command from current position to the end of the current
+       heading
+  [[ - execute command from current position to the beginning of the previous
+       heading sibling
+  ]] - execute command from current position to the end of the next heading
+       sibling
+
+  For further information please read :h text-objects-changed
+
+==============================================================================
+CUSTOMIZATION                                                *org-customization*
+
+------------------------------------------------------------------------------
 Remapping shortcuts~
   vim-orgmode provides an easy way for remapping the default keyboard
   shortcuts. For this task it relies on vim's <Plug> mappings. All shortcuts
@@ -210,74 +220,75 @@ Remapping shortcuts~
   First we need to look up the current mapping in the Org menu. The following
   command reveals the <Plug>'s name:
 >
-  :map <current_mapping>
+    :map <current_mapping>
 <
 
   The result should look something like this:
 >
-  :map ,t
-  n ,t @<Plug>OrgSetTags
+    :map ,t
+    n ,t @<Plug>OrgSetTags
 <
 
   Now we can create an alternate mapping:
 >
-  nmap <new_mapping> <the_plug>
+    nmap <new_mapping> <the_plug>
 <
 
   To change the mapping for editing tags to <leader>t the vimrc entrie would
   look like this:
 >
-  nmap <leader>t @<Plug>OrgSetTags
+    nmap <leader>t @<Plug>OrgSetTags
 <
 
+------------------------------------------------------------------------------
 Syntax highlighting~
-Syntax highlighting is customizable to fit nicely with the user's colorscheme.
+  Syntax highlighting is customizable to fit nicely with the user's colorscheme.
 
-					        *g:org_heading_highlight_colors*
-Define the highlighting colors/group names for headings (default):
+                                                *g:org_heading_highlight_colors*
+  Define the highlighting colors/group names for headings (default):
 >
-    let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier',
-    \		'Statement', 'PreProc', 'Type', 'Special']
+      let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier',
+      \		'Statement', 'PreProc', 'Type', 'Special']
 <
 
-					        *g:org_heading_highlight_levels*
-Definie the number of levels of highlighting. If this number is bigger than
-the list of colors defined in of g:org_heading_highlight_colors the colors of
-g:org_heading_highlight_colors get repeated (default):
+                                                *g:org_heading_highlight_levels*
+  Definie the number of levels of highlighting. If this number is bigger than
+  the list of colors defined in of g:org_heading_highlight_colors the colors of
+  g:org_heading_highlight_colors get repeated (default):
 >
-    let g:org_heading_highlight_levels = len(g:org_heading_highlight_colors)
+      let g:org_heading_highlight_levels = len(g:org_heading_highlight_colors)
 <
 
-					     *g:org_heading_shade_leading_stars*
-Defines if leading stars are displayed in the color of the heading or if a
-special NonText highlighting is used that hides them from user (default):
+                                             *g:org_heading_shade_leading_stars*
+  Defines if leading stars are displayed in the color of the heading or if a
+  special NonText highlighting is used that hides them from user (default):
 >
-    let g:org_heading_shade_leading_stars = 1
+      let g:org_heading_shade_leading_stars = 1
 <
 
-				    			   *g:org_todo_keywords*
-Defines the keywords that are highlighted in headings. For more information
-about this variable, please consult the org-mode documentation
-(http://orgmode.org/org.html#index-org_002dtodo_002dkeywords-511) (default):
+                                                           *g:org_todo_keywords*
+  Defines the keywords that are highlighted in headings. For more information
+  about this variable, please consult the org-mode documentation
+  (http://orgmode.org/org.html#index-org_002dtodo_002dkeywords-511) (default):
 >
-    let g:org_todo_keywords = ['TODO', '|', 'DONE']
+      let g:org_todo_keywords = ['TODO', '|', 'DONE']
 <
 
-				    		      *g:org_todo_keyword_faces*
-Defines special faces (styles) for displaying g:org_todo_keywords. Please
-refer to vim documentation (topic |attr-list|) for allowed values for
-:weight, :slant, :decoration. Muliple colors can be separated by comma for
-:foreground and :background faces to provide different colors for gui and
-terminal mode (default):
+                                                      *g:org_todo_keyword_faces*
+  Defines special faces (styles) for displaying g:org_todo_keywords. Please
+  refer to vim documentation (topic |attr-list|) for allowed values for
+  :weight, :slant, :decoration. Muliple colors can be separated by comma for
+  :foreground and :background faces to provide different colors for gui and
+  terminal mode (default):
 >
-    let g:org_todo_keyword_faces = []
+      let g:org_todo_keyword_faces = []
 <
 
-Syntax Highlighting Examples~
-Define an additionaly keyword 'WAITING' and set the foreground color to
-'cyan'. Define another keyword 'CANCELED' and set the foreground color to
-red, background to black and the weight to normal, slant to italc and
-decoration to underline:
+  Syntax Highlighting Examples~
+    Define an additionaly keyword 'WAITING' and set the foreground color to
+    'cyan'. Define another keyword 'CANCELED' and set the foreground color to
+    red, background to black and the weight to normal, slant to italc and
+    decoration to underline:
 
 >
     let g:org_todo_keywords = [['TODO', 'WAITING', '|', 'DONE'],
@@ -288,158 +299,171 @@ decoration to underline:
 <
 
 ==============================================================================
-DEVELOPMENT						       *org-development*
+DEVELOPMENT                                                    *org-development*
 
-Building a Vimball~
-   Vimball is an archive format for vim plugins. It's of use when you want to
-   install vim-orgmode for a single user. To build a Vimball just run the
-   following command in the root folder of this plugin.  Please make sure that
-   vim is installed on your computer:
+The development of vim-orgmode is coordinated via github:
+  https://github.com/jceb/vim-orgmode
 
-   make vbm
+If you like this project, have questions, suggestions or problems, simply drop
+us a line and open an issue. Patches are very welcome!
 
-   For installing the plugin form the resulting orgmode.vbm.gz file, please
-   refer to the Installation section.
+Here is a quick start about the vim-orgmode development.
 
-Building a Debian Package~
-   A Debian package is of use when you want to make vim-orgmode available to
-   all users on your computer. Make sure you've debhelper and vim installed,
-   than run the following command from the root directory of this plugin to
-   build the debian package:
+------------------------------------------------------------------------------
+Structure and Source Code~
+  The majority of the source code is stored in folder ftplugin/orgmode. This
+  is where the actual functionality of the plugin is located.
 
-   dpkg-buildpackage -us -uc
+  I choose to implement vim-orgmode mainly in Python. I hope this will ease
+  the implementation especially with the functionality of the Python standard
+  library at hand.
 
-   For installing the plugin form the resulting vim-orgmode_X.X.X-X.deb file,
-   please refer to the Installation section.
+  Right below the directory ftplugin/orgmode the basic implementation of
+  vim-orgmode is found. This basic functionality provides everything for
+  higher level implementations that modify the buffer, provide a menu and
+  keybindings to the user and everything else that is needed.
 
-Source code~
+  Below the directory ftplugin/orgmode/plugins the plugins are located. Every
+  plugin must provide a class equal to its filename with the .py-extension.
+  An example for a plugin can be found in file
+  ftplugin/orgmode/plugins/Example.py.
 
- Files and folders~
-    debian/                  - files needed for building a Debian package
-    doc/                     - vim documentation
-    documention/             - development documentation
-    examples/                - plugin examples
-    ftdetect/                - Filetype detection for orgmode files
-    ftplugin/                - Home of the main part of the plugin
-    ftplugin/orgmode/        - Home for all Python code related to the plugin
-    ftplugin/orgmode/plugins - Home for all orgmode plugins
-    ftplugin/liborgmode.py   - General library for accessing and manipulating
-                               org-mode files
-    indent/                  - Indentation for orgmode files
-    test/                    - Tests to verify the consistency and correctness
-                               of the plugin
-    syntax/                  - Syntax highlighting
-    build_vbm.vim            - Build file for creating a Vimball
-    install_vbm.vim          - Local installation of vbm via make target
-                               installvbm
-    LICENSE                  - License Information
-    README.org               - Documentation
-    Makefile
-
- Structure~
-    The majority of the source code is stored in folder ftplugin/orgmode. This
-    is where the actual functionality of the plugin is located.
-
-    I choose to implement vim-orgmode mainly in Python. I hope this will ease
-    the implementation especially with the functionality of the Python standard
-    library at hand.
-
-    Right below the directory ftplugin/orgmode the basic implementation of
-    vim-orgmode is found. This basic functionality provides everything for
-    higher level implementations that modify the buffer, provide a menu and
-    keybindings to the user and everything else that is needed.
-
-    Below the directory ftplugin/orgmode/plugins the plugins are located. Every
-    plugin must provide a class equal to its filename with the .py-extension.
-    An example for a plugin can be found in file
-    ftplugin/orgmode/plugins/Example.py.
-
-    Every plugin must be enabled by the user by setting the g:org_plugins
-    variable. By default all shipped plugins are enabled.  Example:
+  Every plugin must be enabled by the user by setting the g:org_plugins
+  variable. By default all shipped plugins are enabled.  Example:
 >
     let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure']
 <
 
- Writing a plugin~
-    To write a plugin:
-    1. copy file ftplugin/orgmode/plugins/Example.py to
-       ftplugin/orgmode/plugins/YourPlugin.py
-    2. Change class name to "YourPlugin"
-    3. Set the menu name, it doesn't need to match the filename anymore,
-       e.g. "Your Plugin"
-    4. Prepare keybindings in function register by defining a proper
-       action and a key this action should be mapped to. For further
-       information refer to section Keybindings.
-    5. Register your plugin:
+  Files and folders~
+    .
+    ├── debian                  - files needed for building a Debian package
+    ├── doc                     - vim documentation
+    ├── documentation           - development documentation
+    ├── examples                - example of aplugin
+    ├── ftdetect                - Filetype detection for orgmode files
+    ├── ftplugin                - Home of the main part of vim-orgmode
+    │   └── orgmode             - Home for all Python code
+    │       ├── liborgmode      - vim unrelated part of vim-orgmde. Contains
+    │       │                     basic data structures and algorithms to
+    │       │                     parse and edit orgfiles.                        
+    │       └── plugins         - Home for all orgmode plugins
+    ├── indent                  - Indentation for orgmode files                      
+    ├── syntax                  - Syntax highlighting
+    ├── tests                   - Tests to verify the consistency and 
+    │                             correctness of orgmode and the plugins
+    ├── build_vmb.vim           - Build file for creating a Vimball
+    ├── install-vbm.vim         - Local installation of vbm via make target
+    ├── LICENSE                 - License Information
+    ├── README.org              - README :)
+    └── Makefile                - make commands
+
+------------------------------------------------------------------------------
+Writing a plugin~
+  To write a plugin:
+  1. copy file ftplugin/orgmode/plugins/Example.py to
+     ftplugin/orgmode/plugins/YourPlugin.py
+  2. Change class name to "YourPlugin"
+  3. Set the menu name, it doesn't need to match the filename anymore,
+     e.g. "Your Plugin"
+  4. Prepare keybindings in function register by defining a proper
+     action and a key this action should be mapped to. For further
+     information refer to section Keybindings.
+  5. Register your plugin:
 >
-       let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', 'YourPlugin']
+    let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', 'YourPlugin']
 <
-    6. Implement YourPlugin
+    6. Write unittests and implement YourPlugin.
 
- Keybindings~
-    Keybindings alias mappings are described very well in the vim
-    documentation, see |map-modes|. vim-orgmode tries to make it easy for the
-    developer to register new keybindings, make them customizable and provide
-    menu entries so that the user can access the functionality like in original
-    orgmode.
+------------------------------------------------------------------------------
+Keybindings~
+  Keybindings alias mappings are described very well in the vim
+  documentation, see |map-modes|. vim-orgmode tries to make it easy for the
+  developer to register new keybindings, make them customizable and provide
+  menu entries so that the user can access the functionality like in original
+  orgmode.
 
-    This is done by providing three classes: Keybinding, Plug and ActionEntry
+  This is done by providing three classes: Keybinding, Plug and ActionEntry
 
   Keybinding~
-     This is the basic class that encapsulates a single keybinding consisting
-     of a key/mapping and an action. Several options can be set when creating
-     the object to specify the mode and all kinds of other things.
+    This is the basic class that encapsulates a single keybinding consisting
+    of a key/mapping and an action. Several options can be set when creating
+    the object to specify the mode and all kinds of other things.
 
-     If a Plug is given instead of an action string the Plug is bound to the
-     key. All relevant data is read from the Plug, e.g. name, mode aso.
+    If a Plug is given instead of an action string the Plug is bound to the
+    key. All relevant data is read from the Plug, e.g. name, mode aso.
 
-  Example~
+    Example~
       Map g{ to moving to parent heading in normal mode:
-
+>
       Keybinding('g{', ':py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>', mode=MODE_NORMAL)
       vim -> :nmap g{ :py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>
-
+<
       Map g{ to moving to parent heading in normal mode by using a Plug:
-
+>
       Keybinding('g{', Plug('OrgJumpToParentNormal', ':py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>'))
       vim -> :nnoremap <Plug>OrgJumpToParentNormal :py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>
       vim -> :nmap g{ <Plug>OrgJumpToParentNormal
-
+<
   Plug~
-     A Plug is a unique keybinding that can not be executed by pressing
-     any key. This makes it a special Keybinding that takes a name and
-     an action to create an object. A plug normally goes together with a
-     regular Keybinding to bind the Plug to a key.
+    A Plug is a unique keybinding that can not be executed by pressing
+    any key. This makes it a special Keybinding that takes a name and
+    an action to create an object. A plug normally goes together with a
+    regular Keybinding to bind the Plug to a key.
 
-     This special behavior is needed to ensure that keybindings are
-     customizable by the user. If the user creates a keybinding to a
-     Plug the Keybinding object makes sure that the users keybinding is
-     used and the keybinding specified by the plugin is not used.
+    This special behavior is needed to ensure that keybindings are
+    customizable by the user. If the user creates a keybinding to a
+    Plug the Keybinding object makes sure that the users keybinding is
+    used and the keybinding specified by the plugin is not used.
 
-  Example~
+    Example~
       Map g{ to moving to parent heading in normal mode by using a Plug:
-
+>
       Keybinding('g{', Plug('OrgJumpToParentNormal', ':py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>'))
       vim -> :nnoremap <Plug>OrgJumpToParentNormal :py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>
       vim -> :nmap g{ <Plug>OrgJumpToParentNormal
-
+<
   ActionEntry~
-     An ActionEntry makes Keybindings accessible by the vim menu. It takes a
-     description and a Keybinding object and builds a menu entry from this. The
-     resulting object can be added to a Submenu object by using the + operator.
+    An ActionEntry makes Keybindings accessible by the vim menu. It takes a
+    description and a Keybinding object and builds a menu entry from this. The
+    resulting object can be added to a Submenu object by using the + operator.
 
-  Example~
+    Example~
       Map g{ to moving to parent heading in normal mode by using a Plug:
-
+>
       k = Keybinding('g{', Plug('OrgJumpToParentNormal', ':py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>'))
       vim -> :nnoremap <Plug>OrgJumpToParentNormal :py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>
       vim -> :nmap g{ <Plug>OrgJumpToParentNormal
 
       menu + ActionEntry('&Up', k)
       vim -> :nmenu &Org.&Naviagte Headings.&Up<Tab>g{ <Plug>OrgJumpToParentNormal
+>
+
+------------------------------------------------------------------------------
+Building a Vimball~
+  Vimball is an archive format for vim plugins. It's of use when you want to
+  install vim-orgmode for a single user. To build a Vimball just run the
+  following command in the root folder of this plugin.  Please make sure that
+  vim is installed on your computer:
+>
+  make vbm
+<
+  For installing the plugin form the resulting orgmode.vbm.gz file, please
+  refer to the Installation section.
+
+------------------------------------------------------------------------------
+Building a Debian Package~
+   A Debian package is of use when you want to make vim-orgmode available to
+   all users on your computer. Make sure you've debhelper and vim installed,
+   than run the following command from the root directory of this plugin to
+   build the debian package:
+>
+   dpkg-buildpackage -us -uc
+<
+   For installing the plugin form the resulting vim-orgmode_X.X.X-X.deb file,
+   please refer to the Installation section.
 
 ==============================================================================
-LINKS								     *org-links*
+LINKS                                                                *org-links*
 
 - Original org-mode for Emacs (http://orgmode.org)
 
@@ -447,7 +471,7 @@ LINKS								     *org-links*
   (http://www.vim.org/scripts/script.php?script_id=3342)
 
 ==============================================================================
-CHANGELOG							 *org-changelog*
+CHANGELOG                                                        *org-changelog*
 
 0.4.0-0
 - move cursor to the current todo state when selecting the todo state
@@ -496,15 +520,15 @@ CHANGELOG							 *org-changelog*
 - initial release
 
 ==============================================================================
-CONTRIBUTORS						      *org-contributors*
+CONTRIBUTORS                                                  *org-contributors*
 
-Thanks to all how contributed to vim-orgmode. All contributors are name here in
-alphabetic order:
+Thanks to all how contributed to vim-orgmode. All contributors are name here
+in alphabetic order:
 
 - Stefan Otte
 
 ==============================================================================
-LICENSE								   *org-license*
+LICENSE                                                           *org-license*
 
 Copyright (C) 2010, 2011 Jan Christoph Ebersbach
 
@@ -532,4 +556,4 @@ You should have received a copy of the GNU Affero General Public License with
 the Debian GNU/Linux or Univention distribution in file
 /usr/share/common-licenses/AGPL-3; if not, see <http://www.gnu.org/licenses/>.
 
- vim:tw=78:ts=8:ft=help:norl:
+vim:tw=78:ts=2:sw=2:expandtab:ft=help:norl:
