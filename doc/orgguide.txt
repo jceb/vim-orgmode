@@ -209,6 +209,41 @@ TODO
 ==============================================================================
 TAGS                                                             *orgguide-tags*
 
+An excellent way to implement labels and contexts for cross-correlating
+information is to assign 'tags' to headlines. Org mode has extensive
+support for tags.
+
+Every headline can contain a list of tags; they occur at the end of the
+headline. Tags are normal words containing letters, numbers, ‘_’, and
+‘@’. Tags must be preceded and followed by a single colon, e.g.,
+‘:work:’. Several tags can be specified, as in ‘:work:urgent:’. Tags
+will by default be in bold face with the same color as the headline.
+
+------------------------------------------------------------------------------
+Tag inheritance~
+                                                     *orgguide-tags-inheritance*
+TODO
+
+------------------------------------------------------------------------------
+Setting tags~
+                                                        *orgguide-tags-settings*
+  Tags can simply be typed into the buffer at the end of a headline. After
+  a colon, <TAB> offers completion on tags. There is also a special
+  command for inserting tags:
+
+  <leader>t             Enter new tags for the current headline. Org mode
+                        will either offer completion or a special single-key
+                        interface for setting tags, see below. After pressing
+                        <RET>, the tags will be inserted and aligned to 
+                        'org-tags-column'.
+
+  Org will support tag insertion based on a 'list of tags'. By default
+  this list is constructed dynamically, containing all tags currently used
+  in the buffer. 
+
+------------------------------------------------------------------------------
+Tag searches~
+                                                          *orgguide-tags-search*
 TODO
 
 ==============================================================================
