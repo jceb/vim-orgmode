@@ -16,6 +16,7 @@ class Agenda(object):
 	The Agenda Plugin uses liborgmode.agenda to display the agenda views.
 
 	The main task is to format the agenda from liborgmode.agenda.
+	Also all the mappings: jump from agenda to todo, etc are realized here.
 	"""
 
 	def __init__(self):
@@ -125,6 +126,7 @@ class Agenda(object):
 						h.active_date.month == today.month and \
 						h.active_date.day == today.day:
 					section = str(h.active_date) + " TODAY"
+					today_row = len(final_agenda) + 1
 				else:
 					section = str(h.active_date)
 				final_agenda.append(section)
@@ -143,6 +145,11 @@ class Agenda(object):
 		# show agenda
 		vim.current.buffer[:] = final_agenda
 		vim.command(u'setlocal nomodifiable')
+		# try to jump to the positon of today
+		try:
+			vim.command('normal %sgg<CR>' % today_row)
+		except:
+			pass
 
 	@classmethod
 	def list_all_todos(cls):
