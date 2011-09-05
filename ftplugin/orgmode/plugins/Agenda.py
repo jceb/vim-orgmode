@@ -105,9 +105,12 @@ class Agenda(object):
 				agenda_documents)
 
 		# create buffer at bottom
-		cmd = [u'setlocal filetype=orgagenda']
+		cmd = [u'setlocal filetype=orgagenda',
+				u'nnoremap <silent> <buffer> <CR> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc()"<CR>'.encode(u'utf-8')
+				]
 		cls._switch_to('AGENDA', cmd)
 
+		cls.line2doc = {}
 		# format text for agenda
 		last_date = raw_agenda[0].active_date
 		final_agenda = ['Week Agenda:', str(last_date)]
@@ -127,8 +130,13 @@ class Agenda(object):
 				# update last_date
 				last_date = h.active_date
 
-			tmp = "  %s %s" % (str(h.todo), str(h.title))
-			final_agenda.append(tmp)
+			formated = "  {bufname}  {todo}  {title}".format(
+					bufname=os.path.basename(vim.buffers[h.document.bufnr].name),
+					todo=str(h.todo),
+					title=str(h.title)
+			)
+			final_agenda.append(formated)
+			cls.line2doc[len(final_agenda)] = (h.document.bufnr, h.start)
 
 		# show agenda
 		vim.current.buffer[:] = final_agenda
