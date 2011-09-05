@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from datetime import date
+import os
 
 from orgmode import ORGMODE, settings
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry
 import vim
+
 
 class Agenda(object):
 	def __init__(self):
@@ -45,15 +47,25 @@ class Agenda(object):
 
 	@classmethod
 	def list_next_week(cls):
+		# load org files of agenda
 		agenda_files = settings.get(u'org_agenda_files', u',')
+		agenda_files = [os.path.expanduser(f) for f in agenda_files]
+
 		for agenda_file in agenda_files:
 			vim.command('badd %s' % agenda_file)
-		# TODO: this only works when orgmode is started with one orgfile
-		# how can I get the number of a buffer with a given name
-		agenda_documents = [ORGMODE.get_document(i+1) for i in range(len(agenda_files))]
 
-		# get agenda
-		raw_agenda = ORGMODE.agenda_manager.get_next_week_and_active_todo(agenda_documents)
+		# determine the buffer nr of the agenda files
+		agenda_number = []
+		for b in vim.buffers:
+			for agenda_file in agenda_files:
+				if agenda_file == b.name:
+					agenda_number.append(b.number)
+					break
+
+		# collect all documents of the agenda files and create the agenda
+		agenda_documents = [ORGMODE.get_document(i) for i in agenda_number]
+		raw_agenda = ORGMODE.agenda_manager.get_next_week_and_active_todo(
+				agenda_documents)
 
 		# create buffer at bottom
 		cmd = [u'setlocal filetype=orgtodo']
@@ -87,15 +99,23 @@ class Agenda(object):
 
 	@classmethod
 	def list_all_todos(cls):
-		# make sure the agenda file is loaded
+		# load org files of agenda
 		agenda_files = settings.get(u'org_agenda_files', u',')
+		agenda_files = [os.path.expanduser(f) for f in agenda_files]
+
 		for agenda_file in agenda_files:
 			vim.command('badd %s' % agenda_file)
-		# TODO: this only works when orgmode is started with one orgfile
-		# how can I get the number of a buffer with a given name
-		agenda_documents = [ORGMODE.get_document(i+1) for i in range(len(agenda_files))]
 
-		# get agenda
+		# determine the buffer nr of the agenda files
+		agenda_number = []
+		for b in vim.buffers:
+			for agenda_file in agenda_files:
+				if agenda_file == b.name:
+					agenda_number.append(b.number)
+					break
+
+		# collect all documents of the agenda files and create the agenda
+		agenda_documents = [ORGMODE.get_document(i) for i in agenda_number]
 		raw_agenda = ORGMODE.agenda_manager.get_todo(agenda_documents)
 
 		# create buffer at bottom
@@ -105,7 +125,8 @@ class Agenda(object):
 		# format text of agenda
 		final_agenda = []
 		for i, h in enumerate(raw_agenda):
-			tmp = "%s %s" % (str(h.todo).encode(u'utf-8'), str(h.title).encode(u'utf-8'))
+			tmp = "%s %s" % (str(h.todo).encode(u'utf-8'),
+					str(h.title).encode(u'utf-8'))
 			final_agenda.append(tmp)
 
 		# show agenda
@@ -132,5 +153,7 @@ class Agenda(object):
 		self.menu + ActionEntry(u'Agenda for the week', self.keybindings[-1])
 
 		# set agend files
-		settings.set(u'org_agenda_files', [u'~/org/index.org'.encode(u'utf-8'), '~/org/TodaY.org'.encode(u'utf-8')])
+		settings.set(u'org_agenda_files', [u'~/org/index.org'.encode(u'utf-8'),
+			'~/org/TodaY.org'.encode(u'utf-8')])
+
 # vim: set noexpandtab:
