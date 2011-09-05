@@ -7,6 +7,7 @@ from orgmode import ORGMODE, settings
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry
 import vim
+from orgmode import get_bufnumber
 
 
 class Agenda(object):
@@ -55,15 +56,10 @@ class Agenda(object):
 			vim.command('badd %s' % agenda_file)
 
 		# determine the buffer nr of the agenda files
-		agenda_number = []
-		for b in vim.buffers:
-			for agenda_file in agenda_files:
-				if agenda_file == b.name:
-					agenda_number.append(b.number)
-					break
+		agenda_numbers = [get_bufnumber(fn) for fn in agenda_files]
 
 		# collect all documents of the agenda files and create the agenda
-		agenda_documents = [ORGMODE.get_document(i) for i in agenda_number]
+		agenda_documents = [ORGMODE.get_document(i) for i in agenda_numbers]
 		raw_agenda = ORGMODE.agenda_manager.get_next_week_and_active_todo(
 				agenda_documents)
 
@@ -107,15 +103,10 @@ class Agenda(object):
 			vim.command('badd %s' % agenda_file)
 
 		# determine the buffer nr of the agenda files
-		agenda_number = []
-		for b in vim.buffers:
-			for agenda_file in agenda_files:
-				if agenda_file == b.name:
-					agenda_number.append(b.number)
-					break
+		agenda_numbers = [get_bufnumber(fn) for fn in agenda_files]
 
 		# collect all documents of the agenda files and create the agenda
-		agenda_documents = [ORGMODE.get_document(i) for i in agenda_number]
+		agenda_documents = [ORGMODE.get_document(i) for i in agenda_numbers]
 		raw_agenda = ORGMODE.agenda_manager.get_todo(agenda_documents)
 
 		# create buffer at bottom
