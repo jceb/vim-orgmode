@@ -4,10 +4,11 @@ from datetime import date
 import os
 
 from orgmode import ORGMODE, settings
+from orgmode import get_bufnumber
+from orgmode import echoe
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry
 import vim
-from orgmode import get_bufnumber
 
 
 class Agenda(object):
@@ -50,6 +51,9 @@ class Agenda(object):
 	def list_next_week(cls):
 		# load org files of agenda
 		agenda_files = settings.get(u'org_agenda_files', u',')
+		if not agenda_files or agenda_files == ',':
+			echoe("No org_agenda_files defined. Use ':let org_agenda_files=['~/org/index.org'] to define some files for the agenda view.")
+			return
 		agenda_files = [os.path.expanduser(f) for f in agenda_files]
 
 		for agenda_file in agenda_files:
@@ -97,6 +101,9 @@ class Agenda(object):
 	def list_all_todos(cls):
 		# load org files of agenda
 		agenda_files = settings.get(u'org_agenda_files', u',')
+		if not agenda_files or agenda_files == ',':
+			echoe("No org_agenda_files defined. Use ':let org_agenda_files=['~/org/index.org'] to define some files for the agenda view.")
+			return
 		agenda_files = [os.path.expanduser(f) for f in agenda_files]
 
 		for agenda_file in agenda_files:
@@ -143,8 +150,5 @@ class Agenda(object):
 				u':py ORGMODE.plugins[u"Agenda"].list_next_week()<CR>')))
 		self.menu + ActionEntry(u'Agenda for the week', self.keybindings[-1])
 
-		# set agend files
-		settings.set(u'org_agenda_files', [u'~/org/index.org'.encode(u'utf-8'),
-			'~/org/TodaY.org'.encode(u'utf-8')])
 
 # vim: set noexpandtab:
