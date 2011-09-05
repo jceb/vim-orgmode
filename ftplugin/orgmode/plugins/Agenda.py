@@ -80,6 +80,23 @@ class Agenda(object):
 		return [ORGMODE.get_document(i) for i in agenda_numbers]
 
 	@classmethod
+	def opendoc(cls):
+		"""
+		If you are in the agenda view jump to the document the item in the
+		current line belongs to.
+		"""
+		row, _ = vim.current.window.cursor
+		try:
+			bufnr, destrow = cls.line2doc[row]
+			print bufnr, destrow
+		except:
+			return
+
+		vim.command("buffer %s" % bufnr)
+		tmp = "normal %sgg <CR>" % str(destrow + 1)
+		vim.command(tmp)
+
+	@classmethod
 	def list_next_week(cls):
 		agenda_documents = cls._get_agendadocuments()
 		if not agenda_documents:
@@ -119,6 +136,9 @@ class Agenda(object):
 
 	@classmethod
 	def list_all_todos(cls):
+		"""
+		List all todos in all agenda files in one buffer.
+		"""
 		agenda_documents = cls._get_agendadocuments()
 		if not agenda_documents:
 			return
