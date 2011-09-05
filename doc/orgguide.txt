@@ -415,7 +415,21 @@ The built-in agenda views ~
 ------------------------------------------------------------------------------
 Commands in the agenda buffer~
                                                       *orgguide-agenda-commands*
-  TODO
+Entries in the agenda buffer are linked back to the Org file where they
+originate. Commands are provided to show and jump to the
+original entry location, and to edit the Org files “remotely” from the
+agenda buffer.
+
+TODO: only partial implemented.
+
+  Motion~
+    TODO
+
+  View/Go to Org file~
+    <RET>           Go to the original location of the item.
+
+  Change display~
+    TODO
 
 ------------------------------------------------------------------------------
 Custom agenda views~
