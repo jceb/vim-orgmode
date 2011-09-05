@@ -48,7 +48,11 @@ class Agenda(object):
 			vim.command(cmd)
 
 	@classmethod
-	def list_next_week(cls):
+	def _get_agendadocuments(self):
+		"""
+		Return the org documents of the agenda files; return None if no
+		agenda documents are defined.
+		"""
 		# load org files of agenda
 		agenda_files = settings.get(u'org_agenda_files', u',')
 		if not agenda_files or agenda_files == ',':
@@ -63,7 +67,13 @@ class Agenda(object):
 		agenda_numbers = [get_bufnumber(fn) for fn in agenda_files]
 
 		# collect all documents of the agenda files and create the agenda
-		agenda_documents = [ORGMODE.get_document(i) for i in agenda_numbers]
+		return [ORGMODE.get_document(i) for i in agenda_numbers]
+
+	@classmethod
+	def list_next_week(cls):
+		agenda_documents = cls._get_agendadocuments()
+		if not agenda_documents:
+			return
 		raw_agenda = ORGMODE.agenda_manager.get_next_week_and_active_todo(
 				agenda_documents)
 
@@ -99,21 +109,9 @@ class Agenda(object):
 
 	@classmethod
 	def list_all_todos(cls):
-		# load org files of agenda
-		agenda_files = settings.get(u'org_agenda_files', u',')
-		if not agenda_files or agenda_files == ',':
-			echoe("No org_agenda_files defined. Use ':let org_agenda_files=['~/org/index.org'] to define some files for the agenda view.")
+		agenda_documents = cls._get_agendadocuments()
+		if not agenda_documents:
 			return
-		agenda_files = [os.path.expanduser(f) for f in agenda_files]
-
-		for agenda_file in agenda_files:
-			vim.command('badd %s' % agenda_file)
-
-		# determine the buffer nr of the agenda files
-		agenda_numbers = [get_bufnumber(fn) for fn in agenda_files]
-
-		# collect all documents of the agenda files and create the agenda
-		agenda_documents = [ORGMODE.get_document(i) for i in agenda_numbers]
 		raw_agenda = ORGMODE.agenda_manager.get_todo(agenda_documents)
 
 		# create buffer at bottom
