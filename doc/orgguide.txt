@@ -256,71 +256,63 @@ DATES AND TIMES                                                 *orgguide-dates*
 
 To assist project planning, TODO items can be labeled with a date and/or
 a time. The specially formatted string carrying the date and time
-information is called a timestamp in Org mode.
+information is called a 'timestamp' in Org mode.
 
 ------------------------------------------------------------------------------
 Timestamps~
-    A timestamp is a specification of a date (possibly with a time or a
-    range of times) in a special format, either <2003-09-16 Tue> or
-    <2003-09-16 Tue 09:39> or <2003-09-16 Tue 12:00-12:30>. A timestamp
-    can appear anywhere in the headline or body of an Org tree entry.
 
-    TODO: Its presence causes entries to be shown on specific dates in the 
-    agenda (see section [[#Weekly_002fdaily-agenda][The weekly/daily agenda]]).
+  A timestamp is a specification of a date (possibly with a time or a
+  range of times) in a special format, either <2003-09-16 Tue> or
+  <2003-09-16 Tue 09:39> or <2003-09-16 Tue 12:00-12:30>. A timestamp
+  can appear anywhere in the headline or body of an Org tree entry.
+  Its presence causes entries to be shown on specific dates in the 
+  agenda (see section |orgguide-agenda|). We distinguish:
 
-    We distinguish:
-
-    Plain timestamp; Event; Appointment ~
-        A simple timestamp just assigns a date/time to an item. This is just
-        like writing down an appointment or event in a paper agenda.
+  Plain timestamp; Event; Appointment ~
+    A simple timestamp just assigns a date/time to an item. This is just
+    like writing down an appointment or event in a paper agenda.
 >
     * Meet Peter at the movies <2006-11-01 Wed 19:15>
     * Discussion on climate change <2006-11-02 Thu 20:00-22:00>
 <
 
-    Timestamp with repeater interval ~
-        A timestamp may contain a /repeater interval/, indicating that it
-        applies not only on the given date, but again and again after a certain
-        interval of N days (d), weeks (w), months (m), or years (y). The
-        following will show up in the agenda every Wednesday:
+  Timestamp with repeater interval ~
+    NOTE: only partly supported.
+    A timestamp may contain a 'repeater-interval', indicating that it
+    applies not only on the given date, but again and again after a certain
+    interval of N days (d), weeks (w), months (m), or years (y). The
+    following will show up in the agenda every Wednesday:
 >
     * Pick up Sam at school <2007-05-16 Wed 12:30 +1w>
 <
 
-    Diary-style sexp entries ~
-        For more complex date specifications, Org mode supports using the
-        special sexp diary entries implemented in the Emacs calendar/diary
-        package. For example:
->
-        * The nerd meeting on every 2nd Thursday of the month
-          <%%(diary-float t 4 2)>
-<
+  Diary-style sexp entries ~
+    TODO: implement
 
-    Time/Date range~
-        Two timestamps connected by ‘--’ denote a range.
+  Time/Date range~
+    Two timestamps connected by ‘--’ denote a range.
 >
     ** Meeting in Amsterdam
        <2004-08-23 Mon>--<2004-08-26 Thu>
 <
 
-    Inactive timestamp~
-        Just like a plain timestamp, but with square brackets instead of
-        angular ones. These timestamps are inactive in the sense that they do
-        /not/ trigger an entry to show up in the agenda.
+  Inactive timestamp~
+    Just like a plain timestamp, but with square brackets instead of
+    angular ones. These timestamps are inactive in the sense that they do
+    'not' trigger an entry to show up in the agenda.
 >
-            * Gillian comes late for the fifth time [2006-11-01 Wed]
+      * Gillian comes late for the fifth time [2006-11-01 Wed]
 <
-
 
 ------------------------------------------------------------------------------
 Creating timestamps~
 
-For Org mode to recognize timestamps, they need to be in the specific
-format. All commands listed below produce timestamps in the correct
-format.
+  For Org mode to recognize timestamps, they need to be in the specific
+  format. All commands listed below produce timestamps in the correct
+  format.
 
                                                            *orgmode-<leader>-sa*
-<LEADER>sa          Prompt for a date and insert a corresponding timestamp.
+  <LEADER>sa        Prompt for a date and insert a corresponding timestamp.
 
                     TODO: not implemented yet When the cursor is at an
                     existing timestamp in the buffer, the command is used to
@@ -332,11 +324,11 @@ format.
                     time.
 
                                                             *orgmode-<leader>si*
-<LEADER>si          Like |orgmode-<leader>-sa|, but insert an inactive timestamp
+  <LEADER>si        Like |orgmode-<leader>-sa|, but insert an inactive timestamp
                     that will not cause an agenda entry.
 
                                               *orgmode-ctrl-a* or *orgmode-ctrl-x*
-CTRL-A or CTRL-X    Change the item under the cursor in a timestamp.
+  CTRL-A or CTRL-X  Change the item under the cursor in a timestamp.
                     The cursor can be on a year, month, day, hour or minute.
                     NOTE: The plugin 'speeddating' should be installed for
                     this feature.
@@ -347,21 +339,22 @@ CTRL-A or CTRL-X    Change the item under the cursor in a timestamp.
                     the second, shifting the time block with constant length.
                     To change the length, modify the second time.
 
-When Org mode prompts for a date/time, it will accept any string containing
-some date and/or time information, and intelligently interpret the string,
-deriving defaults for unspecified information from the current date and time.
-See the manual for more information on how exactly the date/time prompt works.
+  When Org mode prompts for a date/time, it will accept any string containing
+  some date and/or time information, and intelligently interpret the string,
+  deriving defaults for unspecified information from the current date and
+  time. See the manual for more information on how exactly the date/time
+  prompt works.
 
-TODO: not implemented yet.
-You can also select a date in the pop-up calendar. 
+  TODO: not implemented yet.
+  You can also select a date in the pop-up calendar. 
 
 ------------------------------------------------------------------------------
 Deadlines and scheduling~
-   TODO: not implemented yet.
+  TODO: not implemented yet.
 
 ------------------------------------------------------------------------------
 Clocking work time~
-   TODO: not implemented yet.
+  TODO: not implemented yet.
 
 ==============================================================================
 CAPTURE - REFILE - ARCHIVE                                   *orgguide-capture*
@@ -450,12 +443,12 @@ The built-in agenda views ~
 ------------------------------------------------------------------------------
 Commands in the agenda buffer~
                                                       *orgguide-agenda-commands*
-Entries in the agenda buffer are linked back to the Org file where they
-originate. Commands are provided to show and jump to the
-original entry location, and to edit the Org files “remotely” from the
-agenda buffer.
+  Entries in the agenda buffer are linked back to the Org file where they
+  originate. Commands are provided to show and jump to the
+  original entry location, and to edit the Org files “remotely” from the
+  agenda buffer.
 
-TODO: only partial implemented.
+  TODO: only partly implemented.
 
   Motion~
     TODO
