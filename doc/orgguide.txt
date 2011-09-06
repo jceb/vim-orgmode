@@ -14,7 +14,7 @@ TABLE OF CONTENTS                                        *orgguide* *orgguide-to
     3.  Document structure               |orgguide-docstructure|
     4.  Tables                           |orgguide-tables|
     5.  Hyperlinks                       |orgguide-hyperlinks|
-    6.  Todo items                       |orgguide-todoitems|
+    6.  Todo items                       |orgguide-todo|
     7.  Tags                             |orgguide-tags|
     8.  Properties                       |orgguide-properties|
     9.  Dates and Times                  |orgguide-dates|
@@ -217,9 +217,116 @@ Targeted links~
   TODO
 
 ==============================================================================
-TODO ITEMS                                                  *orgguide-todoitems*
+TODO ITEMS                                                       *orgguide-todo*
 
-TODO
+Org mode does not maintain TODO lists as separate documents. Instead, TODO
+items are an integral part of the notes file, because TODO items usually come
+up while taking notes!  With Org mode, simply mark any entry in a tree as
+being a TODO item. In this way, information is not duplicated, and the entire
+context from which the TODO item emerged is always present.
+
+Of course, this technique for managing TODO items scatters them throughout
+your notes file. Org mode compensates for this by providing methods to give
+you an overview of all the things that you have to do.
+
+------------------------------------------------------------------------------
+Using TODO states~
+
+  Any headline becomes a TODO item when it starts with the word ‘TODO’,
+  for example:
+>
+      *** TODO Write letter to Sam Fortune
+<
+
+  The most important commands to work with TODO entries are:
+
+  <leader>ct            Rotate the TODO state of the current item among
+>
+       ,-> (unmarked) -> TODO -> DONE --.
+       '--------------------------------'
+<
+
+  TODO: The same rotation can also be done “remotely” from the timeline and
+  agenda buffers with the t command key (see section
+  |orgguide-agenda-commands|).
+
+  <S-right> or <S-left> Select the following/preceding TODO state, similar to
+                        cycling.
+
+  TODO: C-c / t :: View TODO items in a /sparse tree/ (see section
+  [[#Sparse-trees][Sparse trees]]). Folds the buffer, but shows all
+  TODO items and the headings hierarchy above them.
+
+  <leader>cat           Show the global TODO list. Collects the TODO items
+                        from all agenda files (see section 
+                        |orgguide-agenda-views|) into a single buffer.
+
+  TODO: S-M-<RET> :: Insert a new TODO entry below the current one.
+
+------------------------------------------------------------------------------
+Multi-state workflows~
+
+  You can use TODO keywords to indicate different 'sequential' states in
+  the process of working on an item, for example:
+>
+    :let g:org_todo_keywords=['TODO', 'FEEDBACK', 'VERIFY', '|', 'DONE', 'DELEGATED']
+<
+  The vertical bar separates the TODO keywords (states that 'need action')
+  from the DONE states (which need 'no further action'). If you don’t
+  provide the separator bar, the last state is used as the DONE state.
+  With this setup, the command <leader>ct will cycle an entry from TODO to
+  FEEDBACK, then to VERIFY, and finally to DONE and DELEGATED.
+
+  Sometimes you may want to use different sets of TODO keywords in
+  parallel. For example, you may want to have the basic TODO/DONE, but
+  also a workflow for bug fixing, and a separate state indicating that an
+  item has been canceled (so it is not DONE, but also does not require
+  action). Your setup would then look like this:
+
+  TODO: check the following
+>
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "|" "DONE(d)")
+            (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
+            (sequence "|" "CANCELED(c)")))
+<
+  The keywords should all be different, this helps Org mode to keep track
+  of which subsequence should be used for a given entry. The example also
+  shows how to define keys for fast access of a particular state, by
+  adding a letter in parenthesis after each keyword - you will be prompted
+  for the key after C-c C-t.
+
+  To define TODO keywords that are valid only in a single file, use the
+  following text anywhere in the file.
+
+  #+BEGIN_EXAMPLE
+      #+TODO: TODO(t) | DONE(d)
+      #+TODO: REPORT(r) BUG(b) KNOWNCAUSE(k) | FIXED(f)
+      #+TODO: | CANCELED(c)
+  #+END_EXAMPLE
+
+  After changing one of these lines, use C-c C-c with the cursor still in
+  the line to make the changes known to Org mode.
+
+------------------------------------------------------------------------------
+Progress logging~
+
+  TODO
+
+------------------------------------------------------------------------------
+Priorities~
+
+  TODO
+
+------------------------------------------------------------------------------
+Breaking tasks down into subtasks~
+
+  TODO
+
+------------------------------------------------------------------------------
+Checkboxes~
+
+  TODO
 
 ==============================================================================
 TAGS                                                             *orgguide-tags*
@@ -396,7 +503,7 @@ available in the Agenda buffer are listed in |orgguide-agenda-commands|.
 
 - |orgguide-agenda-files|          Files being searched for agenda information
 - |orgguide-agenda-dispatcher|     Keyboard access to agenda views
-- |orgguide-agenda-builtin-views|  What is available out of the box?
+- |orgguide-agenda-views|          What is available out of the box?
 - |orgguide-agenda-commands|       Remote editing of Org trees
 - |orgguide-agenda-custom|         Defining special searches and views
 
@@ -418,7 +525,7 @@ The agenda dispatcher ~
 
 ------------------------------------------------------------------------------
 The built-in agenda views ~
-                                                 *orgguide-agenda-builtin-views*
+                                                         *orgguide-agenda-views*
 
   The weekly/daily agenda~
     The purpose of the weekly/daily 'agenda' is to act like a page of a
