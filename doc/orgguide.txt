@@ -20,7 +20,7 @@ TABLE OF CONTENTS                                        *orgguide* *orgguide-to
     9.  Dates and Times                  |orgguide-dates|
     10. Capture - Refile - Archive       |orgguide-capture|
     11. Agenda views                     |orgguide-agenda|
-    12. Markup for rich export           |orgguide-richexport|
+    12. Markup for rich export           |orgguide-export|
     13. Publishing                       |orgguide-publishing|
     14. Working with source code         |orgguide-source|
     14. Miscellaneous                    |orgguide-misc|
@@ -465,9 +465,19 @@ Custom agenda views~
   TODO
 
 ==============================================================================
-MARKUP FOR RICH EXPORT                                     *orgguide-richexport*
+EXPORTING                                                      *orgguide-export*
 
-TODO
+NOTE: vim-orgmode relies on emacs and orgmode for emacs for this feature.
+      Both need to be installed.
+
+Org-mode documents can be exported into a variety of other formats:
+ASCII export for inclusion into emails, HTML to publish on the web,
+LaTeX/PDF for beautiful printed documents and DocBook to enter the world
+of many other formats using DocBook tools. There is also export to
+iCalendar format so that planning information can be incorporated into
+desktop calendars.
+
+Simply use the 'export' menu.
 
 ==============================================================================
 PUBLISHING                                                 *orgguide-publishing*
