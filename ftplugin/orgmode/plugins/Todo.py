@@ -306,10 +306,17 @@ class Todo(object):
 		settings.set(u'org_leader', u',')
 		leader = settings.get(u'org_leader', u',')
 
-		self.keybindings.append(Keybinding(u'%sd' % leader, Plug(
+		self.keybindings.append(Keybinding(u'%sct' % leader, Plug(
 			u'OrgTodoToggle',
-			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=True)<CR>')))
+			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=False)<CR>')))
 		self.menu + ActionEntry(u'&TODO/DONE/-', self.keybindings[-1])
+
+		self.keybindings.append(Keybinding(u'%sd' % leader, Plug(
+			u'OrgTodoToggleInteractive',
+			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=True)<CR>')))
+		self.menu + ActionEntry(u'&TODO/DONE/- (interactiv)', self.keybindings[-1])
+
+		# add submenu
 		submenu = self.menu + Submenu(u'Select &keyword')
 
 		self.keybindings.append(Keybinding(u'<S-Right>', Plug(
