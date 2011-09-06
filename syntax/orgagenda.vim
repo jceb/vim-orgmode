@@ -47,13 +47,17 @@ call s:ReadTodoKeywords(g:org_todo_keywords, s:todo_headings)
 unlet! s:todo_headings
 
 " Timestamps
-syn match org_timestamp /^\(<\d\{4\}-\d\{2\}-\d\{2\} \a\a\a>\)/
-syn match org_timestamp /^\(<\d\{4\}-\d\{2\}-\d\{2\} \a\a\a \d\d:\d\d>\)/
-
-syn match org_timestamp /^\(<\d\{4\}-\d\{2\}-\d\{2\} \a\a\a>--<\d\{4\}-\d\{2\}-\d\{2\} \a\a\a>\)/
-syn match org_timestamp /^\(<\d\{4\}-\d\{2\}-\d\{2\} \a\a\a \d\d:\d\d>--<\d\{4\}-\d\{2\}-\d\{2\} \a\a\a \d\d:\d\d>\)/
-syn match org_timestamp /^\(<%%(diary-float.\+>\)/
-
+"<2003-09-16 Tue>
+syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a>\)/
+"<2003-09-16 Tue 12:00>
+syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d>\)/
+"<2003-09-16 Tue 12:00-12:30>
+syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d-\d\d:\d\d>\)/
+"<2003-09-16 Tue>--<2003-09-16 Tue>
+syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a>--<\d\d\d\d-\d\d-\d\d \a\a\a>\)/
+"<2003-09-16 Tue 12:00>--<2003-09-16 Tue 12:00>
+syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d>--<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d>\)/
+syn match org_timestamp /\(<%%(diary-float.\+>\)/
 hi def link org_timestamp PreProc
 
 " special words
