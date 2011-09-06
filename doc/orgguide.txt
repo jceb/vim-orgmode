@@ -179,27 +179,42 @@ TODO
 ==============================================================================
 HYPERLINKS                                                 *orgguide-hyperlinks*
 
-TODO
+NOTE: The 'utl' plugin is used for this feature and needs to be installed.
+      http://www.vim.org/scripts/script.php?script_id=293
+      See |utl|
+
+Like HTML, Org provides links inside a file, external links to other
+files, Usenet articles, emails, and much more.
 
 ------------------------------------------------------------------------------
 Link format~
-   TODO
+  Org will recognize plain URL-like links and activate them as clickable
+  links. The general link format, however, looks like this:
+>
+    [[link][description]]       or alternatively           [[link]]
+<
+  Once a link in the buffer is complete (all brackets present), and you are
+  not in insert mode, or you are editing another line, Org will
+  change the display so that 'description' is displayed instead of
+  '[[link][description]]' and 'link' is displayed instead of '[[link]]'.
+  To edit the invisible ‘link’ part, go into insert mode, or call the
+  'Insert/edit Link' command by pressing 'gil'.
 
 ------------------------------------------------------------------------------
 Internal links~
-   TODO
+  TODO
 
 ------------------------------------------------------------------------------
 External links~
-   TODO
+  TODO
 
 ------------------------------------------------------------------------------
 Handling links~
-   TODO
+  TODO
 
 ------------------------------------------------------------------------------
 Targeted links~
-   TODO
+  TODO
 
 ==============================================================================
 TODO ITEMS                                                  *orgguide-todoitems*
