@@ -576,7 +576,16 @@ Commands in the agenda buffer~
     TODO
 
   View/Go to Org file~
-    <RET>           Go to the original location of the item.
+    <TAB>           Go to the original location of the idem in an alternative
+                    window.
+
+    <RET>           Go to the original location of the item and stay in the
+                    same/the agenda window.
+
+    <S-RET>         Go to the original location of the item in a new split
+                    window.
+
+    TODO
 
   Change display~
     TODO

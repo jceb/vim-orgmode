@@ -48,8 +48,10 @@ class Agenda(object):
 				u'setlocal buftype=nofile',
 				u'setlocal modifiable',
 				u'setlocal nonumber',
-				# call opendoc() on enter
+				# call opendoc() on enter the original todo item
 				u'nnoremap <silent> <buffer> <CR> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc()"<CR>'.encode(u'utf-8'),
+				u'nnoremap <silent> <buffer> <TAB> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc(switch=True)"<CR>'.encode(u'utf-8'),
+				u'nnoremap <silent> <buffer> <S-CR> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc(split=True)"<CR>'.encode(u'utf-8'),
 				# statusline
 				u'setlocal statusline=Org\\ %s' % bufname
 				]
@@ -84,7 +86,7 @@ class Agenda(object):
 		return [ORGMODE.get_document(i) for i in agenda_numbers]
 
 	@classmethod
-	def opendoc(cls):
+	def opendoc(cls, split=False, switch=False):
 		"""
 		If you are in the agenda view jump to the document the item in the
 		current line belongs to.
@@ -92,13 +94,17 @@ class Agenda(object):
 		row, _ = vim.current.window.cursor
 		try:
 			bufnr, destrow = cls.line2doc[row]
-			print bufnr, destrow
 		except:
 			return
 
-		vim.command("buffer %s" % bufnr)
-		tmp = "normal %sgg <CR>" % str(destrow + 1)
-		vim.command(tmp)
+		if split:
+			vim.command("sbuffer %s" % bufnr)
+		elif switch:
+			vim.command('wincmd w')
+			vim.command("buffer %s" % bufnr)
+		else:
+			vim.command("buffer %s" % bufnr)
+		vim.command("normal! %sgg <CR>" % str(destrow + 1))
 
 	@classmethod
 	def list_next_week(cls):
