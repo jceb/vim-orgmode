@@ -1,19 +1,24 @@
 # -*- coding: utf-8 -*-
-
 """
 	OrgDate
 	~~~~~~~~~~~~~~~~~~
 
-	This module contains all date representations that exist in orgmode.
+	This module contains all date/time/timerange representations that exist in
+	orgmode.
 
-	Types a date can be
-	* date
-	* datetime
-	* timerange
+	There exist three different kinds:
 
-	They can be active or inactive.
+	* OrgDate: is similar to a date object in python and it looks like
+	  '2011-09-07 Wed'.
 
-	TODO: implement OrgDateTime class.
+	* OrgDateTime: is similar to a datetime object in python and looks like
+	  '2011-09-07 Wed 10:30'
+
+	* OrgTimeRange: indicates a range of time. It has a start and and end date:
+	  * <2011-09-07 Wed>--<2011-09-08 Fri>
+	  * <2011-09-07 Wed 10:00-13:00>
+
+	All OrgTime oblects can be active or inactive.
 """
 
 import datetime
@@ -92,10 +97,43 @@ class OrgDate(datetime.date):
 		return datetime.date.__new__(cls, year, month, day)
 
 	def __str__(self):
+		"""
+		Return a string representation.
+		"""
 		if self.active:
 			return self.strftime(u'<%Y-%m-%d %a>')
 		else:
 			return self.strftime(u'[%Y-%m-%d %a]')
+
+
+class OrgDateTime(datetime.datetime):
+	"""
+	OrgDateTime represents a normal date like '2011-08-29 Mon'.
+
+	OrgDateTime can be active or inactive.
+
+	NOTE: date is immutable. Thats why there needs to be __new__().
+	See: http://docs.python.org/reference/datamodel.html#object.__new__
+	"""
+
+	def __init__(self, active, year, month, day, hour, mins):
+		self.active = active
+
+	def __new__(cls, active, year, month, day, hour, minute):
+		return datetime.datetime.__new__(cls, year, month, day, hour, minute)
+
+	def __str__(self):
+		"""
+		Return a string representation.
+		"""
+		if self.active:
+			return self.strftime(u'<%Y-%m-%d %a %H:%M>')
+		else:
+			return self.strftime(u'[%Y-%m-%d %a %H:%M]')
+
+class OrgTimeRange(object):
+	def __init__(self, start, end):
+		super(OrgTimeRange, self).__init__()
 
 
 # vim: set noexpandtab:
