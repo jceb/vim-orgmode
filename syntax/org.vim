@@ -206,6 +206,11 @@ syn match org_timestamp_inactive /\(\[%%(diary-float.\+\]\)/
 hi def link org_timestamp PreProc
 hi def link org_timestamp_inactive Comment
 
+" Lists
+let s:listLeader = "^\\s*[\\+*-]\\s*"
+exec "syn match org_list_description /".s:listLeader."\\zs.\\{-}\\ze::/"
+hi def link org_list_description Identifier
+
 " Deadline/Schedule
 syn match org_deadline_scheduled /^\s*\(DEADLINE\|SCHEDULED\):/
 hi def link org_deadline_scheduled PreProc
