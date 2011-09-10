@@ -165,7 +165,42 @@ Sparse trees~
 
 ------------------------------------------------------------------------------
 Plain lists~
-    TODO
+  Within an entry of the outline tree, hand-formatted lists can provide
+  additional structure.
+
+  TODO: They also provide a way to create lists of
+  checkboxes (see section [[#Checkboxes][Checkboxes]]).
+
+  Org supports editing such lists, and the HTML exporter (see section
+  |orgguide-export|) parses and formats them.
+
+  Org knows ordered lists, unordered lists, and description lists.
+
+  -  'Unordered' list items start with ‘-’, ‘+’, or ‘*’ as bullets.
+  -  'Ordered' list items start with ‘1.’ or ‘1)’.
+  -  'Description' list use ‘ :: ’ to separate the 'term' from the
+     description.
+
+  Items belonging to the same list must have the same indentation on the
+  first line. An item ends before the next line that is indented like its
+  bullet/number, or less. A list ends when all items are closed, or before
+  two blank lines. An example:
+>
+      ** Lord of the Rings
+         My favorite scenes are (in this order)
+         1. The attack of the Rohirrim
+         2. Eowyn's fight with the witch king
+            + this was already my favorite scene in the book
+            + I really like Miranda Otto.
+         Important actors in this film are:
+         - Elijah Wood :: He plays Frodo
+         - Sean Austin :: He plays Sam, Frodo's friend.
+<
+
+  The following commands act on items when the cursor is in the first line
+  of an item (the line with the bullet or number).
+  
+  TODO: implement functionality.
 
 ------------------------------------------------------------------------------
 Footnotes~
