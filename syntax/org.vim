@@ -208,7 +208,7 @@ hi def link org_timestamp_inactive Comment
 
 " Lists
 let s:listLeader = "^\\s*[\\+*-]\\s*"
-exec "syn match org_list_description /".s:listLeader."\\zs.\\{-}\\ze::/"
+exec "syn match org_list_description /".s:listLeader."\\zs.\\{-}\\ze ::/"
 hi def link org_list_description Identifier
 
 " Deadline/Schedule
