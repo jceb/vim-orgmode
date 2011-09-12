@@ -82,21 +82,25 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 		tmp = ["* This heading has no date and should be later than the rest"]
 		h_no_date = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
 
-		self.assertLess(h1, h2)
-		self.assertLess(h1, h_no_date)
-		self.assertLess(h2, h_no_date)
+		# test less
+		self.assertTrue(h1 < h2)
+		self.assertTrue(h1 < h_no_date)
+		self.assertTrue(h2 < h_no_date)
 
-		self.assertLessEqual(h1, h2)
-		self.assertLessEqual(h1, h_no_date)
-		self.assertLessEqual(h2, h_no_date)
+		# test less quals
+		self.assertTrue(h1 <= h2)
+		self.assertTrue(h1 <= h_no_date)
+		self.assertTrue(h2 <= h_no_date)
 
-		self.assertGreater(h2, h1)
-		self.assertGreater(h_no_date, h1)
-		self.assertGreater(h_no_date, h2)
+		# test greater than
+		self.assertTrue(h2 > h1)
+		self.assertTrue(h_no_date > h1)
+		self.assertTrue(h_no_date > h2)
 
-		self.assertGreaterEqual(h2, h1)
-		self.assertGreaterEqual(h_no_date, h1)
-		self.assertGreaterEqual(h_no_date, h2)
+		# test greater equals
+		self.assertTrue(h2 >= h1)
+		self.assertTrue(h_no_date >= h1)
+		self.assertTrue(h_no_date >= h2)
 
 		# test sorting
 		self.assertEqual([h1, h2], sorted([h2, h1]))

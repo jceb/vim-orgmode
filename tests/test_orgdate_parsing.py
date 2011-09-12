@@ -24,7 +24,7 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		get_orgdate should recognice all orgdates in a given text
 		"""
 		result = get_orgdate(self.text)
-		self.assertIsNotNone(result)
+		self.assertNotEqual(result, None)
 		self.assertTrue(isinstance(result, OrgDate))
 		self.assertTrue(isinstance(get_orgdate("<2011-08-30 Tue>"), OrgDate))
 		self.assertEqual(get_orgdate("<2011-08-30 Tue>").year, 2011)
@@ -40,7 +40,7 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		get_orgdate should recognice all inactive orgdates in a given text
 		"""
 		result = get_orgdate(self.textinactive)
-		self.assertIsNotNone(result)
+		self.assertNotEqual(result, None)
 		self.assertTrue(isinstance(result, OrgDate))
 		self.assertTrue(isinstance(get_orgdate("[2011-08-30 Tue]"), OrgDate))
 		self.assertEqual(get_orgdate("[2011-08-30 Tue]").year, 2011)
@@ -57,7 +57,7 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		"""
 		datelist = ["<2011-08-29 Mon>"]
 		result = get_orgdate(datelist)
-		self.assertIsNotNone(result)
+		self.assertNotEquals(result, None)
 		self.assertTrue(isinstance(result, OrgDate))
 		self.assertEqual(result.year, 2011)
 		self.assertEqual(result.month, 8)
@@ -66,7 +66,7 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		datelist = ["<2011-08-29 Mon>",
 				"<2012-03-30 Fri>"]
 		result = get_orgdate(datelist)
-		self.assertIsNotNone(result)
+		self.assertNotEquals(result, None)
 		self.assertTrue(isinstance(result, OrgDate))
 		self.assertEqual(result.year, 2011)
 		self.assertEqual(result.month, 8)
@@ -75,7 +75,7 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		datelist = ["some <2011-08-29 Mon>text",
 				"<2012-03-30 Fri> is here"]
 		result = get_orgdate(datelist)
-		self.assertIsNotNone(result)
+		self.assertNotEquals(result, None)
 		self.assertTrue(isinstance(result, OrgDate))
 		self.assertEqual(result.year, 2011)
 		self.assertEqual(result.month, 8)
@@ -85,25 +85,25 @@ class OrgDateParsingTestCase(unittest.TestCase):
 				"some <2011-08-29 Mon>text",
 				"<2012-03-30 Fri> is here"]
 		result = get_orgdate(datelist)
-		self.assertIsNotNone(result)
+		self.assertNotEquals(result, None)
 		self.assertTrue(isinstance(result, OrgDate))
 		self.assertEqual(result.year, 2011)
 		self.assertEqual(result.month, 8)
 		self.assertEqual(result.day, 29)
 
 	def test_get_orgdate_parsing_with_invalid_input(self):
-		self.assertIsNone(get_orgdate("NONSENSE"))
-		self.assertIsNone(get_orgdate("No D<2011- Date 08-29 Mon>"))
-		self.assertIsNone(get_orgdate("2011-08-r9 Mon]"))
-		self.assertIsNone(get_orgdate("<2011-08-29 Mon"))
-		self.assertIsNone(get_orgdate("<2011-08-29 Mon]"))
-		self.assertIsNone(get_orgdate("2011-08-29 Mon"))
-		self.assertIsNone(get_orgdate("2011-08-29"))
-		self.assertIsNone(get_orgdate("2011-08-29 mon"))
-		self.assertIsNone(get_orgdate("<2011-08-29 mon>"))
+		self.assertEquals(get_orgdate("NONSENSE"), None)
+		self.assertEquals(get_orgdate("No D<2011- Date 08-29 Mon>"), None)
+		self.assertEquals(get_orgdate("2011-08-r9 Mon]"), None)
+		self.assertEquals(get_orgdate("<2011-08-29 Mon"), None)
+		self.assertEquals(get_orgdate("<2011-08-29 Mon]"), None)
+		self.assertEquals(get_orgdate("2011-08-29 Mon"), None)
+		self.assertEquals(get_orgdate("2011-08-29"), None)
+		self.assertEquals(get_orgdate("2011-08-29 mon"), None)
+		self.assertEquals(get_orgdate("<2011-08-29 mon>"), None)
 
-		self.assertIsNone(get_orgdate("wrong date embedded <2011-08-29 mon>"))
-		self.assertIsNone(get_orgdate("wrong date <2011-08-29 mon>embedded "))
+		self.assertEquals(get_orgdate("wrong date embedded <2011-08-29 mon>"), None)
+		self.assertEquals(get_orgdate("wrong date <2011-08-29 mon>embedded "), None)
 
 	def test_get_orgdate_parsing_with_invalid_dates(self):
 		"""
@@ -111,10 +111,10 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		should not be parsed
 		"""
 		datestr = "<2011-14-30 Tue>"
-		self.assertIsNone(get_orgdate(datestr))
+		self.assertEqual(get_orgdate(datestr), None)
 
 		datestr = "<2012-03-40 Tue>"
-		self.assertIsNone(get_orgdate(datestr))
+		self.assertEqual(get_orgdate(datestr), None)
 
 
 def suite():
