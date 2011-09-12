@@ -8,6 +8,7 @@ sys.path.append(u'../ftplugin')
 from orgmode.liborgmode.orgdate import get_orgdate
 from orgmode.liborgmode.orgdate import OrgDate
 from orgmode.liborgmode.orgdate import OrgDateTime
+from orgmode.liborgmode.orgdate import OrgTimeRange
 
 
 class OrgDateParsingTestCase(unittest.TestCase):
@@ -53,6 +54,33 @@ class OrgDateParsingTestCase(unittest.TestCase):
 
 		result = get_orgdate("some datetime <2011-09-12 Mon 10:20> stuff")
 		self.assertTrue(isinstance(result, OrgDateTime))
+
+	def test_get_orgtimerange_parsing_active(self):
+		"""
+		get_orgdate should recognice all orgtimeranges in a given text
+		"""
+		daterangestr = "<2011-09-12 Mon>--<2011-09-13 Tue>"
+		result = get_orgdate(daterangestr)
+		self.assertNotEqual(result, None)
+		self.assertTrue(isinstance(result, OrgTimeRange))
+		self.assertEqual(str(result), daterangestr)
+		self.assertTrue(result.active)
+
+		daterangestr = "<2011-09-12 Mon 10:20>--<2011-09-13 Tue 13:20>"
+		result = get_orgdate(daterangestr)
+		self.assertNotEqual(result, None)
+		print type(result)
+		self.assertTrue(isinstance(result, OrgTimeRange))
+		self.assertEqual(str(result), daterangestr)
+		self.assertTrue(result.active)
+
+		daterangestr = "<2011-09-12 Mon 10:20--13:20>"
+		result = get_orgdate(daterangestr)
+		self.assertNotEqual(result, None)
+		print type(result)
+		self.assertTrue(isinstance(result, OrgTimeRange))
+		self.assertEqual(str(result), daterangestr)
+		self.assertTrue(result.active)
 
 	def test_get_orgdate_parsing_inactive(self):
 		"""

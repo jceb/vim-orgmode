@@ -24,14 +24,27 @@ u"""
 import datetime
 import re
 
-
+# <2011-09-12 Mon>
 _DATE_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>")
+# [2011-09-12 Mon]
 _DATE_PASSIVE_REGEX = re.compile(r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w\]")
 
+# <2011-09-12 Mon 10:20>
 _DATETIME_REGEX = re.compile(
 		r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)>")
+# [2011-09-12 Mon 10:20]
 _DATETIME_PASSIVE_REGEX = re.compile(
 		r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)\]")
+
+# <2011-09-12 Mon>--<2011-09-13 Tue>
+_DATERANGE_REGEX = re.compile(
+		r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>--<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>")
+# <2011-09-12 Mon 10:00>--<2011-09-12 Mon 11:00>
+_DATETIMERANGE_REGEX = re.compile(
+		r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)>--<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)>")
+# <2011-09-12 Mon 10:00--12:00>
+_DATETIMERANGE_SAME_DAY_REGEX = re.compile(
+		r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)--(\d\d):(\d\d)>")
 
 
 def get_orgdate(data):
@@ -66,6 +79,43 @@ def _text2orgdate(string):
 	Return an OrgDate if data contains a string representation of an OrgDate;
 	otherwise return None.
 	"""
+	# handle active datetime with same day
+	result = _DATETIMERANGE_SAME_DAY_REGEX.search(string)
+	if result:
+		print 'datetimerange recognized'
+		try:
+			(syear, smonth, sday, shour, smin, ehour, emin) = \
+					[int(m) for m in result.groups()]
+			start = datetime.datetime(syear, smonth, sday, shour, smin)
+			end = datetime.datetime(syear, smonth, sday, ehour, emin)
+			return OrgTimeRange(True, start, end)
+		except Exception:
+			return None
+
+	# handle active datetime
+	result = _DATETIMERANGE_REGEX.search(string)
+	if result:
+		print 'datetimerange recognized'
+		try:
+			(syear, smonth, sday, shour, smin,
+					eyear, emonth, eday, ehour, emin) = [int(m) for m in result.groups()]
+			start = datetime.datetime(syear, smonth, sday, shour, smin)
+			end = datetime.datetime(eyear, emonth, eday, ehour, emin)
+			return OrgTimeRange(True, start, end)
+		except Exception:
+			return None
+
+	# handle active datetime
+	result = _DATERANGE_REGEX.search(string)
+	if result:
+		try:
+			syear, smonth, sday, eyear, emonth, ehour = [int(m) for m in result.groups()]
+			start = datetime.date(syear, smonth, sday)
+			end = datetime.date(eyear, emonth, ehour)
+			return OrgTimeRange(True, start, end)
+		except Exception:
+			return None
+
 	# handle active datetime
 	result = _DATETIME_REGEX.search(string)
 	if result:
