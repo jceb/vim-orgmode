@@ -6,6 +6,7 @@ sys.path.append(u'../ftplugin')
 
 from orgmode.liborgmode.headings import Heading
 from orgmode.liborgmode.orgdate import OrgDate
+from orgmode.liborgmode.orgdate import OrgDateTime
 
 
 class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
@@ -18,7 +19,8 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 		tmp = ["* This heading is later <2011-08-25 Thu>"]
 		self.h2 = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
 		tmp = ["* This heading has no date and should be later than the rest"]
-		self.h_no_date = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
+		self.h_no_date = Heading.parse_heading_from_data(tmp,
+				self.allowed_todo_states)
 
 	def test_heading_parsing_no_date(self):
 		"""""
@@ -44,33 +46,36 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 		"""""
 		'text' does contain valid dates.
 		"""
+		# orgdate
 		text = ["* TODO This is a test <2011-08-24 Wed> :hallo:"]
 		odate = OrgDate(True, 2011, 8, 24)
 		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
 		self.assertEqual(odate, h.active_date)
 
-		#TODO: orgdatetime is not implemented yet
-		#text = ["* TODO This is a test <2011-08-25 Thu 10:10> :hallo:"]
-		#odate = OrgDate(True, 2011, 8, 25, 10, 10)
-		#h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
-		#self.assertEqual(odate, h.active_date)
+		# orgdatetime
+		text = ["* TODO This is a test <2011-08-25 Thu 10:10> :hallo:"]
+		odate = OrgDateTime(True, 2011, 8, 25, 10, 10)
+		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
+		self.assertEqual(odate, h.active_date)
 
 	def test_heading_parsing_with_date_and_body(self):
 		"""""
 		'text' contains valid dates (in the body).
 		"""
-		#TODO: orgdatetime is not implemented yet
-		#text = ["* TODO This is a test <2011-08-25 Thu 10:10> :hallo:",
-				#"some body text",
-				#"some body text"]
-		#h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
-		#self.assertEqual("2011-08-25-10-10", h.active_date)
+		# orgdatetime
+		text = ["* TODO This is a test <2011-08-25 Thu 10:10> :hallo:",
+				"some body text",
+				"some body text"]
+		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
+		self.assertTrue(isinstance(h.active_date, OrgDateTime))
+		self.assertEqual("<2011-08-25 Thu 10:10>", str(h.active_date))
 
-		#text = ["* TODO This is a test  :hallo:",
-				#"some body text",
-				#"some body text<2011-08-25 Thu 10:10>"]
-		#h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
-		#self.assertEqual("2011-08-25-10-10", h.active_date)
+		text = ["* TODO This is a test  :hallo:",
+				"some body text",
+				"some body text<2011-08-25 Thu 10:10>"]
+		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
+		self.assertTrue(isinstance(h.active_date, OrgDateTime))
+		self.assertEqual("<2011-08-25 Thu 10:10>", str(h.active_date))
 
 		text = ["* TODO This is a test  :hallo:",
 				"some body text <2011-08-24 Wed>",
@@ -109,6 +114,7 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 				sorted([self.h_no_date, self.h1]))
 		self.assertEqual([self.h1, self.h2, self.h_no_date],
 				sorted([self.h2, self.h_no_date, self.h1]))
+
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(

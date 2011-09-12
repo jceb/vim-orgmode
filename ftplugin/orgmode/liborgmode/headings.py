@@ -276,7 +276,11 @@ class Heading(object):
 			new_heading._document = document
 
 		# try to find active dates
-		new_heading.active_date = get_orgdate(data)
+		tmp_orgdate = get_orgdate(data)
+		if tmp_orgdate and tmp_orgdate.active:
+			new_heading.active_date = tmp_orgdate
+		else:
+			new_heading.active_date = None
 
 		return new_heading
 
