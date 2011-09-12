@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+u"""
 	OrgDate
 	~~~~~~~~~~~~~~~~~~
 
@@ -28,12 +28,14 @@ import re
 _DATE_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>")
 _DATE_PASSIVE_REGEX = re.compile(r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w\]")
 
-_DATETIME_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)>")
-_DATETIME_PASSIVE_REGEX = re.compile(r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)\]")
+_DATETIME_REGEX = re.compile(
+		r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)>")
+_DATETIME_PASSIVE_REGEX = re.compile(
+		r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)\]")
 
 
 def get_orgdate(data):
-	"""
+	u"""
 	Parse the given data (can be a string or list). Return an OrgDate if data
 	contains a string representation of an OrgDate; otherwise return None.
 
@@ -48,7 +50,7 @@ def get_orgdate(data):
 
 
 def _findfirst(f, seq):
-	"""
+	u"""
 	Return first item in sequence seq where f(item) == True.
 
 	TODO: this is a general help function and it should be moved somewhere
@@ -59,7 +61,7 @@ def _findfirst(f, seq):
 
 
 def _text2orgdate(string):
-	"""
+	u"""
 	Transform the given string into an OrgDate.
 	Return an OrgDate if data contains a string representation of an OrgDate;
 	otherwise return None.
@@ -102,7 +104,7 @@ def _text2orgdate(string):
 
 
 class OrgDate(datetime.date):
-	"""
+	u"""
 	OrgDate represents a normal date like '2011-08-29 Mon'.
 
 	OrgDates can be active or inactive.
@@ -118,7 +120,7 @@ class OrgDate(datetime.date):
 		return datetime.date.__new__(cls, year, month, day)
 
 	def __str__(self):
-		"""
+		u"""
 		Return a string representation.
 		"""
 		if self.active:
@@ -128,7 +130,7 @@ class OrgDate(datetime.date):
 
 
 class OrgDateTime(datetime.datetime):
-	"""
+	u"""
 	OrgDateTime represents a normal date like '2011-08-29 Mon'.
 
 	OrgDateTime can be active or inactive.
@@ -144,7 +146,7 @@ class OrgDateTime(datetime.datetime):
 		return datetime.datetime.__new__(cls, year, month, day, hour, minute)
 
 	def __str__(self):
-		"""
+		u"""
 		Return a string representation.
 		"""
 		if self.active:
@@ -154,8 +156,65 @@ class OrgDateTime(datetime.datetime):
 
 
 class OrgTimeRange(object):
-	def __init__(self, start, end):
-		super(OrgTimeRange, self).__init__()
+	u"""
+	OrgTimeRange objects have a start and an end. Start and ent can be date
+	or datetime. Start and end have to be the same type.
 
+	OrgTimeRange objects look like this:
+	* <2011-09-07 Wed>--<2011-09-08 Fri>
+	* <2011-09-07 Wed 20:00>--<2011-09-08 Fri 10:00>
+	* <2011-09-07 Wed 10:00-13:00>
+	"""
+
+	def __init__(self, active, start, end):
+		u"""
+		stat and end must be datetime.date or datetime.datetime (both of the
+		same type).
+		"""
+		super(OrgTimeRange, self).__init__()
+		self.start = start
+		self.end = end
+		self.active = active
+
+	def __str__(self):
+		u"""
+		Return a string representation.
+		"""
+		# active
+		if self.active:
+			# datetime
+			if isinstance(self.start, datetime.datetime):
+				# if start and end are on same the day
+				if self.start.year == self.end.year and\
+						self.start.month == self.end.month and\
+						self.start.day == self.end.day:
+					return "<%s--%s>" % (
+							self.start.strftime(u'%Y-%m-%d %a %H:%M'),
+							self.end.strftime(u'%H:%M'))
+				else:
+					return "<%s>--<%s>" % (
+							self.start.strftime(u'%Y-%m-%d %a %H:%M'),
+							self.end.strftime(u'%Y-%m-%d %a %H:%M'))
+			# date
+			if isinstance(self.start, datetime.date):
+				return "<%s>--<%s>" % (self.start.strftime(u'%Y-%m-%d %a'),
+						self.end.strftime(u'%Y-%m-%d %a'))
+		# inactive
+		else:
+			if isinstance(self.start, datetime.datetime):
+				# if start and end are on same the day
+				if self.start.year == self.end.year and\
+						self.start.month == self.end.month and\
+						self.start.day == self.end.day:
+					return "[%s--%s]" % (
+							self.start.strftime(u'%Y-%m-%d %a %H:%M'),
+							self.end.strftime(u'%H:%M'))
+				else:
+					return "[%s]--[%s]" % (
+							self.start.strftime(u'%Y-%m-%d %a %H:%M'),
+							self.end.strftime(u'%Y-%m-%d %a %H:%M'))
+			if isinstance(self.start, datetime.date):
+				return "[%s]--[%s]" % (self.start.strftime(u'%Y-%m-%d %a'),
+						self.end.strftime(u'%Y-%m-%d %a'))
 
 # vim: set noexpandtab:

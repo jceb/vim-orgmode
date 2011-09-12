@@ -4,11 +4,9 @@
 import sys
 import unittest
 from datetime import date
-from datetime import datetime
 
 sys.path.append(u'../ftplugin')
 from orgmode.liborgmode.orgdate import OrgDate
-from orgmode.liborgmode.orgdate import OrgDateTime
 
 
 class OrgDateTestCase(unittest.TestCase):

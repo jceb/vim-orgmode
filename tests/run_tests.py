@@ -7,6 +7,7 @@ import test_libagendafilter
 import test_libheading
 import test_liborgdate
 import test_liborgdatetime
+import test_liborgtimerange
 import test_liborgdate_parsing
 
 import test_edit_structure
@@ -30,6 +31,7 @@ if __name__ == '__main__':
 	tests.addTests(test_libheading.suite())
 	tests.addTests(test_liborgdate.suite())
 	tests.addTests(test_liborgdatetime.suite())
+	tests.addTests(test_liborgtimerange.suite())
 	tests.addTests(test_liborgdate_parsing.suite())
 
 	# plugins
