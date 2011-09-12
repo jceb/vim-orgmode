@@ -5,7 +5,9 @@ import sys
 import unittest
 
 sys.path.append(u'../ftplugin')
-from orgmode.liborgmode.orgdate import get_orgdate, OrgDate
+from orgmode.liborgmode.orgdate import get_orgdate
+from orgmode.liborgmode.orgdate import OrgDate
+from orgmode.liborgmode.orgdate import OrgDateTime
 
 
 class OrgDateParsingTestCase(unittest.TestCase):
@@ -35,6 +37,23 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		datestr = "This date <2011-08-30 Tue> is embedded"
 		self.assertTrue(isinstance(get_orgdate(datestr), OrgDate))
 
+	def test_get_orgdatetime_parsing_active(self):
+		"""
+		get_orgdate should recognice all orgdatetimess in a given text
+		"""
+		result = get_orgdate("<2011-09-12 Mon 10:20>")
+		self.assertNotEqual(result, None)
+		self.assertTrue(isinstance(result, OrgDateTime))
+		self.assertEqual(result.year, 2011)
+		self.assertEqual(result.month, 9)
+		self.assertEqual(result.day, 12)
+		self.assertEqual(result.hour, 10)
+		self.assertEqual(result.minute, 20)
+		self.assertTrue(result.active)
+
+		result = get_orgdate("some datetime <2011-09-12 Mon 10:20> stuff")
+		self.assertTrue(isinstance(result, OrgDateTime))
+
 	def test_get_orgdate_parsing_inactive(self):
 		"""
 		get_orgdate should recognice all inactive orgdates in a given text
@@ -50,6 +69,23 @@ class OrgDateParsingTestCase(unittest.TestCase):
 
 		datestr = "This date [2011-08-30 Tue] is embedded"
 		self.assertTrue(isinstance(get_orgdate(datestr), OrgDate))
+
+	def test_get_orgdatetime_parsing_passive(self):
+		"""
+		get_orgdate should recognice all orgdatetimess in a given text
+		"""
+		result = get_orgdate("[2011-09-12 Mon 10:20]")
+		self.assertNotEqual(result, None)
+		self.assertTrue(isinstance(result, OrgDateTime))
+		self.assertEqual(result.year, 2011)
+		self.assertEqual(result.month, 9)
+		self.assertEqual(result.day, 12)
+		self.assertEqual(result.hour, 10)
+		self.assertEqual(result.minute, 20)
+		self.assertFalse(result.active)
+
+		result = get_orgdate("some datetime [2011-09-12 Mon 10:20] stuff")
+		self.assertTrue(isinstance(result, OrgDateTime))
 
 	def test_get_orgdate_parsing_with_list_of_texts(self):
 		"""
@@ -91,6 +127,18 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		self.assertEqual(result.month, 8)
 		self.assertEqual(result.day, 29)
 
+		datelist = ["here is no date",
+				"some <2011-08-29 Mon 20:10> text",
+				"<2012-03-30 Fri> is here"]
+		result = get_orgdate(datelist)
+		self.assertNotEquals(result, None)
+		self.assertTrue(isinstance(result, OrgDateTime))
+		self.assertEqual(result.year, 2011)
+		self.assertEqual(result.month, 8)
+		self.assertEqual(result.day, 29)
+		self.assertEqual(result.hour, 20)
+		self.assertEqual(result.minute, 10)
+
 	def test_get_orgdate_parsing_with_invalid_input(self):
 		self.assertEquals(get_orgdate("NONSENSE"), None)
 		self.assertEquals(get_orgdate("No D<2011- Date 08-29 Mon>"), None)
@@ -114,6 +162,9 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		self.assertEqual(get_orgdate(datestr), None)
 
 		datestr = "<2012-03-40 Tue>"
+		self.assertEqual(get_orgdate(datestr), None)
+
+		datestr = "<2012-03-40 Tue 24:70>"
 		self.assertEqual(get_orgdate(datestr), None)
 
 

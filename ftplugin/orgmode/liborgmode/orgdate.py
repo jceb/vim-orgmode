@@ -28,6 +28,9 @@ import re
 _DATE_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>")
 _DATE_PASSIVE_REGEX = re.compile(r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w\]")
 
+_DATETIME_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)>")
+_DATETIME_PASSIVE_REGEX = re.compile(r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)\]")
+
 
 def get_orgdate(data):
 	"""
@@ -61,7 +64,25 @@ def _text2orgdate(string):
 	Return an OrgDate if data contains a string representation of an OrgDate;
 	otherwise return None.
 	"""
-	# datetime handling
+	# handle active datetime
+	result = _DATETIME_REGEX.search(string)
+	if result:
+		try:
+			year, month, day, hour, minutes = [int(m) for m in result.groups()]
+			return OrgDateTime(True, year, month, day, hour, minutes)
+		except Exception:
+			return None
+
+	# handle passive datetime
+	result = _DATETIME_PASSIVE_REGEX.search(string)
+	if result:
+		try:
+			year, month, day, hour, minutes = [int(m) for m in result.groups()]
+			return OrgDateTime(False, year, month, day, hour, minutes)
+		except Exception:
+			return None
+
+	# handle passive dates
 	result = _DATE_PASSIVE_REGEX.search(string)
 	if result:
 		try:
@@ -70,7 +91,7 @@ def _text2orgdate(string):
 		except Exception:
 			return None
 
-	# date handling
+	# handle active dates
 	result = _DATE_REGEX.search(string)
 	if result:
 		try:
@@ -130,6 +151,7 @@ class OrgDateTime(datetime.datetime):
 			return self.strftime(u'<%Y-%m-%d %a %H:%M>')
 		else:
 			return self.strftime(u'[%Y-%m-%d %a %H:%M]')
+
 
 class OrgTimeRange(object):
 	def __init__(self, start, end):
