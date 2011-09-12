@@ -44,7 +44,7 @@ _DATETIMERANGE_REGEX = re.compile(
 		r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)>--<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)>")
 # <2011-09-12 Mon 10:00--12:00>
 _DATETIMERANGE_SAME_DAY_REGEX = re.compile(
-		r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)--(\d\d):(\d\d)>")
+		r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)-(\d\d):(\d\d)>")
 
 
 def get_orgdate(data):
@@ -82,7 +82,6 @@ def _text2orgdate(string):
 	# handle active datetime with same day
 	result = _DATETIMERANGE_SAME_DAY_REGEX.search(string)
 	if result:
-		print 'datetimerange recognized'
 		try:
 			(syear, smonth, sday, shour, smin, ehour, emin) = \
 					[int(m) for m in result.groups()]
@@ -95,7 +94,6 @@ def _text2orgdate(string):
 	# handle active datetime
 	result = _DATETIMERANGE_REGEX.search(string)
 	if result:
-		print 'datetimerange recognized'
 		try:
 			(syear, smonth, sday, shour, smin,
 					eyear, emonth, eday, ehour, emin) = [int(m) for m in result.groups()]
@@ -238,7 +236,7 @@ class OrgTimeRange(object):
 				if self.start.year == self.end.year and\
 						self.start.month == self.end.month and\
 						self.start.day == self.end.day:
-					return "<%s--%s>" % (
+					return "<%s-%s>" % (
 							self.start.strftime(u'%Y-%m-%d %a %H:%M'),
 							self.end.strftime(u'%H:%M'))
 				else:
@@ -256,7 +254,7 @@ class OrgTimeRange(object):
 				if self.start.year == self.end.year and\
 						self.start.month == self.end.month and\
 						self.start.day == self.end.day:
-					return "[%s--%s]" % (
+					return "[%s-%s]" % (
 							self.start.strftime(u'%Y-%m-%d %a %H:%M'),
 							self.end.strftime(u'%H:%M'))
 				else:

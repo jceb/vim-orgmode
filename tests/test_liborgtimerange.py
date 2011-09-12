@@ -8,8 +8,6 @@ from datetime import datetime
 
 sys.path.append(u'../ftplugin')
 from orgmode.liborgmode.orgdate import OrgTimeRange
-from orgmode.liborgmode.orgdate import OrgDate
-from orgmode.liborgmode.orgdate import OrgDateTime
 
 
 class OrgTimeRangeTestCase(unittest.TestCase):
@@ -59,7 +57,7 @@ class OrgTimeRangeTestCase(unittest.TestCase):
 		start = datetime(2011, 9 , 12, 20, 00)
 		end = datetime(2011, 9 , 12, 21, 00)
 		timerange = OrgTimeRange(True, start, end)
-		expected = "<2011-09-12 Mon 20:00--21:00>"
+		expected = "<2011-09-12 Mon 20:00-21:00>"
 		self.assertEqual(str(timerange), expected)
 
 	def test_OrdDate_str_inactive(self):
@@ -79,7 +77,7 @@ class OrgTimeRangeTestCase(unittest.TestCase):
 		start = datetime(2011, 9 , 12, 20, 00)
 		end = datetime(2011, 9 , 12, 21, 00)
 		timerange = OrgTimeRange(False, start, end)
-		expected = "[2011-09-12 Mon 20:00--21:00]"
+		expected = "[2011-09-12 Mon 20:00-21:00]"
 		self.assertEqual(str(timerange), expected)
 
 def suite():
