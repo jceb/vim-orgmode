@@ -17,8 +17,8 @@ from orgmode.liborgmode.agendafilter import is_within_week_and_active_todo
 from orgmode.liborgmode.agendafilter import filter_items
 
 
-class AgendaTestCase(unittest.TestCase):
-	u"""Tests all the functionality of the Agenda module."""
+class AgendaFilterTestCase(unittest.TestCase):
+	u"""Tests all the functionality of the Agenda filter module."""
 
 	def setUp(self):
 		self.text = [ i.encode(u'utf-8') for i in u"""
@@ -119,7 +119,7 @@ class AgendaTestCase(unittest.TestCase):
 
 
 def suite():
-	return unittest.TestLoader().loadTestsFromTestCase(AgendaTestCase)
+	return unittest.TestLoader().loadTestsFromTestCase(AgendaFilterTestCase)
 
 
 # vim: set noexpandtab:
