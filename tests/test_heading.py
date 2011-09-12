@@ -13,6 +13,13 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 	def setUp(self):
 		self.allowed_todo_states = ["TODO"]
 
+		tmp = ["* This heading is earlier  <2011-08-24 Wed>"]
+		self.h1 = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
+		tmp = ["* This heading is later <2011-08-25 Thu>"]
+		self.h2 = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
+		tmp = ["* This heading has no date and should be later than the rest"]
+		self.h_no_date = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
+
 	def test_heading_parsing_no_date(self):
 		"""""
 		'text' doesn't contain any valid date.
@@ -72,42 +79,36 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 		odate = OrgDate(True, 2011, 8, 24)
 		self.assertEqual(odate, h.active_date)
 
+	def test_less_than_for_dates_in_heading(self):
+		self.assertTrue(self.h1 < self.h2)
+		self.assertTrue(self.h1 < self.h_no_date)
+		self.assertTrue(self.h2 < self.h_no_date)
+
+	def test_less_equal_for_dates_in_heading(self):
+		self.assertTrue(self.h1 <= self.h2)
+		self.assertTrue(self.h1 <= self.h_no_date)
+		self.assertTrue(self.h2 <= self.h_no_date)
+
+	def test_greate_than_for_dates_in_heading(self):
+		self.assertTrue(self.h2 > self.h1)
+		self.assertTrue(self.h_no_date > self.h1)
+		self.assertTrue(self.h_no_date > self.h2)
+
+	def test_greate_equal_for_dates_in_heading(self):
+		self.assertTrue(self.h2 >= self.h1)
+		self.assertTrue(self.h_no_date >= self.h1)
+		self.assertTrue(self.h_no_date >= self.h2)
+
 	def test_sorting_of_headings(self):
 		"""Headings should be sortable."""
-		# setup some fixtures
-		tmp = ["* This heading is earlier  <2011-08-24 Wed>"]
-		h1 = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
-		tmp = ["* This heading is later <2011-08-25 Thu>"]
-		h2 = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
-		tmp = ["* This heading has no date and should be later than the rest"]
-		h_no_date = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
-
-		# test less
-		self.assertTrue(h1 < h2)
-		self.assertTrue(h1 < h_no_date)
-		self.assertTrue(h2 < h_no_date)
-
-		# test less quals
-		self.assertTrue(h1 <= h2)
-		self.assertTrue(h1 <= h_no_date)
-		self.assertTrue(h2 <= h_no_date)
-
-		# test greater than
-		self.assertTrue(h2 > h1)
-		self.assertTrue(h_no_date > h1)
-		self.assertTrue(h_no_date > h2)
-
-		# test greater equals
-		self.assertTrue(h2 >= h1)
-		self.assertTrue(h_no_date >= h1)
-		self.assertTrue(h_no_date >= h2)
-
-		# test sorting
-		self.assertEqual([h1, h2], sorted([h2, h1]))
-		self.assertEqual([h1, h2], sorted([h1, h2]))
-		self.assertEqual([h1, h_no_date], sorted([h1, h_no_date]))
-		self.assertEqual([h1, h_no_date], sorted([h_no_date, h1]))
-		self.assertEqual([h1, h2, h_no_date], sorted([h2, h_no_date, h1]))
+		self.assertEqual([self.h1, self.h2], sorted([self.h2, self.h1]))
+		self.assertEqual([self.h1, self.h2], sorted([self.h1, self.h2]))
+		self.assertEqual([self.h1, self.h_no_date],
+				sorted([self.h1, self.h_no_date]))
+		self.assertEqual([self.h1, self.h_no_date],
+				sorted([self.h_no_date, self.h1]))
+		self.assertEqual([self.h1, self.h2, self.h_no_date],
+				sorted([self.h2, self.h_no_date, self.h1]))
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(
