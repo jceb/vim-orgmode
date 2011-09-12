@@ -16,8 +16,16 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 
 		tmp = ["* This heading is earlier  <2011-08-24 Wed>"]
 		self.h1 = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
+
 		tmp = ["* This heading is later <2011-08-25 Thu>"]
 		self.h2 = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
+
+		tmp = ["* This heading is later <2011-08-25 Thu 10:20>"]
+		self.h2_datetime = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
+
+		tmp = ["* This heading is later <2011-08-26 Fri 10:20>"]
+		self.h3 = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
+
 		tmp = ["* This heading has no date and should be later than the rest"]
 		self.h_no_date = Heading.parse_heading_from_data(tmp,
 				self.allowed_todo_states)
@@ -86,34 +94,59 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 
 	def test_less_than_for_dates_in_heading(self):
 		self.assertTrue(self.h1 < self.h2)
+		self.assertTrue(self.h1 < self.h3)
 		self.assertTrue(self.h1 < self.h_no_date)
 		self.assertTrue(self.h2 < self.h_no_date)
+		self.assertTrue(self.h2 < self.h3)
+		self.assertTrue(self.h3 < self.h_no_date)
+
+		self.assertFalse(self.h2 < self.h1)
+		self.assertFalse(self.h3 < self.h2)
 
 	def test_less_equal_for_dates_in_heading(self):
 		self.assertTrue(self.h1 <= self.h2)
 		self.assertTrue(self.h1 <= self.h_no_date)
 		self.assertTrue(self.h2 <= self.h_no_date)
+		self.assertTrue(self.h2 <= self.h2_datetime)
+		self.assertTrue(self.h2 <= self.h3)
 
 	def test_greate_than_for_dates_in_heading(self):
 		self.assertTrue(self.h2 > self.h1)
 		self.assertTrue(self.h_no_date > self.h1)
 		self.assertTrue(self.h_no_date > self.h2)
 
+		self.assertFalse(self.h2 > self.h2_datetime)
+
 	def test_greate_equal_for_dates_in_heading(self):
 		self.assertTrue(self.h2 >= self.h1)
 		self.assertTrue(self.h_no_date >= self.h1)
 		self.assertTrue(self.h_no_date >= self.h2)
+		self.assertTrue(self.h2 >= self.h2_datetime)
 
 	def test_sorting_of_headings(self):
 		"""Headings should be sortable."""
 		self.assertEqual([self.h1, self.h2], sorted([self.h2, self.h1]))
+
+		self.assertEqual([self.h1, self.h2_datetime],
+				sorted([self.h2_datetime, self.h1]))
+
+		self.assertEqual([self.h2_datetime, self.h2],
+				sorted([self.h2_datetime, self.h2]))
+
 		self.assertEqual([self.h1, self.h2], sorted([self.h1, self.h2]))
+
 		self.assertEqual([self.h1, self.h_no_date],
 				sorted([self.h1, self.h_no_date]))
+
 		self.assertEqual([self.h1, self.h_no_date],
 				sorted([self.h_no_date, self.h1]))
+
 		self.assertEqual([self.h1, self.h2, self.h_no_date],
 				sorted([self.h2, self.h_no_date, self.h1]))
+
+		self.assertEqual(
+				[self.h1, self.h2_datetime, self.h2, self.h3, self.h_no_date],
+				sorted([self.h2_datetime, self.h3, self.h2, self.h_no_date, self.h1]))
 
 
 def suite():
