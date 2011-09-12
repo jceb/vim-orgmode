@@ -12,6 +12,7 @@ from orgmode.liborgmode.headings import Heading
 from orgmode.liborgmode.orgdate import OrgDate
 from orgmode.liborgmode.agendafilter import contains_active_todo
 from orgmode.liborgmode.agendafilter import contains_active_date
+from orgmode.liborgmode.orgdate import OrgDateTime
 from orgmode.liborgmode.agendafilter import is_within_week
 from orgmode.liborgmode.agendafilter import is_within_week_and_active_todo
 from orgmode.liborgmode.agendafilter import filter_items
@@ -25,7 +26,6 @@ class AgendaFilterTestCase(unittest.TestCase):
 * TODO Heading 1
   some text
 """.split(u'\n') ]
-
 
 	def test_contains_active_todo(self):
 		heading = Heading(title=u'Refactor the code', todo='TODO')
@@ -45,7 +45,7 @@ class AgendaFilterTestCase(unittest.TestCase):
 		heading = Heading(title=u'Refactor the code', active_date=odate)
 		self.assertTrue(contains_active_date(heading))
 
-	def test_is_within_week(self):
+	def test_is_within_week_with_orgdate(self):
 		# to far in the future
 		tmpdate = date.today() + timedelta(days=8)
 		odate = OrgDate(True, tmpdate.year, tmpdate.month, tmpdate.day)
@@ -61,6 +61,25 @@ class AgendaFilterTestCase(unittest.TestCase):
 		# in the past
 		tmpdate = date.today() - timedelta(days=105)
 		odate = OrgDate(True, tmpdate.year, tmpdate.month, tmpdate.day)
+		heading = Heading(title=u'Refactor the code', active_date=odate)
+		self.assertTrue(is_within_week(heading))
+
+	def test_is_within_week_with_orgdatetime(self):
+		# to far in the future
+		tmp = date.today() + timedelta(days=1000)
+		odate = OrgDateTime(True, tmp.year, tmp.month, tmp.day, 10, 10)
+		heading = Heading(title=u'Refactor the code', active_date=odate)
+		self.assertFalse(is_within_week(heading))
+
+		# within a week
+		tmpdate = date.today() + timedelta(days=5)
+		odate = OrgDateTime(True, tmpdate.year, tmpdate.month, tmpdate.day, 1, 0)
+		heading = Heading(title=u'Refactor the code', active_date=odate)
+		self.assertTrue(is_within_week(heading))
+
+		# in the past
+		tmpdate = date.today() - timedelta(days=5)
+		odate = OrgDateTime(True, tmpdate.year, tmpdate.month, tmpdate.day, 1, 0)
 		heading = Heading(title=u'Refactor the code', active_date=odate)
 		self.assertTrue(is_within_week(heading))
 

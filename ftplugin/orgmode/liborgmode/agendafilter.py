@@ -16,6 +16,7 @@
 """
 
 from datetime import date
+from datetime import datetime
 from datetime import timedelta
 
 
@@ -33,7 +34,6 @@ def filter_items(headings, filters):
 	>>> filtered = filter_items(headings, [contains_active_date,
 				contains_active_todo])
 
-
 	"""
 	filtered = headings
 	for f in filters:
@@ -47,7 +47,7 @@ def is_within_week(heading):
 	older.
 	"""
 	if contains_active_date(heading):
-		next_week = date.today() + timedelta(days=7)
+		next_week = datetime.today() + timedelta(days=7)
 		if heading.active_date < next_week:
 			return True
 
