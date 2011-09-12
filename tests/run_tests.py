@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import test_vimbuffer
-import test_orgdate
-import test_orgdate_parsing
+
+import test_libagenda
+import test_libheading
+import test_liborgdate
+import test_liborgdate_parsing
 
 import test_edit_structure
 import test_misc
@@ -12,18 +15,22 @@ import test_show_hide
 import test_tags_properties
 import test_todo
 import test_date
-import test_heading
 
 import unittest
+
 
 if __name__ == '__main__':
 	tests = unittest.TestSuite()
 
 	tests.addTests(test_vimbuffer.suite())
-	tests.addTests(test_heading.suite())
-	tests.addTests(test_orgdate.suite())
-	tests.addTests(test_orgdate_parsing.suite())
 
+	# lib
+	tests.addTests(test_libagenda.suite())
+	tests.addTests(test_libheading.suite())
+	tests.addTests(test_liborgdate.suite())
+	tests.addTests(test_liborgdate_parsing.suite())
+
+	# plugins
 	tests.addTests(test_edit_structure.suite())
 	tests.addTests(test_misc.suite())
 	tests.addTests(test_navigator.suite())
