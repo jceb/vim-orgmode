@@ -72,8 +72,8 @@ class Agenda(object):
 		agenda_files = settings.get(u'org_agenda_files', u',')
 		if not agenda_files or agenda_files == ',':
 			echoe("No org_agenda_files defined. Use \
-					':let org_agenda_files=['~/org/index.org'] to define \
-					some files for the agenda view.")
+:let g:org_agenda_files=['~/org/index.org'] to add \
+files to the agenda view.")
 			return
 		agenda_files = [os.path.expanduser(f) for f in agenda_files]
 		for agenda_file in agenda_files:
