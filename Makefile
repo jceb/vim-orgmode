@@ -26,6 +26,7 @@ coverage:
 	cd tests && nosetests --with-coverage --cover-html .
 
 clean: documentation
+	@find . -name \*.py,cover -exec rm {} \;
 	@rm -rf ${PLUGIN}.vmb ${PLUGIN}.vmb.gz tmp files
 	cd $^ && $(MAKE) $@
 
