@@ -491,6 +491,9 @@ LINKS                                                                *org-links*
 CHANGELOG                                                        *org-changelog*
 
 0.4.0-0
+- add coverage report target (closes issue #74)
+- add support for plain lists, thanks to Aleksandar Dimitrov (closes issue #81)
+- add agenda view, many thanks to Stefan Otte (closes issue #34)
 - move cursor to the current todo state when selecting the todo state
   interactively (closes issue #61)
 - add parameter scope to method settings.get
@@ -543,6 +546,7 @@ Thanks to all how contributed to vim-orgmode. All contributors are name here
 in alphabetic order:
 
 - Stefan Otte
+- Aleksandar Dimitrov
 
 ==============================================================================
 LICENSE                                                           *org-license*
