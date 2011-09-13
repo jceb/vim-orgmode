@@ -23,6 +23,7 @@ check: tests/run_tests.py
 	cd tests && python run_tests.py
 
 coverage:
+	@echo ">>> Coverage depends on the package python-nose and python-coverage, make sure they are installed!"
 	cd tests && nosetests --with-coverage --cover-html .
 
 clean: documentation
