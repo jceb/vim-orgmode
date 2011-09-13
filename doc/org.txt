@@ -479,6 +479,31 @@ Building a Debian Package~
    For installing the plugin form the resulting vim-orgmode_X.X.X-X.deb file,
    please refer to the Installation section.
 
+------------------------------------------------------------------------------
+Creating Tests Cases~
+  For every plugin it's important to write automated test cases. This is
+  important to ensure that little changes don't break things at the other end
+  of the project.
+
+  vim-orgmode relies on Pyunit (http://docs.python.org/library/unittest.html).
+  All tests are located in the tests directory. Run
+>
+  make test
+<
+  to run all tests. To create a new test the test should be added to the
+  corresponding test file.
+
+  In case a new plugin is created a new test file needs to be created as well.
+  The test needs to be added to the test suite located in the file
+  tests/run_tests.py.
+
+  Finally the
+>
+  make coverage
+<
+  should be run. The result shows the test coverage of all project files. One
+  hundred percent (100%) is of course the goal :-)
+
 ==============================================================================
 LINKS                                                                *org-links*
 
@@ -491,6 +516,7 @@ LINKS                                                                *org-links*
 CHANGELOG                                                        *org-changelog*
 
 0.4.0-0
+- add description for writing test cases
 - add coverage report target (closes issue #74)
 - add support for plain lists, thanks to Aleksandar Dimitrov (closes issue #81)
 - add agenda view, many thanks to Stefan Otte (closes issue #34)
