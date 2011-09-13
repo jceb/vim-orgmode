@@ -434,14 +434,7 @@ Timestamps~
 <
 
   Timestamp with repeater interval ~
-    NOTE: only partly supported.
-    A timestamp may contain a 'repeater-interval', indicating that it
-    applies not only on the given date, but again and again after a certain
-    interval of N days (d), weeks (w), months (m), or years (y). The
-    following will show up in the agenda every Wednesday:
->
-    * Pick up Sam at school <2007-05-16 Wed 12:30 +1w>
-<
+    TODO: implement
 
   Diary-style sexp entries ~
     TODO: implement
@@ -471,7 +464,7 @@ Creating timestamps~
                                                            *orgmode-<leader>-sa*
   <LEADER>sa        Prompt for a date and insert a corresponding timestamp.
 
-                    TODO: not implemented yet When the cursor is at an
+                    TODO: not implemented yet: When the cursor is at an
                     existing timestamp in the buffer, the command is used to
                     modify this timestamp instead of inserting a new one.
 
