@@ -89,7 +89,11 @@ class Agenda(object):
 	def opendoc(cls, split=False, switch=False):
 		"""
 		If you are in the agenda view jump to the document the item in the
-		current line belongs to.
+		current line belongs to. cls.line2doc is used for that.
+
+		:split: if True, open the document in a new split window.
+		:switch: if True, switch to another window and open the the document
+			there.
 		"""
 		row, _ = vim.current.window.cursor
 		try:
@@ -119,13 +123,16 @@ class Agenda(object):
 				]
 		cls._switch_to('AGENDA', cmd)
 
+		# line2doc is a dic with the mapping:
+		#     line in agenda buffer --> source document
+		# It's easy to jump to the right document this way
 		cls.line2doc = {}
 		# format text for agenda
 		last_date = raw_agenda[0].active_date
 		final_agenda = ['Week Agenda:', str(last_date)]
 		for i, h in enumerate(raw_agenda):
 			# insert date information for every new date
-			if h.active_date != last_date:
+			if str(h.active_date)[1:11] != str(last_date)[1:11]:
 				today = date.today()
 				# insert additional "TODAY" string
 				if h.active_date.year == today.year and \
