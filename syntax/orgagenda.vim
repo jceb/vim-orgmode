@@ -13,8 +13,8 @@ while s:i <= g:org_heading_highlight_levels
 endwhile
 unlet! s:i
 
-if !exists('g:loaded_orgtodo_syntax')
-	let g:loaded_orgtodo_syntax = 1
+if !exists('g:loaded_orgagenda_syntax')
+	let g:loaded_orgagenda_syntax = 1
 	function! s:ReadTodoKeywords(keywords, todo_headings)
 		let l:default_group = 'Todo'
 		for l:i in a:keywords
