@@ -218,7 +218,7 @@ files to the agenda view.")
 
 		# show agenda
 		vim.current.buffer[:] = final_agenda
-		vim.command(u'setlocal nomodifiable')
+		vim.command(u'setlocal nomodifiable conceallevel=2 concealcursor=nc')
 
 	def register(self):
 		u"""
