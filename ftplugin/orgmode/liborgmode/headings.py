@@ -11,6 +11,7 @@ import re
 from UserList import UserList
 
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list
+from orgmode.liborgmode.orgdate import OrgTimeRange
 from orgmode.liborgmode.orgdate import get_orgdate
 
 
@@ -277,7 +278,8 @@ class Heading(object):
 
 		# try to find active dates
 		tmp_orgdate = get_orgdate(data)
-		if tmp_orgdate and tmp_orgdate.active:
+		if tmp_orgdate and tmp_orgdate.active \
+				and not isinstance(tmp_orgdate, OrgTimeRange):
 			new_heading.active_date = tmp_orgdate
 		else:
 			new_heading.active_date = None
