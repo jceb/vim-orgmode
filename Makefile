@@ -53,6 +53,15 @@ coverage:
 	@echo ">>> Coverage depends on the package python-nose and python-coverage, make sure they are installed!"
 	cd tests && nosetests --with-coverage --cover-html .
 
+# run a static code checker
+lint:
+	@echo ">>> Lint depends on the package pylint make sure it's installed!"
+	pylint --rcfile .pylintrc --disable=C0301,C0103,C0111,C0322,C0323,C0324,W0703,W0612,W0603 orgmode
+
+lintall:
+	@echo ">>> Lint depends on the package pylint make sure it's installed!"
+	pylint --rcfile .pylintrc orgmode
+
 # install vim-orgmode in the .vim/bundle directory for test purposes
 VIMPLUGINDIR = $(HOME)/.vim/bundle/orgmode
 
