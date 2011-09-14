@@ -167,7 +167,7 @@ class OrgDate(datetime.date):
 	def __new__(cls, active, year, month, day):
 		return datetime.date.__new__(cls, year, month, day)
 
-	def __str__(self):
+	def __unicode__(self):
 		u"""
 		Return a string representation.
 		"""
@@ -175,6 +175,9 @@ class OrgDate(datetime.date):
 			return self.strftime(u'<%Y-%m-%d %a>')
 		else:
 			return self.strftime(u'[%Y-%m-%d %a]')
+
+	def __str__(self):
+		return self.__unicode__().encode(u'utf-8')
 
 
 class OrgDateTime(datetime.datetime):
@@ -193,7 +196,7 @@ class OrgDateTime(datetime.datetime):
 	def __new__(cls, active, year, month, day, hour, minute):
 		return datetime.datetime.__new__(cls, year, month, day, hour, minute)
 
-	def __str__(self):
+	def __unicode__(self):
 		u"""
 		Return a string representation.
 		"""
@@ -201,6 +204,9 @@ class OrgDateTime(datetime.datetime):
 			return self.strftime(u'<%Y-%m-%d %a %H:%M>')
 		else:
 			return self.strftime(u'[%Y-%m-%d %a %H:%M]')
+
+	def __str__(self):
+		return self.__unicode__().encode(u'utf-8')
 
 
 class OrgTimeRange(object):
@@ -224,7 +230,7 @@ class OrgTimeRange(object):
 		self.end = end
 		self.active = active
 
-	def __str__(self):
+	def __unicode__(self):
 		u"""
 		Return a string representation.
 		"""
@@ -236,16 +242,16 @@ class OrgTimeRange(object):
 				if self.start.year == self.end.year and\
 						self.start.month == self.end.month and\
 						self.start.day == self.end.day:
-					return "<%s-%s>" % (
+					return u"<%s-%s>" % (
 							self.start.strftime(u'%Y-%m-%d %a %H:%M'),
 							self.end.strftime(u'%H:%M'))
 				else:
-					return "<%s>--<%s>" % (
+					return u"<%s>--<%s>" % (
 							self.start.strftime(u'%Y-%m-%d %a %H:%M'),
 							self.end.strftime(u'%Y-%m-%d %a %H:%M'))
 			# date
 			if isinstance(self.start, datetime.date):
-				return "<%s>--<%s>" % (self.start.strftime(u'%Y-%m-%d %a'),
+				return u"<%s>--<%s>" % (self.start.strftime(u'%Y-%m-%d %a'),
 						self.end.strftime(u'%Y-%m-%d %a'))
 		# inactive
 		else:
@@ -254,15 +260,18 @@ class OrgTimeRange(object):
 				if self.start.year == self.end.year and\
 						self.start.month == self.end.month and\
 						self.start.day == self.end.day:
-					return "[%s-%s]" % (
+					return u"[%s-%s]" % (
 							self.start.strftime(u'%Y-%m-%d %a %H:%M'),
 							self.end.strftime(u'%H:%M'))
 				else:
-					return "[%s]--[%s]" % (
+					return u"[%s]--[%s]" % (
 							self.start.strftime(u'%Y-%m-%d %a %H:%M'),
 							self.end.strftime(u'%Y-%m-%d %a %H:%M'))
 			if isinstance(self.start, datetime.date):
-				return "[%s]--[%s]" % (self.start.strftime(u'%Y-%m-%d %a'),
+				return u"[%s]--[%s]" % (self.start.strftime(u'%Y-%m-%d %a'),
 						self.end.strftime(u'%Y-%m-%d %a'))
+
+	def __str__(self):
+		return self.__unicode__().encode(u'utf-8')
 
 # vim: set noexpandtab:

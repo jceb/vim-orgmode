@@ -516,6 +516,7 @@ LINKS                                                                *org-links*
 CHANGELOG                                                        *org-changelog*
 
 0.4.0-0
+- solve encoding issues in the agenda plugin (closes issue #86)
 - add description for writing test cases
 - add coverage report target (closes issue #74)
 - add support for plain lists, thanks to Aleksandar Dimitrov (closes issue #81)

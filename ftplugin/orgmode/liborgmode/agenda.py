@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""
+u"""
     Agenda
     ~~~~~~~~~~~~~~~~~~
 
@@ -15,13 +15,13 @@ from orgmode.liborgmode.agendafilter import *
 
 
 class AgendaManager(object):
-	"""Simple parsing of Documents to create an agenda."""
+	u"""Simple parsing of Documents to create an agenda."""
 
 	def __init__(self):
 		super(AgendaManager, self).__init__()
 
 	def get_todo(self, documents):
-		"""
+		u"""
 		Get the todo agenda for the given documents (list of document).
 		"""
 		filtered = []
@@ -32,7 +32,7 @@ class AgendaManager(object):
 		return sorted(filtered)
 
 	def get_next_week_and_active_todo(self, documents):
-		"""
+		u"""
 		Get the agenda for next week for the given documents (list of
 		document).
 		"""
@@ -45,7 +45,7 @@ class AgendaManager(object):
 		return sorted(filtered)
 
 	def get_timestamped_items(self, documents):
-		"""
+		u"""
 		Get all time-stamped items in a time-sorted way for the given
 		documents (list of document).
 		"""
@@ -56,4 +56,5 @@ class AgendaManager(object):
 				[contains_active_date])
 			filtered.extend(tmp)
 		return sorted(filtered)
+
 # vim: set noexpandtab:
