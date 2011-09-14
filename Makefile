@@ -1,14 +1,12 @@
 PLUGIN = orgmode
-
 PREFIX = /usr/local
 VIMDIR = $(PREFIX)/share/vim
-
-VIMPLUGINDIR = $(HOME)/.vim/bundle/orgmode
 
 all: build
 
 build:
 
+# install plugin at destination
 install: doc indent ftdetect ftplugin syntax
 	for i in doc indent ftdetect ftplugin syntax; do \
 		find $$i -type f -name \*.txt -o -name \*.py -o -type f -name \*.vim | while read f; do \
@@ -17,20 +15,13 @@ install: doc indent ftdetect ftplugin syntax
 		done; \
 	done
 
-test: check
-
-check: tests/run_tests.py
-	cd tests && python run_tests.py
-
-coverage:
-	@echo ">>> Coverage depends on the package python-nose and python-coverage, make sure they are installed!"
-	cd tests && nosetests --with-coverage --cover-html .
-
+# cleanup
 clean: documentation
 	@find . -name \*.py,cover -exec rm {} \;
 	@rm -rf ${PLUGIN}.vmb ${PLUGIN}.vmb.gz tmp files
 	cd $^ && $(MAKE) $@
 
+# generate the vim ball package
 ${PLUGIN}.vmb: check build_vmb.vim clean
 	$(MAKE) DESTDIR=$(PWD)/tmp VIMDIR= install
 	find tmp -type f  | sed -e 's/^tmp\///' > files
@@ -47,13 +38,29 @@ vmb: ${PLUGIN}.vmb
 
 vmb.gz: ${PLUGIN}.vmb.gz
 
+# run unit tests
+test: check
+
+check: tests/run_tests.py
+	cd tests && python run_tests.py
+
+# generate documentation
 docs: documentation
 	cd $^ && $(MAKE)
+
+# generate a test coverage report for all python files
+coverage:
+	@echo ">>> Coverage depends on the package python-nose and python-coverage, make sure they are installed!"
+	cd tests && nosetests --with-coverage --cover-html .
+
+# install vim-orgmode in the .vim/bundle directory for test purposes
+VIMPLUGINDIR = $(HOME)/.vim/bundle/orgmode
 
 installvmb: ${PLUGIN}.vmb install_vmb.vim
 	rm -rvf ${VIMPLUGINDIR}
 	mkdir -p "${VIMPLUGINDIR}"
 	vim --cmd "let g:installdir='${VIMPLUGINDIR}'" -s install_vmb.vim $^
 	@echo "Plugin was installed in ${VIMPLUGINDIR}. Make sure you are using a plugin loader like pathegon, otherwise the ${PLUGIN} might not work properly."
+
 
 .PHONY: all build test check install clean vmb vmb.gz docs installvmb
