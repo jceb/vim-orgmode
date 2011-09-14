@@ -19,8 +19,8 @@ class OrgDateTestCase(unittest.TestCase):
 		self.year = 2011
 		self.month = 8
 		self.day = 29
-		self.text = '<2011-08-29 Mon>'
-		self.textinactive = '[2011-08-29 Mon]'
+		self.text = u'<2011-08-29 Mon>'
+		self.textinactive = u'[2011-08-29 Mon]'
 
 	def test_OrgDate_ctor_active(self):
 		u"""OrdDate should be created."""
@@ -39,11 +39,11 @@ class OrgDateTestCase(unittest.TestCase):
 	def test_OrdDate_str_active(self):
 		u"""Representation of OrgDates"""
 		od = OrgDate(True, self.year, self.month, self.day)
-		self.assertEqual(self.text, str(od))
+		self.assertEqual(self.text, unicode(od))
 
 	def test_OrdDate_str_inactive(self):
 		od = OrgDate(False, self.year, self.month, self.day)
-		self.assertEqual(self.textinactive, str(od))
+		self.assertEqual(self.textinactive, unicode(od))
 
 
 def suite():

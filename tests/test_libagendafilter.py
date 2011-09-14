@@ -87,7 +87,7 @@ class AgendaFilterTestCase(unittest.TestCase):
 		# only headings with date and todo should be returned
 		tmpdate = date.today()
 		odate = OrgDate(True, tmpdate.year, tmpdate.month, tmpdate.day)
-		tmp_head = Heading(title=u'Refactor the code', todo='TODO', active_date=odate)
+		tmp_head = Heading(title=u'Refactor the code', todo=u'TODO', active_date=odate)
 		headings = [tmp_head]
 		filtered = filter_items(headings,
 				[contains_active_date, contains_active_todo])
@@ -113,21 +113,21 @@ class AgendaFilterTestCase(unittest.TestCase):
 		self.assertEqual([], filtered)
 
 	def test_filter_items_with_some_todos_and_dates(self):
-		"""
+		u"""
 		Only the headings with todo and dates should be retunrned.
 		"""
-		tmp = ["* TODO OrgMode Demo und Tests"
-				"<2011-08-22 Mon>"]
-		headings = [Heading.parse_heading_from_data(tmp, ['TODO'])]
+		tmp = [u"* TODO OrgMode Demo und Tests"
+				u"<2011-08-22 Mon>"]
+		headings = [Heading.parse_heading_from_data(tmp, [u'TODO'])]
 		filtered = filter_items(headings, [is_within_week_and_active_todo])
 		self.assertEqual(len(filtered), 1)
 		self.assertEqual(headings, filtered)
 
-		tmp = [Heading.parse_heading_from_data(["** DONE something <2011-08-10 Wed>"], ['TODO']),
-				Heading.parse_heading_from_data(["*** TODO rsitenaoritns more <2011-08-25 Thu>"], ['TODO']),
-				Heading.parse_heading_from_data(["*** DONE some more <2011-08-25 Thu>"], ['TODO']),
-				Heading.parse_heading_from_data(["*** TODO some more <2011-08-25 Thu>"], ['TODO']),
-				Heading.parse_heading_from_data(["** DONE something2 <2011-08-10 Wed>"], ['TODO'])
+		tmp = [Heading.parse_heading_from_data([u"** DONE something <2011-08-10 Wed>"], [u'TODO']),
+				Heading.parse_heading_from_data([u"*** TODO rsitenaoritns more <2011-08-25 Thu>"], [u'TODO']),
+				Heading.parse_heading_from_data([u"*** DONE some more <2011-08-25 Thu>"], [u'TODO']),
+				Heading.parse_heading_from_data([u"*** TODO some more <2011-08-25 Thu>"], [u'TODO']),
+				Heading.parse_heading_from_data([u"** DONE something2 <2011-08-10 Wed>"], [u'TODO'])
 		]
 		for h in tmp:
 			headings.append(h)
