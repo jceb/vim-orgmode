@@ -129,9 +129,9 @@ files to the agenda view.")
 		cls.line2doc = {}
 		# format text for agenda
 		last_date = raw_agenda[0].active_date
-		final_agenda = [u'Week Agenda:', last_date]
+		final_agenda = [u'Week Agenda:', unicode(last_date)]
 		for i, h in enumerate(raw_agenda):
-			# insert date information for every new date
+			# insert date information for every new date (not datetime)
 			if unicode(h.active_date)[1:11] != unicode(last_date)[1:11]:
 				today = date.today()
 				# insert additional "TODAY" string
