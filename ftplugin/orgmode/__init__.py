@@ -141,12 +141,22 @@ def get_user_input(message):
 
 def get_bufnumber(bufname):
 	"""
-	Return the number of the buffer with bufname if it exist; else None.
+	Return the number of the buffer for the given bufname if it exist;
+	else None.
 	"""
 	for b in vim.buffers:
 		if b.name == bufname:
 			return int(b.number)
-	echom("not found")
+
+
+def get_bufname(bufnr):
+	"""
+	Return the name of the buffer for the given bufnr if it exist; else None.
+	"""
+	for b in vim.buffers:
+		if b.number == bufnr:
+			return b.name
+
 
 def indent_orgmode():
 	u""" Set the indent value for the current line in the variable

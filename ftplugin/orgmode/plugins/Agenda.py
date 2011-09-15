@@ -5,6 +5,7 @@ import os
 
 from orgmode import ORGMODE, settings
 from orgmode import get_bufnumber
+from orgmode import get_bufname
 from orgmode import echoe
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry
@@ -97,9 +98,18 @@ files to the agenda view.")
 		"""
 		row, _ = vim.current.window.cursor
 		try:
-			bufnr, destrow = cls.line2doc[row]
+			bufname, bufnr, destrow = cls.line2doc[row]
 		except:
 			return
+
+		# reload source file if it is not loaded
+		if get_bufname(bufnr) is None:
+			vim.command((u'badd %s' % bufname).encode(u'utf-8'))
+			bufnr = get_bufnumber(bufname)
+			tmp = cls.line2doc[row]
+			cls.line2doc[bufnr] = tmp
+			# delete old endry
+			del cls.line2doc[row]
 
 		if split:
 			vim.command((u"sbuffer %s" % bufnr).encode(u'utf-8'))
@@ -156,7 +166,7 @@ files to the agenda view.")
 					'title':   h.title
 			}
 			final_agenda.append(formated)
-			cls.line2doc[len(final_agenda)] = (h.document.bufnr, h.start)
+			cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
 
 		# show agenda
 		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in final_agenda ]
@@ -187,7 +197,7 @@ files to the agenda view.")
 		for i, h in enumerate(raw_agenda):
 			tmp = u"%s %s" % (h.todo, h.title)
 			final_agenda.append(tmp)
-			cls.line2doc[len(final_agenda)] = (h.document.bufnr, h.start)
+			cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
 
 		# show agenda
 		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in final_agenda ]
@@ -212,7 +222,7 @@ files to the agenda view.")
 		for i, h in enumerate(raw_agenda):
 			tmp = u"%s %s" % (h.todo, h.title)
 			final_agenda.append(tmp)
-			cls.line2doc[len(final_agenda)] = (h.document.bufnr, h.start)
+			cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
 
 		# show agenda
 		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in final_agenda ]
