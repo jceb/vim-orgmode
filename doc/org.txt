@@ -80,7 +80,7 @@ Installation into a specific directory~
 From git checkout~
    This method is mainly used for development purposes.
 
-You are using pathegon~
+You are using pathogen~
 
     Change to the bundle directory
     $ cd ~/.vim/bundle
@@ -169,6 +169,72 @@ Text objects~
 
    For further information please read :h text-objects-changed
 
+==============================================================================
+DEFAULT MAPPINGS						*org-mappings*
+
+These are the default mappings that are installed and can be used via the
+'Org' menu or directly. Most are only usable in command mode.
+ 
+								*org-visibility*
+Show/Hide:~
+
+  <TAB>		    - Cycle Visibility
+
+								*org-structure*
+Editing Structure:~
+  
+  <C-S-CR>	    - Heading above
+  <S-CR>	    - Heading below
+  <C-CR>	    - Heading above, after children
+
+  m]]		    - move subtree down
+  m[[		    - move subtree up
+
+  yah		    - yank heading 
+  dah		    - delete heading 
+  yat		    - yank subtree
+  dat		    - delete subtree
+  p		    - paste subtree
+	
+  >> or >ah	    - promote heading
+  << or <ah	    - demote heading
+  >at		    - promote subtree
+  <at		    - demote subtree
+
+								*org-hyperlinks*
+Hyperlinks:~
+
+  gl		    - goto link
+  gyl		    - yank link
+  gil		    - insert link
+
+  gn		    - next link
+  go		    - previous link
+
+								*org-todo*
+TODO Lists:~
+  
+  ,d		    - select keyword
+  <S-Left>	    - previous keyword
+  <S-Right>	    - next keyword
+  <C-S-Left>	    - previous keyword set
+  <C-S-Right>	    - next keyword set
+
+						*org-tags* *org-properties*
+TAGS and properties:~
+
+  ,t		    - set tags
+  
+								*org-dates*
+Dates:~
+  
+  ,sa		    - insert date
+  ,sai		    - insert inactive date
+
+  For more functionality, see |org-plugins| and |org-customization|.
+
+==============================================================================
+PLUGINS								*org-plugins* 
 Suggested plugins~
   - pathogen (http://www.vim.org/scripts/script.php?script_id=2332)
     easy management of multiple vim plugins
@@ -218,7 +284,7 @@ Remapping shortcuts~
   nmap <new_mapping> <the_plug>
 <
 
-  To change the mapping for editing tags to <leader>t the vimrc entrie would
+  To change the mapping for editing tags to <leader>t the vimrc entry would
   look like this:
 >
   nmap <leader>t @<Plug>OrgSetTags
