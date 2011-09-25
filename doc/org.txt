@@ -516,7 +516,8 @@ LINKS                                                                *org-links*
 CHANGELOG                                                        *org-changelog*
 
 0.4.0-0
-- add .cnf files to the vimball archive (closes issue #93)
+- change ,, and ,. to remap zr and zm. (closes issue #73)
+- add .cnf files to the vimball archive (closes #93)
 - integrate pylint code checker (closes issue #87)
 - solve encoding issues in the agenda plugin (closes issue #86)
 - add description for writing test cases

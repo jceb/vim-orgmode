@@ -108,7 +108,7 @@ class ShowHide(object):
 		settings.set(u'org_leader', u',')
 		leader = settings.get(u'org_leader', u',')
 
-		self.keybindings.append(Keybinding(u'%s,' % (leader, ), u':exe ":set fdl=". (&fdl - 1)<CR>', mode=MODE_NORMAL))
-		self.keybindings.append(Keybinding(u'%s.' % (leader, ), u':exe ":set fdl=". (&fdl + 1)<CR>', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'%s,' % (leader, ), u'zr', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'%s.' % (leader, ), u'zm', mode=MODE_NORMAL))
 		for i in xrange(0, 10):
 			self.keybindings.append(Keybinding(u'%s%d' % (leader, i), u'zM:set fdl=%d<CR>' % i, mode=MODE_NORMAL))
