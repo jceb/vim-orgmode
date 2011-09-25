@@ -516,6 +516,7 @@ LINKS                                                                *org-links*
 CHANGELOG                                                        *org-changelog*
 
 0.4.0-0
+- implement reverse visibility cycling using <S-Tab> (closes issue #95)
 - change ,, and ,. to remap zr and zm. (closes issue #73)
 - add .cnf files to the vimball archive (closes #93)
 - integrate pylint code checker (closes issue #87)
