@@ -4,7 +4,7 @@
 	vimbuffer
 	~~~~~~~~~~
 
-	VimBuffer and VimBufferContest are the interface between liborgmode and
+	VimBuffer and VimBufferContent are the interface between liborgmode and
 	vim.
 
 	VimBuffer extends the liborgmode.document.Document().
