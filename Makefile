@@ -19,7 +19,7 @@ install: doc indent ftdetect ftplugin syntax
 clean: documentation
 	@find . -name \*.py,cover -exec rm {} \;
 	@rm -rf ${PLUGIN}.vmb ${PLUGIN}.vmb.gz tmp files
-	cd $^ && $(MAKE) $@
+	cd $< && $(MAKE) $@
 
 # generate the vim ball package
 ${PLUGIN}.vmb: check build_vmb.vim clean
@@ -32,7 +32,7 @@ ${PLUGIN}.vmb: check build_vmb.vim clean
 
 ${PLUGIN}.vmb.gz: ${PLUGIN}.vmb
 	@rm -f ${PLUGIN}.vmb.gz
-	gzip $^
+	gzip $<
 
 vmb: ${PLUGIN}.vmb
 
@@ -46,7 +46,7 @@ check: tests/run_tests.py
 
 # generate documentation
 docs: documentation
-	cd $^ && $(MAKE)
+	cd $< && $(MAKE)
 
 # generate a test coverage report for all python files
 coverage:
@@ -68,7 +68,7 @@ VIMPLUGINDIR = $(HOME)/.vim/bundle/orgmode
 installvmb: ${PLUGIN}.vmb install_vmb.vim
 	rm -rvf ${VIMPLUGINDIR}
 	mkdir -p "${VIMPLUGINDIR}"
-	vim --cmd "let g:installdir='${VIMPLUGINDIR}'" -s install_vmb.vim $^
+	vim --cmd "let g:installdir='${VIMPLUGINDIR}'" -s install_vmb.vim $<
 	@echo "Plugin was installed in ${VIMPLUGINDIR}. Make sure you are using a plugin loader like pathegon, otherwise the ${PLUGIN} might not work properly."
 
 
