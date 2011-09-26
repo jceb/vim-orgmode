@@ -516,6 +516,7 @@ LINKS                                                                *org-links*
 CHANGELOG                                                        *org-changelog*
 
 0.4.0-0
+- add support for @-signs in tags (closes issue #98)
 - enable file completion for hyperlinks by default (closes issue #97)
 - fix traceback when pressing <Esc> while editing a link (closes issue #96)
 - implement reverse visibility cycling using <S-Tab> (closes issue #95)
