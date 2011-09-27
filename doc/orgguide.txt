@@ -1,4 +1,4 @@
-*orgguide.txt*          For Vim version 7.3       Last change: 2011 September 14
+*orgguide.txt*          For Vim version 7.3       Last change: 2011 September 26
 
      _  _  ____  __  __    _____  ____   ___  __  __  _____  ____  ____
     ( \/ )(_  _)(  \/  )  (  _  )(  _ \ / __)(  \/  )(  _  )(  _ \( ___)
@@ -20,7 +20,7 @@ TABLE OF CONTENTS                                        *orgguide* *orgguide-to
     9.  Dates and Times                  |orgguide-dates|
     10. Capture - Refile - Archive       |orgguide-capture|
     11. Agenda views                     |orgguide-agenda|
-    12. Markup for rich export           |orgguide-export|
+    12. Export/Markup for rich export    |orgguide-export|
     13. Publishing                       |orgguide-publishing|
     14. Working with source code         |orgguide-source|
     14. Miscellaneous                    |orgguide-misc|
@@ -38,8 +38,8 @@ Copyright © 2010 Free Software Foundation
   section entitled “GNU Free Documentation License.”
 
   (a) The FSF’s Back-Cover Text is: “You have the freedom to copy and modify
-  this GNU manual. Buying copies from the FSF supports it in developing GNU and
-  promoting software freedom.”
+  this GNU manual. Buying copies from the FSF supports it in developing GNU
+  and promoting software freedom.”
 
   This document is part of a collection distributed under the GNU Free
   Documentation License. If you want to distribute this document separately
@@ -55,17 +55,73 @@ Preface~
    project planning with a fast and effective plain-text system. It is also
    an authoring and publishing system.
 
-   This document is a a copy of the orgmode-guide for emacs with modifications
-   for vim. It contains all basic features and commands, along with important
-   hints for customization.
+   This document is a a copy of the orgmode-guide for emacs
+   (http://orgmode.org/) with modifications for vim. It contains all basic
+   features and commands, along with important hints for customization.
 
 ------------------------------------------------------------------------------
 Installation~
-   TODO
+  Download latest stable release at
+  http://www.vim.org/scripts/script.php?script_id=3642
+
+  Open the vimball archive in vim and source it.
+
+  $ vim orgmode.vbm
+>
+    :so %
+<
+
+  ATTENTION: All .pyc files of former versions of vim-orgmode need to be
+  deleted beforehand!
 
 ------------------------------------------------------------------------------
 Activation~
-   TODO
+  Add the following line to your .vimrc file to ensure that filetype plugins
+  are loaded properly:
+>
+	filetype plugin indent on
+<
+
+  Please install the Universal Text Linking
+  (http://www.vim.org/scripts/script.php?script_id=293) addon, otherwise
+  hyperlinks won't work. Other plugins that integrate well with vim orgmode
+  are listed in the following section.
+
+------------------------------------------------------------------------------
+Suggested plugins~
+  Universal Text Linking~
+    (http://www.vim.org/scripts/script.php?script_id=293) general support for
+    text linking. The hyperlinks feature of vim-orgmode depends on this plugin.
+
+  repeat~
+    (http://www.vim.org/scripts/script.php?script_id=2136)
+    Repeat actions that would not be repeatable otherwise. This plugin is
+    needed when you want to repeat the previous orgmode action.
+
+  taglist~
+  	([http://www.vim.org/scripts/script.php?script_id=273)
+    Display tags for the currently edited file. Vim-orgmode ships with support
+    for displaying the heading structure and hyperlinks in the taglist plugin.
+
+  tagbar~
+  	(http://www.vim.org/scripts/script.php?script_id=3465)
+    A new approach to displaying tags for the currently edited file.
+    Vim-orgmode ships with support for displaying the heading structure and
+    hyperlinks in the tagbar plugin.
+
+  speeddating~
+  	(http://www.vim.org/scripts/script.php?script_id=2120)
+    In-/decrease dates the vim way: C-a and C-x. Dates and times in the
+    orgmode format can be in-/decreased if this plugins is installed.
+
+  Narrow Region~
+  	(http://www.vim.org/scripts/script.php?script_id=3075)
+    Emulation of Emacs' Narrow Region feature. It might be useful when dealing
+    with large orgmode files.
+
+  pathogen~
+  	(http://www.vim.org/scripts/script.php?script_id=2332)
+    Easy management of multiple vim plugins.
 
 ------------------------------------------------------------------------------
 Feedback~
@@ -80,96 +136,153 @@ DOCUMENT STRUCTURE                                       *orgguide-docstructure*
 Org is based on Outline mode and provides flexible commands to edit the
 structure of the document.
 
-
 ------------------------------------------------------------------------------
 Outlines~
-   Org is implemented on top of Outline mode. Outlines allow a document to
-   be organized in a hierarchical structure, which (at least for me) is the
-   best representation of notes and thoughts. An overview of this structure
-   is achieved by folding (hiding) large parts of the document to show only
-   the general document structure and the parts currently being worked on.
-   Org greatly simplifies the use of outlines by compressing the entire
-   show/hide functionality into a single command, =org-cycle=, which is
-   bound to the <TAB> key.
-
+  Org is implemented on top of Outline mode. Outlines allow a document to be
+  organized in a hierarchical structure, which (at least for me) is the best
+  representation of notes and thoughts. An overview of this structure is
+  achieved by folding (hiding) large parts of the document to show only the
+  general document structure and the parts currently being worked on.  Org
+  greatly simplifies the use of outlines by compressing the entire show/hide
+  functionality into a single command, OrgToggleFolding, which is bound to
+  the <TAB> key.
 
 ------------------------------------------------------------------------------
 Headlines~
-   Headlines define the structure of an outline tree. The headlines in Org
-   start with one or more stars, on the left margin[[#FOOT1][(1)]]. For
-   example:
-
+  Headlines define the structure of an outline tree. The headlines in Org
+  start with one or more stars, on the left margin. For example:
 >
-    * Top level headline
-    ** Second level
-    *** 3rd level
-        some text
-    *** 3rd level
-        more text
+  * Top level headline
+  ** Second level
+  *** 3rd level
+      some text
+  *** 3rd level
+      more text
 
-    * Another top level headline
+  * Another top level headline
 <
 
-   Some people find the many stars too noisy and would prefer an outline
-   that has whitespace followed by a single star as headline starters.
-   [[#Clean-view][A cleaner outline view]], describes a setup to realize
-   this.
+
+  Some people find the many stars too noisy and would prefer an outline
+  that has whitespace followed by a single star as headline starters.
+  By setting the following variable the leading stars are hidden:
+                                               *g:org_heading_highlight_levels*
+>
+  let g:org_heading_highlight_levels = 0
+<
 
 ------------------------------------------------------------------------------
 Visibility cycling~
-   Outlines make it possible to hide parts of the text in the buffer. Org
-   uses just two commands, bound to <TAB> and S-<TAB> to change the
-   visibility in the buffer.
+  Outlines make it possible to hide parts of the text in the buffer. Org
+  uses just two commands, bound to <Tab> and <S-Tab> to change the
+  visibility in the buffer.
 
-   <TAB> :: /Subtree cycling/: Rotate current subtree among the states
-
+  <Tab>       or                                *orgguide-Tab* or *orgguide-S-Tab*
+  <S-Tab>               Subtree cycling: Rotate current subtree among the
+                        states
 >
-       ,-> FOLDED -> CHILDREN -> SUBTREE --.
-       '-----------------------------------'
+  ,-> FOLDED -> CHILDREN -> SUBTREE --.
+  '-----------------------------------'
 <
 
-   When called with a prefix argument (C-u <TAB>) or with the shift key,
-   global cycling is invoked.
+  When called with the shift key, global cycling is invoked.
 
-   S-<TAB> and C-u <TAB> :: /Global cycling/: Rotate the entire buffer
-   among the states
-
+  ,,          or                                    *orgguide-,,* or *orgguide-,.*
+  ,.                    Global cycling: Rotate the entire buffer among the
+                        states. The same can be achieved by using the
+                        keybindings zm and zr.
 >
-       ,-> OVERVIEW -> CONTENTS -> SHOW ALL --.
-       '--------------------------------------'
+  ,-> OVERVIEW -> CONTENTS -> SHOW ALL --.
+  '--------------------------------------'
 <
 
-   C-u C-u C-u <TAB> :: Show all, including drawers.
-
-   When Emacs first visits an Org file, the global state is set to
-   OVERVIEW, i.e. only the top level headlines are visible. This can be
-   configured through the variable =org-startup-folded=, or on a per-file
-   basis by adding a startup keyword =overview=, =content=, =showall=, like
-   this:
-
+  Vim-orgmode doesn't implement the following functionality, yet.~
+  When Emacs first visits an Org file, the global state is set to
+  OVERVIEW, i.e. only the top level headlines are visible. This can be
+  configured through the variable =org-startup-folded=, or on a per-file
+  basis by adding a startup keyword =overview=, =content=, =showall=, like
+  this:
 >
-    #+STARTUP: content
+   #+STARTUP: content
 <
-
 ------------------------------------------------------------------------------
 Motion~
-    TODO
+  The following commands jump to other headlines in the buffer.
+
+  }                     Next heading.
+
+  {                     Previous heading.
+
+  ]]                    Next heading same level.
+
+  [[                    Previous heading same level.
+
+  g{                    Backward to higher level heading.
+
+  g}                    Forward to higher level heading.
 
 ------------------------------------------------------------------------------
 Structure editing~
-    TODO
+
+                                                                 *orgguide-S-CR*
+  <S-CR>                Insert new heading with same level as current. If the
+                        cursor is in a plain list item, a new item is created
+                        (see section [[#Plain-lists][Plain lists]]). When this
+                        command is used in the middle of a line, the line is
+                        split and the rest of the line becomes the new
+                        headline.
+
+  Not yet implemented in vim-orgmode~
+  M-S-<CR>              Insert new TODO entry with same level as current
+                        heading.
+
+                                                                  *orgguide-Tab*
+  <Tab>                 In a new entry with no text yet, <Tab> will cycle
+                        through reasonable levels.
+
+  <<            or                              *orgguide-<<* or *orgguide-CTRL-d*
+  <C-d> (insert mode)   Promote current heading by one level.
+
+  >>            or                              *orgguide->>* or *orgguide-CTRL-t*
+  <C-t> (insert mode)   Demote current heading by one level.
+
+                                                                  *orgguide-<[[*
+  <[[                   Promote the current subtree by one level.
+
+                                                                  *orgguide->]]*
+  >]]                   Demote the current subtree by one level.
+
+                                                                  *orgguide-m[[*
+  m[[                   Move subtree up/down (swap with previous/next subtree
+  		                  of same level).
+
+                                                                  *orgguide-m]]*
+  m]]                   Move subtree up/down (swap with previous/next subtree
+  		                  of same level).
+
+  Not yet implemented in vim-orgmode~
+  C-c C-w                Refile entry or region to a different location. See
+                        section [[#Refiling-notes][Refiling notes]].
+
+                                                           *orgguide-<leader>nr*
+  <leader>nr            Narrow buffer to current subtree / widen it again
+                        (only if NarrowRegion plugin is installed)
+
+  When there is an active region (Transient Mark mode), promotion and demotion
+  work on all headlines in the region.
 
 ------------------------------------------------------------------------------
 Sparse trees~
-    TODO
+    Not yet implemented in vim-orgmode~
 
 ------------------------------------------------------------------------------
 Plain lists~
   Within an entry of the outline tree, hand-formatted lists can provide
   additional structure.
 
-  TODO: They also provide a way to create lists of
-  checkboxes (see section [[#Checkboxes][Checkboxes]]).
+  Not yet implemented in vim-orgmode~
+  They also provide a way to create lists of checkboxes (see section
+  |orgguide-checkboxes|).
 
   Org supports editing such lists, and the HTML exporter (see section
   |orgguide-export|) parses and formats them.
@@ -186,70 +299,118 @@ Plain lists~
   bullet/number, or less. A list ends when all items are closed, or before
   two blank lines. An example:
 >
-      ** Lord of the Rings
-         My favorite scenes are (in this order)
-         1. The attack of the Rohirrim
-         2. Eowyn's fight with the witch king
-            + this was already my favorite scene in the book
-            + I really like Miranda Otto.
-         Important actors in this film are:
-         - Elijah Wood :: He plays Frodo
-         - Sean Austin :: He plays Sam, Frodo's friend.
+  ** Lord of the Rings
+     My favorite scenes are (in this order)
+     1. The attack of the Rohirrim
+     2. Eowyn's fight with the witch king
+        + this was already my favorite scene in the book
+        + I really like Miranda Otto.
+     Important actors in this film are:
+     - Elijah Wood :: He plays Frodo
+     - Sean Austin :: He plays Sam, Frodo's friend.
 <
 
   The following commands act on items when the cursor is in the first line
   of an item (the line with the bullet or number).
 
-  TODO: implement functionality.
+  Not yet implemented in vim-orgmode~
+  The following commands act on items when the cursor is in the first line of
+  an item (the line with the bullet or number).
 
 ------------------------------------------------------------------------------
 Footnotes~
-    TODO
+  Not yet implemented in vim-orgmode~
 
 ==============================================================================
 TABLES                                                         *orgguide-tables*
-
-TODO
+  Not yet implemented in vim-orgmode~
 
 ==============================================================================
 HYPERLINKS                                                 *orgguide-hyperlinks*
 
-NOTE: The 'utl' plugin is used for this feature and needs to be installed.
+NOTE: The |utl| plugin is used for this feature and needs to be installed.
       http://www.vim.org/scripts/script.php?script_id=293
-      See |utl|
 
 Like HTML, Org provides links inside a file, external links to other
 files, Usenet articles, emails, and much more.
 
 ------------------------------------------------------------------------------
 Link format~
+                                                           *orgguide-linkformat*
   Org will recognize plain URL-like links and activate them as clickable
   links. The general link format, however, looks like this:
 >
     [[link][description]]       or alternatively           [[link]]
 <
+
   Once a link in the buffer is complete (all brackets present), and you are
-  not in insert mode, or you are editing another line, Org will
-  change the display so that 'description' is displayed instead of
-  '[[link][description]]' and 'link' is displayed instead of '[[link]]'.
-  To edit the invisible ‘link’ part, go into insert mode, or call the
+  not in insert mode, or you are editing another line, Org will change the
+  display so that 'description' is displayed instead of
+  '[[link][description]]' and 'link' is displayed instead of '[[link]]'.  To
+  edit the invisible ‘link’ part, go into insert mode, or call the
   'Insert/edit Link' command by pressing 'gil'.
 
 ------------------------------------------------------------------------------
 Internal links~
-  TODO
+  Not yet implemented in vim-orgmode~
 
 ------------------------------------------------------------------------------
 External links~
-  TODO
+  |utl| supports links to files and websites. Others can be added by extending
+  utl (see |utl-smartSamples|).  External links are URL-like locators. They
+  start with a short identifying string followed by a colon. There can be no
+  space after the colon. Here are some examples:
+>
+    http://www.astro.uva.nl/~dominik          on the web
+    file:/home/dominik/images/jupiter.jpg     file, absolute path
+    /home/dominik/images/jupiter.jpg          same as above
+<
+
+  A link should be enclosed in double brackets and may contain a descriptive
+  text to be displayed instead of the URL (see section |orgguide-linkformat|),
+  for example:
+>
+    [[http://www.vim.org/][VIM]]
+<
 
 ------------------------------------------------------------------------------
 Handling links~
-  TODO
+  Org provides methods to create a link in the correct syntax, to insert it
+  into an Org file, and to follow the link.
+
+  Not yet implemented in vim-orgmode~
+  C-c l                 Store a link to the current location. This is a
+                        /global/ command (you must create the key binding
+                        yourself) which can be used in any buffer to create a
+                        link. The link will be stored for later insertion into
+                        an Org buffer (see below).
+
+                                                                  *orgguide-gil*
+  gil                   Insert a link. This prompts for a link to be inserted
+                        into the buffer. You can just type a link, or use
+                        history keys <Up> and <Down> to access stored links.
+                        You will be prompted for the description part of the
+                        link. File name completion is enabled to link to a
+                        local file. In addition vim-orgmode provides the
+                        command :OrgHyperlinkInsert to insert a link from
+                        command line.
+
+  gil                   When the cursor is on an existing link, gil allows you
+                        to edit the link and description parts of the link.
+
+  Not yet implemented in vim-orgmode~
+  C-c C-o or mouse-1 or mouse-2  Open link at point.
+
+  Not yet implemented in vim-orgmode~
+  C-c &                 Jump back to a recorded position. A position is
+                        recorded by the commands following internal links, and
+                        by C-c %. Using this command several times in direct
+                        succession moves through a ring of previously recorded
+                        positions.
 
 ------------------------------------------------------------------------------
 Targeted links~
-  TODO
+  Not yet implemented in vim-orgmode~
 
 ==============================================================================
 TODO ITEMS                                                       *orgguide-todo*
@@ -275,28 +436,34 @@ Using TODO states~
 
   The most important commands to work with TODO entries are:
 
-  <leader>ct            Rotate the TODO state of the current item among
+                                                                   *orgguide-,t*
+  ,t                    Rotate the TODO state of the current item among
 >
        ,-> (unmarked) -> TODO -> DONE --.
        '--------------------------------'
 <
 
-  TODO: The same rotation can also be done “remotely” from the timeline and
+  Not yet implemented in vim-orgmode~
+  The same rotation can also be done “remotely” from the timeline and
   agenda buffers with the t command key (see section
   |orgguide-agenda-commands|).
 
   <S-right> or <S-left> Select the following/preceding TODO state, similar to
                         cycling.
 
-  TODO: C-c / t :: View TODO items in a /sparse tree/ (see section
-  [[#Sparse-trees][Sparse trees]]). Folds the buffer, but shows all
-  TODO items and the headings hierarchy above them.
+  Not yet implemented in vim-orgmode~
+  C-c / t               View TODO items in a /sparse tree/ (see section
+                        [[#Sparse-trees][Sparse trees]]). Folds the buffer,
+                        but shows all TODO items and the headings hierarchy
+                        above them.
 
+                                                          *orgguide-<leader>cat*
   <leader>cat           Show the global TODO list. Collects the TODO items
                         from all agenda files (see section
                         |orgguide-agenda-views|) into a single buffer.
 
-  TODO: S-M-<RET> :: Insert a new TODO entry below the current one.
+  Not yet implemented in vim-orgmode~
+  S-M-<CR>              Insert a new TODO entry below the current one.
 
 ------------------------------------------------------------------------------
 Multi-state workflows~
@@ -304,12 +471,13 @@ Multi-state workflows~
   You can use TODO keywords to indicate different 'sequential' states in
   the process of working on an item, for example:
 >
-    :let g:org_todo_keywords=['TODO', 'FEEDBACK', 'VERIFY', '|', 'DONE', 'DELEGATED']
+  :let g:org_todo_keywords=['TODO', 'FEEDBACK', 'VERIFY', '|', 'DONE', 'DELEGATED']
 <
+
   The vertical bar separates the TODO keywords (states that 'need action')
   from the DONE states (which need 'no further action'). If you don’t
   provide the separator bar, the last state is used as the DONE state.
-  With this setup, the command <leader>ct will cycle an entry from TODO to
+  With this setup, the command <S-Right> will cycle an entry from TODO to
   FEEDBACK, then to VERIFY, and finally to DONE and DELEGATED.
 
   Sometimes you may want to use different sets of TODO keywords in
@@ -317,51 +485,51 @@ Multi-state workflows~
   also a workflow for bug fixing, and a separate state indicating that an
   item has been canceled (so it is not DONE, but also does not require
   action). Your setup would then look like this:
-
-  TODO: check the following
 >
-    (setq org-todo-keywords
-          '((sequence "TODO(t)" "|" "DONE(d)")
-            (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
-            (sequence "|" "CANCELED(c)")))
+  :let g:org_todo_keywords = [['TODO(t)', '|', 'DONE(d)'],
+      \ ['REPORT(r)', 'BUG(b)', 'KNOWNCAUSE(k)', '|', 'FIXED(f)'],
+      \ ['CANCELED(c)']]
 <
   The keywords should all be different, this helps Org mode to keep track
   of which subsequence should be used for a given entry. The example also
   shows how to define keys for fast access of a particular state, by
   adding a letter in parenthesis after each keyword - you will be prompted
-  for the key after C-c C-t.
+  for the key after pressing ,d.
 
+                                                                   *orgguide-,d*
+  ,d                    prompt for fast access of a todo state
+
+  Not yet implemented in vim-orgmode~
   To define TODO keywords that are valid only in a single file, use the
   following text anywhere in the file.
 
+>
   #+BEGIN_EXAMPLE
       #+TODO: TODO(t) | DONE(d)
       #+TODO: REPORT(r) BUG(b) KNOWNCAUSE(k) | FIXED(f)
       #+TODO: | CANCELED(c)
   #+END_EXAMPLE
+<
 
   After changing one of these lines, use C-c C-c with the cursor still in
   the line to make the changes known to Org mode.
 
 ------------------------------------------------------------------------------
 Progress logging~
-
-  TODO
+  Not yet implemented in vim-orgmode~
 
 ------------------------------------------------------------------------------
 Priorities~
-
-  TODO
+  Not yet implemented in vim-orgmode~
 
 ------------------------------------------------------------------------------
 Breaking tasks down into subtasks~
-
-  TODO
+  Not yet implemented in vim-orgmode~
 
 ------------------------------------------------------------------------------
 Checkboxes~
-
-  TODO
+                                                           *orgguide-checkboxes*
+  Not yet implemented in vim-orgmode~
 
 ==============================================================================
 TAGS                                                             *orgguide-tags*
@@ -379,7 +547,7 @@ will by default be in bold face with the same color as the headline.
 ------------------------------------------------------------------------------
 Tag inheritance~
                                                      *orgguide-tags-inheritance*
-TODO
+  Not yet implemented in vim-orgmode~
 
 ------------------------------------------------------------------------------
 Setting tags~
@@ -388,10 +556,11 @@ Setting tags~
   a colon, <TAB> offers completion on tags. There is also a special
   command for inserting tags:
 
-  <leader>t             Enter new tags for the current headline. Org mode
-                        will either offer completion or a special single-key
-                        interface for setting tags, see below. After pressing
-                        <RET>, the tags will be inserted and aligned to
+                                                                   *orgguide-,t*
+  ,t                    Enter new tags for the current headline. Org mode will
+                        either offer completion or a special single-key
+                        interface for setting tags, see below.  After pressing
+                        <CR>, the tags will be inserted and aligned to
                         'org-tags-column'.
 
   Org will support tag insertion based on a 'list of tags'. By default
@@ -401,12 +570,12 @@ Setting tags~
 ------------------------------------------------------------------------------
 Tag searches~
                                                           *orgguide-tags-search*
-TODO
+  Not yet implemented in vim-orgmode~
 
 ==============================================================================
 PROPERTIES                                                 *orgguide-properties*
 
-TODO
+  Not yet implemented in vim-orgmode~
 
 ==============================================================================
 DATES AND TIMES                                                 *orgguide-dates*
@@ -418,26 +587,25 @@ information is called a 'timestamp' in Org mode.
 ------------------------------------------------------------------------------
 Timestamps~
 
-  A timestamp is a specification of a date (possibly with a time or a
-  range of times) in a special format, either <2003-09-16 Tue> or
-  <2003-09-16 Tue 09:39> or <2003-09-16 Tue 12:00-12:30>. A timestamp
-  can appear anywhere in the headline or body of an Org tree entry.
-  Its presence causes entries to be shown on specific dates in the
-  agenda (see section |orgguide-agenda|). We distinguish:
+  A timestamp is a specification of a date (possibly with a time or a range of
+  times) in a special format, either <2003-09-16 Tue> or <2003-09-16 Tue
+  09:39> or <2003-09-16 Tue 12:00-12:30>. A timestamp can appear anywhere in
+  the headline or body of an Org tree entry.  Its presence causes entries to
+  be shown on specific dates in the agenda (see section |orgguide-agenda|). We
+  distinguish:
 
   Plain timestamp; Event; Appointment ~
-    A simple timestamp just assigns a date/time to an item. This is just
-    like writing down an appointment or event in a paper agenda.
+    A simple timestamp just assigns a date/time to an item. This is just like
+    writing down an appointment or event in a paper agenda.
 >
     * Meet Peter at the movies <2006-11-01 Wed 19:15>
     * Discussion on climate change <2006-11-02 Thu 20:00-22:00>
 <
-
   Timestamp with repeater interval ~
-    TODO: implement
+    Not yet implemented in vim-orgmode~
 
   Diary-style sexp entries ~
-    TODO: implement
+    Not yet implemented in vim-orgmode~
 
   Time/Date range~
     Two timestamps connected by ‘--’ denote a range.
@@ -445,49 +613,48 @@ Timestamps~
     ** Meeting in Amsterdam
        <2004-08-23 Mon>--<2004-08-26 Thu>
 <
-
   Inactive timestamp~
-    Just like a plain timestamp, but with square brackets instead of
-    angular ones. These timestamps are inactive in the sense that they do
-    'not' trigger an entry to show up in the agenda.
+    Just like a plain timestamp, but with square brackets instead of angular
+    ones. These timestamps are inactive in the sense that they do 'not'
+    trigger an entry to show up in the agenda.
 >
-      * Gillian comes late for the fifth time [2006-11-01 Wed]
+    * Gillian comes late for the fifth time [2006-11-01 Wed]
 <
-
 ------------------------------------------------------------------------------
 Creating timestamps~
 
   For Org mode to recognize timestamps, they need to be in the specific
-  format. All commands listed below produce timestamps in the correct
-  format.
+  format. All commands listed below produce timestamps in the correct format.
 
                                                            *orgmode-<leader>-sa*
-  <LEADER>sa        Prompt for a date and insert a corresponding timestamp.
+  <leader>sa            Prompt for a date and insert a corresponding timestamp.
 
-                    TODO: not implemented yet: When the cursor is at an
-                    existing timestamp in the buffer, the command is used to
-                    modify this timestamp instead of inserting a new one.
+                        Not yet implemented in vim-orgmode~
+                        When the cursor is at an existing timestamp in the
+                        buffer, the command is used to modify this timestamp
+                        instead of inserting a new one.
 
-                    TODO: not implemented yet
-                    When this command is used twice in succession, a time
-                    range is inserted. With a prefix, also add the current
-                    time.
+                        Not yet implemented in vim-orgmode~
+                        When this command is used twice in succession, a time
+                        range is inserted. With a prefix, also add the current
+                        time.
 
                                                             *orgmode-<leader>si*
-  <LEADER>si        Like |orgmode-<leader>-sa|, but insert an inactive timestamp
-                    that will not cause an agenda entry.
+  <leader>si            Like |orgmode-<leader>-sa|, but insert an inactive
+                        timestamp that will not cause an agenda entry.
 
                                               *orgmode-ctrl-a* or *orgmode-ctrl-x*
-  CTRL-A or CTRL-X  Change the item under the cursor in a timestamp.
-                    The cursor can be on a year, month, day, hour or minute.
-                    NOTE: The plugin 'speeddating' should be installed for
-                    this feature.
+  CTRL-A or CTRL-X      Change the item under the cursor in a timestamp.
+                        The cursor can be on a year, month, day, hour or
+                        minute.  NOTE: The plugin 'speeddating' should be
+                        installed for this feature.
 
-                    TODO: not implemented yet.
-                    When the timestamp contains a time range like
-                    ‘15:30-16:30’, modifying the first time will also shift
-                    the second, shifting the time block with constant length.
-                    To change the length, modify the second time.
+                        Not yet implemented in vim-orgmode~
+                        When the timestamp contains a time range like
+                        ‘15:30-16:30’, modifying the first time will also
+                        shift the second, shifting the time block with
+                        constant length.  To change the length, modify the
+                        second time.
 
   When Org mode prompts for a date/time, it will accept any string containing
   some date and/or time information, and intelligently interpret the string,
@@ -495,39 +662,40 @@ Creating timestamps~
   time. See the manual for more information on how exactly the date/time
   prompt works.
 
-  TODO: not implemented yet.
+  Not yet implemented in vim-orgmode~
   You can also select a date in the pop-up calendar.
 
 ------------------------------------------------------------------------------
 Deadlines and scheduling~
-  TODO: not implemented yet.
+  Not yet implemented in vim-orgmode~
 
 ------------------------------------------------------------------------------
 Clocking work time~
-  TODO: not implemented yet.
+  Not yet implemented in vim-orgmode~
 
 ==============================================================================
 CAPTURE - REFILE - ARCHIVE                                    *orgguide-capture*
 
-TODO
+  Not yet implemented in vim-orgmode~
 
 ==============================================================================
 AGENDA VIEWS                                                   *orgguide-agenda*
 
 Due to the way Org works, TODO items, time-stamped items, and tagged headlines
-can be scattered throughout a file or even a number of files.  To get an
-overview of open action items, or of events that are important for
-a particular date, this information must be collected, sorted and displayed in
+can be scattered throughout a file or even a number of files. To get an
+overview of open action items, or of events that are important for a
+particular date, this information must be collected, sorted and displayed in
 an organized way. There are several different views, see below.
 
-The extracted information is displayed in a special agenda buffer.  This
+The extracted information is displayed in a special agenda buffer. This
 buffer is read-only.
 
-TODO: ... but provides commands to visit the corresponding
-locations in the original Org files, and even to edit these files remotely.
-Remote editing from the agenda buffer means, for example, that you can change
-the dates of deadlines and appointments from the agenda buffer. The commands
-available in the Agenda buffer are listed in |orgguide-agenda-commands|.
+Not yet implemented in vim-orgmode~
+... but provides commands to visit the corresponding locations in the original
+Org files, and even to edit these files remotely.  Remote editing from the
+agenda buffer means, for example, that you can change the dates of deadlines
+and appointments from the agenda buffer. The commands available in the Agenda
+buffer are listed in |orgguide-agenda-commands|.
 
 - |orgguide-agenda-files|          Files being searched for agenda information
 - |orgguide-agenda-dispatcher|     Keyboard access to agenda views
@@ -539,17 +707,16 @@ available in the Agenda buffer are listed in |orgguide-agenda-commands|.
 Agenda files~
                                                          *orgguide-agenda-files*
   The information to be shown is normally collected from all 'agendafiles',
-  the files listed in the variable *g:org_agenda_files*.
+  the files listed in the variable *g:org_agenda_files* .
 
   You can change the list of agenda files like this:
 >
     let g:org_agenda_files = ['~/org/index.org', ~/org/project.org']
 <
-
 ------------------------------------------------------------------------------
 The agenda dispatcher ~
                                                     *orgguide-agenda-dispatcher*
-  TODO: not implemented yet.
+  Not yet implemented in vim-orgmode~
 
 ------------------------------------------------------------------------------
 The built-in agenda views ~
@@ -559,6 +726,7 @@ The built-in agenda views ~
     The purpose of the weekly/daily 'agenda' is to act like a page of a
     paper agenda, showing all the tasks for the current week or day.
 
+                                                          *orgguide-<leader>caa*
     <leader>caa         Compile an agenda for the current week from a list of
                         Org files. The agenda shows the entries for each day.
 
@@ -566,29 +734,34 @@ The built-in agenda views ~
     The global TODO list contains all unfinished TODO items formatted and
     collected into a single place.
 
-    TODO: Remote editing of TODO items lets you
-    change the state of a TODO entry with a single key press. The commands
-    available in the TODO list are described in |agenda-commands|
+    Not yet implemented in vim-orgmode~
+    Remote editing of TODO items lets you change the state of a TODO entry
+    with a single key press. The commands available in the TODO list are
+    described in |agenda-commands|
 
-   <leader>cat          Show the global TODO list. This collects the TODO
+                                                          *orgguide-<leader>cat*
+    <leader>cat         Show the global TODO list. This collects the TODO
                         items from all agenda files into a single buffer.
 
-   TODO: <leader>caT    Like the above, but allows selection of a specific
+    Not yet implemented in vim-orgmode~
+                                                          *orgguide-<leader>caT*
+    <leader>caT         Like the above, but allows selection of a specific
                         TODO keyword.
 
   Matching tags and properties~
-    TODO
+    Not yet implemented in vim-orgmode~
 
   Timeline for a single file~
     The timeline summarizes all time-stamped items from a single Org mode
     file in a /time-sorted view/. The main purpose of this command is to
     give an overview over events in a project.
 
+                                                          *orgguide-<leader>caL*
     <leader>caL         Show a time-sorted view of the Org file, with all
                         time-stamped items.
 
   Search view~
-    TODO
+    Not yet implemented in vim-orgmode~
 
 ------------------------------------------------------------------------------
 Commands in the agenda buffer~
@@ -598,30 +771,34 @@ Commands in the agenda buffer~
   original entry location, and to edit the Org files “remotely” from the
   agenda buffer.
 
-  TODO: only partly implemented.
+  Not yet implemented in vim-orgmode~
+  only partly implemented
 
   Motion~
-    TODO
+    Not yet implemented in vim-orgmode~
 
   View/Go to Org file~
-    <TAB>           Go to the original location of the idem in an alternative
-                    window.
+                                                           *orgguide-agenda-Tab*
+    <Tab>               Go to the original location of the idem in an
+                        alternative window.
 
-    <RET>           Go to the original location of the item and stay in the
-                    same/the agenda window.
+                                                            *orgguide-agenda-CR*
+    <CR>                Go to the original location of the item and stay in
+                        the same/the agenda window.
 
-    <S-RET>         Go to the original location of the item in a new split
-                    window.
+                                                          *orgguide-agenda-S-CR*
+    <S-CR>              Go to the original location of the item in a new split
+                        window.
 
-    TODO
+    Not yet implemented in vim-orgmode~
 
   Change display~
-    TODO
+    Not yet implemented in vim-orgmode~
 
 ------------------------------------------------------------------------------
 Custom agenda views~
                                                         *orgguide-agenda-custom*
-  TODO
+  Not yet implemented in vim-orgmode~
 
 ==============================================================================
 EXPORTING                                                      *orgguide-export*
@@ -641,16 +818,21 @@ Simply use the 'export' menu.
 ==============================================================================
 PUBLISHING                                                 *orgguide-publishing*
 
-TODO
+  Not yet implemented in vim-orgmode~
 
 ==============================================================================
 WORKING WITH SOURCE CODE                                       *orgguide-source*
 
-TODO
+  Not yet implemented in vim-orgmode~
 
 ==============================================================================
 MISCELLANEOUS                                                    *orgguide-misc*
 
-TODO
+  Not yet implemented in vim-orgmode~
+
+==============================================================================
+MOBILEORG                                                   *orgguide-mobileorg*
+
+  Not yet implemented in vim-orgmode~
 
 vim:tw=78:ts=2:sw=2:expandtab:ft=help:norl:

@@ -279,7 +279,7 @@ class Todo(object):
 				vim.current.buffer.append(res.encode(u'utf-8'))
 
 		# position the cursor of the current todo item
-		vim.command(u'normal G'.encode(u'utf-8'))
+		vim.command(u'normal! G'.encode(u'utf-8'))
 		current_state = settings.unset(u'org_current_state_%d' % bufnr)
 		found = False
 		if current_state is not None and current_state != '':
