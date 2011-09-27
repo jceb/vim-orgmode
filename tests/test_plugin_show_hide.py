@@ -227,7 +227,7 @@ Bla bla
 
 	def test_no_heading_toggle_folding_reverse(self):
 		vim.current.window.cursor = (1, 0)
-		self.assertEqual(self.showhide.toggle_folding(open_folding=False), None)
+		self.assertEqual(self.showhide.toggle_folding(reverse=True), None)
 		self.assertEqual(vim.EVALHISTORY[-1], u'feedkeys("<Tab>", "n")'.encode(u'utf-8'))
 		self.assertEqual(vim.current.window.cursor, (1, 0))
 
@@ -248,7 +248,7 @@ Bla bla
 				})
 		vim.current.window.cursor = (2, 0)
 
-		self.assertNotEqual(self.showhide.toggle_folding(open_folding=False), None)
+		self.assertNotEqual(self.showhide.toggle_folding(reverse=True), None)
 		self.assertEqual(vim.CMDHISTORY[-1], u'2,5foldopen!'.encode(u'utf-8'))
 		self.assertEqual(vim.current.window.cursor, (2, 0))
 
@@ -257,7 +257,7 @@ Bla bla
 		vim.EVALRESULTS.update({
 				u'foldclosed(13)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				})
-		self.assertNotEqual(self.showhide.toggle_folding(open_folding=False), None)
+		self.assertNotEqual(self.showhide.toggle_folding(reverse=True), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		self.assertEqual(vim.CMDHISTORY[-1], u'normal! 13ggzc'.encode(u'utf-8'))
 		self.assertEqual(vim.current.window.cursor, (13, 0))
@@ -267,7 +267,7 @@ Bla bla
 		vim.EVALRESULTS.update({
 				u'foldclosed(10)'.encode(u'utf-8'): u'10'.encode(u'utf-8'),
 				})
-		self.assertNotEqual(self.showhide.toggle_folding(open_folding=False), None)
+		self.assertNotEqual(self.showhide.toggle_folding(reverse=True), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		self.assertEqual(vim.CMDHISTORY[-1], u'10,16foldopen!'.encode(u'utf-8'))
 		self.assertEqual(vim.current.window.cursor, (10, 0))
@@ -281,7 +281,7 @@ Bla bla
 				u'foldclosed(13)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				})
-		self.assertNotEqual(self.showhide.toggle_folding(open_folding=False), None)
+		self.assertNotEqual(self.showhide.toggle_folding(reverse=True), None)
 		self.assertEqual(len(vim.CMDHISTORY), 2)
 		self.assertEqual(vim.CMDHISTORY[-2], u'normal! 13ggzc'.encode(u'utf-8'))
 		self.assertEqual(vim.CMDHISTORY[-1], u'normal! 16ggzc'.encode(u'utf-8'))
@@ -292,7 +292,7 @@ Bla bla
 		vim.EVALRESULTS.update({
 				u'foldclosed(2)'.encode(u'utf-8'): u'2'.encode(u'utf-8'),
 				})
-		self.assertNotEqual(self.showhide.toggle_folding(open_folding=False), None)
+		self.assertNotEqual(self.showhide.toggle_folding(reverse=True), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		self.assertEqual(vim.CMDHISTORY[-1], u'2,16foldopen!'.encode(u'utf-8'))
 		self.assertEqual(vim.current.window.cursor, (2, 0))
@@ -306,7 +306,7 @@ Bla bla
 				u'foldclosed(13)'.encode(u'utf-8'): u'13'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'16'.encode(u'utf-8'),
 				})
-		self.assertNotEqual(self.showhide.toggle_folding(open_folding=False), None)
+		self.assertNotEqual(self.showhide.toggle_folding(reverse=True), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		self.assertEqual(vim.CMDHISTORY[-1], u'normal! 2ggzc'.encode(u'utf-8'))
 		self.assertEqual(vim.current.window.cursor, (2, 0))
@@ -320,7 +320,7 @@ Bla bla
 				u'foldclosed(13)'.encode(u'utf-8'): u'13'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'16'.encode(u'utf-8'),
 				})
-		self.assertNotEqual(self.showhide.toggle_folding(open_folding=False), None)
+		self.assertNotEqual(self.showhide.toggle_folding(reverse=True), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		self.assertEqual(vim.CMDHISTORY[-1], u'normal! 6ggzc'.encode(u'utf-8'))
 		self.assertEqual(vim.current.window.cursor, (2, 0))
@@ -334,7 +334,7 @@ Bla bla
 				u'foldclosed(13)'.encode(u'utf-8'): u'13'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'16'.encode(u'utf-8'),
 				})
-		self.assertNotEqual(self.showhide.toggle_folding(open_folding=False), None)
+		self.assertNotEqual(self.showhide.toggle_folding(reverse=True), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		self.assertEqual(vim.CMDHISTORY[-1], u'normal! 10ggzc'.encode(u'utf-8'))
 		self.assertEqual(vim.current.window.cursor, (2, 0))
@@ -348,7 +348,7 @@ Bla bla
 				u'foldclosed(13)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'16'.encode(u'utf-8'),
 				})
-		self.assertNotEqual(self.showhide.toggle_folding(open_folding=False), None)
+		self.assertNotEqual(self.showhide.toggle_folding(reverse=True), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		self.assertEqual(vim.CMDHISTORY[-1], u'normal! 13ggzc'.encode(u'utf-8'))
 		self.assertEqual(vim.current.window.cursor, (2, 0))
@@ -362,7 +362,7 @@ Bla bla
 				u'foldclosed(13)'.encode(u'utf-8'): u'13'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				})
-		self.assertNotEqual(self.showhide.toggle_folding(open_folding=False), None)
+		self.assertNotEqual(self.showhide.toggle_folding(reverse=True), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		self.assertEqual(vim.CMDHISTORY[-1], u'normal! 16ggzc'.encode(u'utf-8'))
 		self.assertEqual(vim.current.window.cursor, (2, 0))
@@ -376,7 +376,7 @@ Bla bla
 				u'foldclosed(13)'.encode(u'utf-8'): u'13'.encode(u'utf-8'),
 				u'foldclosed(16)'.encode(u'utf-8'): u'-1'.encode(u'utf-8'),
 				})
-		self.assertNotEqual(self.showhide.toggle_folding(open_folding=False), None)
+		self.assertNotEqual(self.showhide.toggle_folding(reverse=True), None)
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		self.assertEqual(vim.CMDHISTORY[-1], u'normal! 16ggzc'.encode(u'utf-8'))
 		self.assertEqual(vim.current.window.cursor, (2, 0))
