@@ -129,10 +129,7 @@ class TagsProperties(object):
 
 		settings.set(u'org_tag_completion_ignorecase', int(vim.eval(u'&ignorecase')))
 
-		settings.set(u'org_leader', u',')
-		leader = settings.get(u'org_leader', u',')
-
-		self.keybindings.append(Keybinding(u'%st' % leader, Plug(u'OrgSetTags', u':py ORGMODE.plugins[u"TagsProperties"].set_tags()<CR>')))
+		self.keybindings.append(Keybinding(u'<localleader>st', Plug(u'OrgSetTags', u':py ORGMODE.plugins[u"TagsProperties"].set_tags()<CR>')))
 		self.menu + ActionEntry(u'Set &Tags', self.keybindings[-1])
 
 		self.commands.append(Command(u'OrgTagsRealign', u":py ORGMODE.plugins[u'TagsProperties'].realign_all_tags()"))

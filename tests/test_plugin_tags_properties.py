@@ -31,8 +31,6 @@ class TagsPropertiesTestCase(unittest.TestCase):
 				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("b:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("b:org_leader")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("g:org_leader")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'b:changedtick'.encode(u'utf-8'): (u'%d' % counter).encode(u'utf-8'),
 				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
 		if not u'TagsProperties' in ORGMODE.plugins:

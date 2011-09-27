@@ -234,20 +234,17 @@ files to the agenda view.")
 
 		Key bindings and other initialization should be done here.
 		"""
-		settings.set(u'org_leader', u',')
-		leader = settings.get(u'org_leader', u',')
-
-		self.keybindings.append(Keybinding(u'%scat' % leader,
+		self.keybindings.append(Keybinding(u'<localleader>cat',
 				Plug(u'OrgAgendaTodo',
 				u':py ORGMODE.plugins[u"Agenda"].list_all_todos()<CR>')))
 		self.menu + ActionEntry(u'Agenda for all TODOs', self.keybindings[-1])
 
-		self.keybindings.append(Keybinding(u'%scaa' % leader,
+		self.keybindings.append(Keybinding(u'<localleader>caa',
 				Plug(u'OrgAgendaWeek',
 				u':py ORGMODE.plugins[u"Agenda"].list_next_week()<CR>')))
 		self.menu + ActionEntry(u'Agenda for the week', self.keybindings[-1])
 
-		self.keybindings.append(Keybinding(u'%scaL' % leader,
+		self.keybindings.append(Keybinding(u'<localleader>caL',
 				Plug(u'OrgAgendaTimeline',
 				u':py ORGMODE.plugins[u"Agenda"].list_timeline()<CR>')))
 		self.menu + ActionEntry(u'Timeline for this buffer',

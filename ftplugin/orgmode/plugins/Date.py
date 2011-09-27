@@ -243,15 +243,12 @@ class Date(object):
 
 		Key bindings and other initialization should be done here.
 		"""
-		settings.set(u'org_leader', u',')
-		leader = settings.get(u'org_leader', u',')
-
-		self.keybindings.append(Keybinding(u'%ssa' % leader,
+		self.keybindings.append(Keybinding(u'<localleader>sa',
 				Plug(u'OrgDateInsertTimestampActive',
 				u':py ORGMODE.plugins[u"Date"].insert_timestamp()<CR>')))
 		self.menu + ActionEntry(u'Timest&amp', self.keybindings[-1])
 
-		self.keybindings.append(Keybinding(u'%ssi' % leader,
+		self.keybindings.append(Keybinding(u'<localleader>si',
 				Plug(u'OrgDateInsertTimestampInactive',
 					u':py ORGMODE.plugins[u"Date"].insert_timestamp(False)<CR>')))
 		self.menu + ActionEntry(u'Timestamp (&inactive)', self.keybindings[-1])

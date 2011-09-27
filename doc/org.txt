@@ -516,6 +516,11 @@ LINKS                                                                *org-links*
 CHANGELOG                                                        *org-changelog*
 
 0.4.0-0
+- change g:org_leader to <LocalLeader> (closes issue #101)
+	To restore the previous behavior add the following line to your vimrc:
+>
+  let maplocalleader = ','
+<
 - change normal command execution to not remap any key (related to issue #85)
 - fix regression timeout when opening folds (closes issue #100)
 - vim-orgmode multistate documentation (closes issue #77)
