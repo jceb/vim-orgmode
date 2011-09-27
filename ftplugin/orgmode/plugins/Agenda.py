@@ -173,7 +173,7 @@ files to the agenda view.")
 		vim.command(u'setlocal nomodifiable  conceallevel=2 concealcursor=nc'.encode(u'utf-8'))
 		# try to jump to the positon of today
 		try:
-			vim.command((u'normal %sgg<CR>' % today_row).encode(u'utf-8'))
+			vim.command((u'normal! %sgg<CR>' % today_row).encode(u'utf-8'))
 		except:
 			pass
 

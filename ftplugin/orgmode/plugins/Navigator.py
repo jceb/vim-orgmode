@@ -26,14 +26,14 @@ class Navigator(object):
 		heading = ORGMODE.get_document().current_heading()
 		if not heading:
 			if mode == u'visual':
-				vim.command(u'normal gv'.encode(u'utf-8'))
+				vim.command(u'normal! gv'.encode(u'utf-8'))
 			else:
 				echo(u'No heading found')
 			return
 
 		if not heading.parent:
 			if mode == u'visual':
-				vim.command(u'normal gv'.encode(u'utf-8'))
+				vim.command(u'normal! gv'.encode(u'utf-8'))
 			else:
 				echo(u'No parent heading found')
 			return
@@ -57,14 +57,14 @@ class Navigator(object):
 		heading = ORGMODE.get_document().current_heading()
 		if not heading:
 			if mode == u'visual':
-				vim.command(u'normal gv'.encode(u'utf-8'))
+				vim.command(u'normal! gv'.encode(u'utf-8'))
 			else:
 				echo(u'No heading found')
 			return
 
 		if not heading.parent or not heading.parent.next_sibling:
 			if mode == u'visual':
-				vim.command(u'normal gv'.encode(u'utf-8'))
+				vim.command(u'normal! gv'.encode(u'utf-8'))
 			else:
 				echo(u'No parent heading found')
 			return
@@ -172,7 +172,7 @@ class Navigator(object):
 		move_col_end = u'%dl' % (col_end - 1) if (col_end - 1) > 0 and (col_end - 1) < 2000000000 else u''
 		swap = u'o' if swap_cursor else u''
 
-		vim.command((u'normal %dgg%s%s%dgg%s%s' % \
+		vim.command((u'normal! %dgg%s%s%dgg%s%s' % \
 				(line_start, move_col_start, vim.eval(u'visualmode()'.encode(u'utf-8')), line_end, move_col_end, swap)).encode(u'utf-8'))
 
 	@classmethod
@@ -198,7 +198,7 @@ class Navigator(object):
 			if not (heading or focus_heading):
 				if mode == u'visual':
 					# restore visual selection when no heading was found
-					vim.command(u'normal gv'.encode(u'utf-8'))
+					vim.command(u'normal! gv'.encode(u'utf-8'))
 				else:
 					echo(u'No heading found')
 				return

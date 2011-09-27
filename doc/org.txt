@@ -516,6 +516,7 @@ LINKS                                                                *org-links*
 CHANGELOG                                                        *org-changelog*
 
 0.4.0-0
+- change normal command execution to not remap any key (related to issue #85)
 - fix regression timeout when opening folds (closes issue #100)
 - vim-orgmode multistate documentation (closes issue #77)
 - add support for @-signs in tags (closes issue #98)

@@ -155,9 +155,9 @@ class Misc(object):
 		self.keybindings.append(Keybinding(u'OH', Plug(u'OrgAOuterHeadingVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Misc"].a_heading(selection=u"outer")<CR>', mode=MODE_VISUAL)))
 
 		self.keybindings.append(Keybinding(u'ih', Plug(u'OrgInnerHeadingOperator', u':<C-u>py ORGMODE.plugins[u"Misc"].i_heading(mode=u"operator")<CR>', mode=MODE_OPERATOR)))
-		self.keybindings.append(Keybinding(u'ah', u':normal Vah<CR>', mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding(u'ah', u':normal! Vah<CR>', mode=MODE_OPERATOR))
 		self.keybindings.append(Keybinding(u'Oh', Plug(u'OrgOuterHeadingOperator', ':<C-u>py ORGMODE.plugins[u"Misc"].i_heading(mode=u"operator", selection=u"outer")<CR>', mode=MODE_OPERATOR)))
-		self.keybindings.append(Keybinding(u'OH', u':normal VOH<CR>', mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding(u'OH', u':normal! VOH<CR>', mode=MODE_OPERATOR))
 
 		self.keybindings.append(Keybinding(u'it', Plug(u'OrgInnerTreeVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Misc"].i_heading(skip_children=True)<CR>', mode=MODE_VISUAL)))
 		self.keybindings.append(Keybinding(u'at', Plug(u'OrgAInnerTreeVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Misc"].a_heading(skip_children=True)<CR>', mode=MODE_VISUAL)))
@@ -165,6 +165,6 @@ class Misc(object):
 		self.keybindings.append(Keybinding(u'OT', Plug(u'OrgAOuterTreeVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Misc"].a_heading(selection=u"outer", skip_children=True)<CR>', mode=MODE_VISUAL)))
 
 		self.keybindings.append(Keybinding(u'it', Plug(u'OrgInnerTreeOperator', u':<C-u>py ORGMODE.plugins[u"Misc"].i_heading(mode=u"operator")<CR>', mode=MODE_OPERATOR)))
-		self.keybindings.append(Keybinding(u'at', u':normal Vat<CR>', mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding(u'at', u':normal! Vat<CR>', mode=MODE_OPERATOR))
 		self.keybindings.append(Keybinding(u'Ot', Plug(u'OrgOuterTreeOperator', u':<C-u>py ORGMODE.plugins[u"Misc"].i_heading(mode=u"operator", selection=u"outer", skip_children=True)<CR>', mode=MODE_OPERATOR)))
-		self.keybindings.append(Keybinding(u'OT', u':normal VOT<CR>', mode=MODE_OPERATOR))
+		self.keybindings.append(Keybinding(u'OT', u':normal! VOT<CR>', mode=MODE_OPERATOR))
