@@ -246,7 +246,7 @@ class VimBuffer(Document):
 
 	def previous_heading(self, position=None):
 		u""" Find the next heading (search forward) and return the related object
-		:returns:	 Heading object or None
+		:returns:	Heading object or None
 		"""
 		h = self.current_heading(position=position)
 		if h:
@@ -295,7 +295,7 @@ class VimBuffer(Document):
 
 	def next_heading(self, position=None):
 		u""" Find the next heading (search forward) and return the related object
-		:returns:	 Heading object or None
+		:returns:	Heading object or None
 		"""
 		h = self.current_heading(position=position)
 		if h:
@@ -312,7 +312,7 @@ class VimBuffer(Document):
 
 		:heading:	The base class for the returned heading
 
-		:returns:	 Heading object or None
+		:returns:	Heading object or None
 		"""
 		return self.find_heading(vim.current.window.cursor[0] - 1 \
 				if position is None else position, \
