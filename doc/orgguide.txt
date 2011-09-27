@@ -222,7 +222,7 @@ Text objects~
   OH                    a outer heading
   OT                    a outer subtree
 
-  Motions can be used like text objects as well. See *orgguide-motion* .
+  Motions can be used like text objects as well. See |orgguide-motion|.
 
 ------------------------------------------------------------------------------
 Visibility cycling~
@@ -290,9 +290,9 @@ Structure editing~
   M-S-<CR>              Insert new TODO entry with same level as current
                         heading.
 
-                                                                  *orgguide-Tab*
-  <Tab>                 In a new entry with no text yet, <Tab> will cycle
-                        through reasonable levels.
+  <Tab>         or
+  <S-Tab>               In a new entry with no text yet, <Tab> and <S-Tab>
+                        will cycle through reasonable levels.
 
   <<            or                              *orgguide-<<* or *orgguide-CTRL-d*
   <C-d> (insert mode)   Promote current heading by one level.
@@ -490,8 +490,8 @@ Using TODO states~
 
   The most important commands to work with TODO entries are:
 
-                                                       *orgguide-<LocalLeader>t*
-  <LocalLeader>t        Rotate the TODO state of the current item among
+  <LocalLeader>t        Rotate the TODO state of the current item among. See
+                        |orgguide-tags-settings|for more information.
 >
        ,-> (unmarked) -> TODO -> DONE --.
        '--------------------------------'
@@ -511,9 +511,8 @@ Using TODO states~
                         but shows all TODO items and the headings hierarchy
                         above them.
 
-                                                     *orgguide-<LocalLeader>cat*
-  <LocalLeader>cat      Show the global TODO list. Collects the TODO items
-                        from all agenda files (see section
+  <LocalLeader>cat      Show the global TODO list. This collects the TODO
+                        items from all agenda files (see section
                         |orgguide-agenda-views|) into a single buffer.
 
   Not yet implemented in vim-orgmode~
@@ -1202,6 +1201,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.4.0-0
+- remove duplicate tags (closes issue #104)
 - improve performance when opening larger org files (closes issue #103)
 - replace org.txt by orgguide.txt (closes issue #77)
 - change g:org_leader to <LocalLeader> (closes issue #101)
