@@ -55,18 +55,14 @@ class Export(object):
 		Registration and keybindings.
 		"""
 
-		# leader settings
-		settings.set(u'org_leader', u',')
-		leader = settings.get(u'org_leader', u',')
-
 		# to PDF
-		self.keybindings.append(Keybinding(u'%sep' % leader,
+		self.keybindings.append(Keybinding(u'<localleader>ep',
 				Plug(u'OrgExportToPDF',
 				u':py ORGMODE.plugins[u"Export"].topdf()<CR>')))
 		self.menu + ActionEntry(u'To PDF (via Emacs)', self.keybindings[-1])
 
 		# to HTML
-		self.keybindings.append(Keybinding(u'%seh' % leader,
+		self.keybindings.append(Keybinding(u'<localleader>eh',
 				Plug(u'OrgExportToHTML',
 				u':py ORGMODE.plugins[u"Export"].tohtml()<CR>')))
 		self.menu + ActionEntry(u'To HTML (via Emacs)', self.keybindings[-1])

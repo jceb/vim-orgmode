@@ -119,10 +119,7 @@ class ShowHide(object):
 		self.keybindings.append(Keybinding(u'<S-Tab>', Plug(u'OrgToggleFoldingReverse', u':py ORGMODE.plugins[u"ShowHide"].toggle_folding(reverse=True)<CR>')))
 		self.menu + ActionEntry(u'Cycle Visibility &Reverse', self.keybindings[-1])
 
-		settings.set(u'org_leader', u',')
-		leader = settings.get(u'org_leader', u',')
-
-		self.keybindings.append(Keybinding(u'%s,' % (leader, ), u'zr', mode=MODE_NORMAL))
-		self.keybindings.append(Keybinding(u'%s.' % (leader, ), u'zm', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'<localleader>,', u'zr', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'<localleader>.', u'zm', mode=MODE_NORMAL))
 		for i in xrange(0, 10):
-			self.keybindings.append(Keybinding(u'%s%d' % (leader, i), u'zM:set fdl=%d<CR>' % i, mode=MODE_NORMAL))
+			self.keybindings.append(Keybinding(u'<localleader>%d' % (i, ), u'zM:set fdl=%d<CR>' % i, mode=MODE_NORMAL))
