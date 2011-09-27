@@ -258,9 +258,40 @@ class VimBuffer(Document):
 		"""
 		if position is None:
 			position = vim.current.window.cursor[0] - 1
-		for h in self.all_headings():
-			if h.start <= position and h.end >= position:
-				return h
+
+		if not self.headings:
+			return
+
+		def binaryFindInDocument():
+			hi = len(self.headings)
+			lo = 0
+			while lo < hi:
+				mid = (lo+hi)//2
+				h = self.headings[mid]
+				if h.end_of_last_child < position:
+					lo = mid + 1
+				elif h.start > position:
+					hi = mid
+				else:
+					return binaryFindHeading(h)
+
+		def binaryFindHeading(heading):
+			if not heading.children or heading.end >= position:
+				return heading
+
+			hi = len(heading.children)
+			lo = 0
+			while lo < hi:
+				mid = (lo+hi)//2
+				h = heading.children[mid]
+				if h.end_of_last_child < position:
+					lo = mid + 1
+				elif h.start > position:
+					hi = mid
+				else:
+					return binaryFindHeading(h)
+
+		return binaryFindInDocument()
 
 	def next_heading(self, position=None):
 		u""" Find the next heading (search forward) and return the related object

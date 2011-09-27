@@ -1202,6 +1202,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.4.0-0
+- improve performance when opening larger org files (closes issue #103)
 - replace org.txt by orgguide.txt (closes issue #77)
 - change g:org_leader to <LocalLeader> (closes issue #101)
 	To restore the previous behavior add the following line to your vimrc:
