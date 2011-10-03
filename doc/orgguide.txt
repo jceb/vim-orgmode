@@ -83,7 +83,6 @@ Preface~
 
 ------------------------------------------------------------------------------
 Features~
-
   vim-orgmode is still very young but already quite usable. Here is a short
   list of the already supported features:
 
@@ -98,6 +97,65 @@ Features~
   - Export (via emacs)
 
   More features are coming...
+
+------------------------------------------------------------------------------
+Default mappings~
+                                                                  *org-mappings*
+Here is a short overview of the default mappings. They also can be invoked
+via the 'Org' menu. Most are only usable in command mode.
+ 
+  Show/Hide:~
+    <TAB>           - Cycle Visibility
+
+  Editing Structure:~
+    <C-S-CR>        - Heading above
+    <S-CR>          - Heading below
+    <C-CR>          - Heading above, after children
+
+    m]]             - move subtree down
+    m[[             - move subtree up
+
+    yah             - yank heading 
+    dah             - delete heading 
+    yat             - yank subtree
+    dat             - delete subtree
+    p               - paste subtree
+    
+    >> or >ah       - promote heading
+    << or <ah       - demote heading
+    >at             - promote subtree
+    <at             - demote subtree
+
+  Hyperlinks:~
+    gl              - goto link
+    gyl             - yank link
+    gil             - insert new link
+
+    gn              - next link
+    go              - previous link
+
+  TODO Lists:~
+    ,d              - select keyword
+    <S-Left>        - previous keyword
+    <S-Right>       - next keyword
+    <C-S-Left>      - previous keyword set
+    <C-S-Right>     - next keyword set
+
+  TAGS and properties:~
+    <localleader>t      - set tags
+    
+  Dates:~
+    <localleader>sa     - insert date
+    <localleader>sai    - insert inactive date
+
+  Agenda:~
+    <localleader>caa    - agenda for the week
+    <localleader>cat    - agenda of all TODOs
+    <localleader>caT    - timeline for current buffer
+
+  Export:~
+    <localleader>ep     - export as PDF
+    <localleader>eh     - export as HTML
 
 ------------------------------------------------------------------------------
 Installation~
@@ -119,7 +177,7 @@ Activation~
   Add the following line to your .vimrc file to ensure that filetype plugins
   are loaded properly:
 >
-	filetype plugin indent on
+  filetype plugin indent on
 <
 
   Please install the Universal Text Linking
@@ -139,28 +197,28 @@ Suggested plugins~
     needed when you want to repeat the previous orgmode action.
 
   taglist~
-  	([http://www.vim.org/scripts/script.php?script_id=273)
+    ([http://www.vim.org/scripts/script.php?script_id=273)
     Display tags for the currently edited file. Vim-orgmode ships with support
     for displaying the heading structure and hyperlinks in the taglist plugin.
 
   tagbar~
-  	(http://www.vim.org/scripts/script.php?script_id=3465)
+    (http://www.vim.org/scripts/script.php?script_id=3465)
     A new approach to displaying tags for the currently edited file.
     Vim-orgmode ships with support for displaying the heading structure and
     hyperlinks in the tagbar plugin.
 
   speeddating~
-  	(http://www.vim.org/scripts/script.php?script_id=2120)
+    (http://www.vim.org/scripts/script.php?script_id=2120)
     In-/decrease dates the vim way: C-a and C-x. Dates and times in the
     orgmode format can be in-/decreased if this plugins is installed.
 
   Narrow Region~
-  	(http://www.vim.org/scripts/script.php?script_id=3075)
+    (http://www.vim.org/scripts/script.php?script_id=3075)
     Emulation of Emacs' Narrow Region feature. It might be useful when dealing
     with large orgmode files.
 
   pathogen~
-  	(http://www.vim.org/scripts/script.php?script_id=2332)
+    (http://www.vim.org/scripts/script.php?script_id=2332)
     Easy management of multiple vim plugins.
 
 ------------------------------------------------------------------------------
@@ -308,11 +366,11 @@ Structure editing~
 
                                                                   *orgguide-m[[*
   m[[                   Move subtree up/down (swap with previous/next subtree
-  		                  of same level).
+                        of same level).
 
                                                                   *orgguide-m]]*
   m]]                   Move subtree up/down (swap with previous/next subtree
-  		                  of same level).
+                        of same level).
 
   Not yet implemented in vim-orgmode~
   C-c C-w                Refile entry or region to a different location. See
@@ -930,7 +988,7 @@ Syntax highlighting~
   Define the highlighting colors/group names for headings (default):
 >
   let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier',
-    \		'Statement', 'PreProc', 'Type', 'Special']
+    \   'Statement', 'PreProc', 'Type', 'Special']
 <
 
                                                 *g:org_heading_highlight_levels*
@@ -974,10 +1032,10 @@ Syntax highlighting~
 
 >
     let g:org_todo_keywords = [['TODO', 'WAITING', '|', 'DONE'],
-      \		['|', 'CANCELED']]
+      \   ['|', 'CANCELED']]
     let g:org_todo_keyword_faces = [['WAITING', 'cyan'], ['CANCELED',
-      \		[':foreground red', ':background black', ':weight bold',
-      \		':slant italic', ':decoration underline']]]
+      \   [':foreground red', ':background black', ':weight bold',
+      \   ':slant italic', ':decoration underline']]]
 <
 ==============================================================================
 DEVELOPMENT                                               *orgguide-development*
@@ -1083,7 +1141,7 @@ Keybindings~
         mode=MODE_NORMAL)
 
       vim -> :nmap g{
-      	\ :py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>
+        \ :py ORGMODE.plugins["Navigator"].parent(mode="normal")<CR>
 <
 
       Map g{ to moving to parent heading in normal mode by using a Plug:
@@ -1135,7 +1193,7 @@ Keybindings~
 
       menu + ActionEntry('&Up', k)
       vim -> :nmenu &Org.&Naviagte Headings.&Up<Tab>g{
-      	\ <Plug>OrgJumpToParentNormal
+        \ <Plug>OrgJumpToParentNormal
 >
 
 ------------------------------------------------------------------------------
@@ -1205,7 +1263,7 @@ CHANGELOG                                                   *orgguide-changelog*
 - improve performance when opening larger org files (closes issue #103)
 - replace org.txt by orgguide.txt (closes issue #77)
 - change g:org_leader to <LocalLeader> (closes issue #101)
-	To restore the previous behavior add the following line to your vimrc:
+  To restore the previous behavior add the following line to your vimrc:
 >
   let maplocalleader = ','
 <
