@@ -72,19 +72,21 @@ class Agenda(object):
 		# load org files of agenda
 		agenda_files = settings.get(u'org_agenda_files', u',')
 		if not agenda_files or agenda_files == ',':
-			echoe(u"No org_agenda_files defined. Use \
-:let g:org_agenda_files=['~/org/index.org'] to add \
-files to the agenda view.")
+			echoe((u"No org_agenda_files defined. Use :let "
+				u"g:org_agenda_files=['~/org/index.org'] to add " 
+				u"files to the agenda view."))
 			return
+
 		agenda_files = [os.path.expanduser(f) for f in agenda_files]
-		for agenda_file in agenda_files:
+
+		for agenda_file in agenda_files: 
 			vim.command((u'badd %s' % agenda_file).encode(u'utf-8'))
 
 		# determine the buffer nr of the agenda files
-		agenda_numbers = [get_bufnumber(fn) for fn in agenda_files]
+		agenda_nums = [get_bufnumber(fn) for fn in agenda_files]
 
 		# collect all documents of the agenda files and create the agenda
-		return [ORGMODE.get_document(i) for i in agenda_numbers]
+		return [ORGMODE.get_document(i) for i in agenda_nums if i is not None]
 
 	@classmethod
 	def opendoc(cls, split=False, switch=False):
