@@ -1260,6 +1260,7 @@ CHANGELOG                                                   *orgguide-changelog*
 
 0.4.0-0
 - remove duplicate tags (closes issue #104)
+- improve performance in insert mode (closes issue #103)
 - improve performance when opening larger org files (closes issue #103)
 - replace org.txt by orgguide.txt (closes issue #77)
 - change g:org_leader to <LocalLeader> (closes issue #101)
