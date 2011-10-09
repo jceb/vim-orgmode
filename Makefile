@@ -38,6 +38,17 @@ vmb: ${PLUGIN}.vmb
 
 vmb.gz: ${PLUGIN}.vmb.gz
 
+${PLUGIN}.vba: ${PLUGIN}.vmb
+	mv $< $@
+
+${PLUGIN}.vba.gz: ${PLUGIN}.vba
+	@rm -f ${PLUGIN}.vba.gz
+	gzip $<
+
+vba: ${PLUGIN}.vba
+
+vba.gz: ${PLUGIN}.vba.gz
+
 # run unit tests
 test: check
 
@@ -71,5 +82,10 @@ installvmb: ${PLUGIN}.vmb install_vmb.vim
 	vim --cmd "let g:installdir='${VIMPLUGINDIR}'" -s install_vmb.vim $<
 	@echo "Plugin was installed in ${VIMPLUGINDIR}. Make sure you are using a plugin loader like pathegon, otherwise the ${PLUGIN} might not work properly."
 
+installvba: ${PLUGIN}.vba install_vba.vim
+	rm -rvf ${VIMPLUGINDIR}
+	mkdir -p "${VIMPLUGINDIR}"
+	vim --cmd "let g:installdir='${VIMPLUGINDIR}'" -s install_vba.vim $<
+	@echo "Plugin was installed in ${VIMPLUGINDIR}. Make sure you are using a plugin loader like pathegon, otherwise the ${PLUGIN} might not work properly."
 
 .PHONY: all build test check install clean vmb vmb.gz docs installvmb
