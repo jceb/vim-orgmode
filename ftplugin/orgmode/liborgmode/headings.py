@@ -197,6 +197,7 @@ class Heading(object):
 				return False
 			elif not self.active_date and not other.active:
 				return False
+
 	def copy(self, including_children=True, parent=None):
 		u"""
 		Create a copy of the current heading. The heading will be completely

@@ -1259,6 +1259,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.4.0-0
+- improve performance when inserting a new heading below (closes issue #105)
 - remove duplicate tags (closes issue #104)
 - improve performance in insert mode (closes issue #103)
 - improve performance when opening larger org files (closes issue #103)

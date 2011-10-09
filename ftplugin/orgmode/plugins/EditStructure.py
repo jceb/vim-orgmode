@@ -55,14 +55,23 @@ class EditStructure(object):
 		if below is None:
 			below = cursor[1] != 0 or end_of_last_child
 
-		heading_insert_position = 0
-		if below:
-			heading_insert_position = 1
-			if not end_of_last_child:
-				# append heading at the end of current heading but also take
-				# over the children of current heading
-				heading.children = [h.copy() for h in current_heading.children]
-				del current_heading.children
+		# insert newly created heading
+		l = current_heading.get_parent_list()
+		idx = current_heading.get_index_in_parent_list()
+		if l is not None and idx is not None:
+			l.insert(idx + (1 if below else 0), heading)
+		else:
+			raise HeadingDomError(u'Current heading is not properly linked in DOM')
+
+		if below and not end_of_last_child:
+			# append heading at the end of current heading but also take
+			# over the children of current heading
+			#heading.children = [h.copy() for h in current_heading.children]
+			#del current_heading.children
+			heading._children.data = current_heading._children.data[:]
+			del current_heading._children.data[:]
+			for h in heading._children.data:
+				h._parent = heading
 
 		# if cursor is currently on a heading, insert parts of it into the
 		# newly created heading
@@ -79,14 +88,6 @@ class EditStructure(object):
 			current_heading.title = current_heading.title[:offset]
 			heading.body = current_heading.body[:]
 			current_heading.body = []
-
-		# insert newly created heading
-		l = current_heading.get_parent_list()
-		idx = current_heading.get_index_in_parent_list()
-		if l is not None and idx is not None:
-			l.insert(idx + heading_insert_position, heading)
-		else:
-			raise HeadingDomError(u'Current heading is not properly linked in DOM')
 
 		d.write()
 		vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
