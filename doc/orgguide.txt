@@ -103,7 +103,7 @@ Default mappings~
                                                                   *org-mappings*
 Here is a short overview of the default mappings. They also can be invoked
 via the 'Org' menu. Most are only usable in command mode.
- 
+
   Show/Hide:~
     <TAB>           - Cycle Visibility
 
@@ -115,16 +115,16 @@ via the 'Org' menu. Most are only usable in command mode.
     m]]             - move subtree down
     m[[             - move subtree up
 
-    yah             - yank heading 
-    dah             - delete heading 
-    yat             - yank subtree
-    dat             - delete subtree
+    yah             - yank heading
+    dah             - delete heading
+    yar             - yank subtree
+    dar             - delete subtree
     p               - paste subtree
-    
+
     >> or >ah       - promote heading
     << or <ah       - demote heading
-    >at             - promote subtree
-    <at             - demote subtree
+    >ar             - promote subtree
+    <ar             - demote subtree
 
   Hyperlinks:~
     gl              - goto link
@@ -143,7 +143,7 @@ via the 'Org' menu. Most are only usable in command mode.
 
   TAGS and properties:~
     <localleader>t      - set tags
-    
+
   Dates:~
     <localleader>sa     - insert date
     <localleader>sai    - insert inactive date
@@ -159,12 +159,12 @@ via the 'Org' menu. Most are only usable in command mode.
 
 ------------------------------------------------------------------------------
 Installation~
-  Download latest stable release at
+  Download the latest stable release at
   http://www.vim.org/scripts/script.php?script_id=3642
 
   Open the vimball archive in vim and source it.
 
-  $ vim orgmode.vbm
+  $ vim orgmode.vba
 >
     :so %
 <
@@ -272,13 +272,13 @@ Text objects~
                         excluding the heading level characters (*)
   ah                    a heading, referring to the current heading including
                         everything
-  it                    inner subtree, starting with the current heading
-  at                    a subtree, starting with the current heading
+  ir                    inner subtree, starting with the current heading
+  ar                    a subtree, starting with the current heading
   Oh                    inner outer heading, referring to the parent
-  Ot                    inner outer heading, including subtree, referring to
+  Or                    inner outer heading, including subtree, referring to
                         the parent
-  OH                    a outer heading
-  OT                    a outer subtree
+  OH                    an outer heading
+  OT                    an outer subtree
 
   Motions can be used like text objects as well. See |orgguide-motion|.
 
