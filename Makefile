@@ -1,0 +1,2 @@
+build: builds
+	cd $< && $(MAKE) $@
