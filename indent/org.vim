@@ -53,12 +53,11 @@ EOF
 	if exists('b:fold_expr')
 		let l:tmp = b:fold_expr
 		unlet b:fold_expr
-		if exists('b:org_folding_cache')
-			if ! has_key(b:org_folding_cache, v:lnum) &&
-						\ len(b:org_folding_cache) == 3
-				let b:org_folding_cache = {}
-			endif
+		if mode() == 'i'
 			if ! has_key(b:org_folding_cache, v:lnum)
+				if len(b:org_folding_cache) > 3
+					let b:org_folding_cache = {}
+				endif
 				let b:org_folding_cache[v:lnum] = [l:tmp]
 			endif
 		endif
@@ -99,10 +98,12 @@ EOF
 	if exists('b:foldtext')
 		let l:tmp = b:foldtext
 		unlet b:foldtext
-		if exists('b:org_folding_cache') &&
-					\ has_key(b:org_folding_cache, v:lnum) &&
-					\ len(b:org_folding_cache[v:lnum]) == 1
-			call add(b:org_folding_cache[v:lnum], l:tmp)
+		if mode() == 'i' && has_key(b:org_folding_cache, v:lnum) &&
+			if len(b:org_folding_cache[v:lnum]) == 1
+				call add(b:org_folding_cache[v:lnum], l:tmp)
+			else
+				let b:org_folding_cache[v:lnum][2] = l:tmp
+			endif
 		endif
 		return l:tmp
 	endif
