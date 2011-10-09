@@ -1,129 +1,133 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset='utf-8'>
+	<head>
+		<meta charset='utf-8'>
 
-  <title>jceb/vim-orgmode @ GitHub</title>
+		<title>jceb/vim-orgmode @ GitHub</title>
 
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #2a8e3f;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #ffffff;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #d571c0; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #d571c0; }
-    h3 { text-align: center; color: #d571c0; }
-    a { color: #d571c0; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
-</head>
+		<style type="text/css">
+			body {
+				margin-top: 1.0em;
+				background-color: #2a8e3f;
+				font-family: Helvetica, Arial, FreeSans, san-serif;
+				color: #ffffff;
+			}
+			#container {
+				margin: 0 auto;
+				width: 700px;
+			}
+			h1 { font-size: 3.8em; color: #d571c0; margin-bottom: 3px; }
+			h1 .small { font-size: 0.4em; }
+			h1 a { text-decoration: none }
+			h2 { font-size: 1.5em; color: #d571c0; }
+			h3 { text-align: center; color: #d571c0; }
+			a { color: #d571c0; }
+			.description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+			.download { float: right; }
+			pre { background: #000; color: #fff; padding: 15px;}
+			hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+			.footer { text-align:center; padding-top:30px; font-style: italic; }
+		</style>
+	</head>
 
-<body>
-  <a href="http://github.com/jceb/vim-orgmode"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+	<body>
+		<a href="http://github.com/jceb/vim-orgmode"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
-  <div id="container">
+		<div id="container">
 
-    <div class="download">
-      <a href="http://github.com/jceb/vim-orgmode/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/jceb/vim-orgmode/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
+			<div class="download">
+				<a href="http://github.com/jceb/vim-orgmode/zipball/master">
+					<img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+				<a href="http://github.com/jceb/vim-orgmode/tarball/master">
+					<img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+			</div>
 
-    <h1><a href="http://github.com/jceb/vim-orgmode">vim-orgmode</a>
-      <span class="small">by <a href="http://github.com/jceb">jceb</a></span></h1>
+			<h1><a href="http://github.com/jceb/vim-orgmode">vim-orgmode</a>
+				<span class="small">by <a href="http://github.com/jceb">jceb</a></span></h1>
 
-    <div class="description">
-      Text outlining and task management for Vim based on Emacs' Org-Mode
-    </div>
+			<div class="description">
+				Text outlining and task management for Vim based on Emacs' Org-Mode
+			</div>
 
-    <p>Vim-orgmode: Text outlining and task management for Vim based on Emacs'
-Org-Mode.
+			<p>Vim-orgmode: Text outlining and task management for Vim based on Emacs'
+			Org-Mode.
 
-The idea for this plugin was born by listening to the Floss Weekly podcast
-introducing Emacs' Org-Mode (http://twit.tv/floss136). Org-Mode has a lot of
-strong features like folding, views (sparse tree) and scheduling of tasks.
-These are completed by hyperlinks, tags, todo states, priorities aso.
+			The idea for this plugin was born by listening to the Floss Weekly podcast
+			introducing Emacs' Org-Mode (http://twit.tv/floss136). Org-Mode has a lot of
+			strong features like folding, views (sparse tree) and scheduling of tasks.
+			These are completed by hyperlinks, tags, todo states, priorities aso.
 
-Vim-orgmode aims at providing the same functionality for Vim and for command
-line tools*.
+			Vim-orgmode aims at providing the same functionality for Vim and for command
+			line tools*.
 
-* for command line tools and other programs a library liborgmode is provided.
-  It encapsulates all functionality for parsing and modifying org files.</p><h2>Install</h2>
-<p>  Download latest stable release at
-  http://www.vim.org/scripts/script.php?script_id=3642
+			* for command line tools and other programs a library liborgmode is provided.
+			It encapsulates all functionality for parsing and modifying org files.</p><h2>Install</h2>
+			<p>  Download the latest stable release at
+			<a href="http://www.vim.org/scripts/script.php?script_id=3642">http://www.vim.org/scripts/script.php?script_id=3642</a>
 
-  Open the vimball archive in vim and source it.
+			<br />Intermediate builds can be downloaded at <a href="http://jceb.github.com/vim-orgmode/builds">http://jceb.github.com/vim-orgmode/builds</a>
 
-  $ vim orgmode.vbm
->
-    :so %
-<
+			<br />Open the vimball archive in vim and source it.
 
-  ATTENTION: All .pyc files of former versions of vim-orgmode need to be
-  deleted beforehand!</p>
-<h2>License</h2>
-<p>Copyright (C) 2010,2011 Jan Christoph Ebersbach
+<pre>
+  $ vim orgmode.vba
+&gt;
+	:so %
+&lt;
+</pre>
 
-http://www.e-jc.de/
+			ATTENTION: All .pyc files of former versions of vim-orgmode need to be
+			deleted beforehand!</p>
+			<h2>License</h2>
+			<p>Copyright (C) 2010,2011 Jan Christoph Ebersbach
 
-All rights reserved.
+			<a href="http://www.e-jc.de/">http://www.e-jc.de/</a>
 
-The source code of this program is made available under the terms of the
-GNU Affero General Public License version 3 (GNU AGPL V3) as published
-by the Free Software Foundation.
+			All rights reserved.
 
-Binary versions of this program provided by Univention to you as well as
-other copyrighted, protected or trademarked materials like Logos,
-graphics, fonts, specific documentations and configurations,
-cryptographic keys etc. are subject to a license agreement between you
-and Univention and not subject to the GNU AGPL V3.
+			The source code of this program is made available under the terms of the
+			GNU Affero General Public License version 3 (GNU AGPL V3) as published
+			by the Free Software Foundation.
 
-In the case you use this program under the terms of the GNU AGPL V3, the
-program is provided in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public
-License for more details.
+			Binary versions of this program provided by Univention to you as well as
+			other copyrighted, protected or trademarked materials like Logos,
+			graphics, fonts, specific documentations and configurations,
+			cryptographic keys etc. are subject to a license agreement between you
+			and Univention and not subject to the GNU AGPL V3.
 
-You should have received a copy of the GNU Affero General Public License
-with the Debian GNU/Linux or Univention distribution in file
-/usr/share/common-licenses/AGPL-3; if not, see
-<http://www.gnu.org/licenses/>.</p>
-<h2>Authors</h2>
-<p>Jan Christoph Ebersbach (jceb@e-jc.de)<br/>Stefan Otte (stefan.otte@gmail.com)<br/><br/>      </p>
-<h2>Contact</h2>
-<p>Jan Christoph Ebersbach (github@e-jc.de)<br/>      </p>
+			In the case you use this program under the terms of the GNU AGPL V3, the
+			program is provided in the hope that it will be useful, but WITHOUT ANY
+			WARRANTY; without even the implied warranty of MERCHANTABILITY or
+			FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public
+			License for more details.
+
+			You should have received a copy of the GNU Affero General Public License
+			with the Debian GNU/Linux or Univention distribution in file
+			/usr/share/common-licenses/AGPL-3; if not, see
+			<a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+			<h2>Authors</h2>
+			<p>Jan Christoph Ebersbach (jceb@e-jc.de)<br/>Stefan Otte (stefan.otte@gmail.com)<br/><br/>      </p>
+			<h2>Contact</h2>
+			<p>Jan Christoph Ebersbach (github@e-jc.de)<br/>      </p>
 
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/jceb/vim-orgmode/zipball/master">zip</a> or
-      <a href="http://github.com/jceb/vim-orgmode/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/jceb/vim-orgmode</pre>
-    </p>
+			<h2>Download</h2>
+			<p>
+			You can download this project in either
+			<a href="http://github.com/jceb/vim-orgmode/zipball/master">zip</a> or
+			<a href="http://github.com/jceb/vim-orgmode/tarball/master">tar</a> formats.
+			</p>
+			<p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+			by running:
+	  <pre>$ git clone git://github.com/jceb/vim-orgmode</pre>
+			</p>
 
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/jceb/vim-orgmode">jceb/vim-orgmode</a>
-    </div>
+			<div class="footer">
+				get the source code on GitHub : <a href="http://github.com/jceb/vim-orgmode">jceb/vim-orgmode</a>
+			</div>
 
-  </div>
+		</div>
 
-  
-</body>
+
+	</body>
 </html>
