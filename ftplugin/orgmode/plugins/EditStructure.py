@@ -66,8 +66,8 @@ class EditStructure(object):
 		if below and not end_of_last_child:
 			# append heading at the end of current heading but also take
 			# over the children of current heading
-			#heading.children = [h.copy() for h in current_heading.children]
-			#del current_heading.children
+			# WARNING this implementation is working around the whole
+			# architecture of lists. It does this for performance reasons
 			heading._children.data = current_heading._children.data[:]
 			del current_heading._children.data[:]
 			for h in heading._children.data:
