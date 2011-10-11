@@ -90,6 +90,7 @@ from orgmode import fold_text
 fold_text(allow_dirty=True)
 EOF
 	else
+		unlet! b:org_foldtext_cache
 python << EOF
 from orgmode import fold_text
 fold_text()
