@@ -94,6 +94,16 @@ class EditStructure(object):
 		return heading
 
 	@classmethod
+	def _append_heading(cls, heading, parent):
+		if heading.level <= parent.level:
+			raise ValueError('Heading level not is lower than parent level: %d ! > %d' % (heading.level, parent.level))
+
+		if parent.children and parent.children[-1].level < heading.level:
+			cls._append_heading(heading, parent.children[-1])
+		else:
+			parent.children.append(heading, taint=False)
+
+	@classmethod
 	def _change_heading_level(cls, level, including_children=True, on_heading=False, insert_mode=False):
 		u"""
 		Change level of heading realtively with or without including children.
@@ -163,21 +173,11 @@ class EditStructure(object):
 		ps = current_heading.previous_sibling
 		nhl = current_heading.level
 
-		def append_heading(heading, parent):
-			if heading.level <= parent.level:
-				raise ValueError('Heading level not is lower than parent level: %d ! > %d' % (heading.level, parent.level))
-
-			if parent.children and parent.children[-1].level < heading.level:
-				append_heading(heading, parent.children[-1])
-			else:
-				parent.children.append(heading)
-
 		if level > 0:
 			# demotion
 			# subheading or top level heading
 			if ps and nhl > ps.level:
-				idx = current_heading.get_index_in_parent_list()
-				pl.remove(current_heading)
+				pl.remove(current_heading, taint=False)
 				# find heading that is the new parent heading
 				oh = ps
 				h = ps
@@ -190,15 +190,15 @@ class EditStructure(object):
 				np = h if nhl > h.level else oh
 
 				# append current heading to new heading
-				np.children.append(current_heading)
+				np.children.append(current_heading, taint=False)
 
 				# if children are not included, distribute them among the
 				# parent heading and it's siblings
 				if not including_children:
 					for h in current_heading.children[:]:
 						if h and h.level <= nhl:
-							append_heading(h.copy(), np if np else p)
-							current_heading.children.remove(h)
+							cls._append_heading(h, np)
+							current_heading.children.remove(h, taint=False)
 		else:
 			# promotion
 			if p and nhl <= p.level:
@@ -208,9 +208,9 @@ class EditStructure(object):
 				h = p
 				while nhl <= h.level:
 					# append new children to current heading
-					[ append_heading(child.copy(), current_heading) for child in h.children[idx:] ]
-					del h.children[idx:]
-					oh = h
+					for child in h.children[idx:]:
+						cls._append_heading(child, current_heading)
+					h.children.remove_slice(idx, len(h.children), taint=False)
 					idx = h.get_index_in_parent_list() + 1
 					if h.parent:
 						h = h.parent
@@ -219,15 +219,15 @@ class EditStructure(object):
 				ns = oh.next_sibling
 				while ns and ns.level > current_heading.level:
 					nns = ns.next_sibling
-					append_heading(ns, current_heading)
+					cls._append_heading(ns, current_heading)
 					ns = nns
 
 				# append current heading to new parent heading / document
-				pl.remove(current_heading)
+				pl.remove(current_heading, taint=False)
 				if nhl > h.level:
-					h.children.insert(idx, current_heading)
+					h.children.insert(idx, current_heading, taint=False)
 				else:
-					d.headings.insert(idx, current_heading)
+					d.headings.insert(idx, current_heading, taint=False)
 
 		d.write()
 		if indent_end_vim != current_heading.start_vim:
