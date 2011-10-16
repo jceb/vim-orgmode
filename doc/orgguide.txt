@@ -1259,6 +1259,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.4.0-0
+- extend liborgmode.headings.HeadingList to allow headings to not be tainted when moving them around
 - change heading tree text object to ir/ar... because of vim's it/at text object (closes issue #106)
 - improve performance when inserting a new heading below (closes issue #105)
 - remove duplicate tags (closes issue #104)

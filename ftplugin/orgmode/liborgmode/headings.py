@@ -204,15 +204,19 @@ class Heading(object):
 		detached and not even belong to a document anymore.
 
 		:including_children:	If True a copy of all children is create as
-				well. If False the returned heading doesn't have any children.
+								well. If False the returned heading doesn't
+								have any children.
+		:parent:				Don't use this parameter. It's set
+								automatically.
 		"""
 		heading = self.__class__(level=self.level, title=self.title, \
 				tags=self.tags, todo=self.todo, body=self.body[:])
 		if parent:
 			parent.children.append(heading)
 		if including_children and self.children:
-			[item.copy(including_children=including_children, parent=heading) \
-					for item in self.children]
+			for item in self.children:
+				item.copy(including_children=including_children, \
+						parent=heading)
 		heading._orig_start = self._orig_start
 		heading._orig_len = self._orig_len
 
@@ -695,7 +699,7 @@ class HeadingList(MultiPurposeList):
 			self._get_document().set_dirty_document()
 
 	def _associate_heading(self, heading, previous_sibling, next_sibling,
-			children=False):
+			children=False, taint=True):
 		"""
 		:heading:		The heading or list to associate with the current heading
 		:previous_sibling:	The previous sibling of the current heading. If
@@ -708,8 +712,12 @@ class HeadingList(MultiPurposeList):
 							connected with the previous sibling and the last
 							heading with the next sibling. The items in between
 							will be linked with one another.
-		:children:	Marks whether children are processed in the current
-					iteration or not (should not be use, it's set automatically)
+		:children:		Marks whether children are processed in the current
+							iteration or not (should not be use, it's set
+							automatically)
+		:taint:			If not True, the heading is not marked dirty at the end
+							of the association process and its orig_start and
+							orig_len values are not updated.
 		"""
 		# TODO this method should be externalized and moved to the Heading class
 		if type(heading) in (list, tuple) or isinstance(heading, UserList):
@@ -717,14 +725,17 @@ class HeadingList(MultiPurposeList):
 			current = None
 			for _next in flatten_list(heading):
 				if current:
-					self._associate_heading(current, prev, _next, children=children)
+					self._associate_heading(current, prev, _next, \
+							children=children, taint=taint)
 					prev = current
 				current = _next
 			if current:
-				self._associate_heading(current, prev, next_sibling, children=children)
+				self._associate_heading(current, prev, next_sibling, \
+						children=children, taint=taint)
 		else:
-			heading._orig_start = None
-			heading._orig_len = None
+			if taint:
+				heading._orig_start = None
+				heading._orig_len = None
 			d = self._get_document()
 			if heading._document != d:
 				heading._document = d
@@ -743,9 +754,11 @@ class HeadingList(MultiPurposeList):
 				elif heading._parent != self._obj:
 					# self._obj is a Heading
 					heading._parent = self._obj
-			heading.set_dirty()
+			if taint:
+				heading.set_dirty()
 
-			self._associate_heading(heading.children, None, None, children=True)
+			self._associate_heading(heading.children, None, None, \
+					children=True, taint=taint)
 
 	def __setitem__(self, i, item):
 		if not self.__class__.is_heading(item):
@@ -775,17 +788,18 @@ class HeadingList(MultiPurposeList):
 				self[j] if j >= 0 and j < len(self) else None)
 		MultiPurposeList.__setslice__(self, i, j, o)
 
-	def __delitem__(self, i):
+	def __delitem__(self, i, taint=True):
 		item = self[i]
 		if item.previous_sibling:
 			item.previous_sibling._next_sibling = item.next_sibling
 		if item.next_sibling:
 			item.next_sibling._previous_sibling = item.previous_sibling
 
-		self._add_to_deleted_headings(item)
+		if taint:
+			self._add_to_deleted_headings(item)
 		MultiPurposeList.__delitem__(self, i)
 
-	def __delslice__(self, i, j):
+	def __delslice__(self, i, j, taint=True):
 		i = max(i, 0)
 		j = max(j, 0)
 		items = self[i:j]
@@ -796,7 +810,8 @@ class HeadingList(MultiPurposeList):
 				first.previous_sibling._next_sibling = last.next_sibling
 			if last.next_sibling:
 				last.next_sibling._previous_sibling = first.previous_sibling
-		self._add_to_deleted_headings(items)
+		if taint:
+			self._add_to_deleted_headings(items)
 		MultiPurposeList.__delslice__(self, i, j)
 
 	def __iadd__(self, other):
@@ -813,18 +828,19 @@ class HeadingList(MultiPurposeList):
 		# TODO das müsste eigentlich ein klonen von objekten zur Folge haben
 		return MultiPurposeList.__imul__(self, n)
 
-	def append(self, item):
+	def append(self, item, taint=True):
 		if not self.__class__.is_heading(item):
 			raise ValueError(u'Item is not a heading!')
 		if item in self:
 			raise ValueError(u'Heading is already part of this list!')
-		self._associate_heading(item, self[-1] if len(self) > 0 else None, None)
+		self._associate_heading(item, self[-1] if len(self) > 0 else None, \
+				None, taint=taint)
 		MultiPurposeList.append(self, item)
 
-	def insert(self, i, item):
+	def insert(self, i, item, taint=True):
 		self._associate_heading(item, \
 				self[i - 1] if i - 1 >= 0 and i - 1 < len(self) else None,
-				self[i] if i >= 0 and i < len(self) else None)
+				self[i] if i >= 0 and i < len(self) else None, taint=taint)
 		MultiPurposeList.insert(self, i, item)
 
 	def pop(self, i=-1):
@@ -833,8 +849,11 @@ class HeadingList(MultiPurposeList):
 		del self[i]
 		return item
 
-	def remove(self, item):
-		self.__delitem__(self.index(item))
+	def remove_slice(self, i, j, taint=True):
+		self.__delslice__(i, j, taint=taint)
+
+	def remove(self, item, taint=True):
+		self.__delitem__(self.index(item), taint=taint)
 
 	def reverse(self):
 		MultiPurposeList.reverse(self)
