@@ -1270,8 +1270,8 @@ CHANGELOG                                                   *orgguide-changelog*
 
 0.4.0-0
 - fix broken repeat settings for moving a heading
-- improve performance when moving a heading upward or downward (related to issue #106)
-- improve performance when changing the level of a heading (closes issue #106)
+- improve performance when moving a heading upward or downward (closes issue #108)
+- improve performance when changing the level of a heading (related to issue #108)
 - extend liborgmode.headings.HeadingList to allow headings to not be tainted when moving them around
 - change heading tree text object to ir/ar... because of vim's it/at text object (closes issue #106)
 - improve performance when inserting a new heading below (closes issue #105)
