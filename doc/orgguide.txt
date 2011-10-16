@@ -1268,7 +1268,7 @@ LINKS                                                           *orgguide-links*
 ==============================================================================
 CHANGELOG                                                   *orgguide-changelog*
 
-0.4.0-0
+0.4.0-0, 2011-10-16
 - fix broken repeat settings for moving a heading
 - improve performance when moving a heading upward or downward (closes issue #108)
 - improve performance when changing the level of a heading (related to issue #108)
@@ -1314,7 +1314,7 @@ CHANGELOG                                                   *orgguide-changelog*
 - integrate orgguide (closes issue #57)
 - replace DIRECTION_* with an enum (closes issue #56 and issue #49)
 
-0.3.1-0
+0.3.1-0, 2011-08-14
 - demoting a newly created second level heading doesn't cause all children to
   be deleted anymore (closes issue #65)
 - add error message for missing dependencies (closes issue #59)
