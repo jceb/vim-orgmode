@@ -75,7 +75,7 @@ Bla Bla bla bla
 		self.assertEqual(vim.CMDHISTORY[-1], u'exe "normal 6gg"|startinsert!'.encode(u'utf-8'))
 		self.assertEqual(vim.current.buffer[4], u'Bla bla'.encode(u'utf-8'))
 		self.assertEqual(vim.current.buffer[5], u'* '.encode(u'utf-8'))
-		self.assertEqual(vim.current.buffer[6], u'** Überschrift 1.1							:Tag:'.encode(u'utf-8'))
+		self.assertEqual(vim.current.buffer[6], u'** Überschrift 1.1 :Tag:'.encode(u'utf-8'))
 		self.assertEqual(vim.current.buffer[10], u'** Überschrift 1.2'.encode(u'utf-8'))
 		self.assertEqual(vim.current.buffer[13], u'**** Überschrift 1.2.1.falsch'.encode(u'utf-8'))
 		self.assertEqual(vim.current.buffer[16], u'*** Überschrift 1.2.1'.encode(u'utf-8'))

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echom, ORGMODE, apply_count, repeat, realign_tags, DIRECTION_FORWARD, DIRECTION_BACKWARD
+from orgmode import echom, ORGMODE, apply_count, repeat, realign_tags, settings
+from orgmode.liborgmode.base import Direction
 from orgmode.menu import Submenu, ActionEntry
-from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
 
 import vim
+
 
 # temporary todo states for differnent orgmode buffers
 ORGTODOSTATES = {}
@@ -54,7 +55,7 @@ class Todo(object):
 
 	@classmethod
 	def _get_next_state(cls, current_state, all_states,
-			direction=DIRECTION_FORWARD, interactive=False, next_set=False):
+			direction=Direction.FORWARD, interactive=False, next_set=False):
 		u"""
 		:current_state:		the current todo state
 		:all_states:		a list containing all todo states within sublists.
@@ -95,28 +96,28 @@ class Todo(object):
 		ci = find_current_todo_state(current_state, all_states)
 
 		if not ci:
-			if next_set and direction == DIRECTION_BACKWARD:
+			if next_set and direction == Direction.BACKWARD:
 				echom(u'Already at the first keyword set')
 				return current_state
 
 			return split_access_key(all_states[0][0][0] if all_states[0][0] else all_states[0][1][0])[0] \
-					if direction == DIRECTION_FORWARD else \
+					if direction == Direction.FORWARD else \
 					split_access_key(all_states[0][1][-1] if all_states[0][1] else all_states[0][0][-1])[0]
 		elif next_set:
-			if direction == DIRECTION_FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
+			if direction == Direction.FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
 				echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] + 1][0]), u', '.join(all_states[ci[0] + 1][1])))
 				return split_access_key(all_states[ci[0] + 1][0][0] \
 						if all_states[ci[0] + 1][0] else all_states[ci[0] + 1][1][0])[0]
-			elif current_state is not None and direction == DIRECTION_BACKWARD and ci[0] - 1 >= 0:
+			elif current_state is not None and direction == Direction.BACKWARD and ci[0] - 1 >= 0:
 				echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] - 1][0]), u', '.join(all_states[ci[0] - 1][1])))
 				return split_access_key(all_states[ci[0] - 1][0][0] \
 						if all_states[ci[0] - 1][0] else all_states[ci[0] - 1][1][0])[0]
 			else:
-				echom(u'Already at the %s keyword set' % (u'first' if direction == DIRECTION_BACKWARD else u'last'))
+				echom(u'Already at the %s keyword set' % (u'first' if direction == Direction.BACKWARD else u'last'))
 				return current_state
 		else:
-			next_pos = ci[2] + 1 if direction == DIRECTION_FORWARD else ci[2] - 1
-			if direction == DIRECTION_FORWARD:
+			next_pos = ci[2] + 1 if direction == Direction.FORWARD else ci[2] - 1
+			if direction == Direction.FORWARD:
 				if next_pos < len(all_states[ci[0]][ci[1]]):
 					# select next state within done or todo states
 					return split_access_key(all_states[ci[0]][ci[1]][next_pos])[0]
@@ -137,7 +138,7 @@ class Todo(object):
 	@realign_tags
 	@repeat
 	@apply_count
-	def toggle_todo_state(cls, direction=DIRECTION_FORWARD, interactive=False, next_set=False):
+	def toggle_todo_state(cls, direction=Direction.FORWARD, interactive=False, next_set=False):
 		u""" Toggle state of TODO item
 
 		:returns: The changed heading
@@ -160,22 +161,34 @@ class Todo(object):
 
 		# get new state interactively
 		if interactive:
+			# determine position of the interactive prompt
+			prompt_pos = settings.get(u'org_todo_prompt_position', u'botright')
+			if not prompt_pos in [u'botright', u'topleft']:
+				prompt_pos = u'botright'
+
 			# pass todo states to new window
 			ORGTODOSTATES[d.bufnr] = todo_states
-			if bool(int(vim.eval(( u'bufexists("org:todo/%d")' % (d.bufnr, ) ).encode(u'utf-8')))):
+			settings.set(u'org_current_state_%d' % d.bufnr, \
+					current_state if current_state is not None else u'', overwrite=True)
+			todo_buffer_exists = bool(int(vim.eval((u'bufexists("org:todo/%d")'
+					% (d.bufnr, )).encode(u'utf-8'))))
+			if todo_buffer_exists:
 				# if the buffer already exists, reuse it
-				vim.command((u'sbuffer org:todo/%d' % (d.bufnr, )).encode(u'utf-8'))
+				vim.command((u'%s sbuffer org:todo/%d' %
+						(prompt_pos, d.bufnr, )).encode(u'utf-8'))
 			else:
 				# create a new window
-				vim.command((u'keepalt %dsp org:todo/%d' % (len(todo_states), d.bufnr)).encode(u'utf-8'))
+				vim.command((u'keepalt %s %dsplit org:todo/%d' %
+						(prompt_pos, len(todo_states), d.bufnr)).encode(u'utf-8'))
 		else:
-			new_state = Todo._get_next_state(current_state, todo_states, \
-					direction=direction, interactive=interactive, next_set=next_set)
+			new_state = Todo._get_next_state(current_state, todo_states,
+					direction=direction, interactive=interactive,
+					next_set=next_set)
 			cls.set_todo_state(new_state)
 
 		# plug
 		plug = u'OrgTodoForward'
-		if direction == DIRECTION_BACKWARD:
+		if direction == Direction.BACKWARD:
 			plug = u'OrgTodoBackward'
 
 		return plug
@@ -196,22 +209,29 @@ class Todo(object):
 
 		current_state = heading.todo
 
-		# move cursor along with the inserted state only when current position
-		# is in the heading; otherwite do nothing
-		if heading.start_vim == lineno:
-			if current_state is None and state is None:
-				offset = 0
-			elif current_state is None:
-				offset = len(state)
-			elif state is None:
-				offset = -len(current_state)
-			else:
-				offset = len(current_state) - len(state)
-			vim.current.window.cursor = (lineno, colno + offset)
-
 		# set new headline
 		heading.todo = state
 		d.write_heading(heading)
+
+		# move cursor along with the inserted state only when current position
+		# is in the heading; otherwite do nothing
+		if heading.start_vim == lineno and colno > heading.level:
+			if current_state is not None and \
+					colno <= heading.level + len(current_state):
+				# the cursor is actually on the todo keyword
+				# move it back to the beginning of the keyword in that case
+				vim.current.window.cursor = (lineno, heading.level + 1)
+			else:
+				# the cursor is somewhere in the text, move it along
+				if current_state is None and state is None:
+					offset = 0
+				elif current_state is None and state is not None:
+					offset = len(state) + 1
+				elif current_state is not None and state is None:
+					offset = -len(current_state) - 1
+				else:
+					offset = len(state) - len(current_state)
+				vim.current.window.cursor = (lineno, colno + offset)
 
 	@classmethod
 	def init_org_todo(cls):
@@ -252,9 +272,25 @@ class Todo(object):
 							res += (u'\t' if res else u'') + v
 			if res:
 				if l == 0:
-					vim.current.buffer[0] = res.encode(u'utf-8')
-				else:
-					vim.current.buffer.append(res.encode(u'utf-8'))
+					# WORKAROUND: the cursor can not be positioned properly on
+					# the first line. Another line is just inserted and it
+					# works great
+					vim.current.buffer[0] = u''.encode(u'utf-8')
+				vim.current.buffer.append(res.encode(u'utf-8'))
+
+		# position the cursor of the current todo item
+		vim.command(u'normal! G'.encode(u'utf-8'))
+		current_state = settings.unset(u'org_current_state_%d' % bufnr)
+		found = False
+		if current_state is not None and current_state != '':
+			for i in xrange(0, len(vim.current.buffer)):
+				idx = vim.current.buffer[i].find(current_state)
+				if idx != -1:
+					vim.current.window.cursor = (i + 1, idx)
+					found = True
+					break
+		if not found:
+			vim.current.window.cursor = (2, 4)
 
 		# finally make buffer non modifiable
 		vim.command(u'setfiletype orgtodo'.encode(u'utf-8'))
@@ -267,13 +303,17 @@ class Todo(object):
 		u"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		settings.set(u'org_leader', u',')
-		leader = settings.get(u'org_leader', u',')
-
-		self.keybindings.append(Keybinding(u'%sd' % leader, Plug(
+		self.keybindings.append(Keybinding(u'<localleader>ct', Plug(
 			u'OrgTodoToggle',
-			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=True)<CR>')))
+			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=False)<CR>')))
 		self.menu + ActionEntry(u'&TODO/DONE/-', self.keybindings[-1])
+
+		self.keybindings.append(Keybinding(u'<localleader>d', Plug(
+			u'OrgTodoToggleInteractive',
+			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=True)<CR>')))
+		self.menu + ActionEntry(u'&TODO/DONE/- (interactiv)', self.keybindings[-1])
+
+		# add submenu
 		submenu = self.menu + Submenu(u'Select &keyword')
 
 		self.keybindings.append(Keybinding(u'<S-Right>', Plug(
@@ -283,7 +323,7 @@ class Todo(object):
 
 		self.keybindings.append(Keybinding(u'<S-Left>', Plug(
 			u'OrgTodoBackward',
-			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=False)<CR>')))
+			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=2)<CR>')))
 		submenu + ActionEntry(u'&Previous keyword', self.keybindings[-1])
 
 		self.keybindings.append(Keybinding(u'<C-S-Right>', Plug(
@@ -293,10 +333,12 @@ class Todo(object):
 
 		self.keybindings.append(Keybinding(u'<C-S-Left>', Plug(
 			u'OrgTodoSetBackward',
-			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=False, next_set=True)<CR>')))
+			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=2, next_set=True)<CR>')))
 		submenu + ActionEntry(u'Previous &keyword set', self.keybindings[-1])
 
 		settings.set(u'org_todo_keywords', [u'TODO'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')])
+
+		settings.set(u'org_todo_prompt_position', u'botright')
 
 		vim.command(u'au orgmode BufReadCmd org:todo/* :py ORGMODE.plugins[u"Todo"].init_org_todo()'.encode(u'utf-8'))
 

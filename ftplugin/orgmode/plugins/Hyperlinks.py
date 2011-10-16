@@ -92,7 +92,7 @@ class Hyperlinks(object):
 		:description: An optional description that will be displayed instead of the URI
 
 		:returns: (URI, description)
-	    """
+		"""
 		link = Hyperlinks._get_link()
 		if link:
 			if uri is None and link[u'uri'] is not None:
@@ -101,11 +101,13 @@ class Hyperlinks(object):
 				description = link[u'description']
 
 		if uri is None:
-			uri = vim.eval(u'input("Link: ")').decode(u'utf-8')
+			uri = vim.eval(u'input("Link: ", "", "file")')
 		elif link:
-			uri = vim.eval(u'input("Link: ", "%s")' % link[u'uri']).decode(u'utf-8')
+			uri = vim.eval(u'input("Link: ", "%s", "file")' % link[u'uri'])
 		if uri is None:
 			return
+		else:
+			uri = uri.decode(u'utf-8')
 
 		if description is None:
 			description = vim.eval(u'input("Description: ")').decode(u'utf-8')

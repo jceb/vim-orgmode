@@ -1,4 +1,4 @@
-* Description
+* Vim-OrgMode
   Text outlining and task management for Vim based on Emacs' Org-Mode
   ([[http://orgmode.org/]]).
 
@@ -14,8 +14,24 @@
    provided. It encapsulates all functionality for parsing and modifying
    Org-Mode files.
 
+** Features
+   vim-orgmode is still very young but already quite usable. Here is a short
+   list of the already supported features:
+
+   - Cycle visibility of headings
+   - Navigate between headings
+   - Edit the structure of the document: add, move, promote, denote headings
+     and more
+   - Hyperlinks within vim-orgmode and outside (files, webpages, etc.)
+   - TODO list management
+   - Tags for headings
+   - Basic date handling
+   - Export (via emacs)
+
+   More features are coming...
+
 * License
   Information about the license are found in the file LICENSE.
 
-* Installation
-  Installation and usage instructions are found in file [[vim-orgmode/blob/master/doc/org.txt][doc/org.txt]].
+* Installation and Usage
+  Installation and usage instructions are found in the file [[vim-orgmode/blob/master/doc/orgguide.txt][doc/orgguide.txt]].

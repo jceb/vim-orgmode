@@ -1,2 +1,6 @@
 *.pyc
 *.swp
+tags
+.ropeproject
+.cover*
+cover*

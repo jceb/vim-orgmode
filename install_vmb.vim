@@ -1,3 +1,3 @@
 :exec 'set rtp='.g:installdir
-:so orgmode.vba
+:so orgmode.vmb
 :q!
