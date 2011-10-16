@@ -64,14 +64,12 @@ class EditStructure(object):
 			raise HeadingDomError(u'Current heading is not properly linked in DOM')
 
 		if below and not end_of_last_child:
-			# append heading at the end of current heading but also take
+			# append heading at the end of current heading and also take
 			# over the children of current heading
-			# WARNING this implementation is working around the whole
-			# architecture of lists. It does this for performance reasons
-			heading._children.data = current_heading._children.data[:]
-			del current_heading._children.data[:]
-			for h in heading._children.data:
-				h._parent = heading
+			for child in current_heading.children:
+				heading.children.append(child, taint=False)
+			current_heading.children.remove_slice(0, len(current_heading.children), \
+					taint=False)
 
 		# if cursor is currently on a heading, insert parts of it into the
 		# newly created heading
