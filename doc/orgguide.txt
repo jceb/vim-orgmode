@@ -1259,6 +1259,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.4.0-0
+- improve performance when moving a heading upward or downward (related to issue #106)
 - improve performance when changing the level of a heading (closes issue #106)
 - extend liborgmode.headings.HeadingList to allow headings to not be tainted when moving them around
 - change heading tree text object to ir/ar... because of vim's it/at text object (closes issue #106)

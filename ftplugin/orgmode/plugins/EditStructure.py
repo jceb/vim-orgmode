@@ -264,30 +264,48 @@ class EditStructure(object):
 		:returns: heading or None
 		"""
 		d = ORGMODE.get_document()
-		heading = d.current_heading()
-		if (not heading) or \
-				(direction == Direction.FORWARD and not heading.next_sibling) or \
-				(direction == Direction.BACKWARD and not heading.previous_sibling):
+		current_heading = d.current_heading()
+		if not current_heading or \
+				(direction == Direction.FORWARD and not current_heading.next_sibling) or \
+				(direction == Direction.BACKWARD and not current_heading.previous_sibling):
 			return None
 
-		cursor_offset_within_the_heading_vim = vim.current.window.cursor[0] - (heading._orig_start + 1)
+		cursor_offset = vim.current.window.cursor[0] - (current_heading._orig_start + 1)
+		l = current_heading.get_parent_list()
+		if l is None:
+			raise HeadingDomError(u'Current heading is not properly linked in DOM')
 
 		if not including_children:
-			heading.previous_sibling.children.extend(heading.children)
-			del heading.children
+			if current_heading.previous_sibling:
+				npl = current_heading.previous_sibling.children
+				for child in current_heading.children:
+					npl.append(child, taint=False)
+			elif current_heading.parent:
+				# if the current heading doesn't have a previous sibling it
+				# must be the first heading
+				np = current_heading.parent
+				for child in current_heading.children:
+					cls._append_heading(child, np)
+			else:
+				# if the current heading doesn't have a parent, its children
+				# must be added as top level headings to the document
+				npl = l
+				for child in current_heading.children[::-1]:
+					npl.insert(0, child, taint=False)
+			current_heading.children.remove_slice(0, len(current_heading.children), taint=False)
 
-		heading_insert_position = 0 if direction == Direction.FORWARD else -1
-		l = heading.get_parent_list()
-		idx = heading.get_index_in_parent_list()
-		del l[idx]
-		if l is not None and idx is not None:
-			l.insert(idx + heading_insert_position, heading)
-		else:
+		idx = current_heading.get_index_in_parent_list()
+		if idx is None:
 			raise HeadingDomError(u'Current heading is not properly linked in DOM')
+
+		offset = 1 if direction == Direction.FORWARD else -1
+		del l[idx]
+		l.insert(idx + offset, current_heading)
 
 		d.write()
 
-		vim.current.window.cursor = (heading.start_vim + cursor_offset_within_the_heading_vim, vim.current.window.cursor[1])
+		vim.current.window.cursor = (current_heading.start_vim + cursor_offset, \
+				vim.current.window.cursor[1])
 
 		return True
 
