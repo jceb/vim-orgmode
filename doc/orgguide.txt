@@ -1259,6 +1259,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.4.0-0
+- fix broken repeat settings for moving a heading
 - improve performance when moving a heading upward or downward (related to issue #106)
 - improve performance when changing the level of a heading (closes issue #106)
 - extend liborgmode.headings.HeadingList to allow headings to not be tainted when moving them around

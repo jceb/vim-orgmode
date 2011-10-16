@@ -314,6 +314,8 @@ class EditStructure(object):
 	@apply_count
 	def move_heading_upward(cls, including_children=True):
 		if cls._move_heading(direction=Direction.BACKWARD, including_children=including_children):
+			if including_children:
+				return u'OrgMoveSubtreeUpward'
 			return u'OrgMoveHeadingUpward'
 
 	@classmethod
@@ -321,6 +323,8 @@ class EditStructure(object):
 	@apply_count
 	def move_heading_downward(cls, including_children=True):
 		if cls._move_heading(direction=Direction.FORWARD, including_children=including_children):
+			if including_children:
+				return u'OrgMoveSubtreeDownward'
 			return u'OrgMoveHeadingDownward'
 
 	def register(self):
