@@ -77,7 +77,8 @@ class Agenda(object):
 				u"files to the agenda view."))
 			return
 
-		agenda_files = [os.path.expanduser(f) for f in agenda_files]
+		agenda_files = [os.path.realpath(os.path.expanduser(f))
+			for f in agenda_files]
 
 		for agenda_file in agenda_files: 
 			vim.command((u'badd %s' % agenda_file).encode(u'utf-8'))
