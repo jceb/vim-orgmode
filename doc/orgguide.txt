@@ -827,6 +827,7 @@ buffer are listed in |orgguide-agenda-commands|.
 ------------------------------------------------------------------------------
 Agenda files~
                                       *g:org_agenda_files* *orgguide-agenda-files*
+  Default: []
   The information to be shown is normally collected from all 'agendafiles',
   the files listed in the variable g:org_agenda_files.
 
@@ -924,8 +925,9 @@ Custom agenda views~
 ==============================================================================
 EXPORTING                                                      *orgguide-export*
 
-NOTE: vim-orgmode relies on emacs and orgmode for emacs for this feature.
-      Both need to be installed.
+NOTE: vim-orgmode relies on Emacs for this feature. Emacs _and_ Emacs'
+      org-mode need to be installed! For PDF export a Latex environment
+      is needed as well!
 
 vim-orgmode documents can be exported into a variety of other formats:
 ASCII export for inclusion into emails, HTML to publish on the web,
@@ -935,6 +937,28 @@ iCalendar format so that planning information can be incorporated into
 desktop calendars.
 
 Simply use the 'export' menu.
+
+                                                            *g:org_export_emacs*
+Default: "/usr/bin/emacs"
+Path to Emacs executable. Example:
+>
+  :let g:org_export_emacs="~/bin/emcas"
+<
+
+                                                          *g:org_export_verbose*
+Default: 0
+If set, Emacs' export output is displayed.
+>
+  :let g:org_export_verbose=1
+<
+
+                                                      *g:org_export_init_script*
+Default: ""
+An initialization script can be specified. This allows the user to customize
+Emacs' org-mode settings without having to patch the defaults config. Example:
+>
+  :let g:org_export_init_script="~/.emacs_org_init"
+<
 
 ==============================================================================
 PUBLISHING                                                 *orgguide-publishing*
@@ -995,41 +1019,47 @@ Syntax highlighting~
   colorscheme.
 
                                                 *g:org_heading_highlight_colors*
-  Define the highlighting colors/group names for headings (default):
+  Default: ['Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type',
+          \ 'Special']
+  Define the highlighting colors/group names for headings. Example:
 >
   let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier',
     \   'Statement', 'PreProc', 'Type', 'Special']
 <
 
                                                 *g:org_heading_highlight_levels*
+  Default: len(g:org_heading_highlight_colors)
   Definie the number of levels of highlighting. If this number is bigger than
   the list of colors defined in of g:org_heading_highlight_colors the colors
-  of g:org_heading_highlight_colors get repeated (default):
+  of g:org_heading_highlight_colors get repeated. Example:
 >
   let g:org_heading_highlight_levels = len(g:org_heading_highlight_colors)
 <
 
                                              *g:org_heading_shade_leading_stars*
+  Default: 1
   Defines if leading stars are displayed in the color of the heading or if a
-  special NonText highlighting is used that hides them from user (default):
+  special NonText highlighting is used that hides them from user. Example:
 >
   let g:org_heading_shade_leading_stars = 1
 <
 
                                                            *g:org_todo_keywords*
+  Default: ['TODO', '|', 'DONE']
   Defines the keywords that are highlighted in headings. For more information
   about this variable, please consult the org-mode documentation
-  (http://orgmode.org/org.html#index-org_002dtodo_002dkeywords-511) (default):
+  (http://orgmode.org/org.html#index-org_002dtodo_002dkeywords-511). Example:
 >
   let g:org_todo_keywords = ['TODO', '|', 'DONE']
 <
 
                                                       *g:org_todo_keyword_faces*
+  Default: []
   Defines special faces (styles) for displaying g:org_todo_keywords. Please
   refer to vim documentation (topic |attr-list|) for allowed values for
   :weight, :slant, :decoration. Muliple colors can be separated by comma for
-  :foreground and :background faces to provide different colors for gui and
-  terminal mode (default):
+  :foreground and :background faces to provide different colors for GUI and
+  terminal mode. Example:
 >
   let g:org_todo_keyword_faces = []
 <
@@ -1078,6 +1108,9 @@ Structure and Source Code~
   ftplugin/orgmode/plugins/Example.py.
 
                                                                  *g:org_plugins*
+  Default: ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks',
+          \ '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|',
+          \ 'Export']
   Every plugin must be enabled by the user by setting the g:org_plugins
   variable. By default all shipped plugins are enabled. Example:
 >
@@ -1268,6 +1301,13 @@ LINKS                                                           *orgguide-links*
 
 ==============================================================================
 CHANGELOG                                                   *orgguide-changelog*
+
+0.5.0-0
+- add export commands OrgExportToPDF and OrgExportToHTML (closes issue #107)
+- add variables for customizing the export via Emacs: g:org_export_emacs,
+	g:org_export_verbose, g:org_export_init_script (closes issue #107)
+- switch to subprocess.Popen for Emcas export (closes issue #107)
+- add defaults and examples for all variables
 
 0.4.0-0, 2011-10-16
 - fix broken repeat settings for moving a heading
