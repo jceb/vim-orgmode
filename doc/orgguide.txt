@@ -1268,6 +1268,10 @@ LINKS                                                           *orgguide-links*
 ==============================================================================
 CHANGELOG                                                   *orgguide-changelog*
 
+0.4.1-0, 2011-12-04
+- fix cache problems when inserting a new heading, together with multi line
+	text (closes issue #116)
+
 0.4.0-0, 2011-10-16
 - fix broken repeat settings for moving a heading
 - improve performance when moving a heading upward or downward (closes issue #108)

@@ -38,7 +38,19 @@ function! GetOrgFolding()
 		endif
 
 		if has_key(b:org_folding_cache, v:lnum)
-			return b:org_folding_cache[v:lnum]
+			if match(b:org_folding_cache[v:lnum], '^>') == 0 &&
+						\ match(getline(v:lnum), '^\*\+\s') != 0
+				" when the user pastes text or presses enter, it happens that
+				" the cache starts to confuse vim's folding abilities
+				" these entries can safely be removed
+				unlet b:org_folding_cache[v:lnum]
+
+				" the fold text cache is probably also damaged, delete it as
+				" well
+				unlet! b:org_foldtext_cache
+			else
+				return b:org_folding_cache[v:lnum]
+			endif
 		endif
 python << EOF
 from orgmode import fold_orgmode
