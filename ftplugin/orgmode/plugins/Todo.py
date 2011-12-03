@@ -304,7 +304,7 @@ class Todo(object):
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
 		self.keybindings.append(Keybinding(u'<localleader>ct', Plug(
-			u'OrgTodoToggle',
+			u'OrgTodoToggleNonInteractive',
 			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=False)<CR>')))
 		self.menu + ActionEntry(u'&TODO/DONE/-', self.keybindings[-1])
 
