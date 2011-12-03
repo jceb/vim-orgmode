@@ -1303,6 +1303,8 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.5.0-0
+- make echo, echom and echoe split messages a line ends and execute a single
+	vim command for each line
 - add export commands OrgExportToPDF and OrgExportToHTML (closes issue #107)
 - add variables for customizing the export via Emacs: g:org_export_emacs,
 	g:org_export_verbose, g:org_export_init_script (closes issue #107)

@@ -90,7 +90,8 @@ def echo(message):
 	Print a regular message that will not be visible to the user when
 	multiple lines are printed
 	"""
-	vim.command((u':echo "%s"' % message).encode(u'utf-8'))
+	for m in message.split(u'\n'):
+		vim.command((u':echo "%s"' % m).encode(u'utf-8'))
 
 
 def echom(message):
@@ -99,7 +100,8 @@ def echom(message):
 	multiple lines are printed
 	"""
 	# probably some escaping is needed here
-	vim.command((u':echomsg "%s"' % message).encode(u'utf-8'))
+	for m in message.split(u'\n'):
+		vim.command((u':echomsg "%s"' % m).encode(u'utf-8'))
 
 
 def echoe(message):
@@ -107,7 +109,8 @@ def echoe(message):
 	Print an error message. This should only be used for serious errors!
 	"""
 	# probably some escaping is needed here
-	vim.command((u':echoerr "%s"' % message).encode(u'utf-8'))
+	for m in message.split(u'\n'):
+		vim.command((u':echoerr "%s"' % m).encode(u'utf-8'))
 
 
 def insert_at_cursor(text, move=True, start_insertmode=False):
