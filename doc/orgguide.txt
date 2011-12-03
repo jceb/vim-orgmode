@@ -826,9 +826,9 @@ buffer are listed in |orgguide-agenda-commands|.
 
 ------------------------------------------------------------------------------
 Agenda files~
-                                                         *orgguide-agenda-files*
+                                      *g:org_agenda_files* *orgguide-agenda-files*
   The information to be shown is normally collected from all 'agendafiles',
-  the files listed in the variable *g:org_agenda_files* .
+  the files listed in the variable g:org_agenda_files.
 
   You can change the list of agenda files like this:
 >
@@ -1077,8 +1077,9 @@ Structure and Source Code~
   An example for a plugin can be found in file
   ftplugin/orgmode/plugins/Example.py.
 
+                                                                 *g:org_plugins*
   Every plugin must be enabled by the user by setting the g:org_plugins
-  variable. By default all shipped plugins are enabled.  Example:
+  variable. By default all shipped plugins are enabled. Example:
 >
     let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure']
 <
