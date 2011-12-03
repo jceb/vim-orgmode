@@ -96,6 +96,35 @@ class TagsProperties(object):
 		return u'OrgSetTags'
 
 	@classmethod
+	def find_tags(cls):
+		""" Find tags in current file
+		"""
+		tags = vim.eval(u'input("Find Tags: ", "", "customlist,Org_complete_tags")')
+		if tags is None:
+			# user pressed <Esc> abort any further processing
+			return
+
+		tags = filter(lambda x: x.strip() != u'', tags.decode(u'utf-8').strip().strip(u':').split(u':'))
+		if tags:
+			searchstring = u'\\('
+			first = True
+			for t1 in tags:
+				if first:
+					first = False
+					searchstring += u'%s' % t1
+				else:
+					searchstring += u'\\|%s' % t1
+
+				for t2 in tags:
+					if t1 == t2:
+						continue
+					searchstring += u'\\(:[a-zA-Z:]*\\)\?:%s' % t2
+			searchstring += u'\\)'
+
+			vim.command(u'/\\zs:%s:\\ze' % searchstring)
+		return u'OrgFindTags'
+
+	@classmethod
 	def realign_tags(cls):
 		u"""
 		Updates tags when user finished editing a heading
@@ -131,6 +160,9 @@ class TagsProperties(object):
 
 		self.keybindings.append(Keybinding(u'<localleader>st', Plug(u'OrgSetTags', u':py ORGMODE.plugins[u"TagsProperties"].set_tags()<CR>')))
 		self.menu + ActionEntry(u'Set &Tags', self.keybindings[-1])
+
+		self.keybindings.append(Keybinding(u'<localleader>ft', Plug(u'OrgFindTags', u':py ORGMODE.plugins[u"TagsProperties"].find_tags()<CR>')))
+		self.menu + ActionEntry(u'&Find Tags', self.keybindings[-1])
 
 		self.commands.append(Command(u'OrgTagsRealign', u":py ORGMODE.plugins[u'TagsProperties'].realign_all_tags()"))
 

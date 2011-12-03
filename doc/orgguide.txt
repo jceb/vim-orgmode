@@ -677,12 +677,15 @@ Setting tags~
   a colon, <TAB> offers completion on tags. There is also a special
   command for inserting tags:
 
-                                                       *orgguide-<LocalLeader>t*
-  <LocalLeader>t        Enter new tags for the current headline. vim-orgmode
+                                                      *orgguide-<LocalLeader>st*
+  <LocalLeader>st       Enter new tags for the current headline. vim-orgmode
                         will either offer completion or a special single-key
                         interface for setting tags, see below.  After pressing
                         <CR>, the tags will be inserted and aligned to
                         'org-tags-column'.
+
+                                                      *orgguide-<LocalLeader>ft*
+  <LocalLeader>ft       Find tags in the current file.
 
   vim-orgmode will support tag insertion based on a 'list of tags'. By default
   this list is constructed dynamically, containing all tags currently used
@@ -1303,6 +1306,8 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.5.0-0
+- add support for high speed searching of headings that use certain tags
+	(closes issue #58)
 - fix cache problems when inserting a new heading, together with multi line
 	text (closes issue #116)
 - rename plug to OrgTodoToggleNonInteractive (closes issue #114)
@@ -1325,7 +1330,7 @@ CHANGELOG                                                   *orgguide-changelog*
 - improve performance in insert mode (closes issue #103)
 - improve performance when opening larger org files (closes issue #103)
 - replace org.txt by orgguide.txt (closes issue #77)
-- change g:org_leader to <LocalLeader> (closes issue #101)
+- replace g:org_leader by <LocalLeader> (closes issue #101)
   To restore the previous behavior add the following line to your vimrc:
 >
   let maplocalleader = ','
