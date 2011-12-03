@@ -1303,6 +1303,8 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.5.0-0
+- fix cache problems when inserting a new heading, together with multi line
+	text (closes issue 116)
 - rename plug to OrgTodoToggleNonInteractive (closes issue #114)
 - make echo, echom and echoe split messages a line ends and execute a single
 	vim command for each line
