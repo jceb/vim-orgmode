@@ -1306,6 +1306,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.5.0-0
+- implement global visibility as it works in Emacs org-mode (closes issue #119)
 - improve detection of speeddating plugin (closes issue #121)
 - add support for high speed searching of headings that use certain tags
 	(closes issue #58)
