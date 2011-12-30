@@ -1306,6 +1306,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.5.0-0
+- improve detection of speeddating plugin (closes issue #121)
 - add support for high speed searching of headings that use certain tags
 	(closes issue #58)
 - fix cache problems when inserting a new heading, together with multi line

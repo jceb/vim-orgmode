@@ -39,7 +39,7 @@ class Date(object):
 
 		# set speeddating format that is compatible with orgmode
 		try:
-			if int(vim.eval(u'exists(":SpeedDatingFormat")'.encode(u'utf-8'))):
+			if int(vim.eval(u'exists(":SpeedDatingFormat")'.encode(u'utf-8'))) == 2:
 				vim.command(u':1SpeedDatingFormat %Y-%m-%d %a'.encode(u'utf-8'))
 				vim.command(u':1SpeedDatingFormat %Y-%m-%d %a %H:%M'.encode(u'utf-8'))
 			else:
