@@ -380,8 +380,8 @@ class EditStructure(object):
 		self.keybindings.append(Keybinding(u'>ah', Plug(u'OrgDemoteHeadingNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].demote_heading(including_children=False)<CR>')))
 		self.menu + ActionEntry(u'&Demote Heading', self.keybindings[-1])
 		self.keybindings.append(Keybinding(u'>>', Plug(u'OrgDemoteOnHeadingNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].demote_heading(including_children=False, on_heading=True)<CR>')))
-		self.keybindings.append(Keybinding(u'>}', u'>Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
-		self.keybindings.append(Keybinding(u'>ih', u'>Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'>}', u'<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'>ih', u'<Plug>OrgDemoteHeadingNormal', mode=MODE_NORMAL))
 
 		self.keybindings.append(Keybinding(u'>ar', Plug(u'OrgDemoteSubtreeNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].demote_heading()<CR>')))
 		self.menu + ActionEntry(u'&Demote Subtree', self.keybindings[-1])
