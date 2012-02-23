@@ -558,7 +558,7 @@ Using TODO states~
 
   The most important commands to work with TODO entries are:
 
-  <LocalLeader>t        Rotate the TODO state of the current item among. See
+  <LocalLeader>ct       Rotate the TODO state of the current item among. See
                         |orgguide-tags-settings|for more information.
 >
        ,-> (unmarked) -> TODO -> DONE --.
