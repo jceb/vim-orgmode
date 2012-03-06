@@ -148,7 +148,7 @@ via the 'Org' menu. Most are only usable in command mode.
 
   Dates:~
     <localleader>sa     - insert date
-    <localleader>sai    - insert inactive date
+    <localleader>si     - insert inactive date
 
   Agenda:~
     <localleader>caa    - agenda for the week
