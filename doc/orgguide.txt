@@ -81,6 +81,8 @@ Preface~
    (http://orgmode.org/) with modifications for vim. It contains all basic
    features and commands, along with important hints for customization.
 
+   To start create a new file with the extension ".org".
+
 ------------------------------------------------------------------------------
 Features~
   vim-orgmode is still very young but already quite usable. Here is a short
