@@ -170,14 +170,6 @@ endif
 call s:ReadTodoKeywords(g:org_todo_keywords, s:todo_headings)
 unlet! s:todo_headings
 
-" Propteries
-syn region Error matchgroup=org_properties_delimiter start=/^\s*:PROPERTIES:\s*$/ end=/^\s*:END:\s*$/ contains=org_property keepend
-syn match org_property /^\s*:[^\t :]\+:\s\+[^\t ]/ contained contains=org_property_value
-syn match org_property_value /:\s\zs.*/ contained
-hi def link org_properties_delimiter PreProc
-hi def link org_property Statement
-hi def link org_property_value Constant
-
 " Timestamps
 "<2003-09-16 Tue>
 syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a>\)/
@@ -230,3 +222,66 @@ hi def link hyperlink Underlined
 " Comments
 syntax match org_comment /^#.*/
 hi def link org_comment Comment
+
+" Support org authoring markup as closely as possible
+" (we're adding two markdown-like variants for =code= and blockquotes)
+" -----------------------------------------------------------------------------
+
+" Inline markup
+" *bold*, /italic/, _underline_, +strike-through+, =code=, ~verbatim~
+" Note:
+" - /italic/ is rendered as reverse in most terms (works fine in gVim, though)
+" - +strike-through+ doesn't work on Vim / gVim
+" - the non-standard `code' markup is also supported
+" - =code= and ~verbatim~ are also supported as block-level markup, see below.
+" Ref: http://orgmode.org/manual/Emphasis-and-monospace.html
+"syntax match org_bold /\*[^ ]*\*/
+syntax region org_bold      start="\S\@<= \*\| \*\S\@="   end="\S\@<=\*\|\*\S\@="  keepend oneline
+syntax region org_italic    start="\S\@<= \/\| \/\S\@="   end="\S\@<=\/\|\/\S\@="  keepend oneline
+syntax region org_underline start="\S\@<=_\|_\S\@="       end="\S\@<=_\|_\S\@="    keepend oneline
+syntax region org_code      start="\S\@<==\|=\S\@="       end="\S\@<==\|=\S\@="    keepend oneline
+syntax region org_code      start="\S\@<=`\|`\S\@="       end="\S\@<='\|'\S\@="    keepend oneline
+syntax region org_verbatim  start="\S\@<=\~\|\~\S\@="     end="\S\@<=\~\|\~\S\@="  keepend oneline
+hi def org_bold      term=bold      cterm=bold      gui=bold
+hi def org_italic    term=italic    cterm=italic    gui=italic
+hi def org_underline term=underline cterm=underline gui=underline
+
+" Lists
+syntax match  org_list_item     /^\s*[\+-]\s.*/
+syntax match  org_list_bullet   /^\s*[\+-]\s/
+syntax region org_list_dt start=/^\s*[\+-]\s/ end="::" keepend oneline contains=org_list_bullet
+hi def link org_list_bullet Statement
+hi def link org_list_dt     PreProc
+
+" Block delimiters
+syntax case ignore
+syntax match  org_block_delimiter /^#+BEGIN_.*/
+syntax match  org_block_delimiter /^#+END_.*/
+syntax match  org_key_identifier  /^#+[^ ]*:/
+syntax match  org_title           /^#+TITLE:.*/  contains=org_key_identifier
+hi def link org_key_identifier  Statement
+hi def link org_block_delimiter PreProc
+hi def link org_title           Title
+
+" Block markup
+" we consider all BEGIN/END sections as 'verbatim' blocks (inc. 'quote', 'verse', 'center')
+" except 'example' and 'src' which are treated as 'code' blocks.
+" Note: the non-standard '>' prefix is supported for quotation lines.
+" Note: the '^:.*" rule must be defined before the ':PROPERTIES:' one below.
+" TODO: http://vim.wikia.com/wiki/Different_syntax_highlighting_within_regions_of_a_file
+syntax match  org_verbatim /^\s*>.*/
+syntax match  org_code     /^\s*:.*/
+syntax region org_verbatim start="^#+BEGIN_.*"      end="^#+END_.*"      keepend contains=org_block_delimiter
+syntax region org_code     start="^#+BEGIN_SRC"     end="^#+END_SRC"     keepend contains=org_block_delimiter
+syntax region org_code     start="^#+BEGIN_EXAMPLE" end="^#+END_EXAMPLE" keepend contains=org_block_delimiter
+hi def link org_code     String
+hi def link org_verbatim Special
+
+" Properties
+syn region Error matchgroup=org_properties_delimiter start=/^\s*:PROPERTIES:\s*$/ end=/^\s*:END:\s*$/ contains=org_property keepend
+syn match org_property /^\s*:[^\t :]\+:\s\+[^\t ]/ contained contains=org_property_value
+syn match org_property_value /:\s\zs.*/ contained
+hi def link org_properties_delimiter PreProc
+hi def link org_property             Statement
+hi def link org_property_value       Constant
+
