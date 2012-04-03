@@ -170,14 +170,6 @@ endif
 call s:ReadTodoKeywords(g:org_todo_keywords, s:todo_headings)
 unlet! s:todo_headings
 
-" Properties
-syn region Error matchgroup=org_properties_delimiter start=/^\s*:PROPERTIES:\s*$/ end=/^\s*:END:\s*$/ contains=org_property keepend
-syn match org_property /^\s*:[^\t :]\+:\s\+[^\t ]/ contained contains=org_property_value
-syn match org_property_value /:\s\zs.*/ contained
-hi def link org_properties_delimiter PreProc
-hi def link org_property Statement
-hi def link org_property_value Constant
-
 " Timestamps
 "<2003-09-16 Tue>
 syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a>\)/
@@ -284,4 +276,12 @@ syntax region org_code     start="^#+BEGIN_SRC"     end="^#+END_SRC"     keepend
 syntax region org_code     start="^#+BEGIN_EXAMPLE" end="^#+END_EXAMPLE" keepend contains=org_block_delimiter
 hi def link org_code     String
 hi def link org_verbatim Special
+
+" Properties
+syn region Error matchgroup=org_properties_delimiter start=/^\s*:PROPERTIES:\s*$/ end=/^\s*:END:\s*$/ contains=org_property keepend
+syn match org_property /^\s*:[^\t :]\+:\s\+[^\t ]/ contained contains=org_property_value
+syn match org_property_value /:\s\zs.*/ contained
+hi def link org_properties_delimiter PreProc
+hi def link org_property             Statement
+hi def link org_property_value       Constant
 
