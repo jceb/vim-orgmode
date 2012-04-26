@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echo, ORGMODE, apply_count
+import vim
+
+from orgmode._vim import echo, ORGMODE, apply_count
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_OPERATOR, Plug
 from orgmode.liborgmode.documents import Direction
-
-import vim
 
 class Navigator(object):
 	u""" Implement navigation in org-mode documents """

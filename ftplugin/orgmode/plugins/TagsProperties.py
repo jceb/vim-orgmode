@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import ORGMODE, repeat
+import vim
+
+from orgmode._vim import ORGMODE, repeat
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode import settings
-
-import vim
 
 class TagsProperties(object):
 	u""" TagsProperties plugin """

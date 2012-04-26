@@ -6,7 +6,7 @@ sys.path.append(u'../ftplugin')
 
 import vim
 
-from orgmode import ORGMODE
+from orgmode._vim import ORGMODE
 
 START = True
 END = False

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echo, echom, echoe, ORGMODE, apply_count, repeat
+import vim
+
+from orgmode._vim import echo, echom, echoe, ORGMODE, apply_count, repeat
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
-
-import vim
 
 class LoggingWork(object):
 	u""" LoggingWork plugin """

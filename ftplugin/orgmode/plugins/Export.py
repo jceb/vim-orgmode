@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import ORGMODE, echoe, echo, echom
-from orgmode.menu import Submenu, ActionEntry
-from orgmode.keybinding import Keybinding, Plug, Command
-from orgmode import settings
-
-import vim
 import os
 import subprocess
 
+import vim
+
+from orgmode._vim import ORGMODE, echoe, echo, echom
+from orgmode.menu import Submenu, ActionEntry
+from orgmode.keybinding import Keybinding, Plug, Command
+from orgmode import settings
 
 class Export(object):
 	u"""

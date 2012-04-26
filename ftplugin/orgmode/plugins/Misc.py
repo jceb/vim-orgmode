@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import ORGMODE, apply_count
+import vim
+
+from orgmode._vim import ORGMODE, apply_count
 from orgmode.menu import Submenu
 from orgmode.keybinding import Keybinding, Plug, MODE_VISUAL, MODE_OPERATOR
-
-import vim
 
 class Misc(object):
 	u""" Miscellaneous functionality """

@@ -182,7 +182,7 @@ class Keybinding(object):
 		return self._silent
 
 	def create(self):
-		from orgmode import ORGMODE, echom
+		from orgmode._vim import ORGMODE, echom
 
 		cmd = self._mode
 		if cmd == MODE_ALL:

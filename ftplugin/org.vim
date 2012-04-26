@@ -77,7 +77,7 @@ for p in vim.eval("&runtimepath").split(','):
 			sys.path.append(dname)
 			break
 
-from orgmode import ORGMODE
+from orgmode._vim import ORGMODE
 ORGMODE.start()
 EOF
 

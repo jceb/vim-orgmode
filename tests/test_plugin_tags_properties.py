@@ -7,7 +7,7 @@ sys.path.append(u'../ftplugin')
 
 import vim
 
-from orgmode import indent_orgmode, fold_orgmode, ORGMODE
+from orgmode._vim import indent_orgmode, fold_orgmode, ORGMODE
 
 ORGMODE.debug = True
 

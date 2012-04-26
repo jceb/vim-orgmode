@@ -3,13 +3,12 @@
 from datetime import date
 import os
 
-from orgmode import ORGMODE, settings
-from orgmode import get_bufnumber
-from orgmode import get_bufname
-from orgmode import echoe
+import vim
+
+from orgmode._vim import ORGMODE, get_bufnumber, get_bufname, echoe
+from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry
-import vim
 
 
 class Agenda(object):

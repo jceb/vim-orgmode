@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import vim
+
 from orgmode.liborgmode.headings import Heading
+from orgmode._vim import ORGMODE, apply_count
 from orgmode import settings
-from orgmode import ORGMODE, apply_count
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_NORMAL
-
-import vim
 
 class ShowHide(object):
 	u""" Show Hide plugin """

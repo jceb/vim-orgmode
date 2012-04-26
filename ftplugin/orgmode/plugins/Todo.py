@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echom, ORGMODE, apply_count, repeat, realign_tags, settings
+import vim
+
+from orgmode._vim import echom, ORGMODE, apply_count, repeat, realign_tags
+from orgmode import settings
 from orgmode.liborgmode.base import Direction
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug
-
-import vim
-
 
 # temporary todo states for differnent orgmode buffers
 ORGTODOSTATES = {}

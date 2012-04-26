@@ -22,10 +22,10 @@ from UserList import UserList
 
 import vim
 
-import settings
-from exceptions import BufferNotFound, BufferNotInSync
-from liborgmode.documents import Document, MultiPurposeList, Direction
-from liborgmode.headings import Heading
+from orgmode import settings
+from orgmode.exceptions import BufferNotFound, BufferNotInSync
+from orgmode.liborgmode.documents import Document, MultiPurposeList, Direction
+from orgmode.liborgmode.headings import Heading
 
 
 class VimBuffer(Document):

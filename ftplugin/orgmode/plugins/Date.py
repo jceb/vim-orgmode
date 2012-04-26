@@ -3,7 +3,9 @@ import re
 from datetime import timedelta, date, datetime
 
 import vim
-from orgmode import ORGMODE, settings, echom, insert_at_cursor, get_user_input
+
+from orgmode._vim import ORGMODE, echom, insert_at_cursor, get_user_input
+from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry
 

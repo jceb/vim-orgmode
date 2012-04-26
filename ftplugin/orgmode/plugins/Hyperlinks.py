@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from orgmode import echom, ORGMODE, realign_tags
-from orgmode.menu import Submenu, Separator, ActionEntry
-from orgmode.keybinding import Keybinding, Plug, Command
+import re
 
 import vim
-import re
+
+from orgmode._vim import echom, ORGMODE, realign_tags
+from orgmode.menu import Submenu, Separator, ActionEntry
+from orgmode.keybinding import Keybinding, Plug, Command
 
 class Hyperlinks(object):
 	u""" Hyperlinks plugin """
