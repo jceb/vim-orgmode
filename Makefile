@@ -53,7 +53,7 @@ vba.gz: ${PLUGIN}.vba.gz
 test: check
 
 check: tests/run_tests.py
-	cd tests && python run_tests.py
+	cd tests && python2 run_tests.py
 
 # generate documentation
 docs: documentation
