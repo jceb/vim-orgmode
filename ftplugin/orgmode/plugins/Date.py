@@ -218,7 +218,7 @@ class Date(object):
 		"""
 		today = date.today()
 		msg = u''.join([u'Inserting ',
-				today.strftime(u'%Y-%m-%d %a'.encode(u'utf-8')),
+				unicode(today.strftime(u'%Y-%m-%d %a'), u'utf-8'),
 				u' | Modify date'])
 		modifier = get_user_input(msg)
 
@@ -239,6 +239,27 @@ class Date(object):
 
 		insert_at_cursor(timestamp)
 
+	@classmethod
+	def insert_timestamp_with_calendar(cls, active=True):
+		u"""
+		Insert a timestamp at the cursor position.
+		Show fancy calendar to pick the date from.
+
+		TODO: add all modifier of orgmode.
+		"""
+		if int(vim.eval(u'exists(":CalendarH")'.encode(u'utf-8'))) != 2:
+			vim.command("echo 'Please install plugin Calendar to enable this function'")
+			return
+		vim.command("CalendarH")
+		# backup calendar_action
+		calendar_action = vim.eval("g:calendar_action")
+		vim.command("let g:org_calendar_action_backup = '" + calendar_action + "'")
+		vim.command("let g:calendar_action = 'CalendarAction'")
+
+		timestamp_template = u'<%s>' if active else u'[%s]'
+		# timestamp template
+		vim.command("let g:org_timestamp_template = '" + timestamp_template + "'")
+
 	def register(self):
 		u"""
 		Registration of the plugin.
@@ -254,6 +275,16 @@ class Date(object):
 				Plug(u'OrgDateInsertTimestampInactive',
 					u':py ORGMODE.plugins[u"Date"].insert_timestamp(False)<CR>')))
 		self.menu + ActionEntry(u'Timestamp (&inactive)', self.keybindings[-1])
+
+		self.keybindings.append(Keybinding(u'<localleader>pa',
+				Plug(u'OrgDateInsertTimestampActiveWithCalendar',
+				u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar()<CR>')))
+		self.menu + ActionEntry(u'Timestamp with Calendar', self.keybindings[-1])
+
+		self.keybindings.append(Keybinding(u'<localleader>pi',
+				Plug(u'OrgDateInsertTimestampInactiveWithCalendar',
+					u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar(False)<CR>')))
+		self.menu + ActionEntry(u'Timestamp with Calendar(inactive)', self.keybindings[-1])
 
 		submenu = self.menu + Submenu(u'Change &Date')
 		submenu + ActionEntry(u'Day &Earlier', u'<C-x>', u'<C-x>')
