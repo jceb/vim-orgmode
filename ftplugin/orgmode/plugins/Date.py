@@ -218,7 +218,7 @@ class Date(object):
 		"""
 		today = date.today()
 		msg = u''.join([u'Inserting ',
-				today.strftime(u'%Y-%m-%d %a'.encode(u'utf-8')),
+				unicode(today.strftime(u'%Y-%m-%d %a'), u'utf-8'),
 				u' | Modify date'])
 		modifier = get_user_input(msg)
 
