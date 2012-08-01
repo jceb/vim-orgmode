@@ -77,8 +77,11 @@ for p in vim.eval("&runtimepath").split(','):
 			sys.path.append(dname)
 			break
 
-from orgmode._vim import ORGMODE
+from orgmode._vim import ORGMODE, insert_at_cursor, get_user_input, date_to_str
 ORGMODE.start()
+
+from Date import Date
+import datetime
 EOF
 
 " ******************** Taglist/Tagbar integration ********************
@@ -102,3 +105,27 @@ endif
 " Pass parameters to taglist
 let g:tlist_org_settings = 'org;s:section;h:hyperlinks'
 let g:Tlist_Ctags_Cmd .= ' --options=' . expand('<sfile>:p:h') . '/org.cnf '
+
+
+" ******************** Calendar integration ********************
+fun CalendarAction(day, month, year, week, dir)
+	let g:org_timestamp = printf("%04d-%02d-%02d Fri", a:year, a:month, a:day)
+	let datetime_date = printf("datetime.date(%d, %d, %d)", a:year, a:month, a:day)
+	exe "py selected_date = " . datetime_date
+	" get_user_input
+	let msg = printf("Inserting %s | Modify date", g:org_timestamp)
+	exe "py modifier = get_user_input('" . msg . "')"
+	" change date according to user input
+	exe "py print modifier"
+	exe "py newdate = Date._modify_time(selected_date, modifier)"
+	exe "py newdate = date_to_str(newdate)"
+	" close Calendar
+	exe "q"
+	" goto previous window
+	exe "wincmd p"
+	exe "py timestamp = '" . g:org_timestamp_template . "' % newdate"
+	exe "py insert_at_cursor(timestamp)"
+	" restore calendar_action
+	let g:calendar_action = g:org_calendar_action_backup
+endf
+
