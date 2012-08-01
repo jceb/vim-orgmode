@@ -11,6 +11,7 @@ import imp
 import types
 
 import vim
+from datetime import datetime
 
 import orgmode.keybinding
 import orgmode.menu
@@ -239,6 +240,16 @@ def fold_orgmode(allow_dirty=False):
 		#	vim.command((u'let b:fold_expr = "<%d"' % heading.level).encode(u'utf-8'))
 		else:
 			vim.command((u'let b:fold_expr = %d' % heading.level).encode(u'utf-8'))
+
+
+def date_to_str(date):
+	if isinstance(date, datetime):
+		date = date.strftime(
+				u'%Y-%m-%d %a %H:%M'.encode(u'utf-8')).decode(u'utf-8')
+	else:
+		date = date.strftime(
+				u'%Y-%m-%d %a'.encode(u'utf-8')).decode(u'utf-8')
+	return date
 
 
 class OrgMode(object):
