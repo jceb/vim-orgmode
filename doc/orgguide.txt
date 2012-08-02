@@ -139,7 +139,7 @@ via the 'Org' menu. Most are only usable in command mode.
     go              - previous link
 
   TODO Lists:~
-    ,d              - select keyword
+    <localleader>d  - select keyword
     <S-Left>        - previous keyword
     <S-Right>       - next keyword
     <C-S-Left>      - previous keyword set
@@ -151,10 +151,14 @@ via the 'Org' menu. Most are only usable in command mode.
   Dates:~
     <localleader>sa     - insert date
     <localleader>si     - insert inactive date
+    <localleader>pa     - insert date by using calendar selection
+    <localleader>pi     - insert inactive date by using calendar selection
 
   Agenda:~
     <localleader>caa    - agenda for the week
     <localleader>cat    - agenda of all TODOs
+
+    Not yet implemented in vim-orgmode~
     <localleader>caT    - timeline for current buffer
 
   Export:~
@@ -188,6 +192,9 @@ Activation~
   (http://www.vim.org/scripts/script.php?script_id=293) addon, otherwise
   hyperlinks won't work. Other plugins that integrate well with vim orgmode
   are listed in the following section.
+
+  Note: If you want to insert timestamp by using a calendar, you should install
+  calendar(http://www.vim.org/scripts/script.php?script_id=52) to enable this feature.
 
 ------------------------------------------------------------------------------
 Suggested plugins~
@@ -224,6 +231,10 @@ Suggested plugins~
   pathogen~
     (http://www.vim.org/scripts/script.php?script_id=2332)
     Easy management of multiple vim plugins.
+
+  calendar~
+    (http://www.vim.org/scripts/script.php?script_id=52)
+    This plugin will create a calendar window for timestamp insertion.
 
 ------------------------------------------------------------------------------
 Feedback~
@@ -788,8 +799,16 @@ Creating timestamps~
   date and time. See the manual for more information on how exactly the
   date/time prompt works.
 
-  Not yet implemented in vim-orgmode~
   You can also select a date in the pop-up calendar.
+  NOTE: The plugin 'calendar' should be installed for this feature.
+
+                                                       *orgmode-<LocalLeader>pa*
+  <LocalLeader>pa	      Open a calendar and prompt a user selected date, then
+                        insert a corresponding timestamp.
+
+                                                       *orgmode-<LocalLeader>pi*
+  <LocalLeader>pi	      Like |orgmode-<LocalLeader>-pa|, but insert an inactive 
+                        timestamp that will not cause an agenda entry.
 
 ------------------------------------------------------------------------------
 Deadlines and scheduling~
