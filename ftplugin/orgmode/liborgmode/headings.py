@@ -10,7 +10,7 @@
 import re
 from UserList import UserList
 
-from orgmode.liborgmode.base import MultiPurposeList, flatten_list
+from orgmode.liborgmode.base import MultiPurposeList
 from orgmode.liborgmode.orgdate import OrgTimeRange
 from orgmode.liborgmode.orgdate import get_orgdate
 
@@ -39,10 +39,11 @@ class Heading(object):
 		object.__init__(self)
 
 		self._document = None
-		self._parent = None
-		self._previous_sibling = None
-		self._next_sibling = None
-		self._children = HeadingList(obj=self)
+		# self._parent = None
+		# self._previous_sibling = None
+		# self._next_sibling = None
+		# self._children = HeadingList(obj=self)
+		self._next = None
 		self._orig_start = None
 		self._orig_len = 0
 
@@ -238,8 +239,55 @@ class Heading(object):
 
 		:returns:	The newly created heading
 		"""
-		test_not_empty = lambda x: x != u''
+		# test_not_empty = lambda x: x != u''
 		def parse_title(heading_line):
+			level = todo = title = tags = -1
+
+			word = u''
+			sndword = u''
+			for c in heading_line:
+				if level == -1:
+					if c == u'*':
+						word += c
+					elif c in (u'\t', u' '):
+						# finish level
+						level = len(word)
+					else:
+						raise ValueError(u'Data doesn\'t start with a heading definition.')
+				elif todo == -1:
+					if c in (u'\t', u' '):
+						if not word:
+							# ignore whitespace
+							pass
+						else:
+							# finish todo
+							if word in allowed_todo_states:
+								todo = word
+							else:
+								todo = None
+				elif title == -1:
+					if sndword:
+						if c in (u'\t', u' '):
+							# it's not a tag word!
+							word = sndword
+							sndword = word
+						else:
+							sndword += c
+					elif c == u':':
+						sndword += c
+					else:
+						word += c
+			if todo == -1:
+				todo = None
+			if sndword:
+				if sndword[-1] == u':':
+					tags = sndword.split(u':')
+				else:
+					word += sndword
+					sndword = u''
+			title = word.strip()
+			return (level, todo, title, tags)
+
 			# WARNING this regular expression fails if there is just one or no
 			# word in the heading but a tag!
 			m = REGEX_HEADING.match(heading_line)
@@ -283,12 +331,12 @@ class Heading(object):
 			new_heading._document = document
 
 		# try to find active dates
-		tmp_orgdate = get_orgdate(data)
-		if tmp_orgdate and tmp_orgdate.active \
-				and not isinstance(tmp_orgdate, OrgTimeRange):
-			new_heading.active_date = tmp_orgdate
-		else:
-			new_heading.active_date = None
+		#tmp_orgdate = get_orgdate(data)
+		#if tmp_orgdate and tmp_orgdate.active \
+		#		and not isinstance(tmp_orgdate, OrgTimeRange):
+		#	new_heading.active_date = tmp_orgdate
+		#else:
+		#	new_heading.active_date = None
 
 		return new_heading
 
@@ -301,13 +349,11 @@ class Heading(object):
 		:returns: level
 		"""
 		level = 0
-		if not line:
-			return None
-		for i in xrange(0, len(line)):
-			if line[i] == u'*':
+		for c in line:
+			if c == u'*':
 				level += 1
-				if len(line) > (i + 1) and line[i + 1] in (u'\t', u' '):
-					return level
+			elif c in (u'\t', u' ') and level:
+				return level
 			else:
 				return None
 
@@ -490,8 +536,6 @@ class Heading(object):
 
 		def fset(self, value):
 			v = value
-			if type(v) in (list, tuple) or isinstance(v, UserList):
-				v = flatten_list(v)
 			self._children[:] = v
 
 		def fdel(self):
@@ -604,7 +648,6 @@ class Heading(object):
 				v = list(unicode(v))
 			if type(v) not in (list, tuple) and not isinstance(v, UserList):
 				v = list(unicode(v))
-			v = flatten_list(v)
 			v_decoded = []
 			for i in v:
 				if type(i) not in (unicode, str):
@@ -631,7 +674,7 @@ class Heading(object):
 
 		def fset(self, value):
 			if type(value) in (list, tuple) or isinstance(value, UserList):
-				self._body[:] = flatten_list(value)
+				self._body[:] = value
 			elif type(value) in (str, ):
 				self._body[:] = value.decode('utf-8').split(u'\n')
 			elif type(value) in (unicode, ):
@@ -691,7 +734,7 @@ class HeadingList(MultiPurposeList):
 			return
 
 		if type(item) in (list, tuple) or isinstance(item, UserList):
-			for i in flatten_list(item):
+			for i in item:
 				self._add_to_deleted_headings(i)
 		else:
 			self._get_document()._deleted_headings.append(
@@ -724,7 +767,7 @@ class HeadingList(MultiPurposeList):
 		if type(heading) in (list, tuple) or isinstance(heading, UserList):
 			prev = previous_sibling
 			current = None
-			for _next in flatten_list(heading):
+			for _next in heading:
 				if current:
 					self._associate_heading(current, prev, _next, \
 							children=children, taint=taint)
@@ -762,8 +805,8 @@ class HeadingList(MultiPurposeList):
 					children=True, taint=taint)
 
 	def __setitem__(self, i, item):
-		if not self.__class__.is_heading(item):
-			raise ValueError(u'Item is not a heading!')
+		#if not self.__class__.is_heading(item):
+		#	raise ValueError(u'Item is not a heading!')
 		if item in self:
 			raise ValueError(u'Heading is already part of this list!')
 		self._add_to_deleted_headings(self[i])
@@ -777,10 +820,9 @@ class HeadingList(MultiPurposeList):
 		o = other
 		if self.__class__.is_heading(o):
 			o = (o, )
-		o = flatten_list(o)
-		for item in o:
-			if not self.__class__.is_heading(item):
-				raise ValueError(u'List contains items that are not a heading!')
+		#for item in o:
+		#	if not self.__class__.is_heading(item):
+		#		raise ValueError(u'List contains items that are not a heading!')
 		i = max(i, 0)
 		j = max(j, 0)
 		self._add_to_deleted_headings(self[i:j])
@@ -819,9 +861,9 @@ class HeadingList(MultiPurposeList):
 		o = other
 		if self.__class__.is_heading(o):
 			o = (o, )
-		for item in flatten_list(o):
-			if not self.__class__.is_heading(item):
-				raise ValueError(u'List contains items that are not a heading!')
+		#for item in o:
+		#	if not self.__class__.is_heading(item):
+		#		raise ValueError(u'List contains items that are not a heading!')
 		self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
 		return MultiPurposeList.__iadd__(self, o)
 
@@ -830,8 +872,8 @@ class HeadingList(MultiPurposeList):
 		return MultiPurposeList.__imul__(self, n)
 
 	def append(self, item, taint=True):
-		if not self.__class__.is_heading(item):
-			raise ValueError(u'Item is not a heading!')
+		#if not self.__class__.is_heading(item):
+		#	raise ValueError(u'Item is not a heading!')
 		if item in self:
 			raise ValueError(u'Heading is already part of this list!')
 		self._associate_heading(item, self[-1] if len(self) > 0 else None, \
@@ -880,9 +922,9 @@ class HeadingList(MultiPurposeList):
 		o = other
 		if self.__class__.is_heading(o):
 			o = (o, )
-		for item in o:
-			if not self.__class__.is_heading(item):
-				raise ValueError(u'List contains items that are not a heading!')
+		#for item in o:
+		#	if not self.__class__.is_heading(item):
+		#		raise ValueError(u'List contains items that are not a heading!')
 		self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
 		MultiPurposeList.extend(self, o)
 

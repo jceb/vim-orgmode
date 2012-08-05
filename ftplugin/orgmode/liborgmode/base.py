@@ -11,16 +11,16 @@
 from UserList import UserList
 
 
-def flatten_list(l):
-	"""TODO"""
-	res = []
-	if type(l) in (tuple, list) or isinstance(l, UserList):
-		for i in l:
-			if type(i) in (list, tuple) or isinstance(i, UserList):
-				res.extend(flatten_list(i))
-			else:
-				res.append(i)
-	return res
+#def flatten_list(l):
+#	"""TODO"""
+#	res = []
+#	if type(l) in (tuple, list) or isinstance(l, UserList):
+#		for i in l:
+#			if type(i) in (list, tuple) or isinstance(i, UserList):
+#				res.extend(flatten_list(i))
+#			else:
+#				res.append(i)
+#	return res
 
 
 class Direction():

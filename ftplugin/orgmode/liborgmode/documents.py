@@ -9,7 +9,7 @@
 
 from UserList import UserList
 
-from orgmode.liborgmode.base import MultiPurposeList, flatten_list, Direction
+from orgmode.liborgmode.base import MultiPurposeList, Direction
 from orgmode.liborgmode.headings import Heading, HeadingList
 
 
@@ -60,7 +60,7 @@ class Document(object):
 
 		:returns:	[all todo/done states]
 		"""
-		return flatten_list(self.get_todo_states())
+		return self.get_todo_states()
 
 	def get_todo_states(self):
 		u""" Returns a list containing a tuple of two lists of allowed todo
@@ -147,8 +147,14 @@ class Document(object):
 		self._orig_meta_information_len = len(self.meta_information)
 
 		# initialize dom tree
-		prev_h = None
+		prev_h = h
 		while h:
+			start = prev_h.end + 1
+			prev_h._next = h = self.find_heading(start, heading=heading)
+			if h:
+				prev_h = h
+		while h:
+			break
 			if prev_h:
 				prev_h._next_sibling = h
 				h._previous_sibling = prev_h
@@ -172,7 +178,7 @@ class Document(object):
 			if self._orig_meta_information_len is None:
 				self._orig_meta_information_len = len(self.meta_information)
 			if type(value) in (list, tuple) or isinstance(value, UserList):
-				self._meta_information[:] = flatten_list(value)
+				self._meta_information[:] = value
 			elif type(value) in (str, ):
 				self._meta_information[:] = value.decode(u'utf-8').split(u'\n')
 			elif type(value) in (unicode, ):
