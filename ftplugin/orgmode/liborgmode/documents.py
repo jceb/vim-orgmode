@@ -9,7 +9,7 @@
 
 from UserList import UserList
 
-from orgmode.liborgmode.base import MultiPurposeList, flatten_list, Direction
+from orgmode.liborgmode.base import MultiPurposeList, flatten_list, Direction, get_domobj_range
 from orgmode.liborgmode.headings import Heading, HeadingList
 
 
@@ -277,39 +277,10 @@ class Document(object):
 
 		:returns:	New heading object or None
 		"""
-		len_cb = len(self._content)
-
-		if position < 0 or position > len_cb:
-			return
-
-		tmp_line = position
-		start = None
-		end = None
-
-		# Search heading upwards
-		if direction == Direction.FORWARD:
-			while tmp_line < len_cb:
-				if heading.identify_heading(self._content[tmp_line]) is not None:
-					if start is None:
-						start = tmp_line
-					elif end is None:
-						end = tmp_line - 1
-					if start is not None and end is not None:
-						break
-				tmp_line += 1
-		else:
-			while tmp_line >= 0 and tmp_line < len_cb:
-				if heading.identify_heading(self._content[tmp_line]) is not None:
-					if start is None:
-						start = tmp_line
-					elif end is None:
-						end = tmp_line - 1
-					if start is not None and end is not None:
-						break
-				tmp_line -= 1 if start is None else -1
+		(start, end) = get_domobj_range(content=self._content, position=position, direction=direction, identify_fun=heading.identify_heading)
 
 		if start is not None and end is None:
-			end = len_cb - 1
+			end = len(self._content) - 1
 		if start is not None and end is not None:
 			return heading.parse_heading_from_data(self._content[start:end + 1], self.get_all_todo_states(), \
 					document=self if connect_with_document else None, orig_start=start)
