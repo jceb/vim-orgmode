@@ -10,9 +10,12 @@
 import re
 from UserList import UserList
 
-from orgmode.liborgmode.base import MultiPurposeList, flatten_list
+import vim
+from orgmode.liborgmode.base import MultiPurposeList, flatten_list, Direction, get_domobj_range
 from orgmode.liborgmode.orgdate import OrgTimeRange
 from orgmode.liborgmode.orgdate import get_orgdate
+from orgmode.liborgmode.checkboxes import Checkbox, CheckboxList
+from orgmode.liborgmode.dom_obj import DomObj, DomObjList
 
 
 REGEX_HEADING = re.compile(
@@ -21,9 +24,11 @@ REGEX_HEADING = re.compile(
 REGEX_TAGS = re.compile(r'^\s*((?P<title>[^\s]*?)\s+)?(?P<tags>:[\w_:@]+:)$',
 		flags=re.U | re.L)
 REGEX_TODO = re.compile(r'^[^\s]*$')
+# REGEX_SUBTASK = re.compile(r'\[(\d+)/(\d+)\]')
+REGEX_SUBTASK = re.compile(r'\[(\d*)/(\d*)\]')
+REGEX_SUBTASK_PERCENT = re.compile(r'\[(\d*)%\]')
 
-
-class Heading(object):
+class Heading(DomObj):
 	u""" Structural heading object """
 
 	def __init__(self, level=1, title=u'', tags=None, todo=None, body=None,
@@ -36,18 +41,10 @@ class Heading(object):
 		:body:		Body of the heading
 		:active_date: active date that is used in the agenda
 		"""
-		object.__init__(self)
+		DomObj.__init__(self, level=level, title=title, body=body)
 
-		self._document = None
-		self._parent = None
-		self._previous_sibling = None
-		self._next_sibling = None
 		self._children = HeadingList(obj=self)
-		self._orig_start = None
-		self._orig_len = 0
-
 		self._dirty_heading = False
-		self._level = level
 
 		# todo
 		self._todo = None
@@ -59,21 +56,14 @@ class Heading(object):
 		if tags:
 			self.tags = tags
 
-		# title
-		self._title = u''
-		if title:
-			self.title = title
-
-		# body
-		self._dirty_body = False
-		self._body = MultiPurposeList(on_change=self.set_dirty_body)
-		if body:
-			self.body = body
-
 		# active date
 		self._active_date = active_date
 		if active_date:
 			self.active_date = active_date
+
+		# checkboxes
+		self._checkboxes  = CheckboxList(obj=self)
+		self._cached_checkbox = None
 
 	def __unicode__(self):
 		res = u'*' * self.level
@@ -224,6 +214,172 @@ class Heading(object):
 
 		return heading
 
+	def all_checkboxes(self):
+		u""" Iterate over all checkboxes of the current heading in serialized
+		order
+
+		:returns:	Returns an iterator object which returns all checkboxes of
+					the current heading in serialized order
+		"""
+		if not self.checkboxes:
+			raise StopIteration()
+
+		c = self.first_checkbox
+		while c:
+			yield c
+			c = c.next_checkbox
+		raise StopIteration()
+
+	def all_toplevel_checkboxes(self):
+		if not self.checkboxes:
+			raise StopIteration()
+
+		# c = self.checkboxes[0]
+		c = self.first_checkbox
+		while c:
+			yield c
+			c = c.next_sibling
+		raise StopIteration()
+
+	def find_checkbox(self, position=0, direction=Direction.FORWARD, \
+			checkbox=Checkbox, connect_with_heading=True):
+		u""" Find checkbox in the given direction
+
+		:postition: starting line, counting from 0 (in vim you start
+				    counting from 1, don't forget)
+		:direction: downwards == Direction.FORWARD,
+				    upwards == Direction.BACKWARD
+		:checkbox:  Heading class from which new heading objects will be
+				    instanciated
+		:connect_with_heading: if True, the newly created heading will be
+				               connected with the document, otherwise not
+
+		:returns:	New checkbox object or None
+		"""
+		doc = self.document
+		(start, end) = get_domobj_range(content=doc._content, position=position, direction=direction, identify_fun=checkbox.identify_checkbox)
+		if start is not None and end is None:
+			end = len(doc._content) - 1
+		if start is not None and end is not None:
+			return checkbox.parse_checkbox_from_data(doc._content[start:end + 1], \
+					heading=self if connect_with_heading else None, orig_start=start)
+
+	def init_checkboxes(self, checkbox=Checkbox):
+		u""" Initialize all checkboxes in current heading - build DOM.
+
+		:returns:	self
+		"""
+		def init_checkbox(_c):
+			u"""
+			:returns	the initialized checkbox
+			"""
+			start = _c.end + 1
+			prev_checkbox = None
+			while True:
+				new_checkbox = self.find_checkbox(start, checkbox=checkbox)
+
+				# * Checkbox 1 <- checkbox
+				# * Checkbox 1 <- sibling
+				# or
+				#  * Checkbox 2 <- checkbox
+				# * Checkbox 1 <- parent's sibling
+				if not new_checkbox or \
+						new_checkbox.level <= _c.level:
+					break
+
+				# * Checkbox 1 <- heading
+				#  * Checkbox 2 <- first child
+				#  * Checkbox 2 <- another child
+				new_checkbox._parent = _c
+				if prev_checkbox:
+					prev_checkbox._next_sibling = new_checkbox
+					new_checkbox._previous_sibling = prev_checkbox
+				_c.children.data.append(new_checkbox)
+				# the start and end computation is only
+				# possible when the new checkbox was properly
+				# added to the document structure
+				init_checkbox(new_checkbox)
+				if new_checkbox.children:
+					# skip children
+					start = new_checkbox.end_of_last_child + 1
+				else:
+					start = new_checkbox.end + 1
+				prev_checkbox = new_checkbox
+
+			return _c
+
+		c = self.find_checkbox(checkbox=checkbox, position=self.start)
+
+		# initialize dom tree
+		prev_c = None
+		while c:
+			if prev_c and prev_c.level == c.level:
+				prev_c._next_sibling = c
+				c._previous_sibling = prev_c
+			self.checkboxes.data.append(c)
+			init_checkbox(c)
+			prev_c = c
+			c = self.find_checkbox(c.end_of_last_child + 1, checkbox=checkbox)
+
+		return self
+
+	def current_checkbox(self, position=None):
+		u""" Find the current checkbox (search backward) and return the related object
+		:returns:	Checkbox object or None
+		"""
+		if position is None:
+			position = vim.current.window.cursor[0] - 1
+
+		if not self.checkboxes:
+			return
+
+		def binaryFindInHeading():
+			hi = len(self.checkboxes)
+			lo = 0
+			while lo < hi:
+				mid = (lo+hi)//2
+				c = self.checkboxes[mid]
+				if c.end_of_last_child < position:
+					lo = mid + 1
+				elif c.start > position:
+					hi = mid
+				else:
+					return binaryFindCheckbox(c)
+
+		def binaryFindCheckbox(checkbox):
+			if not checkbox.children or checkbox.end >= position:
+				return checkbox
+
+			hi = len(checkbox.children)
+			lo = 0
+			while lo < hi:
+				mid = (lo+hi)//2
+				c = checkbox.children[mid]
+				if c.end_of_last_child < position:
+					lo = mid + 1
+				elif c.start > position:
+					hi = mid
+				else:
+					return binaryFindCheckbox(c)
+
+		# look at the cache to find the heading
+		c_tmp = self._cached_checkbox
+		if c_tmp is not None:
+			if c_tmp.end_of_last_child > position and \
+					c_tmp.start < position:
+				if c_tmp.end < position:
+					self._cached_checkbox = binaryFindCheckbox(c_tmp)
+				return self._cached_checkbox
+
+		self._cached_checkbox = binaryFindInHeading()
+		return self._cached_checkbox
+
+	@property
+	def first_checkbox(self):
+		u""" Access to the first child checkbox or None if no children exist """
+		if self.checkboxes:
+			return self.checkboxes[0]
+
 	@classmethod
 	def parse_heading_from_data(cls, data, allowed_todo_states, document=None,
 			orig_start=None):
@@ -291,6 +447,18 @@ class Heading(object):
 
 		return new_heading
 
+	def update_subtasks(self, total=0, on=0):
+		if not total:
+			return
+		percent = (on * 100) / total
+		count = "%d/%d" % (on, total)
+		# print self.title
+		self.title = REGEX_SUBTASK.sub("[%s]" % (count), self.title)
+		self.title = REGEX_SUBTASK_PERCENT.sub("[%d%%]" % (percent), self.title)
+		# print self.title
+		self.document.write_heading(self, including_children=False)	
+		# print self.title
+
 	@classmethod
 	def identify_heading(cls, line):
 		u""" Test if a certain line is a heading or not.
@@ -319,11 +487,6 @@ class Heading(object):
 	def is_dirty_heading(self):
 		u""" Return True if the heading is marked dirty """
 		return self._dirty_heading
-
-	@property
-	def is_dirty_body(self):
-		u""" Return True if the heading's body is marked dirty """
-		return self._dirty_body
 
 	def get_index_in_parent_list(self):
 		""" Retrieve the index value of current heading in the parents list of
@@ -368,71 +531,15 @@ class Heading(object):
 		if self._document:
 			self._document.set_dirty_document()
 
-	def set_dirty_body(self):
-		u""" Mark the heading's body dirty so that it will be rewritten when
-		saving the document """
-		self._dirty_body = True
-		if self._document:
-			self._document.set_dirty_document()
-
-	@property
-	def document(self):
-		u""" Read only access to the document. If you want to change the
-		document, just assign the heading to another document """
-		return self._document
-
-	@property
-	def parent(self):
-		u""" Access to the parent heading """
-		return self._parent
-
-	@property
-	def number_of_parents(self):
-		u""" Access to the number of parent headings before reaching the root
-		document """
-		def count_parents(h):
-			if h.parent:
-				return 1 + count_parents(h.parent)
-			else:
-				return 0
-		return count_parents(self)
-
-	@property
-	def previous_sibling(self):
-		u""" Access to the previous heading that's a sibling of the current one
-		"""
-		return self._previous_sibling
-
-	@property
-	def next_sibling(self):
-		u""" Access to the next heading that's a sibling of the current one """
-		return self._next_sibling
-
 	@property
 	def previous_heading(self):
 		u""" Serialized access to the previous heading """
-		if self.previous_sibling:
-			h = self.previous_sibling
-			while h.children:
-				h = h.children[-1]
-			return h
-		elif self.parent:
-			return self.parent
+		return super(Heading, self).previous_item
 
 	@property
 	def next_heading(self):
 		u""" Serialized access to the next heading """
-		if self.children:
-			return self.children[0]
-		elif self.next_sibling:
-			return self.next_sibling
-		else:
-			h = self.parent
-			while h:
-				if h.next_sibling:
-					return h.next_sibling
-				else:
-					h = h.parent
+		return super(Heading, self).next_item
 
 	@property
 	def start(self):
@@ -451,65 +558,6 @@ class Heading(object):
 			return len(self.document.meta_information) if \
 					self.document.meta_information else 0
 		return compute_start(self.previous_heading)
-
-	@property
-	def start_vim(self):
-		if self.start is not None:
-			return self.start + 1
-
-	@property
-	def end(self):
-		u""" Access to the ending line of the heading """
-		if self.start is not None:
-			return self.start + len(self.body)
-
-	@property
-	def end_vim(self):
-		if self.end is not None:
-			return self.end + 1
-
-	@property
-	def end_of_last_child(self):
-		u""" Access to end of the last child """
-		if self.children:
-			child = self.children[-1]
-			while child.children:
-				child = child.children[-1]
-			return child.end
-		return self.end
-
-	@property
-	def end_of_last_child_vim(self):
-		return self.end_of_last_child + 1
-
-	def children():
-		u""" Subheadings of the current heading """
-		def fget(self):
-			return self._children
-
-		def fset(self, value):
-			v = value
-			if type(v) in (list, tuple) or isinstance(v, UserList):
-				v = flatten_list(v)
-			self._children[:] = v
-
-		def fdel(self):
-			del self.children[:]
-
-		return locals()
-	children = property(**children())
-
-	@property
-	def first_child(self):
-		u""" Access to the first child heading or None if no children exist """
-		if self.children:
-			return self.children[0]
-
-	@property
-	def last_child(self):
-		u""" Access to the last child heading or None if no children exist """
-		if self.children:
-			return self.children[-1]
 
 	def level():
 		u""" Access to the heading level """
@@ -623,29 +671,23 @@ class Heading(object):
 		return locals()
 	tags = property(**tags())
 
-	def body():
-		u""" Holds the content belonging to the heading """
+	def checkboxes():
+		u""" All checkboxes in current heading """
 		def fget(self):
-			return self._body
+			return self._checkboxes
 
 		def fset(self, value):
-			if type(value) in (list, tuple) or isinstance(value, UserList):
-				self._body[:] = flatten_list(value)
-			elif type(value) in (str, ):
-				self._body[:] = value.decode('utf-8').split(u'\n')
-			elif type(value) in (unicode, ):
-				self._body[:] = value.split(u'\n')
-			else:
-				self.body = list(unicode(value))
+			self._checkboxes[:] = value
 
 		def fdel(self):
-			self.body = []
+			del self.checkboxes[:]
 
 		return locals()
-	body = property(**body())
+	checkboxes = property(**checkboxes())
 
 
-class HeadingList(MultiPurposeList):
+# class HeadingList(MultiPurposeList):
+class HeadingList(DomObjList):
 	u"""
 	A Heading List just contains headings. It's used for documents to store top
 	level headings and for headings to store subheadings.
@@ -662,19 +704,13 @@ class HeadingList(MultiPurposeList):
 		# it's not necessary to register a on_change hook because the heading
 		# list will itself take care of marking headings dirty or adding
 		# headings to the deleted headings list
-		MultiPurposeList.__init__(self)
-
-		self._obj = obj
-
-		# initialization must be done here, because
-		# self._document is not initialized when the
-		# constructor of MultiPurposeList is called
-		if initlist:
-			self.extend(initlist)
+		DomObjList.__init__(self, initlist, obj)
+		# MultiPurposeList.__init__(self)
 
 	@classmethod
 	def is_heading(cls, obj):
-		return isinstance(obj, Heading)
+		# return isinstance(obj, Heading)
+		return HeadingList.is_domobj(obj)
 
 	def _get_document(self):
 		if self.__class__.is_heading(self._obj):
@@ -772,6 +808,12 @@ class HeadingList(MultiPurposeList):
 				self[i + 1] if i + 1 < len(self) else None)
 		MultiPurposeList.__setitem__(self, i, item)
 
+		# DomObjList.__setitem__(self, i, item)
+		# self._associate_heading(item, \
+				# self[i - 1] if i - 1 >= 0 else None, \
+				# self[i + 1] if i + 1 < len(self) else None)
+
+
 	def __setslice__(self, i, j, other):
 		o = other
 		if self.__class__.is_heading(o):
@@ -788,6 +830,14 @@ class HeadingList(MultiPurposeList):
 				self[j] if j >= 0 and j < len(self) else None)
 		MultiPurposeList.__setslice__(self, i, j, o)
 
+		# DomObjList.__setslice__(self, i, j, o)
+		# i = max(i, 0)
+		# j = max(j, 0)
+		# self._add_to_deleted_headings(self[i:j])
+		# self._associate_heading(o, \
+				# self[i - 1] if i - 1 >= 0 and i < len(self) else None, \
+				# self[j] if j >= 0 and j < len(self) else None)
+
 	def __delitem__(self, i, taint=True):
 		item = self[i]
 		if item.previous_sibling:
@@ -798,6 +848,10 @@ class HeadingList(MultiPurposeList):
 		if taint:
 			self._add_to_deleted_headings(item)
 		MultiPurposeList.__delitem__(self, i)
+
+		# DomObjList.__delitem__(self, i)
+		# if taint:
+			# self._add_to_deleted_headings(item)
 
 	def __delslice__(self, i, j, taint=True):
 		i = max(i, 0)
@@ -814,6 +868,10 @@ class HeadingList(MultiPurposeList):
 			self._add_to_deleted_headings(items)
 		MultiPurposeList.__delslice__(self, i, j)
 
+		# DomObjList.__delslice__(self, i, j)
+		# if taint:
+			# self._add_to_deleted_headings(items)
+
 	def __iadd__(self, other):
 		o = other
 		if self.__class__.is_heading(o):
@@ -824,9 +882,9 @@ class HeadingList(MultiPurposeList):
 		self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
 		return MultiPurposeList.__iadd__(self, o)
 
-	def __imul__(self, n):
+	# def __imul__(self, n):
 		# TODO das müsste eigentlich ein klonen von objekten zur Folge haben
-		return MultiPurposeList.__imul__(self, n)
+		# return MultiPurposeList.__imul__(self, n)
 
 	def append(self, item, taint=True):
 		if not self.__class__.is_heading(item):
@@ -837,11 +895,21 @@ class HeadingList(MultiPurposeList):
 				None, taint=taint)
 		MultiPurposeList.append(self, item)
 
+		# DomObjList.append(self, item)
+		# self._associate_heading(item, self[-1] if len(self) > 0 else None, \
+				# None, taint=taint)
+
+
 	def insert(self, i, item, taint=True):
 		self._associate_heading(item, \
 				self[i - 1] if i - 1 >= 0 and i - 1 < len(self) else None,
 				self[i] if i >= 0 and i < len(self) else None, taint=taint)
 		MultiPurposeList.insert(self, i, item)
+
+		# DomObjList.insert(self, i, item)
+		# self._associate_heading(item, \
+				# self[i - 1] if i - 1 >= 0 and i - 1 < len(self) else None,
+				# self[i] if i >= 0 and i < len(self) else None, taint=taint)
 
 	def pop(self, i=-1):
 		item = self[i]
@@ -849,31 +917,31 @@ class HeadingList(MultiPurposeList):
 		del self[i]
 		return item
 
-	def remove_slice(self, i, j, taint=True):
-		self.__delslice__(i, j, taint=taint)
+	# def remove_slice(self, i, j, taint=True):
+		# self.__delslice__(i, j, taint=taint)
 
-	def remove(self, item, taint=True):
-		self.__delitem__(self.index(item), taint=taint)
+	# def remove(self, item, taint=True):
+		# self.__delitem__(self.index(item), taint=taint)
 
-	def reverse(self):
-		MultiPurposeList.reverse(self)
-		prev_h = None
-		for h in self:
-			h._previous_sibling = prev_h
-			h._next_sibling = None
-			prev_h._next_sibling = h
-			h.set_dirty()
-			prev_h = h
+	# def reverse(self):
+		# MultiPurposeList.reverse(self)
+		# prev_h = None
+		# for h in self:
+			# h._previous_sibling = prev_h
+			# h._next_sibling = None
+			# prev_h._next_sibling = h
+			# h.set_dirty()
+			# prev_h = h
 
-	def sort(self, *args, **kwds):
-		MultiPurposeList.sort(*args, **kwds)
-		prev_h = None
-		for h in self:
-			h._previous_sibling = prev_h
-			h._next_sibling = None
-			prev_h._next_sibling = h
-			h.set_dirty()
-			prev_h = h
+	# def sort(self, *args, **kwds):
+		# MultiPurposeList.sort(*args, **kwds)
+		# prev_h = None
+		# for h in self:
+			# h._previous_sibling = prev_h
+			# h._next_sibling = None
+			# prev_h._next_sibling = h
+			# h.set_dirty()
+			# prev_h = h
 
 	def extend(self, other):
 		o = other
@@ -884,6 +952,9 @@ class HeadingList(MultiPurposeList):
 				raise ValueError(u'List contains items that are not a heading!')
 		self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
 		MultiPurposeList.extend(self, o)
+
+		# DomObjList.extend(self, o)
+		# self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
 
 
 # vim: set noexpandtab:
