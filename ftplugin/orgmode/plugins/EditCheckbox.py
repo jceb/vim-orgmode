@@ -39,6 +39,9 @@ class EditCheckbox(object):
 		if not checkbox:
 			# get current_checkbox
 			c = current_heading.current_checkbox()
+			# no checkbox found
+			if c is None:
+				return
 		else:
 			c = checkbox
 
