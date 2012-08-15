@@ -29,7 +29,7 @@ let g:loaded_org = 1
 
 " general setting plugins that should be loaded and their order
 if ! exists('g:org_plugins') && ! exists('b:org_plugins')
-	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|', 'Export']
+	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|', 'Export', 'EditCheckbox']
 endif
 
 if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_highlight_leading_stars')
@@ -65,6 +65,11 @@ augroup orgmode
 	au BufLeave		*		:if &filetype == "org" | call <SID>OrgUnregisterMenu() | endif
 	au BufDelete	*		:call <SID>OrgDeleteUnusedDocument(expand('<abuf>'))
 augroup END
+
+" expand tab for counting level of checkbox
+setlocal expandtab
+setlocal tabstop=4
+setlocal sw=4
 
 " Expand our path
 python << EOF
