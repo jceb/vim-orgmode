@@ -249,7 +249,7 @@ def date_to_str(date):
 	else:
 		date = date.strftime(
 				u'%Y-%m-%d %a'.encode(u'utf-8')).decode(u'utf-8')
-	return date 
+	return date
 
 class OrgMode(object):
 	u""" Vim Buffer """

@@ -31,7 +31,7 @@ class Document(object):
 		"""
 		object.__init__(self)
 
-		# is a list - only the Document methods should work with this list!
+		# is a list - only the Document methods should work on this list!
 		self._content = None
 		self._dirty_meta_information = False
 		self._dirty_document = False
@@ -48,8 +48,8 @@ class Document(object):
 
 	def __unicode__(self):
 		if self.meta_information is None:
-			return '\n'.join(self.all_headings())
-		return '\n'.join(self.meta_information) + '\n' + '\n'.join(['\n'.join([unicode(i)] + i.body) for i in self.all_headings()])
+			return u'\n'.join(self.all_headings())
+		return u'\n'.join(self.meta_information) + u'\n' + u'\n'.join([u'\n'.join([unicode(i)] + i.body) for i in self.all_headings()])
 
 	def __str__(self):
 		return self.__unicode__().encode(u'utf-8')

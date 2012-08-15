@@ -1,0 +1,54 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+
+# org
+#  Command line utility for working with orgmode documents
+#
+# Depends: python-liborgmode
+#
+# Copyright (C) 2012 Jan Christoph Ebersbach
+#
+# http://www.e-jc.de/
+#
+# All rights reserved.
+#
+# The source code of this program is made available
+# under the terms of the GNU Affero General Public License version 3
+# (GNU AGPL V3) as published by the Free Software Foundation.
+#
+# Binary versions of this program provided by Univention to you as
+# well as other copyrighted, protected or trademarked materials like
+# Logos, graphics, fonts, specific documentations and configurations,
+# cryptographic keys etc. are subject to a license agreement between
+# you and Univention and not subject to the GNU AGPL V3.
+#
+# In the case you use this program under the terms of the GNU AGPL V3,
+# the program is provided in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public
+# License with the Debian GNU/Linux or Univention distribution in file
+# /usr/share/common-licenses/AGPL-3; if not, see
+# <http://www.gnu.org/licenses/>.
+
+import sys
+sys.path.append('ftplugin')
+
+from orgmode.liborgmode.documents import Document
+
+
+class OrgFile(Document):
+	def __init__(self, filename):
+		u"""
+		:filename:		Name of the file that shall be opened
+		"""
+		Document.__init__(self)
+		with file(filename) as f:
+			self._content = [line.decode(u'utf-8') for line in f.readlines()]
+
+if __name__ == '__main__':
+	import cProfile
+	for filename in sys.argv[1:]:
+		cProfile.run('OrgFile(filename).init_dom()')

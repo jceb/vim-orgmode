@@ -394,6 +394,7 @@ class Heading(DomObj):
 
 		:returns:	The newly created heading
 		"""
+		test_not_empty = lambda x: x != u''
 		def parse_title(heading_line):
 			# WARNING this regular expression fails if there is just one or no
 			# word in the heading but a tag!
@@ -403,13 +404,13 @@ class Heading(DomObj):
 				level = len(r[u'level'])
 				todo = None
 				title = u''
-				tags = filter(lambda x: x != u'', r[u'tags'].split(u':')) if r[u'tags'] else []
+				tags = filter(test_not_empty, r[u'tags'].split(u':')) if r[u'tags'] else []
 
 				# if there is just one or no word in the heading, redo the parsing
 				mt = REGEX_TAGS.match(r[u'title'])
 				if not tags and mt:
 					r = mt.groupdict()
-					tags = filter(lambda x: x != u'', r[u'tags'].split(u':')) if r[u'tags'] else []
+					tags = filter(test_not_empty, r[u'tags'].split(u':')) if r[u'tags'] else []
 				if r[u'title'] is not None:
 					_todo_title = [i.strip() for i in r[u'title'].split(None, 1)]
 					if _todo_title and _todo_title[0] in allowed_todo_states:

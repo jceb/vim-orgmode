@@ -2,6 +2,7 @@
 
 from datetime import date
 import os
+import glob
 
 import vim
 
@@ -72,14 +73,21 @@ class Agenda(object):
 		agenda_files = settings.get(u'org_agenda_files', u',')
 		if not agenda_files or agenda_files == ',':
 			echoe((u"No org_agenda_files defined. Use :let "
-				u"g:org_agenda_files=['~/org/index.org'] to add " 
-				u"files to the agenda view."))
+				   u"g:org_agenda_files=['~/org/index.org'] to add "
+				   u"files to the agenda view."))
 			return
 
-		agenda_files = [os.path.realpath(os.path.expanduser(f))
-			for f in agenda_files]
+		# glob for files in agenda_files
+		resolved_files = []
+		for f in agenda_files:
+			f = glob.glob(os.path.join(os.path.expanduser(os.path.dirname(f)),
+				          os.path.basename(f)))
+			resolved_files.extend(f)
 
-		for agenda_file in agenda_files: 
+		agenda_files = [os.path.realpath(f) for f in resolved_files]
+
+		# load the agenda files into buffers
+		for agenda_file in agenda_files:
 			vim.command((u'badd %s' % agenda_file).encode(u'utf-8'))
 
 		# determine the buffer nr of the agenda files
