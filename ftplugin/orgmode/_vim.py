@@ -337,6 +337,7 @@ class OrgMode(object):
 			return self._plugins[plugin]
 		except Exception, e:
 			echoe(u'Unable to activate plugin: %s' % plugin)
+			echoe(u"%s" % e)
 			if self.debug:
 				import traceback
 				echoe(traceback.format_exc())
