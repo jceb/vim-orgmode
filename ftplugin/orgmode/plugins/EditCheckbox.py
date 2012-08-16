@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from orgmode._vim import echo, echom, echoe, ORGMODE, apply_count, repeat
+import vim
+from orgmode._vim import echo, echom, echoe, ORGMODE, apply_count, repeat, insert_at_cursor
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode.liborgmode.checkboxes import Checkbox
@@ -26,6 +27,27 @@ class EditCheckbox(object):
 		self.commands = []
 
 	@classmethod
+	def new_checkbox(cls, below=None):
+		d = ORGMODE.get_document()
+		h = d.current_heading()
+		# init checkboxes for current heading
+		h.init_checkboxes()
+		c = h.current_checkbox()
+		# print c.level
+		# print c.start
+		# print len(c)
+		if c is None:
+			return
+		vim.current.window.cursor = (c.start + len(c), 0)
+		if below:
+			vim.command("normal o")
+		else:
+			vim.command("normal O")
+		new_checkbox = Checkbox(level=c.level)
+		insert_at_cursor(str(new_checkbox))
+		
+
+	@classmethod
 	def toggle(cls, checkbox=None):
 		u"""
 		Toggle the checkbox given in the parameter. 
@@ -41,6 +63,7 @@ class EditCheckbox(object):
 			c = current_heading.current_checkbox()
 			# no checkbox found
 			if c is None:
+				cls.update_checkboxes_status()
 				return
 		else:
 			c = checkbox
@@ -52,9 +75,12 @@ class EditCheckbox(object):
 				d.write_checkbox(c)
 
 		elif c.status == Checkbox.STATUS_ON:
+			# print c.first_child
 			if not c.children or c.is_child_one(Checkbox.STATUS_OFF):
 				c.toggle()
+				# print c
 				d.write_checkbox(c)
+				# print c
 
 		elif c.status == Checkbox.STATUS_INT:
 			# can't toggle intermediate state directly according to emacs orgmode
@@ -157,6 +183,12 @@ class EditCheckbox(object):
 
 		Key bindings and other initialization should be done here.
 		"""
+		self.keybindings.append(Keybinding(u'<localleader>cN',
+				Plug(u'OrgEditCheckboxNewCheckboxAbove', u':py ORGMODE.plugins[u"EditCheckbox"].new_checkbox()<CR>')))
+		self.menu + ActionEntry(u'New Checkbox Above', self.keybindings[-1])
+		self.keybindings.append(Keybinding(u'<localleader>cn',
+				Plug(u'OrgEditCheckboxNewCheckboxBelow', u':py ORGMODE.plugins[u"EditCheckbox"].new_checkbox(below=True)<CR>')))
+		self.menu + ActionEntry(u'New Checkbox Below', self.keybindings[-1])
 		self.keybindings.append(Keybinding(u'<localleader>cc',
 				# Plug(u'OrgEditCheckboxToggle', u':silent! py ORGMODE.plugins[u"EditCheckbox"].toggle()<CR>')))
 				Plug(u'OrgEditCheckboxToggle', u':py ORGMODE.plugins[u"EditCheckbox"].toggle()<CR>')))
