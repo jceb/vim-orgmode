@@ -31,7 +31,7 @@ class Checkbox(DomObj):
 	u""" Structural checkbox object """
 	STATUS_ON = u'[X]'
 	STATUS_OFF = u'[ ]'
-	# intermediate
+	# intermediate status
 	STATUS_INT = u'[-]'
 
 	def __init__(self, level=1, type=u'-', title=u'', status=u'[ ]', body=None):
@@ -389,7 +389,6 @@ class CheckboxList(DomObjList):
 
 	@classmethod
 	def is_checkbox(cls, obj):
-		# return isinstance(obj, Checkbox)
 		return CheckboxList.is_domobj(obj)
 
 	def _get_heading(self):

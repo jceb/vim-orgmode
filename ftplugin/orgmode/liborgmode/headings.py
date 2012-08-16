@@ -24,7 +24,6 @@ REGEX_HEADING = re.compile(
 REGEX_TAGS = re.compile(r'^\s*((?P<title>[^\s]*?)\s+)?(?P<tags>:[\w_:@]+:)$',
 		flags=re.U | re.L)
 REGEX_TODO = re.compile(r'^[^\s]*$')
-# REGEX_SUBTASK = re.compile(r'\[(\d+)/(\d+)\]')
 REGEX_SUBTASK = re.compile(r'\[(\d*)/(\d*)\]')
 REGEX_SUBTASK_PERCENT = re.compile(r'\[(\d*)%\]')
 
@@ -234,7 +233,6 @@ class Heading(DomObj):
 		if not self.checkboxes:
 			raise StopIteration()
 
-		# c = self.checkboxes[0]
 		c = self.first_checkbox
 		while c:
 			yield c
@@ -249,15 +247,22 @@ class Heading(DomObj):
 				    counting from 1, don't forget)
 		:direction: downwards == Direction.FORWARD,
 				    upwards == Direction.BACKWARD
-		:checkbox:  Heading class from which new heading objects will be
+		:checkbox:  Checkbox class from which new checkbox objects will be
 				    instanciated
-		:connect_with_heading: if True, the newly created heading will be
-				               connected with the document, otherwise not
+		:connect_with_heading: if True, the newly created checkbox will be
+				               connected with the heading, otherwise not
 
 		:returns:	New checkbox object or None
 		"""
 		doc = self.document
 		(start, end) = get_domobj_range(content=doc._content, position=position, direction=direction, identify_fun=checkbox.identify_checkbox)
+		# if out of current headinig range, reutrn None
+		heading_end = self.start + len(self)
+		# print "end_pos = %s" % (end_pos)
+		# print "(%s, %s)" % (start, end)
+		if (start > heading_end or end > heading_end):
+			return None
+
 		if start is not None and end is None:
 			end = len(doc._content) - 1
 		if start is not None and end is not None:
@@ -453,12 +458,9 @@ class Heading(DomObj):
 			return
 		percent = (on * 100) / total
 		count = "%d/%d" % (on, total)
-		# print self.title
 		self.title = REGEX_SUBTASK.sub("[%s]" % (count), self.title)
 		self.title = REGEX_SUBTASK_PERCENT.sub("[%d%%]" % (percent), self.title)
-		# print self.title
 		self.document.write_heading(self, including_children=False)	
-		# print self.title
 
 	@classmethod
 	def identify_heading(cls, line):
@@ -687,7 +689,6 @@ class Heading(DomObj):
 	checkboxes = property(**checkboxes())
 
 
-# class HeadingList(MultiPurposeList):
 class HeadingList(DomObjList):
 	u"""
 	A Heading List just contains headings. It's used for documents to store top
@@ -706,7 +707,6 @@ class HeadingList(DomObjList):
 		# list will itself take care of marking headings dirty or adding
 		# headings to the deleted headings list
 		DomObjList.__init__(self, initlist, obj)
-		# MultiPurposeList.__init__(self)
 
 	@classmethod
 	def is_heading(cls, obj):
@@ -809,12 +809,6 @@ class HeadingList(DomObjList):
 				self[i + 1] if i + 1 < len(self) else None)
 		MultiPurposeList.__setitem__(self, i, item)
 
-		# DomObjList.__setitem__(self, i, item)
-		# self._associate_heading(item, \
-				# self[i - 1] if i - 1 >= 0 else None, \
-				# self[i + 1] if i + 1 < len(self) else None)
-
-
 	def __setslice__(self, i, j, other):
 		o = other
 		if self.__class__.is_heading(o):
@@ -831,14 +825,6 @@ class HeadingList(DomObjList):
 				self[j] if j >= 0 and j < len(self) else None)
 		MultiPurposeList.__setslice__(self, i, j, o)
 
-		# DomObjList.__setslice__(self, i, j, o)
-		# i = max(i, 0)
-		# j = max(j, 0)
-		# self._add_to_deleted_headings(self[i:j])
-		# self._associate_heading(o, \
-				# self[i - 1] if i - 1 >= 0 and i < len(self) else None, \
-				# self[j] if j >= 0 and j < len(self) else None)
-
 	def __delitem__(self, i, taint=True):
 		item = self[i]
 		if item.previous_sibling:
@@ -849,10 +835,6 @@ class HeadingList(DomObjList):
 		if taint:
 			self._add_to_deleted_headings(item)
 		MultiPurposeList.__delitem__(self, i)
-
-		# DomObjList.__delitem__(self, i)
-		# if taint:
-			# self._add_to_deleted_headings(item)
 
 	def __delslice__(self, i, j, taint=True):
 		i = max(i, 0)
@@ -869,10 +851,6 @@ class HeadingList(DomObjList):
 			self._add_to_deleted_headings(items)
 		MultiPurposeList.__delslice__(self, i, j)
 
-		# DomObjList.__delslice__(self, i, j)
-		# if taint:
-			# self._add_to_deleted_headings(items)
-
 	def __iadd__(self, other):
 		o = other
 		if self.__class__.is_heading(o):
@@ -883,10 +861,6 @@ class HeadingList(DomObjList):
 		self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
 		return MultiPurposeList.__iadd__(self, o)
 
-	# def __imul__(self, n):
-		# TODO das müsste eigentlich ein klonen von objekten zur Folge haben
-		# return MultiPurposeList.__imul__(self, n)
-
 	def append(self, item, taint=True):
 		if not self.__class__.is_heading(item):
 			raise ValueError(u'Item is not a heading!')
@@ -896,53 +870,17 @@ class HeadingList(DomObjList):
 				None, taint=taint)
 		MultiPurposeList.append(self, item)
 
-		# DomObjList.append(self, item)
-		# self._associate_heading(item, self[-1] if len(self) > 0 else None, \
-				# None, taint=taint)
-
-
 	def insert(self, i, item, taint=True):
 		self._associate_heading(item, \
 				self[i - 1] if i - 1 >= 0 and i - 1 < len(self) else None,
 				self[i] if i >= 0 and i < len(self) else None, taint=taint)
 		MultiPurposeList.insert(self, i, item)
 
-		# DomObjList.insert(self, i, item)
-		# self._associate_heading(item, \
-				# self[i - 1] if i - 1 >= 0 and i - 1 < len(self) else None,
-				# self[i] if i >= 0 and i < len(self) else None, taint=taint)
-
 	def pop(self, i=-1):
 		item = self[i]
 		self._add_to_deleted_headings(item)
 		del self[i]
 		return item
-
-	# def remove_slice(self, i, j, taint=True):
-		# self.__delslice__(i, j, taint=taint)
-
-	# def remove(self, item, taint=True):
-		# self.__delitem__(self.index(item), taint=taint)
-
-	# def reverse(self):
-		# MultiPurposeList.reverse(self)
-		# prev_h = None
-		# for h in self:
-			# h._previous_sibling = prev_h
-			# h._next_sibling = None
-			# prev_h._next_sibling = h
-			# h.set_dirty()
-			# prev_h = h
-
-	# def sort(self, *args, **kwds):
-		# MultiPurposeList.sort(*args, **kwds)
-		# prev_h = None
-		# for h in self:
-			# h._previous_sibling = prev_h
-			# h._next_sibling = None
-			# prev_h._next_sibling = h
-			# h.set_dirty()
-			# prev_h = h
 
 	def extend(self, other):
 		o = other
@@ -953,9 +891,6 @@ class HeadingList(DomObjList):
 				raise ValueError(u'List contains items that are not a heading!')
 		self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
 		MultiPurposeList.extend(self, o)
-
-		# DomObjList.extend(self, o)
-		# self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
 
 
 # vim: set noexpandtab:
