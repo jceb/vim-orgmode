@@ -860,7 +860,7 @@ Agenda files~
     let g:org_agenda_files = ['~/org/index.org', ~/org/project.org']
 <
 
-  Also globbing is allowed. This makes it easy to use ALL *.org files in d
+  Also globbing is allowed. This makes it easy to use ALL *.org files in a
   folder. Using all *.org files in ~/org/ is done like this:
 >
     let g:org_agenda_files = ['~/org/*.org']
