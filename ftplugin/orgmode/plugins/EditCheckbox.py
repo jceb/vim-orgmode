@@ -47,28 +47,23 @@ class EditCheckbox(object):
 
 		if c.status == Checkbox.STATUS_OFF:
 			# set checkbox status on if all children are on
-			# if c.are_children_all(Checkbox.STATUS_ON):
 			if not c.children or c.are_children_all(Checkbox.STATUS_ON):
 				c.toggle()
-				# write changed checkbox to buffer
 				d.write_checkbox(c)
-				# check if the parent needs to be toggled
-				if c.are_siblings_all(status=Checkbox.STATUS_ON) and c.parent:
-					cls.toggle(checkbox=c.parent)
 
 		elif c.status == Checkbox.STATUS_ON:
 			if not c.children or c.is_child_one(Checkbox.STATUS_OFF):
 				c.toggle()
-				# write changed checkbox to buffer
 				d.write_checkbox(c)
-				# check if the parent needs to be toggled
-				if c.parent and c.parent.status == Checkbox.STATUS_ON:
-					cls.toggle(checkbox=c.parent)
-		# update subtasks info
-		cls.update_subtasks()
+
+		elif c.status == Checkbox.STATUS_INT:
+			# can't toggle intermediate state directly according to emacs orgmode
+			pass
+		# update checkboxes status
+		cls.update_checkboxes_status()
 
 	@classmethod
-	def update_subtasks(cls):
+	def _update_subtasks(cls):
 		u""" """
 		d = ORGMODE.get_document()
 		h = d.current_heading()
@@ -78,51 +73,83 @@ class EditCheckbox(object):
 		c = h.first_checkbox
 		# print c
 		on, total = c.all_siblings_status()
-		# print "total = %d, on = %d" % (total, on)
-		percent = (on * 100) / total
-		# print "percent = %d" % (percent)
 		# update buffer
 		h.update_subtasks(total, on)
 
-
 	@classmethod
-	def update_checkboxes_status(cls, checkbox=None):
+	def update_checkboxes_status(cls):
 		d = ORGMODE.get_document()
 		h = d.current_heading()
 		# init checkboxes for current heading
 		h.init_checkboxes()
-		if checkbox:
-			c = checkbox
-		else:
-			c = h.first_checkbox
+
+		cls._update_checkboxes_status(h.first_checkbox)
+		cls._update_subtasks()
+	
+	@classmethod
+	def _update_checkboxes_status(cls, checkbox=None):
+		u""" helper function for update checkboxes status """
+		if not checkbox:
+			return
 
 		# update all top level checkboxes' status
-		for c in c.all_siblings():
-			cls._update_status(c, d)
+		for c in checkbox.all_siblings():
+			cls._update_status(c)
 
 	@classmethod
-	def _update_status(cls, c, d):
+	def _update_status(cls, c):
 		status = c.status
+		d = ORGMODE.get_document()
 		if status == Checkbox.STATUS_OFF:
 			if c.children:
 				if c.are_children_all(Checkbox.STATUS_ON):
-					c.toggle()
+					c.status = Checkbox.STATUS_ON
 					d.write_checkbox(c)
 					# check if the parent need to be set on
 					if c.parent:
-						cls._update_status(c.parent, d)
+						cls._update_status(c.parent)
 				else:
-					cls.update_checkboxes_status(c.first_child)
+					if c.is_child_one(Checkbox.STATUS_ON):
+						c.status = Checkbox.STATUS_INT
+						d.write_checkbox(c)
+					if c.children:
+						cls._update_checkboxes_status(c.first_child)
 
 		elif status == Checkbox.STATUS_ON:
 			# since all children are on, we don't need to check children recursively
 			if c.are_children_all(status):
-				pass
+				return
 			else:
-				c.toggle()
-				d.write_checkbox(c)
+				if c.is_child_one(Checkbox.STATUS_ON):
+					c.status = Checkbox.STATUS_INT
+					d.write_checkbox(c)
+				else:
+					c.status = Checkbox.STATUS_OFF
+					d.write_checkbox(c)
+
+				if c.parent:
+					cls._update_status(c.parent)
+
 				if c.children:
-					cls.update_checkboxes_status(c.first_child)
+					d.write_checkbox(c)
+					cls._update_checkboxes_status(c.first_child)
+
+		elif status == Checkbox.STATUS_INT:
+			# children are all on 
+			if c.are_children_all(Checkbox.STATUS_ON):
+				c.status = Checkbox.STATUS_ON
+				d.write_checkbox(c)
+				if c.parent:
+					cls._update_status(c.parent)
+			# children are all off
+			elif not c.is_child_one(Checkbox.STATUS_ON):
+				c.status = Checkbox.STATUS_OFF
+				d.write_checkbox(c)
+				if c.parent:
+					cls._update_status(c.parent)
+					
+			if c.children:
+				cls._update_checkboxes_status(c.first_child)
 
 	def register(self):
 		u"""
@@ -131,15 +158,13 @@ class EditCheckbox(object):
 		Key bindings and other initialization should be done here.
 		"""
 		self.keybindings.append(Keybinding(u'<localleader>cc',
+				# Plug(u'OrgEditCheckboxToggle', u':silent! py ORGMODE.plugins[u"EditCheckbox"].toggle()<CR>')))
 				Plug(u'OrgEditCheckboxToggle', u':py ORGMODE.plugins[u"EditCheckbox"].toggle()<CR>')))
 		self.menu + ActionEntry(u'Toggle Checkbox', self.keybindings[-1])
 
 		self.keybindings.append(Keybinding(u'<localleader>c#',
-				Plug(u'OrgEditCheckboxUpdateSubtasks', u':py ORGMODE.plugins[u"EditCheckbox"].update_subtasks()<CR>')))
+				# Plug(u'OrgEditCheckboxUpdateSubtasks', u':silent! py ORGMODE.plugins[u"EditCheckbox"].update_checkboxes_status()<CR>')))
+				Plug(u'OrgEditCheckboxUpdateSubtasks', u':py ORGMODE.plugins[u"EditCheckbox"].update_checkboxes_status()<CR>')))
 		self.menu + ActionEntry(u'Update Subtasks', self.keybindings[-1])
-
-		self.keybindings.append(Keybinding(u'<localleader>cs',
-				Plug(u'OrgEditCheckboxUpdateCheckboxStatus', u':py ORGMODE.plugins[u"EditCheckbox"].update_checkboxes_status()<CR>')))
-		self.menu + ActionEntry(u'Update Checkbox Status', self.keybindings[-1])
 
 # vim: set noexpandtab:
