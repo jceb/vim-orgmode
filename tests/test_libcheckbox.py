@@ -76,9 +76,9 @@ class CheckboxTestCase(unittest.TestCase):
 		c = h.current_checkbox(position=2)
 
 		# print c
-		(on, total) = c.all_siblings_status()
+		(total, on) = c.all_siblings_status()
 		# print "on = %d, total = %d" % (on, total)
-		self.assertEqual((on, total), (0, 2))
+		self.assertEqual((total, on), (2, 0))
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(

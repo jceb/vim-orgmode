@@ -228,6 +228,7 @@ class Heading(DomObj):
 		raise StopIteration()
 
 	def all_toplevel_checkboxes(self):
+		u""" return all top level checkboxes for current heading """
 		if not self.checkboxes:
 			raise StopIteration()
 
@@ -453,6 +454,10 @@ class Heading(DomObj):
 		return new_heading
 
 	def update_subtasks(self, total=0, on=0):
+		u""" Update subtask information for current heading
+		:total:	total # of top level checkboxes
+		:on:	# of top level checkboxes which are on
+		"""
 		if not total:
 			return
 		percent = (on * 100) / total
@@ -709,7 +714,6 @@ class HeadingList(DomObjList):
 
 	@classmethod
 	def is_heading(cls, obj):
-		# return isinstance(obj, Heading)
 		return HeadingList.is_domobj(obj)
 
 	def _get_document(self):

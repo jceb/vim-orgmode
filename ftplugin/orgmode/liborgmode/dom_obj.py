@@ -46,7 +46,7 @@ class DomObj(object):
 			self.body = body
 
 	def __unicode__(self):
-		return "<dom object>"
+		return u'<dom obj level=%s, title=%s>' % (level, title) 
 
 	def __str__(self):
 		return self.__unicode__().encode(u'utf-8')
@@ -57,44 +57,44 @@ class DomObj(object):
 
 	@property
 	def is_dirty(self):
-		u""" Return True if the heading's body is marked dirty """
+		u""" Return True if the dom obj body is marked dirty """
 		return self._dirty_body
 
 	@property
 	def is_dirty_body(self):
-		u""" Return True if the heading's body is marked dirty """
+		u""" Return True if the dom obj body is marked dirty """
 		return self._dirty_body
 
 	def get_index_in_parent_list(self):
-		""" Retrieve the index value of current heading in the parents list of
-		headings. This works also for top level headings.
+		""" Retrieve the index value of current dom obj in the parents list of
+		dom objs. This works also for top level dom objs.
 
-		:returns:	Index value or None if heading doesn't have a
-					parent/document or is not in the list of headings
+		:returns:	Index value or None if dom obj doesn't have a
+					parent/document or is not in the list of dom objs
 		"""
 		if self.parent:
 			if self in self.parent.children:
 				return self.parent.children.index(self)
 
 	def get_parent_list(self):
-		""" Retrieve the parents list of headings. This works also for top
-		level headings.
+		""" Retrieve the parents list of dom objs. This works also for top
+		level dom objs.
 
-		:returns:	List of headings or None if heading doesn't have a
-					parent/document or is not in the list of headings
+		:returns:	List of dom objs or None if dom objs doesn't have a
+					parent/document or is not in the list of dom objs
 		"""
 		if self.parent:
 			if self in self.parent.children:
 				return self.parent.children
 
 	def set_dirty(self):
-		u""" Mark the heading and body dirty so that it will be rewritten when
+		u""" Mark the dom objs and body dirty so that it will be rewritten when
 		saving the document """
 		if self._document:
 			self._document.set_dirty_document()
 
 	def set_dirty_body(self):
-		u""" Mark the heading's body dirty so that it will be rewritten when
+		u""" Mark the dom objs' body dirty so that it will be rewritten when
 		saving the document """
 		self._dirty_body = True
 		if self._document:
@@ -103,17 +103,17 @@ class DomObj(object):
 	@property
 	def document(self):
 		u""" Read only access to the document. If you want to change the
-		document, just assign the heading to another document """
+		document, just assign the dom obj to another document """
 		return self._document
 
 	@property
 	def parent(self):
-		u""" Access to the parent heading """
+		u""" Access to the parent dom obj """
 		return self._parent
 
 	@property
 	def number_of_parents(self):
-		u""" Access to the number of parent headings before reaching the root
+		u""" Access to the number of parent dom objs before reaching the root
 		document """
 		def count_parents(h):
 			if h.parent:
@@ -124,18 +124,18 @@ class DomObj(object):
 
 	@property
 	def previous_sibling(self):
-		u""" Access to the previous heading that's a sibling of the current one
+		u""" Access to the previous dom obj that's a sibling of the current one
 		"""
 		return self._previous_sibling
 
 	@property
 	def next_sibling(self):
-		u""" Access to the next heading that's a sibling of the current one """
+		u""" Access to the next dom obj that's a sibling of the current one """
 		return self._next_sibling
 
 	@property
 	def previous_item(self):
-		u""" Serialized access to the previous heading """
+		u""" Serialized access to the previous dom obj """
 		if self.previous_sibling:
 			h = self.previous_sibling
 			while h.children:
@@ -146,7 +146,7 @@ class DomObj(object):
 
 	@property
 	def next_item(self):
-		u""" Serialized access to the next heading """
+		u""" Serialized access to the next dom obj """
 		if self.children:
 			return self.children[0]
 		elif self.next_sibling:
@@ -161,7 +161,7 @@ class DomObj(object):
 
 	@property
 	def start(self):
-		u""" Access to the starting line of the heading """
+		u""" Access to the starting line of the dom obj """
 		if self.document is None:
 			return self._orig_start
 
@@ -182,7 +182,7 @@ class DomObj(object):
 
 	@property
 	def end(self):
-		u""" Access to the ending line of the heading """
+		u""" Access to the ending line of the dom obj """
 		if self.start is not None:
 			return self.start + len(self.body)
 
@@ -206,7 +206,7 @@ class DomObj(object):
 		return self.end_of_last_child + 1
 
 	def children():
-		u""" Subheadings of the current heading """
+		u""" Subheadings of the current dom obj """
 		def fget(self):
 			return self._children
 
@@ -224,18 +224,18 @@ class DomObj(object):
 
 	@property
 	def first_child(self):
-		u""" Access to the first child heading or None if no children exist """
+		u""" Access to the first child dom obj or None if no children exist """
 		if self.children:
 			return self.children[0]
 
 	@property
 	def last_child(self):
-		u""" Access to the last child heading or None if no children exist """
+		u""" Access to the last child dom obj or None if no children exist """
 		if self.children:
 			return self.children[-1]
 
 	def level():
-		u""" Access to the heading level """
+		u""" Access to the dom obj level """
 		def fget(self):
 			return self._level
 

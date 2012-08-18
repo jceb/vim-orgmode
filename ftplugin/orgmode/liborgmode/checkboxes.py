@@ -279,6 +279,12 @@ class Checkbox(DomObj):
 		raise StopIteration()
 
 	def all_siblings_status(self):
+		u""" Return checkboxes status for currnet checkbox's all siblings
+
+		:return: (total, on) 
+			total: total # of checkboxes
+			on:	   # of checkboxes which are on
+		"""
 		total, on = 0, 0
 		for c in self.all_siblings():
 			if c.status == Checkbox.STATUS_ON:
@@ -300,6 +306,7 @@ class Checkbox(DomObj):
 		return True
 
 	def is_child_one(self, status):
+		u""" Return true, if there is one child with given status """
 		clen = len(self.children)
 		for i in range(clen):
 			if self.children[i].status == status:
@@ -392,7 +399,6 @@ class CheckboxList(DomObjList):
 		# it's not necessary to register a on_change hook because the heading
 		# list will itself take care of marking headings dirty or adding
 		# headings to the deleted headings list
-		# MultiPurposeList.__init__(self)
 		DomObjList.__init__(self, initlist, obj)
 
 	@classmethod
