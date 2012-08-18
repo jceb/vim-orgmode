@@ -175,8 +175,15 @@ def indent_orgmode():
 	d = ORGMODE.get_document()
 	heading = d.current_heading(line - 1)
 	if heading and line != heading.start_vim:
-		vim.command((u'let b:indent_level = %d' % (heading.level + 1))
-				.encode(u'utf-8'))
+		heading.init_checkboxes()
+		checkbox = heading.current_checkbox()
+		if checkbox:
+			print checkbox
+			vim.command((u'let b:indent_level = %d' % (checkbox.level + 1))
+					.encode(u'utf-8'))
+		else:	
+			vim.command((u'let b:indent_level = %d' % (heading.level + 1))
+					.encode(u'utf-8'))
 
 
 def fold_text(allow_dirty=False):
