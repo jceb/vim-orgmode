@@ -33,17 +33,22 @@ class EditCheckbox(object):
 		# init checkboxes for current heading
 		h.init_checkboxes()
 		c = h.current_checkbox()
-		# print c.level
-		# print c.start
-		# print len(c)
+
+		level = 1
+		# if no checkbox is found, insert at current line with indent level=1
 		if c is None:
-			return
-		vim.current.window.cursor = (c.start + len(c), 0)
+			print vim.current.window.cursor
+		else:
+			vim.current.window.cursor = (c.start + len(c), 0)
+			level = c.level
+			print vim.current.window.cursor
+
 		if below:
 			vim.command("normal o")
 		else:
 			vim.command("normal O")
-		new_checkbox = Checkbox(level=c.level)
+
+		new_checkbox = Checkbox(level=level)
 		insert_at_cursor(str(new_checkbox))
 		
 
@@ -75,12 +80,9 @@ class EditCheckbox(object):
 				d.write_checkbox(c)
 
 		elif c.status == Checkbox.STATUS_ON:
-			# print c.first_child
 			if not c.children or c.is_child_one(Checkbox.STATUS_OFF):
 				c.toggle()
-				# print c
 				d.write_checkbox(c)
-				# print c
 
 		elif c.status == Checkbox.STATUS_INT:
 			# can't toggle intermediate state directly according to emacs orgmode
@@ -90,17 +92,25 @@ class EditCheckbox(object):
 
 	@classmethod
 	def _update_subtasks(cls):
-		u""" """
 		d = ORGMODE.get_document()
 		h = d.current_heading()
 		# init checkboxes for current heading
 		h.init_checkboxes()
 		# update heading subtask info
 		c = h.first_checkbox
-		# print c
-		on, total = c.all_siblings_status()
-		# update buffer
+		total, on = c.all_siblings_status()
 		h.update_subtasks(total, on)
+		# update all checkboxes under current heading 
+		cls._update_checkboxes_subtasks(c)
+	
+	@classmethod
+	def _update_checkboxes_subtasks(cls, checkbox):
+		# update checkboxes
+		for c in checkbox.all_siblings():
+			if c.children:
+				total, on = c.first_child.all_siblings_status()
+				c.update_subtasks(total, on)
+				cls._update_checkboxes_subtasks(c.first_child)
 
 	@classmethod
 	def update_checkboxes_status(cls):

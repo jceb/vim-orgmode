@@ -15,7 +15,7 @@ from orgmode.liborgmode.base import MultiPurposeList, flatten_list, Direction, g
 from orgmode.liborgmode.orgdate import OrgTimeRange
 from orgmode.liborgmode.orgdate import get_orgdate
 from orgmode.liborgmode.checkboxes import Checkbox, CheckboxList
-from orgmode.liborgmode.dom_obj import DomObj, DomObjList
+from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT
 
 
 REGEX_HEADING = re.compile(
@@ -24,8 +24,6 @@ REGEX_HEADING = re.compile(
 REGEX_TAGS = re.compile(r'^\s*((?P<title>[^\s]*?)\s+)?(?P<tags>:[\w_:@]+:)$',
 		flags=re.U | re.L)
 REGEX_TODO = re.compile(r'^[^\s]*$')
-REGEX_SUBTASK = re.compile(r'\[(\d*)/(\d*)\]')
-REGEX_SUBTASK_PERCENT = re.compile(r'\[(\d*)%\]')
 
 class Heading(DomObj):
 	u""" Structural heading object """

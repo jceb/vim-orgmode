@@ -11,6 +11,9 @@ import re
 from UserList import UserList
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list
 
+REGEX_SUBTASK = re.compile(r'\[(\d*)/(\d*)\]')
+REGEX_SUBTASK_PERCENT = re.compile(r'\[(\d*)%\]')
+
 class DomObj(object):
 	u""" DOM object """
 
@@ -170,8 +173,6 @@ class DomObj(object):
 		def compute_start(h):
 			if h:
 				return len(h) + compute_start(h.previous_item)
-			# return len(self.document.meta_information) if \
-					# self.document.meta_information else 0
 		return compute_start(self.previous_item)
 
 	@property

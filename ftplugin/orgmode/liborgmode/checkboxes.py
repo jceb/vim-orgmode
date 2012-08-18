@@ -14,7 +14,7 @@ import vim
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list
 from orgmode.liborgmode.orgdate import OrgTimeRange
 from orgmode.liborgmode.orgdate import get_orgdate
-from orgmode.liborgmode.dom_obj import DomObj, DomObjList
+from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT
 
 UnOrderListType = ['-', '+', '*']
 OrderListType = ['%d.', '%d']
@@ -133,6 +133,15 @@ class Checkbox(DomObj):
 			nc.heading = heading
 
 		return nc
+
+	def update_subtasks(self, total=0, on=0):
+		if not total:
+			return
+		percent = (on * 100) / total
+		count = "%d/%d" % (on, total)
+		self.title = REGEX_SUBTASK.sub("[%s]" % (count), self.title)
+		self.title = REGEX_SUBTASK_PERCENT.sub("[%d%%]" % (percent), self.title)
+		d = self.heading.document.write_checkbox(self, including_children=False)	
 
 	@classmethod
 	def identify_checkbox(cls, line):
@@ -270,14 +279,13 @@ class Checkbox(DomObj):
 		raise StopIteration()
 
 	def all_siblings_status(self):
-		total = 0
-		on = 0
+		total, on = 0, 0
 		for c in self.all_siblings():
 			if c.status == Checkbox.STATUS_ON:
 				on += 1
 			total += 1
 
-		return (on, total)
+		return (total, on)
 
 	def are_children_all(self, status):
 		u""" Check all children checkboxes status """
