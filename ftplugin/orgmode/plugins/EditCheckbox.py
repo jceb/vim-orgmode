@@ -37,11 +37,10 @@ class EditCheckbox(object):
 		level = 1
 		# if no checkbox is found, insert at current line with indent level=1
 		if c is None:
-			print vim.current.window.cursor
+			pass
 		else:
 			vim.current.window.cursor = (c.start + len(c), 0)
 			level = c.level
-			print vim.current.window.cursor
 
 		if below:
 			vim.command("normal o")
@@ -50,7 +49,6 @@ class EditCheckbox(object):
 
 		new_checkbox = Checkbox(level=level)
 		insert_at_cursor(str(new_checkbox))
-		
 
 	@classmethod
 	def toggle(cls, checkbox=None):
@@ -98,6 +96,8 @@ class EditCheckbox(object):
 		h.init_checkboxes()
 		# update heading subtask info
 		c = h.first_checkbox
+		if c is None:
+			return
 		total, on = c.all_siblings_status()
 		h.update_subtasks(total, on)
 		# update all checkboxes under current heading 
