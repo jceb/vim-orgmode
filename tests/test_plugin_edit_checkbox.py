@@ -28,7 +28,7 @@ class EditCheckboxTestCase(unittest.TestCase):
 	def test_toggle(self):
 		vim.current.window.cursor = (6, 0)
 		self.editcheckbox.toggle()
-		print "\n".join(vim.current.buffer)
+		# print "\n".join(vim.current.buffer)
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(EditCheckboxTestCase)

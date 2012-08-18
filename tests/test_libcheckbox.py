@@ -45,6 +45,8 @@ class CheckboxTestCase(unittest.TestCase):
 		# test identify_checkbox
 		self.assertEqual(Checkbox.identify_checkbox(self.c1[2]), 1)
 		self.assertEqual(Checkbox.identify_checkbox(self.c1[3]), 2)
+		# check for corner case
+		self.assertEqual(Checkbox.identify_checkbox(" - [ ]"), 1)
 
 	def test_toggle(self):
 		# test init_checkboxes 
@@ -76,14 +78,8 @@ class CheckboxTestCase(unittest.TestCase):
 		# print c
 		(on, total) = c.all_siblings_status()
 		# print "on = %d, total = %d" % (on, total)
+		self.assertEqual((on, total), (0, 2))
 
-	# def test_update_subtask(self):
-		# self.set_vim_buffer(buf=self.c2, bufnr=3)
-		# h = ORGMODE.get_document(bufnr=3).current_heading()
-		# h.init_checkboxes()
-		# c = h.current_checkbox(position=3)
-		# print c.update_subtask_info()
-		
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(
 			CheckboxTestCase)
