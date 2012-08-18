@@ -258,8 +258,11 @@ class Heading(DomObj):
 		heading_end = self.start + len(self)
 		# print "end_pos = %s" % (end_pos)
 		# print "(%s, %s)" % (start, end)
-		if (start > heading_end or end > heading_end):
+		if start > heading_end:
 			return None
+
+		if end > heading_end:
+			end = heading_end
 
 		if start is not None and end is None:
 			end = len(doc._content) - 1
