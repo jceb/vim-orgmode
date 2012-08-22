@@ -166,6 +166,30 @@ via the 'Org' menu. Most are only usable in command mode.
     <localleader>eh     - export as HTML
 
 ------------------------------------------------------------------------------
+Inline markup~
+
+  We support org authoring markup as closely as possible
+  (we're adding two markdown-like variants for =code= and blockquotes).
+
+  Inline markup:
+>
+  *bold*
+  /italic/
+  _underline_
+  +strike-through+
+  =code=
+  ~verbatim~
+<
+
+  Note:
+  - /italic/ is rendered as reverse in most terms (works fine in gVim, though)
+  - +strike-through+ doesn't work on Vim / gVim
+  - the non-standard `code' markup is also supported
+  - =code= and ~verbatim~ are also supported as block-level markup, see below.
+
+  Ref: http://orgmode.org/manual/Emphasis-and-monospace.html
+
+------------------------------------------------------------------------------
 Installation~
   Download the latest stable release at
   http://www.vim.org/scripts/script.php?script_id=3642
