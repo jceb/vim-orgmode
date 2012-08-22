@@ -22,17 +22,28 @@ REGEX_TAGS = re.compile(r'^\s*((?P<title>[^\s]*?)\s+)?(?P<tags>:[\w_:@]+:)$',
 		flags=re.U | re.L)
 REGEX_TODO = re.compile(r'^[^\s]*$')
 
+def parse_heading(func):
+	""" Parse heading on demand
+	"""
+	def parse(self, *args, **kwargs):
+		if self._heading:
+			self.parse_heading(self, *args, **kwargs)
+		return func(self, *args, **kwargs)
+	return parse
+
 
 class Heading(object):
 	u""" Structural heading object """
 
-	def __init__(self, level=1, title=u'', tags=None, todo=None, body=None,
-			active_date=None):
+	def __init__(self, level=1, title=u'', tags=None, todo=None, heading=None,
+			body=None, active_date=None):
 		u"""
 		:level:		Level of the heading
 		:title:		Title of the heading
 		:tags:		Tags of the heading
 		:todo:		Todo state of the heading
+		:heading:	The elements of title, tags and todo can also be parsed
+					from a heading string on demand
 		:body:		Body of the heading
 		:active_date: active date that is used in the agenda
 		"""
@@ -65,6 +76,11 @@ class Heading(object):
 		if title:
 			self.title = title
 
+		# heading
+		self._heading = heading
+		if self._todo or self._title or self._tags:
+			self._heading = None
+
 		# body
 		self._dirty_body = False
 		self._body = MultiPurposeList(on_change=self.set_dirty_body)
@@ -77,6 +93,10 @@ class Heading(object):
 			self.active_date = active_date
 
 	def __unicode__(self):
+		# TODO check if this really works well
+		if self._heading:
+			return self._heading
+
 		res = u'*' * self.level
 		if self.todo:
 			res = u' '.join((res, self.todo))
@@ -225,6 +245,64 @@ class Heading(object):
 
 		return heading
 
+	def parse_heading(self):
+		if not self._heading:
+			return self
+
+		level = todo = title = tags = -1
+
+		word = u''
+		sndword = u''
+		for c in self._heading:
+			if level == -1:
+				if c == u'*':
+					word += c
+				elif c in (u'\t', u' '):
+					# finish level
+					level = len(word)
+				else:
+					raise ValueError(u'Data doesn\'t start with a heading definition.')
+			elif todo == -1:
+				if c in (u'\t', u' '):
+					if not word:
+						# ignore whitespace
+						pass
+					else:
+						# finish todo
+						if word in allowed_todo_states:
+							todo = word
+						else:
+							todo = None
+			elif title == -1:
+				if sndword:
+					if c in (u'\t', u' '):
+						# it's not a tag word!
+						word = sndword
+						sndword = word
+					else:
+						sndword += c
+				elif c == u':':
+					sndword += c
+				else:
+					word += c
+		if todo == -1:
+			todo = None
+		if sndword:
+			if sndword[-1] == u':':
+				tags = sndword.split(u':')
+			else:
+				word += sndword
+				sndword = u''
+		title = word.strip()
+
+		# self.level = level
+		self.todo = todo
+		self.title = title
+		self.tags = tags
+
+		self._heading = None
+		return self
+
 	@classmethod
 	def parse_heading_from_data(cls, data, allowed_todo_states, document=None,
 			orig_start=None):
@@ -246,6 +324,8 @@ class Heading(object):
 			word = u''
 			sndword = u''
 			for c in heading_line:
+				if level != -1:
+					return level
 				if level == -1:
 					if c == u'*':
 						word += c
@@ -254,6 +334,7 @@ class Heading(object):
 						level = len(word)
 					else:
 						raise ValueError(u'Data doesn\'t start with a heading definition.')
+				# FIXME breaks further execution
 				elif todo == -1:
 					if c in (u'\t', u' '):
 						if not word:
@@ -319,8 +400,9 @@ class Heading(object):
 			raise ValueError(u'Unable to create heading, no data provided.')
 
 		# create new heaing
-		new_heading = cls()
-		new_heading.level, new_heading.todo, new_heading.title, new_heading.tags = parse_title(data[0])
+		new_heading = cls(heading=data[0])
+		new_heading.level = parse_title(data[0])
+		# new_heading.level, new_heading.todo, new_heading.title, new_heading.tags = parse_title(data[0])
 		new_heading.body = data[1:]
 		if orig_start is not None:
 			new_heading._dirty_heading = False
@@ -574,10 +656,12 @@ class Heading(object):
 	def todo():
 		u""" Todo state of current heading. When todo state is set, it will be
 		converted to uppercase """
+		@parse_heading
 		def fget(self):
 			# extract todo state from heading
 			return self._todo
 
+		@parse_heading
 		def fset(self, value):
 			# update todo state
 			if type(value) not in (unicode, str, type(None)):
@@ -619,9 +703,11 @@ class Heading(object):
 
 	def title():
 		u""" Title of current heading """
+		@parse_heading
 		def fget(self):
 			return self._title.strip()
 
+		@parse_heading
 		def fset(self, value):
 			if type(value) not in (unicode, str):
 				raise ValueError(u'Title must be a string.')
@@ -639,9 +725,11 @@ class Heading(object):
 
 	def tags():
 		u""" Tags of the current heading """
+		@parse_heading
 		def fget(self):
 			return self._tags
 
+		@parse_heading
 		def fset(self, value):
 			v = value
 			if type(v) in (unicode, str):
