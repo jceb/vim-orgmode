@@ -446,12 +446,11 @@ Plain lists~
   vim-orgmode supports editing such lists, and the HTML exporter (see section
   |orgguide-export|) parses and formats them.
 
-  vim-orgmode knows ordered lists, unordered lists, and description lists.
-
-  -  'Unordered' list items start with ‘-’, ‘+’, or ‘*’ as bullets.
-  -  'Ordered' list items start with ‘1.’ or ‘1)’.
-  -  'Description' list use ‘ :: ’ to separate the 'term' from the
-     description.
+  vim-orgmode knows ordered lists, unordered lists, and description lists:
+  - 'Unordered' list items start with ‘-’, ‘+’, or ‘*’ as bullets.
+  - 'Ordered' list items start with ‘1.’ or ‘1)’.
+  - 'Description' list use ‘ :: ’ to separate the 'term' from the
+    description.
 
   Items belonging to the same list must have the same indentation on the
   first line. An item ends before the next line that is indented like its
