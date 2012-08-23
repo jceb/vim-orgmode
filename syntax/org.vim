@@ -247,11 +247,14 @@ hi def org_italic    term=italic    cterm=italic    gui=italic
 hi def org_underline term=underline cterm=underline gui=underline
 
 " Lists
+" syntax region org_list_dt start=/^\s*[\+-]\s/ end="::" keepend oneline 
 syntax match  org_list_bullet   /^\s*[\+-]\s/ nextgroup=org_list_item
-syntax match  org_list_item     /.*$/ contained contains=org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all
-syntax region org_list_dt start=/^\s*[\+-]\s/ end="::" keepend oneline contains=org_list_bullet
+syntax match  org_list_item     /.*$/ contained contains=org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all,org_list_checkbox,org_list_dt
+syntax match  org_list_checkbox /\[[ X-]]/ contained
+syntax match org_list_dt /.*\s\+::/ contained
 hi def link org_list_bullet Statement
 hi def link org_list_dt     PreProc
+hi def link org_list_checkbox     PreProc
 
 " Block delimiters
 syntax case ignore
