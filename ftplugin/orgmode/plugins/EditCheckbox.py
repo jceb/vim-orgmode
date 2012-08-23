@@ -37,10 +37,17 @@ class EditCheckbox(object):
 		level = 1
 		# if no checkbox is found, insert at current line with indent level=1
 		if c is None:
-			pass
+			start = h.start
+			if h.checkboxes:
+				level = h.first_checkbox.level
 		else:
-			vim.current.window.cursor = (c.start + len(c), 0)
 			level = c.level
+			if below:
+				start = c.end_of_last_child
+			else:
+				start = c.start
+
+		vim.current.window.cursor = (start + 1, 0)
 
 		if below:
 			vim.command("normal o")

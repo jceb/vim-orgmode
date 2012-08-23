@@ -179,7 +179,7 @@ def indent_orgmode():
 		checkbox = heading.current_checkbox()
 		if checkbox:
 			print checkbox
-			vim.command((u'let b:indent_level = %d' % (checkbox.level + 1))
+			vim.command((u'let b:indent_level = %d' % (checkbox.level + 6))
 					.encode(u'utf-8'))
 		else:	
 			vim.command((u'let b:indent_level = %d' % (heading.level + 1))
@@ -391,5 +391,6 @@ class OrgMode(object):
 
 
 ORGMODE = OrgMode()
+
 
 # vim: set noexpandtab:

@@ -264,7 +264,7 @@ class Heading(DomObj):
 			end = heading_end
 
 		if start is not None and end is None:
-			end = len(doc._content) - 1
+			end = heading_end
 		if start is not None and end is not None:
 			return checkbox.parse_checkbox_from_data(doc._content[start:end + 1], \
 					heading=self if connect_with_heading else None, orig_start=start)
