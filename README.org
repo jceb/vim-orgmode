@@ -1,4 +1,7 @@
 * Vim-OrgMode
+
+  https://secure.travis-ci.org/sotte/vim-orgmode.png?branch=master
+
   Text outlining and task management for Vim based on Emacs' Org-Mode
   ([[http://orgmode.org/]]).
 
