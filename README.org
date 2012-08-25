@@ -15,8 +15,8 @@
   line tools*.
 
   *for command line tools and other programs a library named liborgmode is
-   provided. It encapsulates all functionality for parsing and modifying
-   Org-Mode files.
+   provided (work in progress!). It encapsulates all functionality for parsing
+   and modifying Org-Mode files.
 
 ** Features
    vim-orgmode is still very young but already quite usable. Here is a short
