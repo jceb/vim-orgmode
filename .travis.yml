@@ -1,8 +1,12 @@
 language: python
 python:
     - "2.6"
+    - "2.7"
+
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-# install: PLEASE CHANGE ME
+install:
+    - pip install flake8
+
 # command to run tests, e.g. python setup.py test
 script:
     - "flake8 --ignore=W191 --max-complexity=10 **/**.py"
