@@ -4,14 +4,18 @@ u"""
     Agenda
     ~~~~~~~~~~~~~~~~~~
 
-    The agenda is one of the main concepts of orgmode.
-    TODO
+    The agenda is one of the main concepts of orgmode. It allows to
+	collect TODO items from multiple org documents in an agenda view.
 
+	Features:
 	* filtering
 	* sorting
 """
 
-from orgmode.liborgmode.agendafilter import *
+from orgmode.liborgmode.agendafilter import filter_items
+from orgmode.liborgmode.agendafilter import is_within_week_and_active_todo
+from orgmode.liborgmode.agendafilter import contains_active_todo
+from orgmode.liborgmode.agendafilter import contains_active_date
 
 
 class AgendaManager(object):
