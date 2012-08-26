@@ -203,6 +203,17 @@ let s:listLeader = "^\\s*[\\+*-]\\s*"
 exec "syn match org_list_description /".s:listLeader."\\zs.\\{-}\\ze ::/"
 hi def link org_list_description Identifier
 
+" Lists: ordered
+" 1. list item
+" 2. list item
+" #. list item
+syn match org_list_ordered "^\s*\(\d\|#\)\. "
+" 1) list item
+" 2) list item
+" #) list item
+syn match org_list_ordered "^\s*\(\d\|#\)) "
+hi def link org_list_ordered Identifier
+
 " Deadline/Schedule
 syn match org_deadline_scheduled /^\s*\(DEADLINE\|SCHEDULED\):/
 hi def link org_deadline_scheduled PreProc
