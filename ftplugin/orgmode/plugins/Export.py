@@ -5,10 +5,11 @@ import subprocess
 
 import vim
 
-from orgmode._vim import ORGMODE, echoe, echo, echom
+from orgmode._vim import ORGMODE, echoe, echom
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode import settings
+
 
 class Export(object):
 	u"""
