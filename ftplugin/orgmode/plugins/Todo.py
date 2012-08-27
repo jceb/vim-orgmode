@@ -256,7 +256,6 @@ class Todo(object):
 
 		for l in xrange(0, len(all_states)):
 			res = u''
-			did_done = False
 			for j in xrange(0, 2):
 				if j < len(all_states[l]):
 					for i in all_states[l][j]:
