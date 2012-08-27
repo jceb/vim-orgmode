@@ -1,4 +1,4 @@
-" Headings
+" Headings {{{
 if !exists('g:org_heading_highlight_colors')
 	let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
 endif
@@ -29,8 +29,8 @@ while s:i <= g:org_heading_highlight_levels
 	let s:i += 1
 endwhile
 unlet! s:i s:j s:contains
-
-" Todo keywords
+" }}}
+" Todo keywords {{{
 if !exists('g:org_todo_keywords')
 	let g:org_todo_keywords = ['TODO', '|', 'DONE']
 endif
@@ -169,8 +169,8 @@ endif
 
 call s:ReadTodoKeywords(g:org_todo_keywords, s:todo_headings)
 unlet! s:todo_headings
-
-" Timestamps
+" }}}
+" Timestamps {{{
 "<2003-09-16 Tue>
 syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a>\)/
 "<2003-09-16 Tue 12:00>
@@ -197,43 +197,51 @@ syn match org_timestamp_inactive /\(\[%%(diary-float.\+\]\)/
 
 hi def link org_timestamp PreProc
 hi def link org_timestamp_inactive Comment
+" }}}
+" Lists: {{{
 
-" Lists
-let s:listLeader = "^\\s*[\\+*-]\\s*"
-exec "syn match org_list_description /".s:listLeader."\\zs.\\{-}\\ze ::/"
-hi def link org_list_description Identifier
-
-" Lists: ordered
+" Ordered:
 " 1. list item
-" 2. list item
-" #. list item
-syn match org_list_ordered "^\s*\(\d\|#\)\. "
 " 1) list item
-" 2) list item
-" #) list item
-syn match org_list_ordered "^\s*\(\d\|#\)) "
+syn match org_list_ordered "^\s\+\d[.)]\s"
 hi def link org_list_ordered Identifier
 
-" Deadline/Schedule
+" Unordered:
+" - list item
+" * list item
+" + list item
+syn match org_list_unordered "^\s\+[-*+]\s"
+hi def link org_list_unordered Identifier
+
+" Definitions:
+" - Term :: expl.
+" 1) Term :: expl.
+syntax region org_list_def start="^\s\+\d[.)]\s" end="::" keepend oneline contains=org_list_unordered
+syntax region org_list_def start="^\s\+[-*+]\s" end="::" keepend oneline contains=org_list_ordered
+hi def link org_list_def Identifier
+
+" }}}
+" Deadline/Schedule {{{
 syn match org_deadline_scheduled /^\s*\(DEADLINE\|SCHEDULED\):/
 hi def link org_deadline_scheduled PreProc
-
-" Tables
+" }}}
+" Tables {{{
 syn match org_table /^\s*|.*/ contains=org_timestamp,org_timestamp_inactive,hyperlink,org_table_separator,org_table_horizontal_line
 syn match org_table_separator /\(^\s*|[-+]\+|\?\||\)/ contained
 hi def link org_table_separator Type
-
-" Hyperlinks
+" }}}
+" Hyperlinks {{{
 syntax match hyperlink	"\[\{2}[^][]*\(\]\[[^][]*\)\?\]\{2}" contains=hyperlinkBracketsLeft,hyperlinkURL,hyperlinkBracketsRight containedin=ALL
 syntax match hyperlinkBracketsLeft		contained "\[\{2}" conceal
 syntax match hyperlinkURL				contained "[^][]*\]\[" conceal
 syntax match hyperlinkBracketsRight		contained "\]\{2}" conceal
 hi def link hyperlink Underlined
-
-" Comments
+" }}}
+" Comments {{{
 syntax match org_comment /^#.*/
 hi def link org_comment Comment
-
+" }}}
+" markup {{{
 " Support org authoring markup as closely as possible
 " (we're adding two markdown-like variants for =code= and blockquotes)
 " -----------------------------------------------------------------------------
@@ -256,15 +264,8 @@ syntax region org_verbatim  start="\S\@<=\~\|\~\S\@="     end="\S\@<=\~\|\~\S\@=
 hi def org_bold      term=bold      cterm=bold      gui=bold
 hi def org_italic    term=italic    cterm=italic    gui=italic
 hi def org_underline term=underline cterm=underline gui=underline
-
-" Lists
-syntax match  org_list_item     /^\s*[\+-]\s.*/
-syntax match  org_list_bullet   /^\s*[\+-]\s/
-syntax region org_list_dt start=/^\s*[\+-]\s/ end="::" keepend oneline contains=org_list_bullet
-hi def link org_list_bullet Statement
-hi def link org_list_dt     PreProc
-
-" Block delimiters
+" }}}
+" Block delimiters {{{
 syntax case ignore
 syntax match  org_block_delimiter /^#+BEGIN_.*/
 syntax match  org_block_delimiter /^#+END_.*/
@@ -273,8 +274,8 @@ syntax match  org_title           /^#+TITLE:.*/  contains=org_key_identifier
 hi def link org_key_identifier  Statement
 hi def link org_block_delimiter PreProc
 hi def link org_title           Title
-
-" Block markup
+" }}}
+" Block markup {{{
 " we consider all BEGIN/END sections as 'verbatim' blocks (inc. 'quote', 'verse', 'center')
 " except 'example' and 'src' which are treated as 'code' blocks.
 " Note: the non-standard '>' prefix is supported for quotation lines.
@@ -287,12 +288,12 @@ syntax region org_code     start="^#+BEGIN_SRC"     end="^#+END_SRC"     keepend
 syntax region org_code     start="^#+BEGIN_EXAMPLE" end="^#+END_EXAMPLE" keepend contains=org_block_delimiter
 hi def link org_code     String
 hi def link org_verbatim Special
-
-" Properties
+" }}}
+" Properties {{{
 syn region Error matchgroup=org_properties_delimiter start=/^\s*:PROPERTIES:\s*$/ end=/^\s*:END:\s*$/ contains=org_property keepend
 syn match org_property /^\s*:[^\t :]\+:\s\+[^\t ]/ contained contains=org_property_value
 syn match org_property_value /:\s\zs.*/ contained
 hi def link org_properties_delimiter PreProc
 hi def link org_property             Statement
 hi def link org_property_value       Constant
-
+" }}}
