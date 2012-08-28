@@ -73,29 +73,29 @@ class Checkbox(DomObj):
 
 	def copy(self, including_children=True, parent=None):
 		u"""
-		Create a copy of the current checkbox. The checkbox will be completely
+		Create a copy of the current heading. The heading will be completely
 		detached and not even belong to a document anymore.
 
 		:including_children:	If True a copy of all children is create as
-								well. If False the returned checkbox doesn't
+								well. If False the returned heading doesn't
 								have any children.
 		:parent:				Don't use this parameter. It's set
 								automatically.
 		"""
-		checkbox = self.__class__(level=self.level, title=self.title, \
-									body=self.body[:])
+		heading = self.__class__(level=self.level, title=self.title, \
+				tags=self.tags, todo=self.todo, body=self.body[:])
 		if parent:
-			parent.children.append(checkbox)
+			parent.children.append(heading)
 		if including_children and self.children:
 			for item in self.children:
 				item.copy(including_children=including_children, \
-						parent=checkbox)
-		checkbox._orig_start = self._orig_start
-		checkbox._orig_len = self._orig_len
+						parent=heading)
+		heading._orig_start = self._orig_start
+		heading._orig_len = self._orig_len
 
-		checkbox._dirty_checkbox = self.is_dirty_checkbox
+		heading._dirty_heading = self.is_dirty_heading
 
-		return checkbox
+		return heading
 
 	@classmethod
 	def parse_checkbox_from_data(cls, data, heading=None, orig_start=None):
@@ -230,19 +230,11 @@ class Checkbox(DomObj):
 	@property
 	def start(self):
 		u""" Access to the starting line of the checkbox """
-		# if self.document is None:
-			# return self._orig_start
-		if self.heading is None:
-			return self._orig_start
-		
-		doc = self.heading.document
-		if doc is None:
+		if self.document is None:
 			return self._orig_start
 
 		# static computation of start
-		# if not self.document.is_dirty:
-			# return self._orig_start
-		if not doc.is_dirty:
+		if not self.document.is_dirty:
 			return self._orig_start
 
 		# dynamic computation of start, really slow!

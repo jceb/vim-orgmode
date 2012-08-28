@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import vim
-from orgmode._vim import echo, echom, echoe, ORGMODE, apply_count, repeat, insert_at_cursor
+from orgmode._vim import echo, echom, echoe, ORGMODE, apply_count, repeat, insert_at_cursor, indent_orgmode
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode.liborgmode.checkboxes import Checkbox
@@ -30,11 +30,14 @@ class EditCheckbox(object):
 	def new_checkbox(cls, below=None):
 		d = ORGMODE.get_document()
 		h = d.current_heading()
+		if h == None:
+			return
 		# init checkboxes for current heading
 		h.init_checkboxes()
 		c = h.current_checkbox()
 
-		level = 1
+		# default checkbox level
+		level = h.level
 		# if no checkbox is found, insert at current line with indent level=1
 		if c is None:
 			start = h.start
@@ -66,6 +69,8 @@ class EditCheckbox(object):
 		d = ORGMODE.get_document()
 		current_heading = d.current_heading()
 		# init checkboxes for current heading
+		if current_heading == None:
+			return
 		current_heading = current_heading.init_checkboxes()
 
 		if not checkbox:
