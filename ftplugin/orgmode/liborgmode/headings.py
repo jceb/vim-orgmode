@@ -44,19 +44,16 @@ class LinkedTreeList(object):
 	def __init__(self):
 		self._parent = None
 		self._next_sibling = None
-		self._previous_sibling = None
 		self._children = None
 
 	def appendchild(self, heading):
 		if not self.children:
 			self.children = heading
 			heading._next_sibling = None
-			heading._previous_sibling = None
 		else:
 			last_child = self.last_child
 			last_child._next_sibling = heading
 			heading._next_sibling = None
-			heading._previous_sibling = last_child
 		heading._parent = self.parent
 		heading._document = self.document
 		return heading
@@ -66,11 +63,9 @@ class LinkedTreeList(object):
 		next_sibling = self.next_sibling
 		if next_sibling:
 			heading._next_sibling = next_sibling
-			next_sibling._previous_sibling = heading
 		else:
 			heading._next_sibling = None
 		self._next_sibling = heading
-		heading._previous_sibling = self
 		heading._parent = self.parent
 		heading._document = self.document
 
@@ -127,7 +122,17 @@ class LinkedTreeList(object):
 	def previous_sibling(self):
 		u""" Access to the previous heading that's a sibling of the current one
 		"""
-		return self._previous_sibling
+		heading = None
+		if self.parent:
+			heading = self.parent.children
+		elif self.document:
+			heading = self.document.headings
+		while heading:
+			if heading.next_sibling == self:
+				return heading
+			heading = heading.next_sibling
+		raise HeadingDomError(u'Heading not found in parent\'s list of children: %s' % self)
+
 
 	@property
 	def next_sibling(self):
@@ -170,7 +175,6 @@ class LinkedTreeList(object):
 			if child:
 				child._parent = self
 				child._next_sibling = None
-				child._previous_sibling = None
 				child._document = self.document
 
 		def fdel(self):
@@ -838,246 +842,5 @@ class Heading(LinkedTreeList):
 
 		return locals()
 	body = property(**body())
-
-
-class HeadingList(MultiPurposeList):
-	u"""
-	A Heading List just contains headings. It's used for documents to store top
-	level headings and for headings to store subheadings.
-
-	A Heading List must be linked to a Document or Heading!
-
-	See documenatation of MultiPurposeList for more information.
-	"""
-	def __init__(self, initlist=None, obj=None):
-		"""
-		:initlist:	Initial data
-		:obj:		Link to a concrete Heading or Document object
-		"""
-		# it's not necessary to register a on_change hook because the heading
-		# list will itself take care of marking headings dirty or adding
-		# headings to the deleted headings list
-		MultiPurposeList.__init__(self)
-
-		self._obj = obj
-
-		# initialization must be done here, because
-		# self._document is not initialized when the
-		# constructor of MultiPurposeList is called
-		if initlist:
-			self.extend(initlist)
-
-	@classmethod
-	def is_heading(cls, obj):
-		return isinstance(obj, Heading)
-
-	def _get_document(self):
-		if self.__class__.is_heading(self._obj):
-			return self._obj._document
-		return self._obj
-
-	def _add_to_deleted_headings(self, item):
-		u"""
-		Serialize headings so that all subheadings are also marked for deletion
-		"""
-		if not self._get_document():
-			# HeadingList has not yet been associated
-			return
-
-		if type(item) in (list, tuple) or isinstance(item, UserList):
-			for i in item:
-				self._add_to_deleted_headings(i)
-		else:
-			self._get_document()._deleted_headings.append(
-					item.copy(including_children=False))
-			self._add_to_deleted_headings(item.children)
-			self._get_document().set_dirty_document()
-
-	def _associate_heading(self, heading, previous_sibling, next_sibling,
-			children=False, taint=True):
-		"""
-		:heading:		The heading or list to associate with the current heading
-		:previous_sibling:	The previous sibling of the current heading. If
-							heading is a list the first heading will be
-							connected with the previous sibling and the last
-							heading with the next sibling. The items in between
-							will be linked with one another.
-		:next_sibling:	The next sibling of the current heading. If
-							heading is a list the first heading will be
-							connected with the previous sibling and the last
-							heading with the next sibling. The items in between
-							will be linked with one another.
-		:children:		Marks whether children are processed in the current
-							iteration or not (should not be use, it's set
-							automatically)
-		:taint:			If not True, the heading is not marked dirty at the end
-							of the association process and its orig_start and
-							orig_len values are not updated.
-		"""
-		# TODO this method should be externalized and moved to the Heading class
-		if type(heading) in (list, tuple) or isinstance(heading, UserList):
-			prev = previous_sibling
-			current = None
-			for _next in heading:
-				if current:
-					self._associate_heading(current, prev, _next, \
-							children=children, taint=taint)
-					prev = current
-				current = _next
-			if current:
-				self._associate_heading(current, prev, next_sibling, \
-						children=children, taint=taint)
-		else:
-			if taint:
-				heading._orig_start = None
-				heading._orig_len = None
-			d = self._get_document()
-			if heading._document != d:
-				heading._document = d
-			if not children:
-				# connect heading with previous and next headings
-				heading._previous_sibling = previous_sibling
-				if previous_sibling:
-					previous_sibling._next_sibling = heading
-				heading._next_sibling = next_sibling
-				if next_sibling:
-					next_sibling._previous_sibling = heading
-
-				if d == self._obj:
-					# self._obj is a Document
-					heading._parent = None
-				elif heading._parent != self._obj:
-					# self._obj is a Heading
-					heading._parent = self._obj
-			if taint:
-				heading.set_dirty()
-
-			self._associate_heading(heading.children, None, None, \
-					children=True, taint=taint)
-
-	def __setitem__(self, i, item):
-		#if not self.__class__.is_heading(item):
-		#	raise ValueError(u'Item is not a heading!')
-		if item in self:
-			raise ValueError(u'Heading is already part of this list!')
-		self._add_to_deleted_headings(self[i])
-
-		self._associate_heading(item, \
-				self[i - 1] if i - 1 >= 0 else None, \
-				self[i + 1] if i + 1 < len(self) else None)
-		MultiPurposeList.__setitem__(self, i, item)
-
-	def __setslice__(self, i, j, other):
-		o = other
-		if self.__class__.is_heading(o):
-			o = (o, )
-		#for item in o:
-		#	if not self.__class__.is_heading(item):
-		#		raise ValueError(u'List contains items that are not a heading!')
-		i = max(i, 0)
-		j = max(j, 0)
-		self._add_to_deleted_headings(self[i:j])
-		self._associate_heading(o, \
-				self[i - 1] if i - 1 >= 0 and i < len(self) else None, \
-				self[j] if j >= 0 and j < len(self) else None)
-		MultiPurposeList.__setslice__(self, i, j, o)
-
-	def __delitem__(self, i, taint=True):
-		item = self[i]
-		if item.previous_sibling:
-			item.previous_sibling._next_sibling = item.next_sibling
-		if item.next_sibling:
-			item.next_sibling._previous_sibling = item.previous_sibling
-
-		if taint:
-			self._add_to_deleted_headings(item)
-		MultiPurposeList.__delitem__(self, i)
-
-	def __delslice__(self, i, j, taint=True):
-		i = max(i, 0)
-		j = max(j, 0)
-		items = self[i:j]
-		if items:
-			first = items[0]
-			last = items[-1]
-			if first.previous_sibling:
-				first.previous_sibling._next_sibling = last.next_sibling
-			if last.next_sibling:
-				last.next_sibling._previous_sibling = first.previous_sibling
-		if taint:
-			self._add_to_deleted_headings(items)
-		MultiPurposeList.__delslice__(self, i, j)
-
-	def __iadd__(self, other):
-		o = other
-		if self.__class__.is_heading(o):
-			o = (o, )
-		#for item in o:
-		#	if not self.__class__.is_heading(item):
-		#		raise ValueError(u'List contains items that are not a heading!')
-		self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
-		return MultiPurposeList.__iadd__(self, o)
-
-	def __imul__(self, n):
-		# TODO das müsste eigentlich ein klonen von objekten zur Folge haben
-		return MultiPurposeList.__imul__(self, n)
-
-	def append(self, item, taint=True):
-		#if not self.__class__.is_heading(item):
-		#	raise ValueError(u'Item is not a heading!')
-		if item in self:
-			raise ValueError(u'Heading is already part of this list!')
-		self._associate_heading(item, self[-1] if len(self) > 0 else None, \
-				None, taint=taint)
-		MultiPurposeList.append(self, item)
-
-	def insert(self, i, item, taint=True):
-		self._associate_heading(item, \
-				self[i - 1] if i - 1 >= 0 and i - 1 < len(self) else None,
-				self[i] if i >= 0 and i < len(self) else None, taint=taint)
-		MultiPurposeList.insert(self, i, item)
-
-	def pop(self, i=-1):
-		item = self[i]
-		self._add_to_deleted_headings(item)
-		del self[i]
-		return item
-
-	def remove_slice(self, i, j, taint=True):
-		self.__delslice__(i, j, taint=taint)
-
-	def remove(self, item, taint=True):
-		self.__delitem__(self.index(item), taint=taint)
-
-	def reverse(self):
-		MultiPurposeList.reverse(self)
-		prev_h = None
-		for h in self:
-			h._previous_sibling = prev_h
-			h._next_sibling = None
-			prev_h._next_sibling = h
-			h.set_dirty()
-			prev_h = h
-
-	def sort(self, *args, **kwds):
-		MultiPurposeList.sort(*args, **kwds)
-		prev_h = None
-		for h in self:
-			h._previous_sibling = prev_h
-			h._next_sibling = None
-			prev_h._next_sibling = h
-			h.set_dirty()
-			prev_h = h
-
-	def extend(self, other):
-		o = other
-		if self.__class__.is_heading(o):
-			o = (o, )
-		#for item in o:
-		#	if not self.__class__.is_heading(item):
-		#		raise ValueError(u'List contains items that are not a heading!')
-		self._associate_heading(o, self[-1] if len(self) > 0 else None, None)
-		MultiPurposeList.extend(self, o)
-
 
 # vim: set noexpandtab:

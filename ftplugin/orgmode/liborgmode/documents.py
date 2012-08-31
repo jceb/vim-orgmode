@@ -10,7 +10,7 @@
 from UserList import UserList
 
 from orgmode.liborgmode.base import MultiPurposeList, Direction
-from orgmode.liborgmode.headings import Heading, HeadingList
+from orgmode.liborgmode.headings import Heading
 
 
 class Document(object):
@@ -142,13 +142,14 @@ class Document(object):
 		self._orig_meta_information_len = len(self.meta_information)
 
 		# initialize dom tree
-		# prev_h = h
-
+		#prev_h = h
 		#while h:
 		#	start = prev_h.end + 1
 		#	prev_h._next = h = self.find_heading(start, heading=heading)
 		#	if h:
 		#		prev_h = h
+		#return self
+
 		if h:
 			self.headings = h
 			h._document = self
@@ -156,7 +157,6 @@ class Document(object):
 		while h:
 			if prev_h:
 				prev_h._next_sibling = h
-				h._previous_sibling = prev_h
 				prev_h.appendsibling(h)
 			init_heading(h)
 			prev_h = h
