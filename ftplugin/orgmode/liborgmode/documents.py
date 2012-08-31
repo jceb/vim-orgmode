@@ -37,7 +37,8 @@ class Document(object):
 		self._dirty_document = False
 		self._meta_information = MultiPurposeList(on_change = self.set_dirty_meta_information)
 		self._orig_meta_information_len = None
-		self._headings = HeadingList(obj=self)
+		# self._headings = HeadingList(obj=self)
+		self._headings = None
 		self._deleted_headings = []
 
 		# settings needed to align tags properly
@@ -104,27 +105,22 @@ class Document(object):
 			:returns	the initialized heading
 			"""
 			start = _h.end + 1
-			prev_heading = None
 			while True:
 				new_heading = self.find_heading(start, heading=heading)
 
 				# * Heading 1 <- heading
 				# * Heading 1 <- sibling
 				# or
-				# * Heading 2 <- heading
+				# * Heading 1 <- heading
 				# * Heading 1 <- parent's sibling
 				if not new_heading or \
 						new_heading.level <= _h.level:
 					break
 
 				# * Heading 1 <- heading
-				#  * Heading 2 <- first child
-				#  * Heading 2 <- another child
-				new_heading._parent = _h
-				if prev_heading:
-					prev_heading._next_sibling = new_heading
-					new_heading._previous_sibling = prev_heading
-				_h.children.data.append(new_heading)
+				# ** Heading 2 <- first child
+				# ** Heading 2 <- another child
+				_h.appendchild(new_heading)
 				# the start and end computation is only
 				# possible when the new heading was properly
 				# added to the document structure
@@ -134,7 +130,6 @@ class Document(object):
 					start = new_heading.end_of_last_child + 1
 				else:
 					start = new_heading.end + 1
-				prev_heading = new_heading
 
 			return _h
 
@@ -147,18 +142,22 @@ class Document(object):
 		self._orig_meta_information_len = len(self.meta_information)
 
 		# initialize dom tree
-		prev_h = h
+		# prev_h = h
+
+		#while h:
+		#	start = prev_h.end + 1
+		#	prev_h._next = h = self.find_heading(start, heading=heading)
+		#	if h:
+		#		prev_h = h
+		if h:
+			self.headings = h
+			h._document = self
+		prev_h = None
 		while h:
-			start = prev_h.end + 1
-			prev_h._next = h = self.find_heading(start, heading=heading)
-			if h:
-				prev_h = h
-		while h:
-			break
 			if prev_h:
 				prev_h._next_sibling = h
 				h._previous_sibling = prev_h
-			self.headings.data.append(h)
+				prev_h.appendsibling(h)
 			init_heading(h)
 			prev_h = h
 			h = self.find_heading(h.end_of_last_child + 1, heading=heading)
@@ -196,11 +195,11 @@ class Document(object):
 		def fget(self):
 			return self._headings
 
-		def fset(self, value):
-			self._headings[:] = value
+		def fset(self, heading):
+			self._headings = heading
 
 		def fdel(self):
-			del self.headings[:]
+			self._headings = None
 
 		return locals()
 	headings = property(**headings())

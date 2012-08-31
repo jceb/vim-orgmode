@@ -13,6 +13,7 @@ from UserList import UserList
 from orgmode.liborgmode.base import MultiPurposeList
 from orgmode.liborgmode.orgdate import OrgTimeRange
 from orgmode.liborgmode.orgdate import get_orgdate
+from orgmode.exceptions import HeadingDomError
 
 
 REGEX_HEADING = re.compile(
@@ -31,8 +32,181 @@ def parse_heading(func):
 		return func(self, *args, **kwargs)
 	return parse
 
+class LinkedTreeList(object):
+	""" Implementation of a double linked list with a tree structure:
+		e1 - e2 - e3
+		 |    | /
+		 |   e4
+		 | /
+		e5 - e6
+	"""
 
-class Heading(object):
+	def __init__(self):
+		self._parent = None
+		self._next_sibling = None
+		self._previous_sibling = None
+		self._children = None
+
+	def appendchild(self, heading):
+		if not self.children:
+			self.children = heading
+			heading._next_sibling = None
+			heading._previous_sibling = None
+		else:
+			last_child = self.last_child
+			last_child._next_sibling = heading
+			heading._next_sibling = None
+			heading._previous_sibling = last_child
+		heading._parent = self.parent
+		heading._document = self.document
+		return heading
+
+
+	def appendsibling(self, heading):
+		next_sibling = self.next_sibling
+		if next_sibling:
+			heading._next_sibling = next_sibling
+			next_sibling._previous_sibling = heading
+		else:
+			heading._next_sibling = None
+		self._next_sibling = heading
+		heading._previous_sibling = self
+		heading._parent = self.parent
+		heading._document = self.document
+
+	def get_index_in_parent_list(self):
+		""" Retrieve the index value of current heading in the parents list of
+		headings. This works also for top level headings.
+
+		:returns:	Index value or None if heading doesn't have a
+					parent/document or is not in the list of headings
+		"""
+		idx = 0
+		h = None
+		if self.parent:
+			h = self.parent.first_child
+		elif self.document:
+			h = self.document.headings
+
+		while h and h != self:
+			idx += 1
+			h = h.next_heading
+		if not h:
+			raise HeadingDomError(u'Heading not in parent list: %s' % self)
+		return idx
+
+	def get_parent_list(self):
+		""" Retrieve the parents list of headings. This works also for top
+		level headings.
+
+		:returns:	List of headings or None if heading doesn't have a
+					parent/document or is not in the list of headings
+		"""
+		if self.parent:
+			return self.parent.children
+		elif self.document:
+			return self.document.headings
+
+	@property
+	def parent(self):
+		u""" Access to the parent heading """
+		return self._parent
+
+	@property
+	def number_of_parents(self):
+		u""" Access to the number of parent headings before reaching the root
+		document """
+		def count_parents(h):
+			if h.parent:
+				return 1 + count_parents(h.parent)
+			else:
+				return 0
+		return count_parents(self)
+
+	@property
+	def previous_sibling(self):
+		u""" Access to the previous heading that's a sibling of the current one
+		"""
+		return self._previous_sibling
+
+	@property
+	def next_sibling(self):
+		u""" Access to the next heading that's a sibling of the current one """
+		return self._next_sibling
+
+	@property
+	def previous_heading(self):
+		u""" Serialized access to the previous heading """
+		if self.previous_sibling:
+			h = self.previous_sibling
+			if h.children:
+				h = h.last_grandchild
+			return h
+		elif self.parent:
+			return self.parent
+
+	@property
+	def next_heading(self):
+		u""" Serialized access to the next heading """
+		if self.children:
+			return self.children
+		elif self.next_sibling:
+			return self.next_sibling
+		# find the next heading by moving up the pedigree
+		h = self.parent
+		while h:
+			if h.next_sibling:
+				return h.next_sibling
+			else:
+				h = h.parent
+
+	def children():
+		u""" Subheadings of the current heading """
+		def fget(self):
+			return self._children
+
+		def fset(self, child):
+			self._children = child
+			if child:
+				child._parent = self
+				child._next_sibling = None
+				child._previous_sibling = None
+				child._document = self.document
+
+		def fdel(self):
+			self._children = None
+
+		return locals()
+	children = property(**children())
+
+	@property
+	def first_child(self):
+		u""" Access to the first child heading or None if no children exist """
+		return self.children
+
+	@property
+	def last_child(self):
+		u""" Access to the last child heading or None if no children exist """
+		child = self.first_child
+		while child:
+			sibling = child.next_sibling
+			if sibling:
+				child = sibling
+			else:
+				return child
+
+	@property
+	def last_grandchild(self):
+		u""" Access to the last child heading or None if no children exist """
+		child = self.last_child
+		while child:
+			last_child = child.last_child
+			if last_child:
+				child = last_child
+			else:
+				return child
+
+class Heading(LinkedTreeList):
 	u""" Structural heading object """
 
 	def __init__(self, level=1, title=u'', tags=None, todo=None, heading=None,
@@ -47,14 +221,14 @@ class Heading(object):
 		:body:		Body of the heading
 		:active_date: active date that is used in the agenda
 		"""
-		object.__init__(self)
+		LinkedTreeList.__init__(self)
 
 		self._document = None
 		# self._parent = None
 		# self._previous_sibling = None
 		# self._next_sibling = None
 		# self._children = HeadingList(obj=self)
-		self._next = None
+		# self._next = None
 		self._orig_start = None
 		self._orig_len = 0
 
@@ -440,6 +614,17 @@ class Heading(object):
 				return None
 
 	@property
+	def end_of_last_child(self):
+		u""" Access to end of the last child """
+		if self.children:
+			return self.last_grandchild.end
+		return self.end
+
+	@property
+	def end_of_last_child_vim(self):
+		return self.end_of_last_child + 1
+
+	@property
 	def is_dirty(self):
 		u""" Return True if the heading's body is marked dirty """
 		return self._dirty_heading or self._dirty_body
@@ -453,34 +638,6 @@ class Heading(object):
 	def is_dirty_body(self):
 		u""" Return True if the heading's body is marked dirty """
 		return self._dirty_body
-
-	def get_index_in_parent_list(self):
-		""" Retrieve the index value of current heading in the parents list of
-		headings. This works also for top level headings.
-
-		:returns:	Index value or None if heading doesn't have a
-					parent/document or is not in the list of headings
-		"""
-		if self.parent:
-			if self in self.parent.children:
-				return self.parent.children.index(self)
-		elif self.document:
-			if self in self.document.headings:
-				return self.document.headings.index(self)
-
-	def get_parent_list(self):
-		""" Retrieve the parents list of headings. This works also for top
-		level headings.
-
-		:returns:	List of headings or None if heading doesn't have a
-					parent/document or is not in the list of headings
-		"""
-		if self.parent:
-			if self in self.parent.children:
-				return self.parent.children
-		elif self.document:
-			if self in self.document.headings:
-				return self.document.headings
 
 	def set_dirty(self):
 		u""" Mark the heading and body dirty so that it will be rewritten when
@@ -509,59 +666,6 @@ class Heading(object):
 		u""" Read only access to the document. If you want to change the
 		document, just assign the heading to another document """
 		return self._document
-
-	@property
-	def parent(self):
-		u""" Access to the parent heading """
-		return self._parent
-
-	@property
-	def number_of_parents(self):
-		u""" Access to the number of parent headings before reaching the root
-		document """
-		def count_parents(h):
-			if h.parent:
-				return 1 + count_parents(h.parent)
-			else:
-				return 0
-		return count_parents(self)
-
-	@property
-	def previous_sibling(self):
-		u""" Access to the previous heading that's a sibling of the current one
-		"""
-		return self._previous_sibling
-
-	@property
-	def next_sibling(self):
-		u""" Access to the next heading that's a sibling of the current one """
-		return self._next_sibling
-
-	@property
-	def previous_heading(self):
-		u""" Serialized access to the previous heading """
-		if self.previous_sibling:
-			h = self.previous_sibling
-			while h.children:
-				h = h.children[-1]
-			return h
-		elif self.parent:
-			return self.parent
-
-	@property
-	def next_heading(self):
-		u""" Serialized access to the next heading """
-		if self.children:
-			return self.children[0]
-		elif self.next_sibling:
-			return self.next_sibling
-		else:
-			h = self.parent
-			while h:
-				if h.next_sibling:
-					return h.next_sibling
-				else:
-					h = h.parent
 
 	@property
 	def start(self):
@@ -596,47 +700,6 @@ class Heading(object):
 	def end_vim(self):
 		if self.end is not None:
 			return self.end + 1
-
-	@property
-	def end_of_last_child(self):
-		u""" Access to end of the last child """
-		if self.children:
-			child = self.children[-1]
-			while child.children:
-				child = child.children[-1]
-			return child.end
-		return self.end
-
-	@property
-	def end_of_last_child_vim(self):
-		return self.end_of_last_child + 1
-
-	def children():
-		u""" Subheadings of the current heading """
-		def fget(self):
-			return self._children
-
-		def fset(self, value):
-			v = value
-			self._children[:] = v
-
-		def fdel(self):
-			del self.children[:]
-
-		return locals()
-	children = property(**children())
-
-	@property
-	def first_child(self):
-		u""" Access to the first child heading or None if no children exist """
-		if self.children:
-			return self.children[0]
-
-	@property
-	def last_child(self):
-		u""" Access to the last child heading or None if no children exist """
-		if self.children:
-			return self.children[-1]
 
 	def level():
 		u""" Access to the heading level """
