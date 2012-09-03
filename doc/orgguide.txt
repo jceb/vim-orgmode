@@ -412,10 +412,10 @@ Sparse trees~
 
 ------------------------------------------------------------------------------
 Plain lists~
+                                                            *orgguide-plain-list*
   Within an entry of the outline tree, hand-formatted lists can provide
   additional structure.
 
-  Not yet implemented in vim-orgmode~
   They also provide a way to create lists of checkboxes (see section
   |orgguide-checkboxes|).
 
@@ -658,12 +658,59 @@ Priorities~
 
 ------------------------------------------------------------------------------
 Breaking tasks down into subtasks~
-  Not yet implemented in vim-orgmode~
+
+It is often advisable to break down large tasks into smaller, manageable
+subtasks. You can do this by creating an outline tree below a TODO item,
+with detailed subtasks on the tree. To keep the overview over the
+fraction of subtasks that are already completed, insert either ‘[/]’ or
+‘[%]’ anywhere in the headline. These cookies will be updated each time
+the TODO status of a child changes, or when pressing C-c C-c on the
+cookie. For example:
+
+>
+    * Organize Party [33%]
+    ** TODO Call people [1/2]
+    *** TODO Peter
+    *** DONE Sarah
+    ** TODO Buy food
+    ** DONE Talk to neighbor
+<
+                        
+<localleader>c#	        Update the checkboxes status of current heading. It also
+                        update the heading status too.
 
 ------------------------------------------------------------------------------
 Checkboxes~
                                                            *orgguide-checkboxes*
-  Not yet implemented in vim-orgmode~
+  
+Every item in a plain list (see section |orgguide-plain-list|)
+can be made into a checkbox by starting it with the string ‘[ ]’.
+Checkboxes are not included into the global TODO list, so they are often
+great to split a task into a number of simple steps. Here is an example
+of a checkbox list.
+  
+>
+    * TODO Organize party [1/3]
+      - [-] call people [1/2]
+        - [ ] Peter
+        - [X] Sarah
+      - [X] order food
+      - [ ] think about what music to play
+<
+
+Checkboxes work hierarchically, so if a checkbox item has children that
+are checkboxes, toggling one of the children checkboxes will make the
+parent checkbox reflect if none, some, or all of the children are
+checked.
+
+The following commands work with checkboxes:
+
+<localleader>cc         Toggle checkbox status or (with prefix arg) checkbox
+                        presence at point.
+
+<localleader>cn         Insert a new checkbox below current line.
+
+<localleader>cN         Insert a new checkbox above current line.
 
 ==============================================================================
 TAGS                                                             *orgguide-tags*
