@@ -8,6 +8,11 @@ import vim
 from orgmode.liborgmode.checkboxes import Checkbox
 from orgmode._vim import ORGMODE
 
+def set_vim_buffer(buf=[], cursor=(2, 0), bufnr=0):
+	vim.current.buffer[:] = buf
+	vim.current.window.cursor = cursor 
+	vim.current.buffer.number = bufnr
+
 class CheckboxTestCase(unittest.TestCase):
 
 	def setUp(self):
@@ -32,10 +37,11 @@ class CheckboxTestCase(unittest.TestCase):
 				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
 		self.c1 = """
-* heading1
- - [ ] checkbox1
-  - [ ] checkbox2
- - [X] checkbox3
+* heading1 [/]
+ - [-] checkbox1 [%]
+  - [X] checkbox2
+  - [ ] checkbox3
+ - [X] checkbox4
 """.split("\n")
 
 		self.c2 = """
@@ -48,11 +54,6 @@ class CheckboxTestCase(unittest.TestCase):
    - [ ] checkbox6
 """.split("\n")
 
-	
-	def set_vim_buffer(self, buf=[], cursor=(2, 0), bufnr=0):
-		vim.current.buffer[:] = buf
-		vim.current.window.cursor = cursor 
-		vim.current.buffer.number = bufnr
 
 	def test_init(self):
 		# test initialize Checkbox
@@ -60,6 +61,28 @@ class CheckboxTestCase(unittest.TestCase):
 		self.assertEqual(str(c), " - [ ] checkbox1")
 		c = Checkbox(level=3, title="checkbox2", status="[X]")
 		self.assertEqual(str(c)," " * 3 + "- [X] checkbox2")
+
+	def test_basic(self):
+		set_vim_buffer(buf=self.c1, bufnr=1)
+		h = ORGMODE.get_document(bufnr=1).current_heading()
+		h.init_checkboxes()
+
+		c = h.current_checkbox(position=2)
+		self.assertEqual(str(c), self.c1[2])
+		self.assertFalse(c.are_children_all(Checkbox.STATUS_ON))
+		self.assertTrue(c.is_child_one(Checkbox.STATUS_OFF))
+		self.assertFalse(c.are_siblings_all(Checkbox.STATUS_ON))
+
+		for child in c.all_children():
+			pass
+		for sibling in c.all_siblings():
+			pass
+		c = h.current_checkbox(position=3)
+		new_checkbox = c.copy()
+		self.assertEqual(str(c), self.c1[3])
+		c.get_parent_list()
+		c.get_index_in_parent_list()
+		
 	
 	def test_identify(self):
 		# test identify_checkbox
@@ -70,35 +93,30 @@ class CheckboxTestCase(unittest.TestCase):
 
 	def test_toggle(self):
 		# test init_checkboxes 
-		self.set_vim_buffer(buf=self.c1, bufnr=1)
+		set_vim_buffer(buf=self.c1, bufnr=1)
 		h = ORGMODE.get_document(bufnr=1).current_heading()
 		h.init_checkboxes()
-		# list all checkboxes
-		top_level_checkboxes = [" - [ ] checkbox1",
-								" - [X] checkbox3"]
-		i = 0
-		for c in h.all_toplevel_checkboxes():
-			# self.assertEqual(str(c), top_level_checkboxes[i])
-			# print c
-			i += 1
 
 		# toggle checkbox
 		c = h.current_checkbox(position=4)
 		c.toggle()
-		self.assertEqual(str(c), " - [ ] checkbox3")
+		self.assertEqual(str(c), "  - [X] checkbox3")
 		c.toggle()
-		self.assertEqual(str(c), " - [X] checkbox3")
+		self.assertEqual(str(c), "  - [ ] checkbox3")
 
-		# test init_checkboxes 
-		self.set_vim_buffer(buf=self.c2, bufnr=2)
-		h = ORGMODE.get_document(bufnr=2).current_heading()
-		h.init_checkboxes()
-		c = h.current_checkbox(position=2)
-
-		# print c
 		(total, on) = c.all_siblings_status()
-		# print "on = %d, total = %d" % (on, total)
-		self.assertEqual((total, on), (2, 0))
+		self.assertEqual((total, on), (2, 1))
+
+	def test_subtasks(self):
+		set_vim_buffer(buf=self.c1, bufnr=3)
+		h = ORGMODE.get_document(bufnr=3).current_heading()
+		h.init_checkboxes()
+		c = h.current_checkbox(position=3)
+		c.toggle()
+		c = h.current_checkbox(position=2)
+		(total, on) = c.all_siblings_status()
+		c.update_subtasks(total=total, on=on)
+		self.assertEqual(str(c), " - [-] checkbox1 [50%]")
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(

@@ -10,25 +10,38 @@ from orgmode._vim import ORGMODE
 
 PLUGIN_NAME = u'EditCheckbox'
 
+def set_vim_buffer(buf=[], cursor=(2, 0), bufnr=0):
+	vim.current.buffer[:] = buf
+	vim.current.window.cursor = cursor 
+	vim.current.buffer.number = bufnr
+
 class EditCheckboxTestCase(unittest.TestCase):
 	def setUp(self):
 		if not PLUGIN_NAME in ORGMODE.plugins:
 			ORGMODE.register_plugin(PLUGIN_NAME)
 		self.editcheckbox = ORGMODE.plugins[PLUGIN_NAME]
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
-* heading1
- - [ ] checkbox1
+		self.c1 = u"""
+* heading1 [%]
+ - [ ] checkbox1 [/]
   - [ ] checkbox2
   - [ ] checkbox3
     - [ ] checkbox4
  - [ ] checkbox5
   - [ ] checkbox6
-""".split(u'\n')]
+""".split(u'\n')
 
 	def test_toggle(self):
-		vim.current.window.cursor = (6, 0)
+		set_vim_buffer(self.c1, cursor=(6, 0))
+		# update_checkboxes_status
+		self.editcheckbox.update_checkboxes_status()
+		self.assertEqual(vim.current.buffer[1], "* heading1 [0%]")
+		# toggle
 		self.editcheckbox.toggle()
-		# print "\n".join(vim.current.buffer)
+		self.assertEqual(vim.current.buffer[5],"    - [X] checkbox4")
+		vim.current.window.cursor = (7, 0)
+		# new_checkbox
+		self.editcheckbox.new_checkbox(below=True)
+		self.assertEqual(vim.current.buffer[8], ' - [ ] ')
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(EditCheckboxTestCase)
