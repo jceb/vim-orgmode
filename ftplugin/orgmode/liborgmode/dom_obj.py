@@ -15,7 +15,18 @@ REGEX_SUBTASK = re.compile(r'\[(\d*)/(\d*)\]')
 REGEX_SUBTASK_PERCENT = re.compile(r'\[(\d*)%\]')
 
 class DomObj(object):
-	u""" DOM object """
+	u""" 
+	A DomObj is DOM structure element, like Heading and Checkbox.	
+	Its purpose is to abstract the same parts of Heading and Checkbox objects,
+	and make code reusable.
+
+	All methods and properties are extracted from Heading object.
+	Heading and Checkbox objects inherit from DomObj, and override some specific
+	methods in their own objects.
+
+	Normally, we don't intend to use DomObj directly. However, we can add some more
+	DOM structure element based on this class to make code more concise.
+	"""
 
 	def __init__(self, level=1, title=u'', body=None):
 		u"""
