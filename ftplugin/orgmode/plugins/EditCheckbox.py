@@ -59,6 +59,7 @@ class EditCheckbox(object):
 
 		new_checkbox = Checkbox(level=level)
 		insert_at_cursor(str(new_checkbox))
+		vim.command("call feedkeys('a')")
 
 	@classmethod
 	def toggle(cls, checkbox=None):
