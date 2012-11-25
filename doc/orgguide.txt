@@ -1358,6 +1358,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.5.0-0
+- add test cases for overlapping mappings
 - add three dots after folded text, like in orgmode
 - improve highlighting of org-mode properties (closes issue #130)
 - implement global visibility as it works in Emacs org-mode (closes issue #119)
