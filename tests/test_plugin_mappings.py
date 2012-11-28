@@ -19,18 +19,21 @@ class MappingTestCase(unittest.TestCase):
 	u"""Tests all plugins for overlapping mappings."""
 	def test_non_overlapping_plug_mappings(self):
 		def find_overlapping_mappings(kb, all_keybindings):
+			found_overlapping_mapping = False
 			for tkb in all_keybindings:
 				if kb.mode == tkb.mode or MODE_ALL in (kb.mode, tkb.mode):
 					if isinstance(kb._action, Plug) and isinstance(tkb._action, Plug):
 						akb = kb.action
 						atkb = tkb.action
 						if (akb.startswith(atkb) or atkb.startswith(akb)) and akb != atkb:
-							print u'ERROR: Found overlapping mapping: %s (%s), %s (%s)' % (kb.key, akb, tkb.key, atkb)
-							return True
+							print u'\nERROR: Found overlapping mapping: %s (%s), %s (%s)' % (kb.key, akb, tkb.key, atkb)
+							found_overlapping_mapping = True
 
 			if all_keybindings:
-				return find_overlapping_mappings(all_keybindings[0], all_keybindings[1:])
-			return False
+				res = find_overlapping_mappings(all_keybindings[0], all_keybindings[1:])
+				if not found_overlapping_mapping:
+					return res
+			return found_overlapping_mapping
 
 		if self.keybindings:
 			self.assertFalse(find_overlapping_mappings(self.keybindings[0], self.keybindings[1:]))
