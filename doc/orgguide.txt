@@ -298,6 +298,9 @@ Headlines~
   that has whitespace followed by a single star as headline starters.
   |g:org_heading_shade_leading_stars| describes a setup to realize this.
 
+  Body text under headings is indented by default, but you can control this
+  with the  |g:org_indent| variable.
+
 ------------------------------------------------------------------------------
 Text objects~
   Vim offers a mighty feature called |text-objects|. A text object is bound to
@@ -1069,7 +1072,7 @@ Remapping shortcuts~
 <
 
 ------------------------------------------------------------------------------
-Syntax highlighting~
+Syntax highlighting and indentation~
   Syntax highlighting is customizable to fit nicely with the user's
   colorscheme.
 
@@ -1117,6 +1120,14 @@ Syntax highlighting~
   terminal mode. Example:
 >
   let g:org_todo_keyword_faces = []
+<
+
+                                                                  *g:org_indent*
+  Default: 1
+  Defines if body text is indented. By default text is indented according to
+  heading level (heading.level + 1). You can disable it by setting:
+>
+  let g:org_indent = 0
 <
 
   Syntax Highlighting Examples~
