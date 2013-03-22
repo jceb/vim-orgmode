@@ -1,6 +1,6 @@
 " Delete the next line to avoid the special indention of items
 if !exists("g:org_indent")
-  let g:org_indent = 0
+  let g:org_indent = 1
 endif
 
 setlocal foldtext=GetOrgFoldtext()
@@ -14,6 +14,10 @@ setlocal nosmartindent
 setlocal autoindent
 
 function! GetOrgIndent()
+    if g:org_indent == 0
+        return -1
+    endif
+
 python << EOF
 from orgmode._vim import indent_orgmode
 indent_orgmode()
