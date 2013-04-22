@@ -1369,6 +1369,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.5.0-0
+- fix CalendarAction is undefined (closes issue #142)
 - correct overlapping mappings in PluginDate
 - add test cases for overlapping mappings
 - add three dots after folded text, like in orgmode
