@@ -203,7 +203,7 @@ hi def link org_timestamp_inactive Comment
 " Ordered:
 " 1. list item
 " 1) list item
-syn match org_list_ordered "^\s\+\d[.)]\s"
+syn match org_list_ordered "^\s\+\d\+[.)]\s"
 hi def link org_list_ordered Identifier
 
 " Unordered:
