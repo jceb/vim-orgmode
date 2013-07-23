@@ -1,3 +1,7 @@
+" TODO do we really need a separate syntax file for the agenda?
+"      - Most of the stuff here is also in syntax.org
+"      - DRY!
+
 syn match org_todo_key /\[\zs[^]]*\ze\]/
 hi def link org_todo_key Identifier
 
