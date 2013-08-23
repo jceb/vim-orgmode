@@ -48,39 +48,41 @@ class Export(object):
 				echoe(u'Unable to find init script %s' % init_script)
 
 	@classmethod
-	def _export(cls, _format):
-		""" Export current file in out format
+	def _export(cls, format_):
+		"""Export current file to format_.
 
-		:flavor:	pdf or html
-		:returns:	return code
+		:format_:  pdf or html
+		:returns:  return code
 		"""
-		f = _format if _format == 'pdf' else 'html'
-		emacs = os.path.expandvars(os.path.expanduser( \
-				settings.get(u'org_export_emacs', u'/usr/bin/emacs')))
-		if os.path.exists(emacs):
-			cmd = [emacs, u'-nw', u'--batch', u'--visit=%s' \
-					% (vim.eval(u'expand("%:p")'), ), \
-					u'--funcall=org-export-as-%s' % f]
+		emacsbin = os.path.expandvars(os.path.expanduser(
+			settings.get(u'org_export_emacs', u'/usr/bin/emacs')))
+		if not os.path.exists(emacsbin):
+			echoe(u'Unable to find emacs binary %s' % emacsbin)
 
-			# source init script as well
-			init_script = cls._get_init_script()
-			if init_script:
-				cmd.extend(['--script', init_script])
-			p = subprocess.Popen(cmd, stdout=subprocess.PIPE, \
-					stderr=subprocess.PIPE)
-			p.wait()
-			if p.returncode != 0 or settings.get(u'org_export_verbose') == 1:
-				echom('\n'.join(p.communicate()))
+		# build the export command
+		cmd = [
+			emacsbin,
+			u'-nw',
+			u'--batch',
+			u'--visit=%s' % vim.eval(u'expand("%:p")'),
+			u'--funcall=org-export-as-%s' % format_
+		]
+		# source init script as well
+		init_script = cls._get_init_script()
+		if init_script:
+			cmd.extend(['--script', init_script])
 
-			return p.returncode
-		else:
-			echoe(u'Unable to find emacs binary %s' % emacs)
+		# export
+		p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		p.wait()
+
+		if p.returncode != 0 or settings.get(u'org_export_verbose') == 1:
+			echom('\n'.join(p.communicate()))
+		return p.returncode
 
 	@classmethod
 	def topdf(cls):
-		u"""
-		Export the current buffer as pdf using emacs orgmode.
-		"""
+		u"""Export the current buffer as pdf using emacs orgmode."""
 		ret = cls._export(u'pdf')
 		if ret != 0:
 			echoe(u'PDF export failed.')
@@ -89,14 +91,21 @@ class Export(object):
 
 	@classmethod
 	def tohtml(cls):
-		u"""
-		Export the current buffer as html using emacs orgmode.
-		"""
+		u"""Export the current buffer as html using emacs orgmode."""
 		ret = cls._export(u'html')
 		if ret != 0:
 			echoe(u'HTML export failed.')
 		else:
 			echom(u'Export successful: %s.%s' % (vim.eval(u'expand("%:r")'), 'html'))
+
+	@classmethod
+	def tolatex(cls):
+		u"""Export the current buffer as latex using emacs orgmode."""
+		ret = cls._export(u'latex')
+		if ret != 0:
+			echoe(u'latex export failed.')
+		else:
+			echom(u'Export successful: %s.%s' % (vim.eval(u'expand("%:r")'), 'tex'))
 
 	def register(self):
 		u"""
@@ -113,17 +122,24 @@ class Export(object):
 		settings.set(u'org_export_init_script', u'')
 
 		# to PDF
-		self.commands.append(Command(u'OrgExportToPDF', \
-				u':py ORGMODE.plugins[u"Export"].topdf()<CR>'))
-		self.keybindings.append(Keybinding(u'<localleader>ep',
-				Plug(u'OrgExportToPDF', self.commands[-1])))
+		self.commands.append(
+			Command(u'OrgExportToPDF', u':py ORGMODE.plugins[u"Export"].topdf()<CR>'))
+		self.keybindings.append(
+			Keybinding(u'<localleader>ep', Plug(u'OrgExportToPDF', self.commands[-1])))
 		self.menu + ActionEntry(u'To PDF (via Emacs)', self.keybindings[-1])
 
+		# to latex
+		self.commands.append(
+			Command(u'OrgExportToLaTeX', u':py ORGMODE.plugins[u"Export"].tolatex()<CR>'))
+		self.keybindings.append(
+			Keybinding(u'<localleader>el', Plug(u'OrgExportToLaTeX', self.commands[-1])))
+		self.menu + ActionEntry(u'To LaTeX (via Emacs)', self.keybindings[-1])
+
 		# to HTML
-		self.commands.append(Command(u'OrgExportToHTML', \
-				u':py ORGMODE.plugins[u"Export"].tohtml()<CR>'))
-		self.keybindings.append(Keybinding(u'<localleader>eh',
-				Plug(u'OrgExportToHTML', self.commands[-1])))
+		self.commands.append(
+			Command(u'OrgExportToHTML', u':py ORGMODE.plugins[u"Export"].tohtml()<CR>'))
+		self.keybindings.append(
+			Keybinding(u'<localleader>eh', Plug(u'OrgExportToHTML', self.commands[-1])))
 		self.menu + ActionEntry(u'To HTML (via Emacs)', self.keybindings[-1])
 
 # vim: set noexpandtab:
