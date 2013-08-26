@@ -224,8 +224,8 @@ hi def link org_list_unordered Identifier
 " Definitions:
 " - Term :: expl.
 " 1) Term :: expl.
-syntax region org_list_def start="^\s\+\d[.)]\s" end="::" keepend oneline contains=org_list_unordered
-syntax region org_list_def start="^\s\+[-*+]\s" end="::" keepend oneline contains=org_list_ordered
+syntax region org_list_def start="^\s\+\d[.)]\s" end=" ::" keepend oneline contains=org_list_unordered
+syntax region org_list_def start="^\s\+[-*+]\s" end=" ::" keepend oneline contains=org_list_ordered
 hi def link org_list_def Identifier
 
 " }}}
