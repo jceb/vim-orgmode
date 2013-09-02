@@ -201,3 +201,5 @@ endfunction""".encode(u'utf-8'))
 
 		# this is for the current file
 		vim.command(u"au orgmode InsertLeave <buffer> :py ORGMODE.plugins[u'TagsProperties'].realign_tags()".encode(u'utf-8'))
+
+# vim: set noexpandtab:
