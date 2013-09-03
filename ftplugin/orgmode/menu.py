@@ -2,7 +2,8 @@
 
 import vim
 
-from orgmode.keybinding import Keybinding, MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT
+from orgmode.keybinding import Command, Plug, Keybinding
+from orgmode.keybinding import MODE_ALL, MODE_NORMAL, MODE_VISUAL, MODE_INSERT
 
 def register_menu(f):
 	def r(*args, **kwargs):
@@ -20,6 +21,26 @@ def register_menu(f):
 				create(p.menu)
 		return p
 	return r
+
+
+def add_cmd_mapping_menu(plugin, name, function, key_mapping, menu_desrc):
+	u"""A helper function to create a vim command and keybinding and add these
+	to the menu for a given plugin.
+
+	:plugin: the plugin to operate on.
+	:name: the name of the vim command (and the name of the Plug)
+	:function: the actual python function which is called when executing the
+				vim command.
+	:key_mapping: the keymapping to execute the command.
+	:menu_desrc: the text which appears in the menu.
+	"""
+	cmd = Command(name, function)
+	keybinding = Keybinding(key_mapping, Plug(name, cmd))
+
+	plugin.commands.append(cmd)
+	plugin.keybindings.append(keybinding)
+	plugin.menu + ActionEntry(menu_desrc, keybinding)
+
 
 class Submenu(object):
 	u""" Submenu entry """
