@@ -7,7 +7,7 @@ import vim
 from orgmode._vim import ORGMODE, echom, insert_at_cursor, get_user_input
 from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
-from orgmode.menu import Submenu, ActionEntry
+from orgmode.menu import Submenu, ActionEntry, add_cmd_mapping_menu
 
 
 class Date(object):
@@ -266,25 +266,34 @@ class Date(object):
 
 		Key bindings and other initialization should be done here.
 		"""
-		self.keybindings.append(Keybinding(u'<localleader>sa',
-				Plug(u'OrgDateInsertTimestampActiveCmdLine',
-				u':py ORGMODE.plugins[u"Date"].insert_timestamp()<CR>')))
-		self.menu + ActionEntry(u'Timest&amp', self.keybindings[-1])
-
-		self.keybindings.append(Keybinding(u'<localleader>si',
-				Plug(u'OrgDateInsertTimestampInactiveCmdLine',
-					u':py ORGMODE.plugins[u"Date"].insert_timestamp(False)<CR>')))
-		self.menu + ActionEntry(u'Timestamp (&inactive)', self.keybindings[-1])
-
-		self.keybindings.append(Keybinding(u'<localleader>pa',
-				Plug(u'OrgDateInsertTimestampActiveWithCalendar',
-				u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar()<CR>')))
-		self.menu + ActionEntry(u'Timestamp with Calendar', self.keybindings[-1])
-
-		self.keybindings.append(Keybinding(u'<localleader>pi',
-				Plug(u'OrgDateInsertTimestampInactiveWithCalendar',
-					u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar(False)<CR>')))
-		self.menu + ActionEntry(u'Timestamp with Calendar(inactive)', self.keybindings[-1])
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgDateInsertTimestampActiveCmdLine',
+			key_mapping=u'<localleader>sa',
+			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp()<CR>',
+			menu_desrc=u'Timest&amp'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgDateInsertTimestampInactiveCmdLine',
+			key_mapping='<localleader>si',
+			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp(False)<CR>',
+			menu_desrc=u'Timestamp (&inactive)'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgDateInsertTimestampActiveWithCalendar',
+			key_mapping=u'<localleader>pa',
+			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar()<CR>',
+			menu_desrc=u'Timestamp with Calendar'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgDateInsertTimestampInactiveWithCalendar',
+			key_mapping=u'<localleader>pi',
+			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar(False)<CR>',
+			menu_desrc=u'Timestamp with Calendar(inactive)'
+		)
 
 		submenu = self.menu + Submenu(u'Change &Date')
 		submenu + ActionEntry(u'Day &Earlier', u'<C-x>', u'<C-x>')
