@@ -9,7 +9,7 @@ import vim
 from orgmode._vim import ORGMODE, get_bufnumber, get_bufname, echoe
 from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug, Command
-from orgmode.menu import Submenu, ActionEntry
+from orgmode.menu import Submenu, ActionEntry, add_cmd_mapping_menu
 
 
 class Agenda(object):
@@ -244,39 +244,26 @@ class Agenda(object):
 
 		Key bindings and other initialization should be done here.
 		"""
-		cmd = Command(
-			u"OrgAgendaTodo",
-			u':py ORGMODE.plugins[u"Agenda"].list_all_todos()<CR>'
+		add_cmd_mapping_menu(
+			self,
+			name=u"OrgAgendaTodo",
+			function=u':py ORGMODE.plugins[u"Agenda"].list_all_todos()<CR>',
+			key_mapping=u'<localleader>cat',
+			menu_desrc=u'Agenda for all TODOs'
 		)
-		keybinding = Keybinding(
-			u'<localleader>cat', Plug(u'OrgAgendaTodo', cmd)
+		add_cmd_mapping_menu(
+			self,
+			name=u"OrgAgendaWeek",
+			function=u':py ORGMODE.plugins[u"Agenda"].list_next_week()<CR>',
+			key_mapping=u'<localleader>caa',
+			menu_desrc=u'Agenda for the week'
 		)
-		self.commands.append(cmd)
-		self.keybindings.append(keybinding)
-		self.menu + ActionEntry(u'Agenda for all TODOs', keybinding)
-
-		cmd = Command(
-			u"OrgAgendaWeek",
-			u':py ORGMODE.plugins[u"Agenda"].list_next_week()<CR>'
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgAgendaTimeline',
+			function=u':py ORGMODE.plugins[u"Agenda"].list_timeline()<CR>',
+			key_mapping=u'<localleader>caL',
+			menu_desrc=u'Timeline for this buffer'
 		)
-		keybinding = Keybinding(
-			u'<localleader>caa', Plug(u'OrgAgendaWeek', cmd)
-		)
-		self.commands.append(cmd)
-		self.keybindings.append(keybinding)
-		self.menu + ActionEntry(u'Agenda for the week', keybinding)
-
-
-		cmd = Command(
-			u'OrgAgendaTimeline',
-			u':py ORGMODE.plugins[u"Agenda"].list_timeline()<CR>'
-		)
-		keybinding = Keybinding(
-			u'<localleader>caL',
-			Plug(u'OrgAgendaTimeline', cmd)
-		)
-		self.commands.append(cmd)
-		self.keybindings.append(keybinding)
-		self.menu + ActionEntry(u'Timeline for this buffer', keybinding)
 
 # vim: set noexpandtab:
