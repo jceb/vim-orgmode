@@ -6,7 +6,7 @@ import subprocess
 import vim
 
 from orgmode._vim import ORGMODE, echoe, echom
-from orgmode.menu import Submenu, ActionEntry
+from orgmode.menu import Submenu, ActionEntry, add_cmd_mapping_menu
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode import settings
 
@@ -108,38 +108,38 @@ class Export(object):
 			echom(u'Export successful: %s.%s' % (vim.eval(u'expand("%:r")'), 'tex'))
 
 	def register(self):
-		u"""
-		Registration and keybindings.
-		"""
+		u"""Registration and keybindings."""
 
 		# path to emacs executable
 		settings.set(u'org_export_emacs', u'/usr/bin/emacs')
-
 		# verbose output for export
 		settings.set(u'org_export_verbose', 0)
-
 		# allow the user to define an initialization script
 		settings.set(u'org_export_init_script', u'')
 
 		# to PDF
-		self.commands.append(
-			Command(u'OrgExportToPDF', u':py ORGMODE.plugins[u"Export"].topdf()<CR>'))
-		self.keybindings.append(
-			Keybinding(u'<localleader>ep', Plug(u'OrgExportToPDF', self.commands[-1])))
-		self.menu + ActionEntry(u'To PDF (via Emacs)', self.keybindings[-1])
-
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgExportToPDF',
+			function=u':py ORGMODE.plugins[u"Export"].topdf()<CR>',
+			key_mapping=u'<localleader>ep',
+			menu_desrc=u'To PDF (via Emacs)'
+		)
 		# to latex
-		self.commands.append(
-			Command(u'OrgExportToLaTeX', u':py ORGMODE.plugins[u"Export"].tolatex()<CR>'))
-		self.keybindings.append(
-			Keybinding(u'<localleader>el', Plug(u'OrgExportToLaTeX', self.commands[-1])))
-		self.menu + ActionEntry(u'To LaTeX (via Emacs)', self.keybindings[-1])
-
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgExportToLaTeX',
+			function=u':py ORGMODE.plugins[u"Export"].tolatex()<CR>',
+			key_mapping=u'<localleader>el',
+			menu_desrc=u'To LaTeX (via Emacs)'
+		)
 		# to HTML
-		self.commands.append(
-			Command(u'OrgExportToHTML', u':py ORGMODE.plugins[u"Export"].tohtml()<CR>'))
-		self.keybindings.append(
-			Keybinding(u'<localleader>eh', Plug(u'OrgExportToHTML', self.commands[-1])))
-		self.menu + ActionEntry(u'To HTML (via Emacs)', self.keybindings[-1])
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgExportToHTML',
+			function=u':py ORGMODE.plugins[u"Export"].tohtml()<CR>',
+			key_mapping=u'<localleader>eh',
+			menu_desrc=u'To HTML (via Emacs)'
+		)
 
 # vim: set noexpandtab:
