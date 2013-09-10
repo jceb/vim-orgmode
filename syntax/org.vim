@@ -262,13 +262,13 @@ hi def link org_comment Comment
 " - the non-standard `code' markup is also supported
 " - =code= and ~verbatim~ are also supported as block-level markup, see below.
 " Ref: http://orgmode.org/manual/Emphasis-and-monospace.html
-
-syntax match org_bold  '\(\_^\|\s\|[({]\)\zs\*[^ ,'"]\(.\{-}[^ ,'"]\)\?\*\ze\(\_$\|\s\|[)}\.;!\-\\:]\)'
-syntax match org_italic  '\(\_^\|\s\|[({]\)\zs\/[^ ,'"\/]\(.\{-}[^ ,'"]\)\?\/\ze\(\_$\|\s\|[)}\.;!\-\\:]\)'
-syntax match org_underline  '\(\_^\|\s\|[({]\)\zs_[^ ,'"]\(.\{-}[^ ,'"]\)\?_\ze\(\_$\|\s\|[)}\.;!\-\\:]\)'
-syntax match org_code  '\(\_^\|\s\|[({]\)\zs=[^ ,'"]\(.\{-}[^ ,'"]\)\?=\ze\(\_$\|\s\|[)}\.;!\-\\:]\)'
-syntax match org_code  '\(\_^\|\s\|[({]\)\zs`[^ ,'"]\(.\{-}[^ ,'"]\)\?`\ze\(\_$\|\s\|[)}\.;!\-\\:]\)'
-syntax match org_verbatim  '\(\_^\|\s\|[({]\)\zs\~[^ ,'"]\(.\{-}[^ ,'"]\)\?\~\ze\(\_$\|\s\|[)}\.;!\-\\:]\)'
+"syntax match org_bold /\*[^ ]*\*/
+syntax region org_bold      start="\S\@<= \*\| \*\S\@="   end="\S\@<=\*\|\*\S\@="  keepend oneline
+syntax region org_italic    start="\S\@<= \/\| \/\S\@="   end="\S\@<=\/\|\/\S\@="  keepend oneline
+syntax region org_underline start="\S\@<=_\|_\S\@="       end="\S\@<=_\|_\S\@="    keepend oneline
+syntax region org_code      start="\S\@<==\|=\S\@="       end="\S\@<==\|=\S\@="    keepend oneline
+syntax region org_code      start="\S\@<=`\|`\S\@="       end="\S\@<='\|'\S\@="    keepend oneline
+syntax region org_verbatim  start="\S\@<=\~\|\~\S\@="     end="\S\@<=\~\|\~\S\@="  keepend oneline
 
 hi def org_bold      term=bold      cterm=bold      gui=bold
 hi def org_italic    term=italic    cterm=italic    gui=italic
