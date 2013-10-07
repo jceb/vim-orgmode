@@ -88,7 +88,7 @@ class Agenda(object):
 
 		# load the agenda files into buffers
 		for agenda_file in agenda_files:
-			vim.command((u'badd %s' % agenda_file).encode(u'utf-8'))
+			vim.command((u'badd %s' % agenda_file.replace(" ", "\ ")).encode(u'utf-8'))
 
 		# determine the buffer nr of the agenda files
 		agenda_nums = [get_bufnumber(fn) for fn in agenda_files]
