@@ -270,28 +270,28 @@ class Date(object):
 			self,
 			name=u'OrgDateInsertTimestampActiveCmdLine',
 			key_mapping=u'<localleader>sa',
-			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp()<CR>',
+			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp()',
 			menu_desrc=u'Timest&amp'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateInsertTimestampInactiveCmdLine',
 			key_mapping='<localleader>si',
-			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp(False)<CR>',
+			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp(False)',
 			menu_desrc=u'Timestamp (&inactive)'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateInsertTimestampActiveWithCalendar',
 			key_mapping=u'<localleader>pa',
-			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar()<CR>',
+			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar()',
 			menu_desrc=u'Timestamp with Calendar'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateInsertTimestampInactiveWithCalendar',
 			key_mapping=u'<localleader>pi',
-			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar(False)<CR>',
+			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar(False)',
 			menu_desrc=u'Timestamp with Calendar(inactive)'
 		)
 
