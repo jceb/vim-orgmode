@@ -960,7 +960,7 @@ Commands in the agenda buffer~
 
   View/Go to org file~
                                                            *orgguide-agenda-Tab*
-    <Tab>               Go to the original location of the idem in an
+    <Tab>               Go to the original location of the item in an
                         alternative window.
 
                                                             *orgguide-agenda-CR*
