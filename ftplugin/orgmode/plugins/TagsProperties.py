@@ -159,7 +159,7 @@ class TagsProperties(object):
 
 		cmd = Command(
 			u'OrgSetTags',
-			u':py ORGMODE.plugins[u"TagsProperties"].set_tags()<CR>')
+			u':py ORGMODE.plugins[u"TagsProperties"].set_tags()')
 		self.commands.append(cmd)
 		keybinding = Keybinding(
 			u'<localleader>st',
@@ -169,7 +169,7 @@ class TagsProperties(object):
 
 		cmd = Command(
 			u'OrgFindTags',
-			u':py ORGMODE.plugins[u"TagsProperties"].find_tags()<CR>')
+			u':py ORGMODE.plugins[u"TagsProperties"].find_tags()')
 		self.commands.append(cmd)
 		keybinding = Keybinding(
 			u'<localleader>ft',

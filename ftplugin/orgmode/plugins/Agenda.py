@@ -247,21 +247,21 @@ class Agenda(object):
 		add_cmd_mapping_menu(
 			self,
 			name=u"OrgAgendaTodo",
-			function=u':py ORGMODE.plugins[u"Agenda"].list_all_todos()<CR>',
+			function=u':py ORGMODE.plugins[u"Agenda"].list_all_todos()',
 			key_mapping=u'<localleader>cat',
 			menu_desrc=u'Agenda for all TODOs'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u"OrgAgendaWeek",
-			function=u':py ORGMODE.plugins[u"Agenda"].list_next_week()<CR>',
+			function=u':py ORGMODE.plugins[u"Agenda"].list_next_week()',
 			key_mapping=u'<localleader>caa',
 			menu_desrc=u'Agenda for the week'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgAgendaTimeline',
-			function=u':py ORGMODE.plugins[u"Agenda"].list_timeline()<CR>',
+			function=u':py ORGMODE.plugins[u"Agenda"].list_timeline()',
 			key_mapping=u'<localleader>caL',
 			menu_desrc=u'Timeline for this buffer'
 		)
