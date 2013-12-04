@@ -208,24 +208,30 @@ hi def link org_timestamp_inactive Comment
 " }}}
 " Lists: {{{
 
-" Ordered:
+" Ordered Lists:
 " 1. list item
 " 1) list item
-syn match org_list_ordered "^\s\+\d\+[.)]\s"
+syn match org_list_ordered "^\s*\d\+[.)]\s"
 hi def link org_list_ordered Identifier
 
-" Unordered:
+" Unordered Lists:
 " - list item
 " * list item
 " + list item
-syn match org_list_unordered "^\s\+[-*+]\s"
+" + and - don't need a whitespace prefix
+syn match org_list_unordered "^\s*[-+]\s"
+" * must have a whitespace prefix, otherwise it's a heading
+syn match org_list_unordered "^\s\+\*\s"
 hi def link org_list_unordered Identifier
 
-" Definitions:
+" Definition Lists:
 " - Term :: expl.
 " 1) Term :: expl.
-syntax region org_list_def start="^\s\+\d[.)]\s" end=" ::" keepend oneline contains=org_list_unordered
-syntax region org_list_def start="^\s\+[-*+]\s" end=" ::" keepend oneline contains=org_list_ordered
+syntax region org_list_def start="^\s*\d[.)]\s" end=" ::" keepend oneline contains=org_list_unordered
+" + and - don't need a whitespace prefix
+syntax region org_list_def start="^\s*[-+]\s" end=" ::" keepend oneline contains=org_list_ordered
+" * must have a whitespace prefix, otherwise it's a heading
+syntax region org_list_def start="^\s\+\*\s" end=" ::" keepend oneline contains=org_list_ordered
 hi def link org_list_def Identifier
 
 " }}}
