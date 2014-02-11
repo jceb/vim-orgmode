@@ -1019,8 +1019,14 @@ If set, Emacs' export output is displayed.
 
                                                       *g:org_export_init_script*
 Default: ""
-An initialization script can be specified. This allows the user to customize
-Emacs' org-mode settings without having to patch the defaults config. Example:
+For the export via Emacs a separate configuration file can be sourced to
+determine Emacs' export behavior. Examples:
+
+Source the ~/.emacs configuration file:
+>
+  :let g:org_export_init_script="~/.emacs"
+<
+Or source a different file:
 >
   :let g:org_export_init_script="~/.emacs_org_init"
 <
