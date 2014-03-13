@@ -30,7 +30,7 @@ class EditCheckbox(object):
 	def new_checkbox(cls, below=None):
 		d = ORGMODE.get_document()
 		h = d.current_heading()
-		if h == None:
+		if h is None:
 			return
 		# init checkboxes for current heading
 		h.init_checkboxes()
@@ -70,7 +70,7 @@ class EditCheckbox(object):
 		d = ORGMODE.get_document()
 		current_heading = d.current_heading()
 		# init checkboxes for current heading
-		if current_heading == None:
+		if current_heading is None:
 			return
 		current_heading = current_heading.init_checkboxes()
 
