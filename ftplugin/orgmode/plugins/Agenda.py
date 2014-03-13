@@ -8,8 +8,8 @@ import vim
 
 from orgmode._vim import ORGMODE, get_bufnumber, get_bufname, echoe
 from orgmode import settings
-from orgmode.keybinding import Keybinding, Plug
-from orgmode.menu import Submenu, ActionEntry
+from orgmode.keybinding import Keybinding, Plug, Command
+from orgmode.menu import Submenu, ActionEntry, add_cmd_mapping_menu
 
 
 class Agenda(object):
@@ -88,7 +88,7 @@ class Agenda(object):
 
 		# load the agenda files into buffers
 		for agenda_file in agenda_files:
-			vim.command((u'badd %s' % agenda_file).encode(u'utf-8'))
+			vim.command((u'badd %s' % agenda_file.replace(" ", "\ ")).encode(u'utf-8'))
 
 		# determine the buffer nr of the agenda files
 		agenda_nums = [get_bufnumber(fn) for fn in agenda_files]
@@ -244,20 +244,26 @@ class Agenda(object):
 
 		Key bindings and other initialization should be done here.
 		"""
-		self.keybindings.append(Keybinding(u'<localleader>cat',
-				Plug(u'OrgAgendaTodo',
-				u':py ORGMODE.plugins[u"Agenda"].list_all_todos()<CR>')))
-		self.menu + ActionEntry(u'Agenda for all TODOs', self.keybindings[-1])
-
-		self.keybindings.append(Keybinding(u'<localleader>caa',
-				Plug(u'OrgAgendaWeek',
-				u':py ORGMODE.plugins[u"Agenda"].list_next_week()<CR>')))
-		self.menu + ActionEntry(u'Agenda for the week', self.keybindings[-1])
-
-		self.keybindings.append(Keybinding(u'<localleader>caL',
-				Plug(u'OrgAgendaTimeline',
-				u':py ORGMODE.plugins[u"Agenda"].list_timeline()<CR>')))
-		self.menu + ActionEntry(u'Timeline for this buffer',
-				self.keybindings[-1])
+		add_cmd_mapping_menu(
+			self,
+			name=u"OrgAgendaTodo",
+			function=u':py ORGMODE.plugins[u"Agenda"].list_all_todos()',
+			key_mapping=u'<localleader>cat',
+			menu_desrc=u'Agenda for all TODOs'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u"OrgAgendaWeek",
+			function=u':py ORGMODE.plugins[u"Agenda"].list_next_week()',
+			key_mapping=u'<localleader>caa',
+			menu_desrc=u'Agenda for the week'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgAgendaTimeline',
+			function=u':py ORGMODE.plugins[u"Agenda"].list_timeline()',
+			key_mapping=u'<localleader>caL',
+			menu_desrc=u'Timeline for this buffer'
+		)
 
 # vim: set noexpandtab:

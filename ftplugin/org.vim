@@ -4,7 +4,7 @@
 " @Created      : 2010-10-03
 " @Last Modified: Tue 13. Sep 2011 20:52:57 +0200 CEST
 " @Revision     : 0.4
-" @vi           : ft=vim:tw=80:sw=4:ts=4
+" vi: ft=vim:tw=80:sw=4:ts=4:fdm=marker
 
 if ! has('python') || v:version < 703
 	echoerr "Unable to start orgmode. Orgmode depends on Vim >= 7.3 with Python support complied in."
@@ -13,7 +13,7 @@ endif
 
 if ! exists("b:did_ftplugin")
 	" default emacs settings
-	setlocal comments-=s1:/*,mb:*,ex:*/ conceallevel=2 concealcursor=nc tabstop=8 shiftwidth=8 commentstring=#\ %s
+	setlocal comments-=s1:/*,mb:*,ex:*/ conceallevel=2 concealcursor="nc" tabstop=8 shiftwidth=8 commentstring=#\ %s
 
 	" register keybindings if they don't have been registered before
 	if exists("g:loaded_org")
@@ -114,13 +114,12 @@ let g:tagbar_type_org = {
 " * Taglist integration {{{
 
 " taglist support for org-mode
-if !exists('g:Tlist_Ctags_Cmd')
-	finish
+if exists('g:Tlist_Ctags_Cmd')
+	" Pass parameters to taglist
+	let g:tlist_org_settings = 'org;s:section;h:hyperlinks'
+	let g:Tlist_Ctags_Cmd .= ' --options=' . expand('<sfile>:p:h') . '/org.cnf '
 endif
 
-" Pass parameters to taglist
-let g:tlist_org_settings = 'org;s:section;h:hyperlinks'
-let g:Tlist_Ctags_Cmd .= ' --options=' . expand('<sfile>:p:h') . '/org.cnf '
 " }}}
 " * Calendar.vim integration {{{
 

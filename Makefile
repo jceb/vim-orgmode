@@ -62,7 +62,7 @@ docs: documentation
 # generate a test coverage report for all python files
 coverage:
 	@echo ">>> Coverage depends on the package python-nose and python-coverage, make sure they are installed!"
-	cd tests && nosetests --with-coverage --cover-html .
+	cd tests && nosetests2 --with-coverage --cover-html .
 
 # run a static code checker
 lint:

@@ -20,6 +20,7 @@ import test_plugin_navigator
 import test_plugin_show_hide
 import test_plugin_tags_properties
 import test_plugin_todo
+import test_plugin_mappings
 
 import unittest
 
@@ -48,6 +49,7 @@ if __name__ == '__main__':
 	tests.addTests(test_plugin_show_hide.suite())
 	tests.addTests(test_plugin_tags_properties.suite())
 	tests.addTests(test_plugin_todo.suite())
+	tests.addTests(test_plugin_mappings.suite())
 
 	runner = unittest.TextTestRunner()
 	runner.run(tests)

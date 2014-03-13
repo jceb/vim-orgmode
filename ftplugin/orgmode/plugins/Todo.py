@@ -11,6 +11,7 @@ from orgmode.keybinding import Keybinding, Plug
 # temporary todo states for differnent orgmode buffers
 ORGTODOSTATES = {}
 
+
 def split_access_key(t):
 	u"""
 	:t:		todo state
@@ -23,6 +24,7 @@ def split_access_key(t):
 	idx = t.find(u'(')
 	v, k = ((t[:idx], t[idx + 1:-1]) if t[idx + 1:-1] else (t, None)) if idx != -1 else (t, None)
 	return (v, k)
+
 
 class Todo(object):
 	u"""
@@ -57,6 +59,9 @@ class Todo(object):
 	def _get_next_state(cls, current_state, all_states,
 			direction=Direction.FORWARD, interactive=False, next_set=False):
 		u"""
+		WTF is going on here!!!
+		FIXME: reimplement this in a clean way :)
+
 		:current_state:		the current todo state
 		:all_states:		a list containing all todo states within sublists.
 							The todo states may contain access keys
@@ -256,7 +261,6 @@ class Todo(object):
 
 		for l in xrange(0, len(all_states)):
 			res = u''
-			did_done = False
 			for j in xrange(0, 2):
 				if j < len(all_states[l]):
 					for i in all_states[l][j]:

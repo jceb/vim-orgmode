@@ -155,16 +155,32 @@ class TagsProperties(object):
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
 		settings.set(u'org_tag_column', u'77')
-
 		settings.set(u'org_tag_completion_ignorecase', int(vim.eval(u'&ignorecase')))
 
-		self.keybindings.append(Keybinding(u'<localleader>st', Plug(u'OrgSetTags', u':py ORGMODE.plugins[u"TagsProperties"].set_tags()<CR>')))
-		self.menu + ActionEntry(u'Set &Tags', self.keybindings[-1])
+		cmd = Command(
+			u'OrgSetTags',
+			u':py ORGMODE.plugins[u"TagsProperties"].set_tags()')
+		self.commands.append(cmd)
+		keybinding = Keybinding(
+			u'<localleader>st',
+			Plug(u'OrgSetTags', cmd))
+		self.keybindings.append(keybinding)
+		self.menu + ActionEntry(u'Set &Tags', keybinding)
 
-		self.keybindings.append(Keybinding(u'<localleader>ft', Plug(u'OrgFindTags', u':py ORGMODE.plugins[u"TagsProperties"].find_tags()<CR>')))
-		self.menu + ActionEntry(u'&Find Tags', self.keybindings[-1])
+		cmd = Command(
+			u'OrgFindTags',
+			u':py ORGMODE.plugins[u"TagsProperties"].find_tags()')
+		self.commands.append(cmd)
+		keybinding = Keybinding(
+			u'<localleader>ft',
+			Plug(u'OrgFindTags', cmd))
+		self.keybindings.append(keybinding)
+		self.menu + ActionEntry(u'&Find Tags', keybinding)
 
-		self.commands.append(Command(u'OrgTagsRealign', u":py ORGMODE.plugins[u'TagsProperties'].realign_all_tags()"))
+		cmd = Command(
+			u'OrgTagsRealign',
+			u":py ORGMODE.plugins[u'TagsProperties'].realign_all_tags()")
+		self.commands.append(cmd)
 
 		# workaround to align tags when user is leaving insert mode
 		vim.command(u"""function Org_complete_tags(ArgLead, CmdLine, CursorPos)
@@ -185,3 +201,5 @@ endfunction""".encode(u'utf-8'))
 
 		# this is for the current file
 		vim.command(u"au orgmode InsertLeave <buffer> :py ORGMODE.plugins[u'TagsProperties'].realign_tags()".encode(u'utf-8'))
+
+# vim: set noexpandtab:
