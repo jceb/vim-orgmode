@@ -2,7 +2,7 @@
 
 import vim
 from orgmode._vim import echo, echom, echoe, ORGMODE, apply_count, repeat, insert_at_cursor, indent_orgmode
-from orgmode.menu import Submenu, Separator, ActionEntry
+from orgmode.menu import Submenu, Separator, ActionEntry, add_cmd_mapping_menu
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode.liborgmode.checkboxes import Checkbox
 
@@ -206,20 +206,33 @@ class EditCheckbox(object):
 
 		Key bindings and other initialization should be done here.
 		"""
-		self.keybindings.append(Keybinding(u'<localleader>cN',
-				Plug(u'OrgEditCheckboxNewCheckboxAbove', u':py ORGMODE.plugins[u"EditCheckbox"].new_checkbox()<CR>')))
-		self.menu + ActionEntry(u'New Checkbox Above', self.keybindings[-1])
-		self.keybindings.append(Keybinding(u'<localleader>cn',
-				Plug(u'OrgEditCheckboxNewCheckboxBelow', u':py ORGMODE.plugins[u"EditCheckbox"].new_checkbox(below=True)<CR>')))
-		self.menu + ActionEntry(u'New Checkbox Below', self.keybindings[-1])
-		self.keybindings.append(Keybinding(u'<localleader>cc',
-				# Plug(u'OrgEditCheckboxToggle', u':silent! py ORGMODE.plugins[u"EditCheckbox"].toggle()<CR>')))
-				Plug(u'OrgEditCheckboxToggle', u':py ORGMODE.plugins[u"EditCheckbox"].toggle()<CR>')))
-		self.menu + ActionEntry(u'Toggle Checkbox', self.keybindings[-1])
-
-		self.keybindings.append(Keybinding(u'<localleader>c#',
-				# Plug(u'OrgEditCheckboxUpdateSubtasks', u':silent! py ORGMODE.plugins[u"EditCheckbox"].update_checkboxes_status()<CR>')))
-				Plug(u'OrgEditCheckboxUpdateSubtasks', u':py ORGMODE.plugins[u"EditCheckbox"].update_checkboxes_status()<CR>')))
-		self.menu + ActionEntry(u'Update Subtasks', self.keybindings[-1])
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgCheckBoxNewAbove',
+			function=u':py ORGMODE.plugins[u"EditCheckbox"].new_checkbox()<CR>',
+			key_mapping=u'<localleader>cN',
+			menu_desrc=u'New CheckBox Above'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgCheckBoxNewBelow',
+			function=u':py ORGMODE.plugins[u"EditCheckbox"].new_checkbox(below=True)<CR>',
+			key_mapping=u'<localleader>cn',
+			menu_desrc=u'New CheckBox Below'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgCheckBoxToggle',
+			function=u':silent! py ORGMODE.plugins[u"EditCheckbox"].toggle()<CR>',
+			key_mapping=u'<localleader>cc',
+			menu_desrc=u'Toggle Checkbox'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgCheckBoxUpdate',
+			function=u':silent! py ORGMODE.plugins[u"EditCheckbox"].update_checkboxes_status()<CR>',
+			key_mapping=u'<localleader>c#',
+			menu_desrc=u'Update Subtasks'
+		)
 
 # vim: set noexpandtab:
