@@ -211,7 +211,7 @@ hi def link org_timestamp_inactive Comment
 " Ordered Lists:
 " 1. list item
 " 1) list item
-syn match org_list_ordered "^\s*\d\+[.)]\s"
+syn match org_list_ordered "^\s*\d\+[.)]\s" contains=org_checkbox
 hi def link org_list_ordered Identifier
 
 " Unordered Lists:
@@ -219,9 +219,9 @@ hi def link org_list_ordered Identifier
 " * list item
 " + list item
 " + and - don't need a whitespace prefix
-syn match org_list_unordered "^\s*[-+]\s"
+syn match org_list_unordered "^\s*[-+]\s" contains=org_checkbox
 " * must have a whitespace prefix, otherwise it's a heading
-syn match org_list_unordered "^\s\+\*\s"
+syn match org_list_unordered "^\s\+\*\s" contains=org_checkbox
 hi def link org_list_unordered Identifier
 
 " Definition Lists:
@@ -234,6 +234,10 @@ syntax region org_list_def start="^\s*[-+]\s" end=" ::" keepend oneline contains
 syntax region org_list_def start="^\s\+\*\s" end=" ::" keepend oneline contains=org_list_ordered
 hi def link org_list_def Identifier
 
+" }}}
+" Checkboxes: {{{
+syntax match org_checkbox " \[[X -]\] " contained
+hi def org_checkbox term=bold cterm=bold gui=bold
 " }}}
 " Deadline And Schedule: {{{
 syn match org_deadline_scheduled /^\s*\(DEADLINE\|SCHEDULED\):/
