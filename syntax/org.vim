@@ -1,4 +1,5 @@
-" Headings
+" Headings: {{{
+"" Load Settings: {{{
 if !exists('g:org_heading_highlight_colors')
 	let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
 endif
@@ -15,7 +16,7 @@ endif
 unlet! s:i s:j s:contains
 let s:i = 1
 let s:j = len(g:org_heading_highlight_colors)
-let s:contains = ' contains=org_timestamp,org_timestamp_inactive'
+let s:contains = ' contains=org_timestamp,org_timestamp_inactive,org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all'
 if g:org_heading_shade_leading_stars == 1
 	let s:contains = s:contains . ',org_shade_stars'
 	syntax match org_shade_stars /^\*\{2,\}/me=e-1 contained
@@ -278,6 +279,17 @@ syntax region org_verbatim  start="\S\@<=\~\|\~\S\@="     end="\S\@<=\~\|\~\S\@=
 hi def org_bold      term=bold      cterm=bold      gui=bold
 hi def org_italic    term=italic    cterm=italic    gui=italic
 hi def org_underline term=underline cterm=underline gui=underline
+"
+" Lists
+" syntax region org_list_dt start=/^\s*[\+-]\s/ end="::" keepend oneline
+syntax match  org_list_bullet   /^\s*[\+-]\s/ nextgroup=org_list_item
+syntax match  org_list_item     /.*$/ contained contains=org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all,org_list_checkbox,org_list_dt
+syntax match  org_list_checkbox /\[[ X-]]/ contained
+syntax match org_list_dt /.*\s\+::/ contained
+hi def link org_list_bullet Statement
+hi def link org_list_dt     PreProc
+hi def link org_list_checkbox     PreProc
+
 " }}}
 " Block Delimiters: {{{
 syntax case ignore
@@ -310,4 +322,15 @@ syn match org_property_value /:\s\zs.*/ contained
 hi def link org_properties_delimiter PreProc
 hi def link org_property             Statement
 hi def link org_property_value       Constant
+" Break down subtasks
+syntax match org_subtask_number /\[\d*\/\d*]/ contained
+syntax match org_subtask_percent /\[\d*%\]/ contained
+syntax match org_subtask_number_all /\[\(\d\+\)\/\1\]/ contained
+syntax match org_subtask_percent_100 /\[100%\]/ contained
+
+hi def link org_subtask_number String
+hi def link org_subtask_percent String
+hi def link org_subtask_percent_100 Identifier
+hi def link org_subtask_number_all Identifier
+
 " }}}
