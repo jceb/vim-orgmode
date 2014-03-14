@@ -24,7 +24,7 @@ OrderListType = ['%d.', '%d']
 # - [X] checkbox item
 # - [ ]
 REGEX_CHECKBOX = re.compile(
-		r'^(?P<level>\s+)(?P<type>[%s])\s*(?P<status>\[.\])\s*(?P<title>.*)$'
+		r'^(?P<level>\s*)(?P<type>[%s])\s*(?P<status>\[.\])\s*(?P<title>.*)$'
 		% (''.join(UnOrderListType)), flags=re.U | re.L)
 
 class Checkbox(DomObj):
