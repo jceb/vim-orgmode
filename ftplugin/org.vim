@@ -13,7 +13,10 @@ endif
 
 if ! exists("b:did_ftplugin")
 	" default emacs settings
-	setlocal comments-=s1:/*,mb:*,ex:*/ conceallevel=2 concealcursor="nc" tabstop=8 shiftwidth=8 commentstring=#\ %s
+	setlocal comments-=s1:/*,mb:*,ex:*/
+	setlocal commentstring=#%s
+	setlocal conceallevel=2 concealcursor="nc"
+	setlocal tabstop=8 shiftwidth=8
 
 	" register keybindings if they don't have been registered before
 	if exists("g:loaded_org")
