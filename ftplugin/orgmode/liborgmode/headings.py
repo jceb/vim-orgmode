@@ -15,15 +15,8 @@ from orgmode.liborgmode.base import MultiPurposeList, flatten_list, Direction, g
 from orgmode.liborgmode.orgdate import OrgTimeRange
 from orgmode.liborgmode.orgdate import get_orgdate
 from orgmode.liborgmode.checkboxes import Checkbox, CheckboxList
-from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT
+from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT, REGEX_HEADING, REGEX_TAG, REGEX_TODO
 
-
-REGEX_HEADING = re.compile(
-		r'^(?P<level>\*+)(\s+(?P<title>.*?))?\s*(\s(?P<tags>:[\w_:@]+:))?$',
-		flags=re.U | re.L)
-REGEX_TAGS = re.compile(r'^\s*((?P<title>[^\s]*?)\s+)?(?P<tags>:[\w_:@]+:)$',
-		flags=re.U | re.L)
-REGEX_TODO = re.compile(r'^[^\s]*$')
 
 class Heading(DomObj):
 	u""" Structural heading object """
@@ -412,7 +405,7 @@ class Heading(DomObj):
 				tags = filter(test_not_empty, r[u'tags'].split(u':')) if r[u'tags'] else []
 
 				# if there is just one or no word in the heading, redo the parsing
-				mt = REGEX_TAGS.match(r[u'title'])
+				mt = REGEX_TAG.match(r[u'title'])
 				if not tags and mt:
 					r = mt.groupdict()
 					tags = filter(test_not_empty, r[u'tags'].split(u':')) if r[u'tags'] else []
@@ -458,9 +451,11 @@ class Heading(DomObj):
 		:total:	total # of top level checkboxes
 		:on:	# of top level checkboxes which are on
 		"""
-		if not total:
-			return
-		percent = (on * 100) / total
+		if total != 0:
+			percent = (on * 100) / total
+		else:
+			percent = 0
+
 		count = "%d/%d" % (on, total)
 		self.title = REGEX_SUBTASK.sub("[%s]" % (count), self.title)
 		self.title = REGEX_SUBTASK_PERCENT.sub("[%d%%]" % (percent), self.title)

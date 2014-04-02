@@ -14,18 +14,8 @@ import vim
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list
 from orgmode.liborgmode.orgdate import OrgTimeRange
 from orgmode.liborgmode.orgdate import get_orgdate
-from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT
+from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT, REGEX_HEADING, REGEX_CHECKBOX
 
-UnOrderListType = ['-', '+', '*']
-OrderListType = ['%d.', '%d']
-
-# checkbox regex:
-#   - [ ] checkbox item
-# - [X] checkbox item
-# - [ ]
-REGEX_CHECKBOX = re.compile(
-		r'^(?P<level>\s*)(?P<type>[%s])\s*(?P<status>\[.\])\s*(?P<title>.*)$'
-		% (''.join(UnOrderListType)), flags=re.U | re.L)
 
 class Checkbox(DomObj):
 	u""" Structural checkbox object """
@@ -59,8 +49,11 @@ class Checkbox(DomObj):
 			self.status = status
 
 	def __unicode__(self):
-		res = u' ' * self.level + self.type + u' ' + self.status \
-								+ u' ' + self.title
+		if self.status is None:
+			res = u' ' * self.level + self.type + u' ' + self.title
+		else:
+			res = u' ' * self.level + self.type + u' ' + self.status \
+									+ u' ' + self.title
 
 		return res
 
@@ -110,6 +103,9 @@ class Checkbox(DomObj):
 		:returns:	The newly created checkbox
 		"""
 		def parse_title(heading_line):
+			# checkbox is not heading
+			if REGEX_HEADING.match(heading_line) is not None:
+				return None
 			m = REGEX_CHECKBOX.match(heading_line)
 			if m:
 				r = m.groupdict()
@@ -135,9 +131,11 @@ class Checkbox(DomObj):
 		return nc
 
 	def update_subtasks(self, total=0, on=0):
-		if not total:
-			return
-		percent = (on * 100) / total
+		if total != 0:
+			percent = (on * 100) / total
+		else:
+			percent = 0
+
 		count = "%d/%d" % (on, total)
 		self.title = REGEX_SUBTASK.sub("[%s]" % (count), self.title)
 		self.title = REGEX_SUBTASK_PERCENT.sub("[%d%%]" % (percent), self.title)
@@ -151,6 +149,9 @@ class Checkbox(DomObj):
 
 		:returns: indent_level
 		"""
+		# checkbox is not heading
+		if REGEX_HEADING.match(line) is not None:
+			return None
 		m = REGEX_CHECKBOX.match(line)
 		if m:
 			r = m.groupdict()
@@ -287,9 +288,11 @@ class Checkbox(DomObj):
 		"""
 		total, on = 0, 0
 		for c in self.all_siblings():
-			if c.status == Checkbox.STATUS_ON:
-				on += 1
-			total += 1
+			if c.status is not None:
+				total += 1
+
+				if c.status == Checkbox.STATUS_ON:
+					on += 1
 
 		return (total, on)
 

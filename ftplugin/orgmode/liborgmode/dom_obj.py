@@ -11,8 +11,28 @@ import re
 from UserList import UserList
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list
 
+# breaking down tasks regex
 REGEX_SUBTASK = re.compile(r'\[(\d*)/(\d*)\]')
 REGEX_SUBTASK_PERCENT = re.compile(r'\[(\d*)%\]')
+
+# heading regex
+REGEX_HEADING = re.compile(
+		r'^(?P<level>\*+)(\s+(?P<title>.*?))?\s*(\s(?P<tags>:[\w_:@]+:))?$',
+		flags=re.U | re.L)
+REGEX_TAG = re.compile(r'^\s*((?P<title>[^\s]*?)\s+)?(?P<tags>:[\w_:@]+:)$',
+		flags=re.U | re.L)
+REGEX_TODO = re.compile(r'^[^\s]*$')
+
+# checkbox regex:
+#   - [ ] checkbox item
+# - [X] checkbox item
+# - [ ]
+# - no status checkbox
+UnOrderListType = ['-', '+', '*']
+OrderListType = ['%d.', '%d']
+REGEX_CHECKBOX = re.compile(
+		r'^(?P<level>\s*)(?P<type>[%s])\s*(?P<status>\[.\])?\s*(?P<title>.*)$'
+		% (''.join(UnOrderListType)), flags=re.U | re.L)
 
 class DomObj(object):
 	u""" 
