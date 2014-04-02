@@ -55,20 +55,17 @@ class EditCheckboxTestCase(unittest.TestCase):
         self.editcheckbox.new_checkbox(below=True)
         self.assertEqual(vim.current.buffer[8], ' - [ ] ')
         self.editcheckbox.update_checkboxes_status()
-        print vim.current.buffer
 
     def test_no_status_checkbox(self):
         bufnr = 11
         # test on self.c2
         set_vim_buffer(buf=self.c2, bufnr=bufnr)
-        # print vim.buffers
         self.assertEqual(vim.current.buffer[2], "- checkbox [0%]")
         # toggle
         vim.current.window.cursor = (4, 0)
         self.editcheckbox.toggle()
         self.assertEqual(vim.current.buffer[3], " - [X] test1")
 
-        print vim.current.buffer
         self.editcheckbox.update_checkboxes_status()
         # see if the no status checkbox update its status
         self.assertEqual(vim.current.buffer[2], "- checkbox [33%]")
