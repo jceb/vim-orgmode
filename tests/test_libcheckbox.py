@@ -36,6 +36,7 @@ class CheckboxTestCase(unittest.TestCase):
 				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
+
 		self.c1 = """
 * heading1 [/]
  - [-] checkbox1 [%]
@@ -63,8 +64,9 @@ class CheckboxTestCase(unittest.TestCase):
 		self.assertEqual(str(c)," " * 3 + "- [X] checkbox2")
 
 	def test_basic(self):
-		set_vim_buffer(buf=self.c1, bufnr=1)
-		h = ORGMODE.get_document(bufnr=1).current_heading()
+		bufnr = 1
+		set_vim_buffer(buf=self.c1, bufnr=bufnr)
+		h = ORGMODE.get_document(bufnr=bufnr).current_heading()
 		h.init_checkboxes()
 
 		c = h.current_checkbox(position=2)
@@ -92,9 +94,10 @@ class CheckboxTestCase(unittest.TestCase):
 		self.assertEqual(Checkbox.identify_checkbox(" - [ ]"), 1)
 
 	def test_toggle(self):
+		bufnr = 2
 		# test init_checkboxes 
-		set_vim_buffer(buf=self.c1, bufnr=1)
-		h = ORGMODE.get_document(bufnr=1).current_heading()
+		set_vim_buffer(buf=self.c1, bufnr=bufnr)
+		h = ORGMODE.get_document(bufnr=bufnr).current_heading()
 		h.init_checkboxes()
 
 		# toggle checkbox
@@ -108,8 +111,9 @@ class CheckboxTestCase(unittest.TestCase):
 		self.assertEqual((total, on), (2, 1))
 
 	def test_subtasks(self):
-		set_vim_buffer(buf=self.c1, bufnr=3)
-		h = ORGMODE.get_document(bufnr=3).current_heading()
+		bufnr = 3
+		set_vim_buffer(buf=self.c1, bufnr=bufnr)
+		h = ORGMODE.get_document(bufnr=bufnr).current_heading()
 		h.init_checkboxes()
 		c = h.current_checkbox(position=3)
 		c.toggle()
