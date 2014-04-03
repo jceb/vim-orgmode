@@ -64,7 +64,7 @@ class EditCheckbox(object):
 	@classmethod
 	def toggle(cls, checkbox=None):
 		u"""
-		Toggle the checkbox given in the parameter. 
+		Toggle the checkbox given in the parameter.
 		If the checkbox is not given, it will toggle the current checkbox.
 		"""
 		d = ORGMODE.get_document()
@@ -113,9 +113,9 @@ class EditCheckbox(object):
 			return
 		total, on = c.all_siblings_status()
 		h.update_subtasks(total, on)
-		# update all checkboxes under current heading 
+		# update all checkboxes under current heading
 		cls._update_checkboxes_subtasks(c)
-	
+
 	@classmethod
 	def _update_checkboxes_subtasks(cls, checkbox):
 		# update checkboxes
@@ -134,7 +134,7 @@ class EditCheckbox(object):
 
 		cls._update_checkboxes_status(h.first_checkbox)
 		cls._update_subtasks()
-	
+
 	@classmethod
 	def _update_checkboxes_status(cls, checkbox=None):
 		u""" helper function for update checkboxes status """
@@ -184,7 +184,7 @@ class EditCheckbox(object):
 					cls._update_checkboxes_status(c.first_child)
 
 		elif status == Checkbox.STATUS_INT:
-			# children are all on 
+			# children are all on
 			if c.are_children_all(Checkbox.STATUS_ON):
 				c.status = Checkbox.STATUS_ON
 				d.write_checkbox(c)
@@ -196,7 +196,7 @@ class EditCheckbox(object):
 				d.write_checkbox(c)
 				if c.parent:
 					cls._update_status(c.parent)
-					
+
 			if c.children:
 				cls._update_checkboxes_status(c.first_child)
 

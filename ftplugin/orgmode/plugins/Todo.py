@@ -56,8 +56,9 @@ class Todo(object):
 		self.keybindings = []
 
 	@classmethod
-	def _get_next_state(cls, current_state, all_states,
-			direction=Direction.FORWARD, interactive=False, next_set=False):
+	def _get_next_state(
+		cls, current_state, all_states,
+		direction=Direction.FORWARD, interactive=False, next_set=False):
 		u"""
 		WTF is going on here!!!
 		FIXME: reimplement this in a clean way :)
@@ -106,17 +107,17 @@ class Todo(object):
 				return current_state
 
 			return split_access_key(all_states[0][0][0] if all_states[0][0] else all_states[0][1][0])[0] \
-					if direction == Direction.FORWARD else \
-					split_access_key(all_states[0][1][-1] if all_states[0][1] else all_states[0][0][-1])[0]
+				if direction == Direction.FORWARD else \
+				split_access_key(all_states[0][1][-1] if all_states[0][1] else all_states[0][0][-1])[0]
 		elif next_set:
 			if direction == Direction.FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
 				echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] + 1][0]), u', '.join(all_states[ci[0] + 1][1])))
-				return split_access_key(all_states[ci[0] + 1][0][0] \
-						if all_states[ci[0] + 1][0] else all_states[ci[0] + 1][1][0])[0]
+				return split_access_key(
+					all_states[ci[0] + 1][0][0] if all_states[ci[0] + 1][0] else all_states[ci[0] + 1][1][0])[0]
 			elif current_state is not None and direction == Direction.BACKWARD and ci[0] - 1 >= 0:
 				echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] - 1][0]), u', '.join(all_states[ci[0] - 1][1])))
-				return split_access_key(all_states[ci[0] - 1][0][0] \
-						if all_states[ci[0] - 1][0] else all_states[ci[0] - 1][1][0])[0]
+				return split_access_key(
+					all_states[ci[0] - 1][0][0] if all_states[ci[0] - 1][0] else all_states[ci[0] - 1][1][0])[0]
 			else:
 				echom(u'Already at the %s keyword set' % (u'first' if direction == Direction.BACKWARD else u'last'))
 				return current_state
@@ -168,27 +169,28 @@ class Todo(object):
 		if interactive:
 			# determine position of the interactive prompt
 			prompt_pos = settings.get(u'org_todo_prompt_position', u'botright')
-			if not prompt_pos in [u'botright', u'topleft']:
+			if prompt_pos not in [u'botright', u'topleft']:
 				prompt_pos = u'botright'
 
 			# pass todo states to new window
 			ORGTODOSTATES[d.bufnr] = todo_states
-			settings.set(u'org_current_state_%d' % d.bufnr, \
-					current_state if current_state is not None else u'', overwrite=True)
-			todo_buffer_exists = bool(int(vim.eval((u'bufexists("org:todo/%d")'
-					% (d.bufnr, )).encode(u'utf-8'))))
+			settings.set(
+				u'org_current_state_%d' % d.bufnr,
+				current_state if current_state is not None else u'', overwrite=True)
+			todo_buffer_exists = bool(int(vim.eval((
+				u'bufexists("org:todo/%d")' % (d.bufnr, )).encode(u'utf-8'))))
 			if todo_buffer_exists:
 				# if the buffer already exists, reuse it
-				vim.command((u'%s sbuffer org:todo/%d' %
-						(prompt_pos, d.bufnr, )).encode(u'utf-8'))
+				vim.command((
+					u'%s sbuffer org:todo/%d' % (prompt_pos, d.bufnr, )).encode(u'utf-8'))
 			else:
 				# create a new window
-				vim.command((u'keepalt %s %dsplit org:todo/%d' %
-						(prompt_pos, len(todo_states), d.bufnr)).encode(u'utf-8'))
+				vim.command((
+					u'keepalt %s %dsplit org:todo/%d' % (prompt_pos, len(todo_states), d.bufnr)).encode(u'utf-8'))
 		else:
-			new_state = Todo._get_next_state(current_state, todo_states,
-					direction=direction, interactive=interactive,
-					next_set=next_set)
+			new_state = Todo._get_next_state(
+				current_state, todo_states, direction=direction,
+				interactive=interactive, next_set=next_set)
 			cls.set_todo_state(new_state)
 
 		# plug
@@ -222,7 +224,7 @@ class Todo(object):
 		# is in the heading; otherwite do nothing
 		if heading.start_vim == lineno and colno > heading.level:
 			if current_state is not None and \
-					colno <= heading.level + len(current_state):
+				colno <= heading.level + len(current_state):
 				# the cursor is actually on the todo keyword
 				# move it back to the beginning of the keyword in that case
 				vim.current.window.cursor = (lineno, heading.level + 1)
@@ -271,7 +273,7 @@ class Todo(object):
 							res += (u'\t' if res else u'') + u'[%s] %s' % (k, v)
 							# map access keys to callback that updates current heading
 							# map selection keys
-							vim.command((u'nnoremap <silent> <buffer> %s :bw<Bar>py ORGMODE.plugins[u"Todo"].set_todo_state("%s".decode(u"utf-8"))<CR>' % (k, v)).encode(u'utf-8') )
+							vim.command((u'nnoremap <silent> <buffer> %s :bw<Bar>py ORGMODE.plugins[u"Todo"].set_todo_state("%s".decode(u"utf-8"))<CR>' % (k, v)).encode(u'utf-8'))
 						elif v:
 							res += (u'\t' if res else u'') + v
 			if res:

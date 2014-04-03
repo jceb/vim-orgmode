@@ -7,6 +7,7 @@ from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode import settings
 
+
 class TagsProperties(object):
 	u""" TagsProperties plugin """
 

@@ -45,17 +45,17 @@ class Agenda(object):
 		way to create buffers/jump to buffers. Otherwise there are going to be
 		quite a few ways to open buffers in vimorgmode.
 		"""
-		cmds = [u'botright split org:%s' % bufname,
-				u'setlocal buftype=nofile',
-				u'setlocal modifiable',
-				u'setlocal nonumber',
-				# call opendoc() on enter the original todo item
-				u'nnoremap <silent> <buffer> <CR> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc()"<CR>',
-				u'nnoremap <silent> <buffer> <TAB> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc(switch=True)"<CR>',
-				u'nnoremap <silent> <buffer> <S-CR> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc(split=True)"<CR>',
-				# statusline
-				u'setlocal statusline=Org\\ %s' % bufname
-				]
+		cmds = [
+			u'botright split org:%s' % bufname,
+			u'setlocal buftype=nofile',
+			u'setlocal modifiable',
+			u'setlocal nonumber',
+			# call opendoc() on enter the original todo item
+			u'nnoremap <silent> <buffer> <CR> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc()"<CR>',
+			u'nnoremap <silent> <buffer> <TAB> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc(switch=True)"<CR>',
+			u'nnoremap <silent> <buffer> <S-CR> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc(split=True)"<CR>',
+			# statusline
+			u'setlocal statusline=Org\\ %s' % bufname]
 		if vim_commands:
 			cmds.extend(vim_commands)
 		for cmd in cmds:
@@ -72,16 +72,18 @@ class Agenda(object):
 		# load org files of agenda
 		agenda_files = settings.get(u'org_agenda_files', u',')
 		if not agenda_files or agenda_files == ',':
-			echoe((u"No org_agenda_files defined. Use :let "
-				   u"g:org_agenda_files=['~/org/index.org'] to add "
-				   u"files to the agenda view."))
+			echoe((
+				u"No org_agenda_files defined. Use :let "
+				u"g:org_agenda_files=['~/org/index.org'] to add "
+				u"files to the agenda view."))
 			return
 
 		# glob for files in agenda_files
 		resolved_files = []
 		for f in agenda_files:
-			f = glob.glob(os.path.join(os.path.expanduser(os.path.dirname(f)),
-				          os.path.basename(f)))
+			f = glob.glob(os.path.join(
+				os.path.expanduser(os.path.dirname(f)),
+				os.path.basename(f)))
 			resolved_files.extend(f)
 
 		agenda_files = [os.path.realpath(f) for f in resolved_files]
@@ -136,11 +138,10 @@ class Agenda(object):
 		if not agenda_documents:
 			return
 		raw_agenda = ORGMODE.agenda_manager.get_next_week_and_active_todo(
-				agenda_documents)
+			agenda_documents)
 
 		# create buffer at bottom
-		cmd = [u'setlocal filetype=orgagenda',
-				]
+		cmd = [u'setlocal filetype=orgagenda', ]
 		cls._switch_to(u'AGENDA', cmd)
 
 		# line2doc is a dic with the mapping:
@@ -156,8 +157,8 @@ class Agenda(object):
 				today = date.today()
 				# insert additional "TODAY" string
 				if h.active_date.year == today.year and \
-						h.active_date.month == today.month and \
-						h.active_date.day == today.day:
+					h.active_date.month == today.month and \
+					h.active_date.day == today.day:
 					section = unicode(h.active_date) + u" TODAY"
 					today_row = len(final_agenda) + 1
 				else:
@@ -167,19 +168,19 @@ class Agenda(object):
 				# update last_date
 				last_date = h.active_date
 
-			bufname = os.path.basename(vim.buffers[h.document.bufnr-1].name)
+			bufname = os.path.basename(vim.buffers[h.document.bufnr - 1].name)
 			bufname = bufname[:-4] if bufname.endswith(u'.org') else bufname
 			formated = u"  %(bufname)s (%(bufnr)d)  %(todo)s  %(title)s" % {
-					'bufname': bufname,
-					'bufnr':   h.document.bufnr,
-					'todo':    h.todo,
-					'title':   h.title
+				'bufname': bufname,
+				'bufnr': h.document.bufnr,
+				'todo': h.todo,
+				'title': h.title
 			}
 			final_agenda.append(formated)
 			cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
 
 		# show agenda
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in final_agenda ]
+		vim.current.buffer[:] = [i.encode(u'utf-8') for i in final_agenda]
 		vim.command(u'setlocal nomodifiable  conceallevel=2 concealcursor=nc'.encode(u'utf-8'))
 		# try to jump to the positon of today
 		try:
@@ -210,7 +211,7 @@ class Agenda(object):
 			cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
 
 		# show agenda
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in final_agenda ]
+		vim.current.buffer[:] = [i.encode(u'utf-8') for i in final_agenda]
 		vim.command(u'setlocal nomodifiable  conceallevel=2 concealcursor=nc'.encode(u'utf-8'))
 
 	@classmethod
@@ -220,7 +221,7 @@ class Agenda(object):
 		current file.
 		"""
 		raw_agenda = ORGMODE.agenda_manager.get_timestamped_items(
-				[ORGMODE.get_document()])
+			[ORGMODE.get_document()])
 
 		# create buffer at bottom
 		cmd = [u'setlocal filetype=orgagenda']
@@ -235,7 +236,7 @@ class Agenda(object):
 			cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
 
 		# show agenda
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in final_agenda ]
+		vim.current.buffer[:] = [i.encode(u'utf-8') for i in final_agenda]
 		vim.command(u'setlocal nomodifiable conceallevel=2 concealcursor=nc'.encode(u'utf-8'))
 
 	def register(self):
