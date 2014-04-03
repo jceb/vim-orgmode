@@ -10,14 +10,18 @@ from orgmode._vim import ORGMODE
 
 PLUGIN_NAME = u'EditCheckbox'
 
-def set_vim_buffer(buf=[], cursor=(2, 0), bufnr=0):
+
+def set_vim_buffer(buf=None, cursor=(2, 0), bufnr=0):
+    if buf is None:
+        buf = []
     vim.current.buffer[:] = buf
-    vim.current.window.cursor = cursor 
+    vim.current.window.cursor = cursor
     vim.current.buffer.number = bufnr
+
 
 class EditCheckboxTestCase(unittest.TestCase):
     def setUp(self):
-        if not PLUGIN_NAME in ORGMODE.plugins:
+        if PLUGIN_NAME not in ORGMODE.plugins:
             ORGMODE.register_plugin(PLUGIN_NAME)
         self.editcheckbox = ORGMODE.plugins[PLUGIN_NAME]
 
@@ -39,7 +43,6 @@ class EditCheckboxTestCase(unittest.TestCase):
  - [ ] test3
 """.split(u'\n')
 
-
     def test_toggle(self):
         bufnr = 10
         # test on self.c1
@@ -49,7 +52,7 @@ class EditCheckboxTestCase(unittest.TestCase):
         self.assertEqual(vim.current.buffer[1], "* heading1 [0%]")
         # toggle
         self.editcheckbox.toggle()
-        self.assertEqual(vim.current.buffer[5],"    - [X] checkbox4")
+        self.assertEqual(vim.current.buffer[5], "    - [X] checkbox4")
         vim.current.window.cursor = (7, 0)
         # new_checkbox
         self.editcheckbox.new_checkbox(below=True)
@@ -69,6 +72,7 @@ class EditCheckboxTestCase(unittest.TestCase):
         self.editcheckbox.update_checkboxes_status()
         # see if the no status checkbox update its status
         self.assertEqual(vim.current.buffer[2], "- checkbox [33%]")
+
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(EditCheckboxTestCase)
