@@ -17,10 +17,11 @@ REGEX_SUBTASK_PERCENT = re.compile(r'\[(\d*)%\]')
 
 # heading regex
 REGEX_HEADING = re.compile(
-		r'^(?P<level>\*+)(\s+(?P<title>.*?))?\s*(\s(?P<tags>:[\w_:@]+:))?$',
-		flags=re.U | re.L)
-REGEX_TAG = re.compile(r'^\s*((?P<title>[^\s]*?)\s+)?(?P<tags>:[\w_:@]+:)$',
-		flags=re.U | re.L)
+	r'^(?P<level>\*+)(\s+(?P<title>.*?))?\s*(\s(?P<tags>:[\w_:@]+:))?$',
+	flags=re.U | re.L)
+REGEX_TAG = re.compile(
+	r'^\s*((?P<title>[^\s]*?)\s+)?(?P<tags>:[\w_:@]+:)$',
+	flags=re.U | re.L)
 REGEX_TODO = re.compile(r'^[^\s]*$')
 
 # checkbox regex:
@@ -31,12 +32,13 @@ REGEX_TODO = re.compile(r'^[^\s]*$')
 UnOrderListType = ['-', '+', '*']
 OrderListType = ['%d.', '%d']
 REGEX_CHECKBOX = re.compile(
-		r'^(?P<level>\s*)(?P<type>[%s])\s*(?P<status>\[.\])?\s*(?P<title>.*)$'
-		% (''.join(UnOrderListType)), flags=re.U | re.L)
+	r'^(?P<level>\s*)(?P<type>[%s])\s*(?P<status>\[.\])?\s*(?P<title>.*)$'
+	% (''.join(UnOrderListType)), flags=re.U | re.L)
+
 
 class DomObj(object):
-	u""" 
-	A DomObj is DOM structure element, like Heading and Checkbox.	
+	u"""
+	A DomObj is DOM structure element, like Heading and Checkbox.
 	Its purpose is to abstract the same parts of Heading and Checkbox objects,
 	and make code reusable.
 
@@ -77,7 +79,7 @@ class DomObj(object):
 			self.body = body
 
 	def __unicode__(self):
-		return u'<dom obj level=%s, title=%s>' % (level, title) 
+		return u'<dom obj level=%s, title=%s>' % (level, title)
 
 	def __str__(self):
 		return self.__unicode__().encode(u'utf-8')
@@ -324,7 +326,7 @@ class DomObj(object):
 
 class DomObjList(MultiPurposeList):
 	u"""
-	A Dom Obj List 
+	A Dom Obj List
 	"""
 	def __init__(self, initlist=None, obj=None):
 		"""
@@ -361,8 +363,8 @@ class DomObjList(MultiPurposeList):
 		# self._add_to_deleted_domobjs(self[i])
 
 		# self._associate_domobj(item, \
-				# self[i - 1] if i - 1 >= 0 else None, \
-				# self[i + 1] if i + 1 < len(self) else None)
+		# self[i - 1] if i - 1 >= 0 else None, \
+		# self[i + 1] if i + 1 < len(self) else None)
 		MultiPurposeList.__setitem__(self, i, item)
 
 	def __setslice__(self, i, j, other):
@@ -377,8 +379,8 @@ class DomObjList(MultiPurposeList):
 		j = max(j, 0)
 		# self._add_to_deleted_domobjs(self[i:j])
 		# self._associate_domobj(o, \
-				# self[i - 1] if i - 1 >= 0 and i < len(self) else None, \
-				# self[j] if j >= 0 and j < len(self) else None)
+		# self[i - 1] if i - 1 >= 0 and i < len(self) else None, \
+		# self[j] if j >= 0 and j < len(self) else None)
 		MultiPurposeList.__setslice__(self, i, j, o)
 
 	def __delitem__(self, i, taint=True):
@@ -426,14 +428,16 @@ class DomObjList(MultiPurposeList):
 			raise ValueError(u'Item is not a heading!')
 		if item in self:
 			raise ValueError(u'Heading is already part of this list!')
-		self._associate_domobj(item, self[-1] if len(self) > 0 else None, \
-				None, taint=taint)
+		self._associate_domobj(
+			item, self[-1] if len(self) > 0 else None,
+			None, taint=taint)
 		MultiPurposeList.append(self, item)
 
 	def insert(self, i, item, taint=True):
-		self._associate_domobj(item, \
-				self[i - 1] if i - 1 >= 0 and i - 1 < len(self) else None,
-				self[i] if i >= 0 and i < len(self) else None, taint=taint)
+		self._associate_domobj(
+			item,
+			self[i - 1] if i - 1 >= 0 and i - 1 < len(self) else None,
+			self[i] if i >= 0 and i < len(self) else None, taint=taint)
 		MultiPurposeList.insert(self, i, item)
 
 	def pop(self, i=-1):

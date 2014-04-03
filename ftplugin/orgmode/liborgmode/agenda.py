@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 u"""
-    Agenda
-    ~~~~~~~~~~~~~~~~~~
+	Agenda
+	~~~~~~~~~~~~~~~~~~
 
-    The agenda is one of the main concepts of orgmode. It allows to
+	The agenda is one of the main concepts of orgmode. It allows to
 	collect TODO items from multiple org documents in an agenda view.
 
 	Features:
@@ -43,7 +43,8 @@ class AgendaManager(object):
 		filtered = []
 		for i, document in enumerate(documents):
 			# filter and return headings
-			tmp = filter_items(document.all_headings(),
+			tmp = filter_items(
+				document.all_headings(),
 				[is_within_week_and_active_todo])
 			filtered.extend(tmp)
 		return sorted(filtered)
@@ -56,7 +57,8 @@ class AgendaManager(object):
 		filtered = []
 		for i, document in enumerate(documents):
 			# filter and return headings
-			tmp = filter_items(document.all_headings(),
+			tmp = filter_items(
+				document.all_headings(),
 				[contains_active_date])
 			filtered.extend(tmp)
 		return sorted(filtered)

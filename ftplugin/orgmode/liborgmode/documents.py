@@ -35,7 +35,7 @@ class Document(object):
 		self._content = None
 		self._dirty_meta_information = False
 		self._dirty_document = False
-		self._meta_information = MultiPurposeList(on_change = self.set_dirty_meta_information)
+		self._meta_information = MultiPurposeList(on_change=self.set_dirty_meta_information)
 		self._orig_meta_information_len = None
 		self._headings = HeadingList(obj=self)
 		self._deleted_headings = []
@@ -114,7 +114,7 @@ class Document(object):
 				# * Heading 2 <- heading
 				# * Heading 1 <- parent's sibling
 				if not new_heading or \
-						new_heading.level <= _h.level:
+					new_heading.level <= _h.level:
 					break
 
 				# * Heading 1 <- heading
@@ -262,8 +262,9 @@ class Document(object):
 			h = h.next_heading
 		raise StopIteration()
 
-	def find_heading(self, position=0, direction=Direction.FORWARD, \
-			heading=Heading, connect_with_document=True):
+	def find_heading(
+		self, position=0, direction=Direction.FORWARD,
+		heading=Heading, connect_with_document=True):
 		u""" Find heading in the given direction
 
 		:postition: starting line, counting from 0 (in vim you start
@@ -282,8 +283,9 @@ class Document(object):
 		if start is not None and end is None:
 			end = len(self._content) - 1
 		if start is not None and end is not None:
-			return heading.parse_heading_from_data(self._content[start:end + 1], self.get_all_todo_states(), \
-					document=self if connect_with_document else None, orig_start=start)
+			return heading.parse_heading_from_data(
+				self._content[start:end + 1], self.get_all_todo_states(),
+				document=self if connect_with_document else None, orig_start=start)
 
 
 # vim: set noexpandtab:
