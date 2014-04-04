@@ -307,8 +307,8 @@ syntax match  org_block_delimiter /^#+BEGIN_.*/
 syntax match  org_block_delimiter /^#+END_.*/
 syntax match  org_key_identifier  /^#+[^ ]*:/
 syntax match  org_title           /^#+TITLE:.*/  contains=org_key_identifier
-hi def link org_key_identifier  Statement
-hi def link org_block_delimiter PreProc
+hi def link org_block_delimiter Comment
+hi def link org_key_identifier  Comment
 hi def link org_title           Title
 " }}}
 " Block Markup: {{{
@@ -323,7 +323,7 @@ syntax region org_verbatim start="^#+BEGIN_.*"      end="^#+END_.*"      keepend
 syntax region org_code     start="^#+BEGIN_SRC"     end="^#+END_SRC"     keepend contains=org_block_delimiter
 syntax region org_code     start="^#+BEGIN_EXAMPLE" end="^#+END_EXAMPLE" keepend contains=org_block_delimiter
 hi def link org_code     String
-hi def link org_verbatim Special
+hi def link org_verbatim String
 " }}}
 " Properties: {{{
 syn region Error matchgroup=org_properties_delimiter start=/^\s*:PROPERTIES:\s*$/ end=/^\s*:END:\s*$/ contains=org_property keepend
