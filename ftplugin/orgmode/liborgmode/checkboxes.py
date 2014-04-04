@@ -75,14 +75,16 @@ class Checkbox(DomObj):
 		:parent:				Don't use this parameter. It's set
 								automatically.
 		"""
-		checkbox = self.__class__(level=self.level, title=self.title, \
-									body=self.body[:])
+		checkbox = self.__class__(
+			level=self.level, title=self.title,
+			body=self.body[:])
 		if parent:
 			parent.children.append(checkbox)
 		if including_children and self.children:
 			for item in self.children:
-				item.copy(including_children=including_children, \
-						parent=checkbox)
+				item.copy(
+					including_children=including_children,
+					parent=checkbox)
 		checkbox._orig_start = self._orig_start
 		checkbox._orig_len = self._orig_len
 
@@ -139,7 +141,7 @@ class Checkbox(DomObj):
 		count = "%d/%d" % (on, total)
 		self.title = REGEX_SUBTASK.sub("[%s]" % (count), self.title)
 		self.title = REGEX_SUBTASK_PERCENT.sub("[%d%%]" % (percent), self.title)
-		d = self.heading.document.write_checkbox(self, including_children=False)	
+		d = self.heading.document.write_checkbox(self, including_children=False)
 
 	@classmethod
 	def identify_checkbox(cls, line):
@@ -156,7 +158,7 @@ class Checkbox(DomObj):
 		if m:
 			r = m.groupdict()
 			return len(r[u'level'])
-		
+
 		return None
 
 	@property
@@ -254,7 +256,7 @@ class Checkbox(DomObj):
 
 	def all_siblings(self):
 		if not self.parent:
-			 p = self.heading
+			p = self.heading
 		else:
 			p = self.parent
 			if not p.children:
@@ -282,7 +284,7 @@ class Checkbox(DomObj):
 	def all_siblings_status(self):
 		u""" Return checkboxes status for currnet checkbox's all siblings
 
-		:return: (total, on) 
+		:return: (total, on)
 			total: total # of checkboxes
 			on:	   # of checkboxes which are on
 		"""

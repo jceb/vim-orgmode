@@ -116,6 +116,7 @@ class MultiPurposeList(UserList):
 		UserList.extend(self, other)
 		self._changed()
 
+
 def get_domobj_range(content=[], position=0, direction=Direction.FORWARD, identify_fun=None):
 	u"""
 	Get the start and end line number of the dom obj lines from content.
@@ -157,7 +158,7 @@ def get_domobj_range(content=[], position=0, direction=Direction.FORWARD, identi
 				if start is not None and end is not None:
 					break
 			tmp_line -= 1 if start is None else -1
-	
+
 	return (start, end)
 
 # vim: set noexpandtab:
