@@ -33,6 +33,8 @@ class EditCheckboxTestCase(unittest.TestCase):
     - [ ] checkbox4
  - [ ] checkbox5
   - [ ] checkbox6
+   - [ ] checkbox7
+   - [ ] checkbox8
 """.split(u'\n')
 
 		self.c2 = u"""
@@ -53,10 +55,19 @@ class EditCheckboxTestCase(unittest.TestCase):
 		# toggle
 		self.editcheckbox.toggle()
 		self.assertEqual(vim.current.buffer[5], "    - [X] checkbox4")
-		vim.current.window.cursor = (7, 0)
+		
+		# toggle and check checkbox status
+		vim.current.window.cursor = (9, 0)
+		self.editcheckbox.toggle()
+		print vim.current.buffer
+		self.assertEqual(vim.current.buffer[8], "   - [X] checkbox7")
+		self.assertEqual(vim.current.buffer[7], "  - [-] checkbox6")
+		self.assertEqual(vim.current.buffer[6], " - [-] checkbox5")
+
 		# new_checkbox
+		vim.current.window.cursor = (10, 0)
 		self.editcheckbox.new_checkbox(below=True)
-		self.assertEqual(vim.current.buffer[8], ' - [ ] ')
+		self.assertEqual(vim.current.buffer[10], '   - [ ] ')
 		self.editcheckbox.update_checkboxes_status()
 
 	def test_no_status_checkbox(self):
