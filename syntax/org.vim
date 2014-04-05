@@ -282,8 +282,8 @@ hi def org_underline term=underline cterm=underline gui=underline
 "
 " Lists
 " syntax region org_list_dt start=/^\s*[\+-]\s/ end="::" keepend oneline
-syntax match  org_list_bullet   /^\s*[\+-]\s/ nextgroup=org_list_item
-syntax match  org_list_item     /.*$/ contained contains=org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all,org_list_checkbox,org_list_dt
+syntax match  org_list_bullet   /^\s*[*+-]\s/ nextgroup=org_list_item
+syntax match  org_list_item     /.*$/ contained contains=org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all,org_list_checkbox,org_list_dt,org_bold,org_italic,org_underline,org_code,org_verbatim
 syntax match  org_list_checkbox /\[[ X-]]/ contained
 syntax match org_list_dt /.*\s\+::/ contained
 hi def link org_list_bullet Statement
