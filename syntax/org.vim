@@ -269,8 +269,8 @@ hi def link org_comment Comment
 " - =code= and ~verbatim~ are also supported as block-level markup, see below.
 " Ref: http://orgmode.org/manual/Emphasis-and-monospace.html
 "syntax match org_bold /\*[^ ]*\*/
-syntax region org_bold      start="\S\@<= \*\| \*\S\@="   end="\S\@<=\*\|\*\S\@="  keepend oneline
-syntax region org_italic    start="\S\@<= \/\| \/\S\@="   end="\S\@<=\/\|\/\S\@="  keepend oneline
+syntax region org_bold      start="\S\@<=\*\|\*\S\@="   end="\S\@<=\*\|\*\S\@="  keepend oneline
+syntax region org_italic    start="\S\@<=\/\|\/\S\@="   end="\S\@<=\/\|\/\S\@="  keepend oneline
 syntax region org_underline start="\S\@<=_\|_\S\@="       end="\S\@<=_\|_\S\@="    keepend oneline
 syntax region org_code      start="\S\@<==\|=\S\@="       end="\S\@<==\|=\S\@="    keepend oneline
 syntax region org_code      start="\S\@<=`\|`\S\@="       end="\S\@<='\|'\S\@="    keepend oneline
