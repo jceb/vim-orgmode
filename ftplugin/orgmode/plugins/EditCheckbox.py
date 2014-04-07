@@ -74,7 +74,7 @@ class EditCheckbox(object):
 			return
 		current_heading = current_heading.init_checkboxes()
 
-		if not checkbox:
+		if checkbox is None:
 			# get current_checkbox
 			c = current_heading.current_checkbox()
 			# no checkbox found
@@ -137,68 +137,57 @@ class EditCheckbox(object):
 
 	@classmethod
 	def _update_checkboxes_status(cls, checkbox=None):
-		u""" helper function for update checkboxes status """
-		if not checkbox:
+		u""" helper function for update checkboxes status
+			:checkbox: The first checkbox of this indent level
+			:return: The status of the parent checkbox
+		"""
+		if checkbox is None:
 			return
 
+		status_off, status_on, status_int, total = 0, 0, 0, 0
 		# update all top level checkboxes' status
 		for c in checkbox.all_siblings():
-			cls._update_status(c)
-
-	@classmethod
-	def _update_status(cls, c):
-		status = c.status
-		d = ORGMODE.get_document()
-		if status == Checkbox.STATUS_OFF:
+			current_status = c.status
+			# if this checkbox is not leaf, its status should determine by all its children
 			if c.children:
-				if c.are_children_all(Checkbox.STATUS_ON):
-					c.status = Checkbox.STATUS_ON
-					d.write_checkbox(c)
-					# check if the parent need to be set on
-					if c.parent:
-						cls._update_status(c.parent)
-				else:
-					if c.is_child_one(Checkbox.STATUS_ON):
-						c.status = Checkbox.STATUS_INT
-						d.write_checkbox(c)
-					if c.children:
-						cls._update_checkboxes_status(c.first_child)
+				current_status = cls._update_checkboxes_status(c.first_child)
 
-		elif status == Checkbox.STATUS_ON:
-			# since all children are on, we don't need to check children recursively
-			if c.are_children_all(status):
-				return
+			# don't update status if the checkbox has no status
+			if c.status is None:
+				current_status = None
+			# the checkbox needs to have status
 			else:
-				if c.is_child_one(Checkbox.STATUS_ON):
-					c.status = Checkbox.STATUS_INT
-					d.write_checkbox(c)
-				else:
-					c.status = Checkbox.STATUS_OFF
-					d.write_checkbox(c)
+				total +=  1
 
-				if c.parent:
-					cls._update_status(c.parent)
+			# count number of status in this checkbox level
+			if current_status == Checkbox.STATUS_OFF:
+				status_off += 1
+			elif current_status == Checkbox.STATUS_ON:
+				status_on += 1
+			elif current_status == Checkbox.STATUS_INT:
+				status_int += 1
 
-				if c.children:
-					d.write_checkbox(c)
-					cls._update_checkboxes_status(c.first_child)
-
-		elif status == Checkbox.STATUS_INT:
-			# children are all on
-			if c.are_children_all(Checkbox.STATUS_ON):
-				c.status = Checkbox.STATUS_ON
+			# write status if any update
+			if current_status is not None and c.status != current_status:
+				c.status = current_status
+				d = ORGMODE.get_document()
 				d.write_checkbox(c)
-				if c.parent:
-					cls._update_status(c.parent)
-			# children are all off
-			elif not c.is_child_one(Checkbox.STATUS_ON):
-				c.status = Checkbox.STATUS_OFF
-				d.write_checkbox(c)
-				if c.parent:
-					cls._update_status(c.parent)
 
-			if c.children:
-				cls._update_checkboxes_status(c.first_child)
+		parent_status = Checkbox.STATUS_INT
+		# all silbing checkboxes are off status
+		if status_off == total:
+			parent_status = Checkbox.STATUS_OFF
+		# all silbing checkboxes are on status
+		elif status_on == total:
+			parent_status = Checkbox.STATUS_ON
+		# one silbing checkbox is on or int status
+		elif status_on != 0 or status_int != 0:
+			parent_status = Checkbox.STATUS_INT
+		# other cases
+		else:
+			parent_status = None
+
+		return parent_status
 
 	def register(self):
 		u"""
