@@ -1,3 +1,32 @@
+" Org Markup: {{{
+" Support org authoring markup as closely as possible
+" (we're adding two markdown-like variants for =code= and blockquotes)
+" -----------------------------------------------------------------------------
+
+" Inline markup
+" *bold*, /italic/, _underline_, +strike-through+, =code=, ~verbatim~
+" Note:
+" - /italic/ is rendered as reverse in most terms (works fine in gVim, though)
+" - +strike-through+ doesn't work on Vim / gVim
+" - the non-standard `code' markup is also supported
+" - =code= and ~verbatim~ are also supported as block-level markup, see below.
+" Ref: http://orgmode.org/manual/Emphasis-and-monospace.html
+"syntax match org_bold /\*[^ ]*\*/
+
+" FIXME: Always make org_bold syntax define before org_heading syntax
+"        to make sure that org_heading syntax got higher priority(help :syn-priority) than org_bold.
+"        If there is any other good solution, please help fix it.
+syntax region org_bold      start="\S\@<=\*\|\*\S\@="   end="\S\@<=\*\|\*\S\@="  keepend oneline
+syntax region org_italic    start="\S\@<=\/\|\/\S\@="   end="\S\@<=\/\|\/\S\@="  keepend oneline
+syntax region org_underline start="\S\@<=_\|_\S\@="       end="\S\@<=_\|_\S\@="    keepend oneline
+syntax region org_code      start="\S\@<==\|=\S\@="       end="\S\@<==\|=\S\@="    keepend oneline
+syntax region org_code      start="\S\@<=`\|`\S\@="       end="\S\@<='\|'\S\@="    keepend oneline
+syntax region org_verbatim  start="\S\@<=\~\|\~\S\@="     end="\S\@<=\~\|\~\S\@="  keepend oneline
+
+hi def org_bold      term=bold      cterm=bold      gui=bold
+hi def org_italic    term=italic    cterm=italic    gui=italic
+hi def org_underline term=underline cterm=underline gui=underline
+" }}}
 " Headings: {{{
 "" Load Settings: {{{
 if !exists('g:org_heading_highlight_colors')
@@ -255,32 +284,7 @@ hi def link hyperlink Underlined
 syntax match org_comment /^#.*/
 hi def link org_comment Comment
 " }}}
-" Org Markup: {{{
-" Support org authoring markup as closely as possible
-" (we're adding two markdown-like variants for =code= and blockquotes)
-" -----------------------------------------------------------------------------
-
-" Inline markup
-" *bold*, /italic/, _underline_, +strike-through+, =code=, ~verbatim~
-" Note:
-" - /italic/ is rendered as reverse in most terms (works fine in gVim, though)
-" - +strike-through+ doesn't work on Vim / gVim
-" - the non-standard `code' markup is also supported
-" - =code= and ~verbatim~ are also supported as block-level markup, see below.
-" Ref: http://orgmode.org/manual/Emphasis-and-monospace.html
-"syntax match org_bold /\*[^ ]*\*/
-syntax region org_bold      start="\S\@<=\*\|\*\S\@="   end="\S\@<=\*\|\*\S\@="  keepend oneline
-syntax region org_italic    start="\S\@<=\/\|\/\S\@="   end="\S\@<=\/\|\/\S\@="  keepend oneline
-syntax region org_underline start="\S\@<=_\|_\S\@="       end="\S\@<=_\|_\S\@="    keepend oneline
-syntax region org_code      start="\S\@<==\|=\S\@="       end="\S\@<==\|=\S\@="    keepend oneline
-syntax region org_code      start="\S\@<=`\|`\S\@="       end="\S\@<='\|'\S\@="    keepend oneline
-syntax region org_verbatim  start="\S\@<=\~\|\~\S\@="     end="\S\@<=\~\|\~\S\@="  keepend oneline
-
-hi def org_bold      term=bold      cterm=bold      gui=bold
-hi def org_italic    term=italic    cterm=italic    gui=italic
-hi def org_underline term=underline cterm=underline gui=underline
-"
-" Lists
+" Bullet Lists: {{{
 " syntax region org_list_dt start=/^\s*[\+-]\s/ end="::" keepend oneline
 syntax match  org_list_bullet   /^\s*[*+-]\s/ nextgroup=org_list_item
 syntax match  org_list_item     /.*$/ contained contains=org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all,org_list_checkbox,org_list_dt,org_bold,org_italic,org_underline,org_code,org_verbatim
