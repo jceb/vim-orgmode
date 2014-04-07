@@ -16,7 +16,7 @@ endif
 unlet! s:i s:j s:contains
 let s:i = 1
 let s:j = len(g:org_heading_highlight_colors)
-let s:contains = ' contains=org_timestamp,org_timestamp_inactive,org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all'
+let s:contains = ' contains=org_timestamp,org_timestamp_inactive,org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all,org_list_checkbox,org_list_dt,org_bold,org_italic,org_underline,org_code,org_verbatim'
 if g:org_heading_shade_leading_stars == 1
 	let s:contains = s:contains . ',org_shade_stars'
 	syntax match org_shade_stars /^\*\{2,\}/me=e-1 contained
