@@ -10,6 +10,7 @@ from orgmode._vim import ORGMODE
 
 PLUGIN_NAME = u'EditCheckbox'
 
+bufnr = 10
 
 def set_vim_buffer(buf=None, cursor=(2, 0), bufnr=0):
 	if buf is None:
@@ -45,8 +46,17 @@ class EditCheckboxTestCase(unittest.TestCase):
  - [ ] test3
 """.split(u'\n')
 
+		self.c3 = u"""
+* heading
+1. [ ] another main task [%]
+   - [ ] sub task 1
+   - [ ] sub task 2
+2. [ ] another main task
+""".split(u'\n')
+
 	def test_toggle(self):
-		bufnr = 10
+		global bufnr
+		bufnr += 1
 		# test on self.c1
 		set_vim_buffer(buf=self.c1, cursor=(6, 0), bufnr=bufnr)
 		# update_checkboxes_status
@@ -56,7 +66,7 @@ class EditCheckboxTestCase(unittest.TestCase):
 		self.editcheckbox.toggle()
 		self.assertEqual(vim.current.buffer[5], "    - [X] checkbox4")
 		
-		bufnr = 12
+		bufnr += 1
 		set_vim_buffer(buf=self.c1, cursor=(9, 0), bufnr=bufnr)
 		# toggle and check checkbox status
 		self.editcheckbox.toggle()
@@ -71,7 +81,8 @@ class EditCheckboxTestCase(unittest.TestCase):
 		self.editcheckbox.update_checkboxes_status()
 
 	def test_no_status_checkbox(self):
-		bufnr = 11
+		global bufnr
+		bufnr += 1
 		# test on self.c2
 		set_vim_buffer(buf=self.c2, bufnr=bufnr)
 		self.assertEqual(vim.current.buffer[2], "- checkbox [0%]")
@@ -80,9 +91,17 @@ class EditCheckboxTestCase(unittest.TestCase):
 		self.editcheckbox.toggle()
 		self.assertEqual(vim.current.buffer[3], " - [X] test1")
 
-		self.editcheckbox.update_checkboxes_status()
+		# self.editcheckbox.update_checkboxes_status()
 		# see if the no status checkbox update its status
 		self.assertEqual(vim.current.buffer[2], "- checkbox [33%]")
+
+	def test_number_list(self):
+		global bufnr
+		bufnr += 1
+		set_vim_buffer(buf=self.c3, bufnr=bufnr)
+		vim.current.window.cursor = (6, 0)
+		self.editcheckbox.toggle()
+		self.assertEqual(vim.current.buffer[5], "2. [X] another main task")
 
 
 def suite():
