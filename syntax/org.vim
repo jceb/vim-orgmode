@@ -286,10 +286,10 @@ hi def link org_comment Comment
 " }}}
 " Bullet Lists: {{{
 " * list item (note there must be a whitespace prefix)
-syntax match org_list_bullet /^\s+*\s/ nextgroup=org_list_item
+syntax match org_list_bullet /^\s\+\*\s/ nextgroup=org_list_item
 " - list item (no whitespace required)
 " + list item (no whitespace required)
-syntax match  org_list_bullet   /^\s*[*+-]\s/ nextgroup=org_list_item
+syntax match  org_list_bullet   /^\s*[+-]\s/ nextgroup=org_list_item
 " 1) list item
 " 2. list item
 syntax match org_list_bullet /^\s*\d\+[.)]\s/ nextgroup=org_list_item
