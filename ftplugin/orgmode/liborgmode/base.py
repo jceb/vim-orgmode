@@ -117,4 +117,48 @@ class MultiPurposeList(UserList):
 		self._changed()
 
 
+def get_domobj_range(content=[], position=0, direction=Direction.FORWARD, identify_fun=None):
+	u"""
+	Get the start and end line number of the dom obj lines from content.
+
+	:content:		String to be recognized dom obj
+	:positon:		Line number in content
+	:direction:		Search direction
+	:identify_fun:  A identify function to recognize dom obj(Heading, Checkbox) title string.
+
+	:return:		Start and end line number for the recognized dom obj.
+	"""
+	len_cb = len(content)
+
+	if position < 0 or position > len_cb:
+		return (None, None)
+
+	tmp_line = position
+	start = None
+	end = None
+
+	# Search heading upwards
+	if direction == Direction.FORWARD:
+		while tmp_line < len_cb:
+			if identify_fun(content[tmp_line]) is not None:
+				if start is None:
+					start = tmp_line
+				elif end is None:
+					end = tmp_line - 1
+				if start is not None and end is not None:
+					break
+			tmp_line += 1
+	else:
+		while tmp_line >= 0 and tmp_line < len_cb:
+			if identify_fun(content[tmp_line]) is not None:
+				if start is None:
+					start = tmp_line
+				elif end is None:
+					end = tmp_line - 1
+				if start is not None and end is not None:
+					break
+			tmp_line -= 1 if start is None else -1
+
+	return (start, end)
+
 # vim: set noexpandtab:

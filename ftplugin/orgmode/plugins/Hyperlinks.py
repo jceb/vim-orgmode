@@ -27,7 +27,7 @@ class Hyperlinks(object):
 		self.commands = []
 
 	uri_match = re.compile(
-			r'^\[{2}(?P<uri>[^][]*)(\]\[(?P<description>[^][]*))?\]{2}')
+		r'^\[{2}(?P<uri>[^][]*)(\]\[(?P<description>[^][]*))?\]{2}')
 
 	@classmethod
 	def _get_link(cls, cursor=None):
@@ -55,11 +55,12 @@ class Hyperlinks(object):
 			end += 2
 			match = Hyperlinks.uri_match.match(line[start:end])
 
-			res = {u'line': line,
-					u'start': start,
-					u'end': end,
-					u'uri': None,
-					u'description': None}
+			res = {
+				u'line': line,
+				u'start': start,
+				u'end': end,
+				u'uri': None,
+				u'description': None}
 			if match:
 				res.update(match.groupdict())
 			return res
@@ -81,16 +82,16 @@ class Hyperlinks(object):
 			return
 
 		action = u'copyLink' \
-				if (action and action.startswith(u'copy')) \
-				else u'openLink'
+			if (action and action.startswith(u'copy')) \
+			else u'openLink'
 		visual = u'visual' if visual and visual.startswith(u'visual') else u''
 
 		link = Hyperlinks._get_link()
 
 		if link and link[u'uri'] is not None:
 			# call UTL with the URI
-			vim.command((u'Utl %s %s %s' % \
-						(action, visual, link[u'uri'])).encode(u'utf-8'))
+			vim.command((
+				u'Utl %s %s %s' % (action, visual, link[u'uri'])).encode(u'utf-8'))
 			return link[u'uri']
 		else:
 			# call UTL and let it decide what to do
@@ -128,8 +129,8 @@ class Hyperlinks(object):
 			description = vim.eval(u'input("Description: ")').decode(u'utf-8')
 		elif link:
 			description = vim.eval(
-					u'input("Description: ", "%s")' %
-					link[u'description']).decode(u'utf-8')
+				u'input("Description: ", "%s")' %
+				link[u'description']).decode(u'utf-8')
 		if description is None:
 			return
 
@@ -144,54 +145,59 @@ class Hyperlinks(object):
 
 		if uri or description:
 			vim.current.buffer[cursor[0] - 1] = \
-					(u''.join((head, u'[[%s%s%s]]' %
+				(u''.join((head, u'[[%s%s%s]]' %
 					(uri, separator, description), tail))).encode(u'utf-8')
 		elif link:
 			vim.current.buffer[cursor[0] - 1] = \
-					(u''.join((head, tail))).encode(u'utf-8')
+				(u''.join((head, tail))).encode(u'utf-8')
 
 	def register(self):
 		u"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		cmd = Command(u'OrgHyperlinkFollow',
-				u':py ORGMODE.plugins[u"Hyperlinks"].follow()')
+		cmd = Command(
+			u'OrgHyperlinkFollow',
+			u':py ORGMODE.plugins[u"Hyperlinks"].follow()')
 		self.commands.append(cmd)
 		self.keybindings.append(
-				Keybinding(u'gl', Plug(u'OrgHyperlinkFollow', self.commands[-1])))
+			Keybinding(u'gl', Plug(u'OrgHyperlinkFollow', self.commands[-1])))
 		self.menu + ActionEntry(u'&Follow Link', self.keybindings[-1])
 
-		cmd = Command(u'OrgHyperlinkCopy',
-				u':py ORGMODE.plugins[u"Hyperlinks"].follow(action=u"copy")')
+		cmd = Command(
+			u'OrgHyperlinkCopy',
+			u':py ORGMODE.plugins[u"Hyperlinks"].follow(action=u"copy")')
 		self.commands.append(cmd)
 		self.keybindings.append(
-				Keybinding(u'gyl', Plug(u'OrgHyperlinkCopy', self.commands[-1])))
+			Keybinding(u'gyl', Plug(u'OrgHyperlinkCopy', self.commands[-1])))
 		self.menu + ActionEntry(u'&Copy Link', self.keybindings[-1])
 
-		cmd = Command(u'OrgHyperlinkInsert',
-				u':py ORGMODE.plugins[u"Hyperlinks"].insert(<f-args>)',
-				arguments=u'*')
+		cmd = Command(
+			u'OrgHyperlinkInsert',
+			u':py ORGMODE.plugins[u"Hyperlinks"].insert(<f-args>)',
+			arguments=u'*')
 		self.commands.append(cmd)
 		self.keybindings.append(
-				Keybinding(u'gil', Plug(u'OrgHyperlinkInsert', self.commands[-1])))
+			Keybinding(u'gil', Plug(u'OrgHyperlinkInsert', self.commands[-1])))
 		self.menu + ActionEntry(u'&Insert Link', self.keybindings[-1])
 
 		self.menu + Separator()
 
 		# find next link
-		cmd = Command(u'OrgHyperlinkNextLink',
-				u":if search('\[\{2}\zs[^][]*\(\]\[[^][]*\)\?\ze\]\{2}', 's') == 0 | echo 'No further link found.' | endif")
+		cmd = Command(
+			u'OrgHyperlinkNextLink',
+			u":if search('\[\{2}\zs[^][]*\(\]\[[^][]*\)\?\ze\]\{2}', 's') == 0 | echo 'No further link found.' | endif")
 		self.commands.append(cmd)
 		self.keybindings.append(
-				Keybinding(u'gn', Plug(u'OrgHyperlinkNextLink', self.commands[-1])))
+			Keybinding(u'gn', Plug(u'OrgHyperlinkNextLink', self.commands[-1])))
 		self.menu + ActionEntry(u'&Next Link', self.keybindings[-1])
 
 		# find previous link
-		cmd = Command(u'OrgHyperlinkPreviousLink',
-				u":if search('\[\{2}\zs[^][]*\(\]\[[^][]*\)\?\ze\]\{2}', 'bs') == 0 | echo 'No further link found.' | endif")
+		cmd = Command(
+			u'OrgHyperlinkPreviousLink',
+			u":if search('\[\{2}\zs[^][]*\(\]\[[^][]*\)\?\ze\]\{2}', 'bs') == 0 | echo 'No further link found.' | endif")
 		self.commands.append(cmd)
 		self.keybindings.append(
-				Keybinding(u'go', Plug(u'OrgHyperlinkPreviousLink', self.commands[-1])))
+			Keybinding(u'go', Plug(u'OrgHyperlinkPreviousLink', self.commands[-1])))
 		self.menu + ActionEntry(u'&Previous Link', self.keybindings[-1])
 
 		self.menu + Separator()
@@ -205,3 +211,5 @@ class Hyperlinks(object):
 		cmd = Command(u'OrgHyperlinkLiteralLinks', u':setlocal cole=0')
 		self.commands.append(cmd)
 		self.menu + ActionEntry(u'&Literal Links', self.commands[-1])
+
+# vim: set noexpandtab:

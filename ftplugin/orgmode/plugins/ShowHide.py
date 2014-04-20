@@ -8,6 +8,7 @@ from orgmode import settings
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_NORMAL
 
+
 class ShowHide(object):
 	u""" Show Hide plugin """
 
@@ -85,7 +86,7 @@ class ShowHide(object):
 			for c in h.children:
 				close_fold(c)
 			if h.number_of_parents >= open_depth - 1 and \
-					int(vim.eval((u'foldclosed(%d)' % h.start_vim).encode(u'utf-8'))) == -1:
+				int(vim.eval((u'foldclosed(%d)' % h.start_vim).encode(u'utf-8'))) == -1:
 				vim.command((u'normal! %dggzc' % (h.start_vim, )).encode(u'utf-8'))
 
 		# find deepest fold

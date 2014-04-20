@@ -187,7 +187,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.is_dirty, True)
 
 	def test_bufnr(self):
-		self.assertEqual(self.document.bufnr, 0)
+		self.assertEqual(self.document.bufnr, vim.current.buffer.number)
 		# TODO add more tests as soon as multi buffer support has been implemented
 
 	def test_write_meta_information(self):

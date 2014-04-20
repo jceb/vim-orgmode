@@ -7,6 +7,7 @@ from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_OPERATOR, Plug
 from orgmode.liborgmode.documents import Direction
 
+
 class Navigator(object):
 	u""" Implement navigation in org-mode documents """
 
@@ -82,8 +83,8 @@ class Navigator(object):
 	@classmethod
 	def _change_visual_selection(cls, current_heading, heading, direction=Direction.FORWARD, noheadingfound=False, parent=False):
 		current = vim.current.window.cursor[0]
-		line_start, col_start = [ int(i) for i in vim.eval(u'getpos("\'<")'.encode(u'utf-8'))[1:3] ]
-		line_end, col_end = [ int(i) for i in vim.eval(u'getpos("\'>")'.encode(u'utf-8'))[1:3] ]
+		line_start, col_start = [int(i) for i in vim.eval(u'getpos("\'<")'.encode(u'utf-8'))[1:3]]
+		line_end, col_end = [int(i) for i in vim.eval(u'getpos("\'>")'.encode(u'utf-8'))[1:3]]
 
 		f_start = heading.start_vim
 		f_end = heading.end_vim
@@ -141,8 +142,8 @@ class Navigator(object):
 				line_end = f_end
 				swap_cursor = False
 
-			elif (line_start > f_start or \
-					line_start == f_start) and line_end <= f_end and direction == Direction.BACKWARD:
+			elif (line_start > f_start or line_start == f_start) and \
+				line_end <= f_end and direction == Direction.BACKWARD:
 				line_end = line_start
 				line_start = f_start
 
@@ -172,8 +173,9 @@ class Navigator(object):
 		move_col_end = u'%dl' % (col_end - 1) if (col_end - 1) > 0 and (col_end - 1) < 2000000000 else u''
 		swap = u'o' if swap_cursor else u''
 
-		vim.command((u'normal! %dgg%s%s%dgg%s%s' % \
-				(line_start, move_col_start, vim.eval(u'visualmode()'.encode(u'utf-8')), line_end, move_col_end, swap)).encode(u'utf-8'))
+		vim.command((
+			u'normal! %dgg%s%s%dgg%s%s' %
+			(line_start, move_col_start, vim.eval(u'visualmode()'.encode(u'utf-8')), line_end, move_col_end, swap)).encode(u'utf-8'))
 
 	@classmethod
 	def _focus_heading(cls, mode, direction=Direction.FORWARD, skip_children=False):
@@ -191,7 +193,7 @@ class Navigator(object):
 		# should be rewritten
 		if not heading:
 			if direction == Direction.FORWARD and d.headings \
-					and vim.current.window.cursor[0] < d.headings[0].start_vim:
+				and vim.current.window.cursor[0] < d.headings[0].start_vim:
 				# the cursor is in the meta information are, therefore focus
 				# first heading
 				focus_heading = d.headings[0]
@@ -207,8 +209,8 @@ class Navigator(object):
 				# the cursor is in the body of the current heading, therefore
 				# the current heading will be focused
 				if mode == u'visual':
-					line_start, col_start = [ int(i) for i in vim.eval(u'getpos("\'<")'.encode(u'utf-8'))[1:3] ]
-					line_end, col_end = [ int(i) for i in vim.eval(u'getpos("\'>")'.encode(u'utf-8'))[1:3] ]
+					line_start, col_start = [int(i) for i in vim.eval(u'getpos("\'<")'.encode(u'utf-8'))[1:3]]
+					line_end, col_end = [int(i) for i in vim.eval(u'getpos("\'>")'.encode(u'utf-8'))[1:3]]
 					if line_start >= heading.start_vim and line_end > heading.start_vim:
 						focus_heading = heading
 				else:
@@ -311,3 +313,5 @@ class Navigator(object):
 		# operator-pending mode
 		self.keybindings.append(Keybinding(u'[[', Plug(u'OrgJumpToPreviousSkipChildrenOperator', u':<C-u>py ORGMODE.plugins[u"Navigator"].previous(mode=u"operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding(u']]', Plug(u'OrgJumpToNextSkipChildrenOperator', u':<C-u>py ORGMODE.plugins[u"Navigator"].next(mode=u"operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
+
+# vim: set noexpandtab:
