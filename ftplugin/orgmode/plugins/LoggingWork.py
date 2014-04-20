@@ -6,6 +6,7 @@ from orgmode._vim import echo, echom, echoe, ORGMODE, apply_count, repeat
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
 
+
 class LoggingWork(object):
 	u""" LoggingWork plugin """
 

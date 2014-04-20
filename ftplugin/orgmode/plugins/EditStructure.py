@@ -10,6 +10,7 @@ from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.liborgmode.base import Direction
 from orgmode.liborgmode.headings import Heading
 
+
 class EditStructure(object):
 	u""" EditStructure plugin """
 
@@ -68,19 +69,20 @@ class EditStructure(object):
 			# over the children of current heading
 			for child in current_heading.children:
 				heading.children.append(child, taint=False)
-			current_heading.children.remove_slice(0, len(current_heading.children), \
-					taint=False)
+			current_heading.children.remove_slice(
+				0, len(current_heading.children),
+				taint=False)
 
 		# if cursor is currently on a heading, insert parts of it into the
 		# newly created heading
 		if insert_mode and cursor[1] != 0 and cursor[0] == current_heading.start_vim:
-			offset = cursor[1] - current_heading.level - 1 - (len(current_heading.todo) \
-					+ 1 if current_heading.todo else 0)
+			offset = cursor[1] - current_heading.level - 1 - (
+				len(current_heading.todo) + 1 if current_heading.todo else 0)
 			if offset < 0:
 				offset = 0
 			if int(settings.get(u'org_improve_split_heading', u'1')) and \
-					offset > 0 and len(current_heading.title) == offset + 1 \
-					and current_heading.title[offset - 1] not in (u' ', u'\t'):
+				offset > 0 and len(current_heading.title) == offset + 1 \
+				and current_heading.title[offset - 1] not in (u' ', u'\t'):
 				offset += 1
 			heading.title = current_heading.title[offset:]
 			current_heading.title = current_heading.title[:offset]
@@ -266,8 +268,8 @@ class EditStructure(object):
 		d = ORGMODE.get_document()
 		current_heading = d.current_heading()
 		if not current_heading or \
-				(direction == Direction.FORWARD and not current_heading.next_sibling) or \
-				(direction == Direction.BACKWARD and not current_heading.previous_sibling):
+			(direction == Direction.FORWARD and not current_heading.next_sibling) or \
+			(direction == Direction.BACKWARD and not current_heading.previous_sibling):
 			return None
 
 		cursor_offset = vim.current.window.cursor[0] - (current_heading._orig_start + 1)
@@ -304,8 +306,9 @@ class EditStructure(object):
 
 		d.write()
 
-		vim.current.window.cursor = (current_heading.start_vim + cursor_offset, \
-				vim.current.window.cursor[1])
+		vim.current.window.cursor = (
+			current_heading.start_vim + cursor_offset,
+			vim.current.window.cursor[1])
 
 		return True
 
@@ -391,3 +394,5 @@ class EditStructure(object):
 		# other keybindings
 		self.keybindings.append(Keybinding(u'<C-d>', Plug(u'OrgPromoteOnHeadingInsert', u'<C-o>:silent! py ORGMODE.plugins[u"EditStructure"].promote_heading(including_children=False, on_heading=True, insert_mode=True)<CR>', mode=MODE_INSERT)))
 		self.keybindings.append(Keybinding(u'<C-t>', Plug(u'OrgDemoteOnHeadingInsert', u'<C-o>:silent! py ORGMODE.plugins[u"EditStructure"].demote_heading(including_children=False, on_heading=True, insert_mode=True)<CR>', mode=MODE_INSERT)))
+
+# vim: set noexpandtab:

@@ -32,13 +32,18 @@ let g:loaded_org = 1
 
 " Default org plugins that will be loaded (in the given order)
 if ! exists('g:org_plugins') && ! exists('b:org_plugins')
-	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|', 'Export']
+	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|', 'Export', 'EditCheckbox']
 endif
 
 if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_highlight_leading_stars')
 	let g:org_syntax_highlight_leading_stars = 1
 endif
 
+" expand tab for counting level of checkbox"{{{
+setlocal expandtab
+setlocal tabstop=4
+setlocal sw=4
+"}}}
 
 " Menu and document handling {{{
 function! <SID>OrgRegisterMenu()

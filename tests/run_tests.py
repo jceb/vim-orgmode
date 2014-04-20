@@ -4,6 +4,8 @@
 import test_vimbuffer
 
 import test_libagendafilter
+import test_libcheckbox
+import test_libbase
 import test_libheading
 import test_liborgdate
 import test_liborgdate_parsing
@@ -12,6 +14,7 @@ import test_liborgtimerange
 
 import test_plugin_date
 import test_plugin_edit_structure
+import test_plugin_edit_checkbox
 import test_plugin_misc
 import test_plugin_navigator
 import test_plugin_show_hide
@@ -28,6 +31,8 @@ if __name__ == '__main__':
 	tests.addTests(test_vimbuffer.suite())
 
 	# lib
+	tests.addTests(test_libbase.suite())
+	tests.addTests(test_libcheckbox.suite())
 	tests.addTests(test_libagendafilter.suite())
 	tests.addTests(test_libheading.suite())
 	tests.addTests(test_liborgdate.suite())
@@ -38,6 +43,7 @@ if __name__ == '__main__':
 	# plugins
 	tests.addTests(test_plugin_date.suite())
 	tests.addTests(test_plugin_edit_structure.suite())
+	tests.addTests(test_plugin_edit_checkbox.suite())
 	tests.addTests(test_plugin_misc.suite())
 	tests.addTests(test_plugin_navigator.suite())
 	tests.addTests(test_plugin_show_hide.suite())

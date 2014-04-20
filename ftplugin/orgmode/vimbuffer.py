@@ -245,6 +245,34 @@ class VimBuffer(Document):
 
 		return heading
 
+	def write_checkbox(self, checkbox, including_children=True):
+		if including_children and checkbox.children:
+			for child in checkbox.children[::-1]:
+				self.write_checkbox(child, including_children)
+
+		if checkbox.is_dirty:
+			if checkbox._orig_start is not None:
+				# this is a heading that existed before and was changed. It
+				# needs to be replaced
+				# print "checkbox is dirty? " + str(checkbox.is_dirty_checkbox)
+				# print checkbox
+				if checkbox.is_dirty_checkbox:
+					self._content[checkbox._orig_start:checkbox._orig_start + 1] = [unicode(checkbox)]
+				if checkbox.is_dirty_body:
+					self._content[checkbox._orig_start + 1:checkbox._orig_start + checkbox._orig_len] = checkbox.body
+			else:
+				# this is a new checkbox. It needs to be inserted
+				raise ValueError('Checkbox must contain the attribute _orig_start! %s' % checkbox)
+			checkbox._dirty_checkbox = False
+			checkbox._dirty_body = False
+		# for all headings the length offset needs to be updated
+		checkbox._orig_len = len(checkbox)
+
+		return checkbox
+
+	def write_checkboxes(self, checkboxes):
+		pass
+
 	def previous_heading(self, position=None):
 		u""" Find the next heading (search forward) and return the related object
 		:returns:	Heading object or None
