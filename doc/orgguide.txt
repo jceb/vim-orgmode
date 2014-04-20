@@ -261,6 +261,14 @@ Suggested plugins~
     (http://www.vim.org/scripts/script.php?script_id=52)
     This plugin will create a calendar window for timestamp insertion.
 
+  SyntaxRange~
+    (http://www.vim.org/scripts/script.php?script_id=4168)
+    Use proper syntax highlighting for code blocks such as: >
+    #+BEGIN_SRC cpp
+    int i = 1;
+    #+END_SRC
+<
+
 ------------------------------------------------------------------------------
 Feedback~
    If you find problems with vim-orgmode, or if you have questions, remarks, or
