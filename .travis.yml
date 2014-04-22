@@ -10,6 +10,6 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script:
-    - "flake8 --ignore=W191,E101 --max-complexity=10 **/**.py"
+    # - "flake8 --ignore=W191,E101 --max-complexity=10 **/**.py"
     - cd tests
     - nosetests --with-coverage .
