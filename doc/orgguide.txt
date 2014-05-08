@@ -1437,6 +1437,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.5.0-0
+- fix broken indentation of checkboxes (closes issue #146)
 - fix CalendarAction is undefined (closes issue #142)
 - correct overlapping mappings in PluginDate
 - add test cases for overlapping mappings

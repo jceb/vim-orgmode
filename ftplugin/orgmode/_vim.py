@@ -178,13 +178,14 @@ def indent_orgmode():
 	if heading and line != heading.start_vim:
 		heading.init_checkboxes()
 		checkbox = heading.current_checkbox()
+		level = heading.level + 1
+		stripped_line = vim.current.buffer[line - 1].strip()
 		if checkbox:
-			print checkbox
-			vim.command((u'let b:indent_level = %d' % (checkbox.level + 6))
-					.encode(u'utf-8'))
-		else:	
-			vim.command((u'let b:indent_level = %d' % (heading.level + 1))
-					.encode(u'utf-8'))
+			if not stripped_line or stripped_line[0] not in (u'- [', u'+ [', u'* ['):
+				level = checkbox.level + 6
+			elif checkbox.level > level:
+				level = checkbox.level
+		vim.command((u'let b:indent_level = %d' % level).encode(u'utf-8'))
 
 
 def fold_text(allow_dirty=False):
