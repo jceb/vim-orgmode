@@ -14,9 +14,9 @@ setlocal nosmartindent
 setlocal autoindent
 
 function! GetOrgIndent()
-    if g:org_indent == 0
-        return -1
-    endif
+	if g:org_indent == 0
+		return -1
+	endif
 
 python << EOF
 from orgmode._vim import indent_orgmode
