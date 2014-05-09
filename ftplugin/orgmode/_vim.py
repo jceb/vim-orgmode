@@ -17,11 +17,13 @@ import orgmode.keybinding
 import orgmode.menu
 import orgmode.plugins
 import orgmode.settings
+from orgmode.liborgmode.dom_obj import UnOrderListType, OrderListType
 from orgmode.exceptions import PluginError
 from orgmode.vimbuffer import VimBuffer
 from orgmode.liborgmode.agenda import AgendaManager
 
 
+OrgListType = UnOrderListType + OrderListType
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
 TAGSPROPERTIES_EXISTS = False
 
@@ -181,7 +183,7 @@ def indent_orgmode():
 		level = heading.level + 1
 		stripped_line = vim.current.buffer[line - 1].strip()
 		if checkbox:
-			if not stripped_line or stripped_line[:3] not in (u'- [', u'+ [', u'* ['):
+			if not stripped_line or stripped_line[0] not in OrgListType:
 				level = checkbox.level + 6
 			elif checkbox.level > level:
 				level = checkbox.level
