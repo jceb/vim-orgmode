@@ -28,6 +28,7 @@
    - Hyperlinks within vim-orgmode and outside (files, webpages, etc.)
    - TODO list management
    - Tags for headings
+   - Lists in alphanumeric and bullet item notation and checkbox support
    - Basic date handling
    - Export (via emacs)
 
