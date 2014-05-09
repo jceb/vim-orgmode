@@ -183,11 +183,11 @@ class Checkbox(DomObj):
 					parent/document or is not in the list of checkboxes
 		"""
 		if self.parent:
-			if self in self.parent.children:
-				return self.parent.children.index(self)
+			return super(Checkbox, self).get_index_in_parent_list()
 		elif self.document:
-			if self in self.document.checkboxes:
-				return self.document.checkboxes.index(self)
+			l = self.get_parent_list()
+			if l:
+				return l.index(self)
 
 	def get_parent_list(self):
 		""" Retrieve the parents' list of headings. This works also for top
@@ -197,8 +197,7 @@ class Checkbox(DomObj):
 					parent/document or is not in the list of headings
 		"""
 		if self.parent:
-			if self in self.parent.children:
-				return self.parent.children
+			return super(Checkbox, self).get_parent_list()
 		elif self.document:
 			if self in self.document.checkboxes:
 				return self.document.checkboxes

@@ -77,7 +77,7 @@ class EditCheckboxTestCase(unittest.TestCase):
 		# new_checkbox
 		vim.current.window.cursor = (10, 0)
 		self.editcheckbox.new_checkbox(below=True)
-		self.assertEqual(vim.current.buffer[10], '- [ ] ')
+		self.assertEqual(vim.current.buffer[10], '                    - [ ] ')
 		self.editcheckbox.update_checkboxes_status()
 
 	def test_no_status_checkbox(self):

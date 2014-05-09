@@ -1437,6 +1437,9 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.5.0-0
+- copy type and indentation when creating new list items
+- increase/decrease ordered list when adding new items
+- add support for alphanumeric ordered lists
 - fix broken indentation of checkboxes (closes issue #146)
 - fix CalendarAction is undefined (closes issue #142)
 - correct overlapping mappings in PluginDate

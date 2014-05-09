@@ -504,11 +504,11 @@ class Heading(DomObj):
 					parent/document or is not in the list of headings
 		"""
 		if self.parent:
-			if self in self.parent.children:
-				return self.parent.children.index(self)
+			return super(Heading, self).get_index_in_parent_list()
 		elif self.document:
-			if self in self.document.headings:
-				return self.document.headings.index(self)
+			l = self.get_parent_list()
+			if l:
+				return l.index(self)
 
 	def get_parent_list(self):
 		""" Retrieve the parents' list of headings. This works also for top
@@ -518,8 +518,7 @@ class Heading(DomObj):
 					parent/document or is not in the list of headings
 		"""
 		if self.parent:
-			if self in self.parent.children:
-				return self.parent.children
+			return super(Heading, self).get_parent_list()
 		elif self.document:
 			if self in self.document.headings:
 				return self.document.headings

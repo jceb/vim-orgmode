@@ -5,6 +5,7 @@ from orgmode._vim import echo, echom, echoe, ORGMODE, apply_count, repeat, inser
 from orgmode.menu import Submenu, Separator, ActionEntry, add_cmd_mapping_menu
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode.liborgmode.checkboxes import Checkbox
+from orgmode.liborgmode.dom_obj import OrderListType
 
 
 class EditCheckbox(object):
@@ -36,19 +37,57 @@ class EditCheckbox(object):
 		h.init_checkboxes()
 		c = h.current_checkbox()
 
+		nc = Checkbox()
+		nc._heading = h
+
 		# default checkbox level
 		level = h.level
+		start = vim.current.window.cursor[0] - 1
 		# if no checkbox is found, insert at current line with indent level=1
 		if c is None:
-			start = h.start
 			if h.checkboxes:
 				level = h.first_checkbox.level
+				h.checkboxes.append(nc)
 		else:
+			l = c.get_parent_list()
+			idx = c.get_index_in_parent_list()
+			if l is not None and idx is not None:
+				l.insert(idx + (1 if below else 0), nc)
+				# workaround for broken associations, Issue #165
+				nc._parent = c.parent
+				if below:
+					if c.next_sibling:
+						c.next_sibling._previous_sibling = nc
+					nc._next_sibling = c.next_sibling
+					c._next_sibling = nc
+					nc._previous_sibling = c
+				else:
+					if c.previous_sibling:
+						c.previous_sibling._next_sibling = nc
+					nc._next_sibling = c
+					nc._previous_sibling = c.previous_sibling
+					c._previous_sibling = nc
+
+			t = c.type
+			# increase key for ordered lists
+			if t[-1] in OrderListType:
+				try:
+					num = int(t[:-1]) + (1 if below else -1)
+					t = '%d%s' % (num, t[-1])
+				except ValueError:
+					try:
+						char = ord(t[:-1]) + (1 if below else -1)
+						t = '%s%s' % (chr(char), t[-1])
+					except ValueError:
+						pass
+			nc.type = t
 			level = c.level
+
 			if below:
 				start = c.end_of_last_child
 			else:
 				start = c.start
+		nc.level = level
 
 		vim.current.window.cursor = (start + 1, 0)
 
@@ -57,8 +96,7 @@ class EditCheckbox(object):
 		else:
 			vim.command("normal O")
 
-		new_checkbox = Checkbox(level=level)
-		insert_at_cursor(str(new_checkbox))
+		insert_at_cursor(str(nc))
 		vim.command("call feedkeys('a')")
 
 	@classmethod
