@@ -51,12 +51,12 @@ class Checkbox(DomObj):
 	def __unicode__(self):
 		heading_level = 0
 		if self._heading:
-			heading_level = self._heading.level
+			heading_level = self._heading.level + 1
 		if self.status is None:
-			res = u' ' * (heading_level + 1 + self.number_of_parents * 6) + \
+			res = u' ' * (heading_level + self.number_of_parents * 6) + \
 					self.type + u' ' + self.title
 		else:
-			res = u' ' * (heading_level + 1 + self.number_of_parents * 6) + \
+			res = u' ' * (heading_level + self.number_of_parents * 6) + \
 					self.type + u' ' + self.status + u' ' + self.title
 
 		return res
@@ -132,7 +132,7 @@ class Checkbox(DomObj):
 			nc._orig_start = orig_start
 			nc._orig_len = len(nc)
 		if heading:
-			nc.heading = heading
+			nc._heading = heading
 
 		return nc
 
@@ -145,7 +145,7 @@ class Checkbox(DomObj):
 		count = "%d/%d" % (on, total)
 		self.title = REGEX_SUBTASK.sub("[%s]" % (count), self.title)
 		self.title = REGEX_SUBTASK_PERCENT.sub("[%d%%]" % (percent), self.title)
-		d = self.heading.document.write_checkbox(self, including_children=False)
+		d = self._heading.document.write_checkbox(self, including_children=False)
 
 	@classmethod
 	def identify_checkbox(cls, line):
@@ -260,7 +260,7 @@ class Checkbox(DomObj):
 
 	def all_siblings(self):
 		if not self.parent:
-			p = self.heading
+			p = self._heading
 		else:
 			p = self.parent
 			if not p.children:
