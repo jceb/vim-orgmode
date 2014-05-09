@@ -187,7 +187,10 @@ def indent_orgmode():
 				if checkbox.status:
 					level += 6
 				else:
-					level += 2
+					if checkbox.type in UnOrderListType:
+						level += 2
+					else:
+						level += 3
 		vim.command((u'let b:indent_level = %d' % level).encode(u'utf-8'))
 
 
