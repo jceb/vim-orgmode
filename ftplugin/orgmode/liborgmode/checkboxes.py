@@ -49,11 +49,15 @@ class Checkbox(DomObj):
 			self.status = status
 
 	def __unicode__(self):
+		heading_level = 0
+		if self._heading:
+			heading_level = self._heading.level
 		if self.status is None:
-			res = u' ' * self.level + self.type + u' ' + self.title
+			res = u' ' * (heading_level + 1 + self.number_of_parents * 6) + \
+					self.type + u' ' + self.title
 		else:
-			res = u' ' * self.level + self.type + u' ' + self.status \
-									+ u' ' + self.title
+			res = u' ' * (heading_level + 1 + self.number_of_parents * 6) + \
+					self.type + u' ' + self.status + u' ' + self.title
 
 		return res
 
@@ -186,7 +190,7 @@ class Checkbox(DomObj):
 				return self.document.checkboxes.index(self)
 
 	def get_parent_list(self):
-		""" Retrieve the parents list of headings. This works also for top
+		""" Retrieve the parents' list of headings. This works also for top
 		level headings.
 
 		:returns:	List of headings or None if heading doesn't have a

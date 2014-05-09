@@ -511,7 +511,7 @@ class Heading(DomObj):
 				return self.document.headings.index(self)
 
 	def get_parent_list(self):
-		""" Retrieve the parents list of headings. This works also for top
+		""" Retrieve the parents' list of headings. This works also for top
 		level headings.
 
 		:returns:	List of headings or None if heading doesn't have a
