@@ -64,20 +64,20 @@ class EditCheckboxTestCase(unittest.TestCase):
 		self.assertEqual(vim.current.buffer[1], "* heading1 [0%]")
 		# toggle
 		self.editcheckbox.toggle()
-		self.assertEqual(vim.current.buffer[5], "    - [X] checkbox4")
-		
+		self.assertEqual(vim.current.buffer[5], "              - [X] checkbox4")
+
 		bufnr += 1
 		set_vim_buffer(buf=self.c1, cursor=(9, 0), bufnr=bufnr)
 		# toggle and check checkbox status
 		self.editcheckbox.toggle()
-		self.assertEqual(vim.current.buffer[8], "   - [X] checkbox7")
-		self.assertEqual(vim.current.buffer[7], "  - [-] checkbox6")
-		self.assertEqual(vim.current.buffer[6], " - [-] checkbox5")
+		self.assertEqual(vim.current.buffer[8], "              - [X] checkbox7")
+		self.assertEqual(vim.current.buffer[7], "        - [-] checkbox6")
+		self.assertEqual(vim.current.buffer[6], "  - [-] checkbox5")
 
 		# new_checkbox
 		vim.current.window.cursor = (10, 0)
 		self.editcheckbox.new_checkbox(below=True)
-		self.assertEqual(vim.current.buffer[10], '   - [ ] ')
+		self.assertEqual(vim.current.buffer[10], '- [ ] ')
 		self.editcheckbox.update_checkboxes_status()
 
 	def test_no_status_checkbox(self):
@@ -89,11 +89,11 @@ class EditCheckboxTestCase(unittest.TestCase):
 		# toggle
 		vim.current.window.cursor = (4, 0)
 		self.editcheckbox.toggle()
-		self.assertEqual(vim.current.buffer[3], " - [X] test1")
+		self.assertEqual(vim.current.buffer[3], "        - [X] test1")
 
 		# self.editcheckbox.update_checkboxes_status()
 		# see if the no status checkbox update its status
-		self.assertEqual(vim.current.buffer[2], "- checkbox [33%]")
+		self.assertEqual(vim.current.buffer[2], "  - checkbox [33%]")
 
 	def test_number_list(self):
 		global bufnr
@@ -101,7 +101,7 @@ class EditCheckboxTestCase(unittest.TestCase):
 		set_vim_buffer(buf=self.c3, bufnr=bufnr)
 		vim.current.window.cursor = (6, 0)
 		self.editcheckbox.toggle()
-		self.assertEqual(vim.current.buffer[5], "2. [X] another main task")
+		self.assertEqual(vim.current.buffer[5], "  2. [X] another main task")
 
 
 def suite():

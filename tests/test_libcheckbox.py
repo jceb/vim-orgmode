@@ -43,28 +43,28 @@ class CheckboxTestCase(unittest.TestCase):
 
 		self.c1 = """
 * heading1 [/]
- - [-] checkbox1 [%]
-  - [X] checkbox2
-  - [ ] checkbox3
- - [X] checkbox4
+  - [-] checkbox1 [%]
+        - [X] checkbox2
+        - [ ] checkbox3
+  - [X] checkbox4
 """.split("\n")
 
 		self.c2 = """
 * heading1
   - [ ] checkbox1
   - [ ] checkbox2
-   - [ ] checkbox3
-    - [ ] checkbox4
-      - [ ] checkbox5
+        - [ ] checkbox3
+              - [ ] checkbox4
+                    - [ ] checkbox5
    - [ ] checkbox6
 """.split("\n")
 
 	def test_init(self):
 		# test initialize Checkbox
 		c = Checkbox(level=1, title="checkbox1")
-		self.assertEqual(str(c), " - [ ] checkbox1")
+		self.assertEqual(str(c), "- [ ] checkbox1")
 		c = Checkbox(level=3, title="checkbox2", status="[X]")
-		self.assertEqual(str(c), " " * 3 + "- [X] checkbox2")
+		self.assertEqual(str(c), "- [X] checkbox2")
 
 	def test_basic(self):
 		bufnr = 1
@@ -90,8 +90,8 @@ class CheckboxTestCase(unittest.TestCase):
 
 	def test_identify(self):
 		# test identify_checkbox
-		self.assertEqual(Checkbox.identify_checkbox(self.c1[2]), 1)
-		self.assertEqual(Checkbox.identify_checkbox(self.c1[3]), 2)
+		self.assertEqual(Checkbox.identify_checkbox(self.c1[2]), 2)
+		self.assertEqual(Checkbox.identify_checkbox(self.c1[3]), 8)
 		# check for corner case
 		self.assertEqual(Checkbox.identify_checkbox(" - [ ]"), 1)
 
@@ -105,9 +105,9 @@ class CheckboxTestCase(unittest.TestCase):
 		# toggle checkbox
 		c = h.current_checkbox(position=4)
 		c.toggle()
-		self.assertEqual(str(c), "  - [X] checkbox3")
+		self.assertEqual(str(c), "        - [X] checkbox3")
 		c.toggle()
-		self.assertEqual(str(c), "  - [ ] checkbox3")
+		self.assertEqual(str(c), "        - [ ] checkbox3")
 
 		(total, on) = c.all_siblings_status()
 		self.assertEqual((total, on), (2, 1))
@@ -122,7 +122,7 @@ class CheckboxTestCase(unittest.TestCase):
 		c = h.current_checkbox(position=2)
 		(total, on) = c.all_siblings_status()
 		c.update_subtasks(total=total, on=on)
-		self.assertEqual(str(c), " - [-] checkbox1 [50%]")
+		self.assertEqual(str(c), "  - [-] checkbox1 [50%]")
 
 
 def suite():
