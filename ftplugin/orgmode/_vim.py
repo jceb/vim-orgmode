@@ -181,7 +181,7 @@ def indent_orgmode():
 		level = heading.level + 1
 		stripped_line = vim.current.buffer[line - 1].strip()
 		if checkbox:
-			if not stripped_line or stripped_line[0] not in (u'- [', u'+ [', u'* ['):
+			if not stripped_line or stripped_line[:3] not in (u'- [', u'+ [', u'* ['):
 				level = checkbox.level + 6
 			elif checkbox.level > level:
 				level = checkbox.level
