@@ -81,6 +81,8 @@ class EditCheckbox(object):
 					except ValueError:
 						pass
 			nc.type = t
+			if not c.status:
+				nc.status = None
 			level = c.level
 
 			if below:

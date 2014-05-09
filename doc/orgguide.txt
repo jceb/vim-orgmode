@@ -1437,6 +1437,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.5.0-0
+- omit status when entering new checkbox item if current checkbox doesn't have one
 - copy type and indentation when creating new list items
 - increase/decrease ordered list when adding new items
 - add support for alphanumeric ordered lists
