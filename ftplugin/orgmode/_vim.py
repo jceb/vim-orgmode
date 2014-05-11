@@ -185,12 +185,15 @@ def indent_orgmode():
 			if line != checkbox.start_vim:
 				# indent body up to the beginning of the checkbox' text
 				if checkbox.status:
-					level += 6
+					if checkbox.type in UnOrderListType:
+						level += 6
+					else:
+						level += len(checkbox.type) + 5
 				else:
 					if checkbox.type in UnOrderListType:
 						level += 2
 					else:
-						level += 3
+						level += len(checkbox.type) + 1
 		vim.command((u'let b:indent_level = %d' % level).encode(u'utf-8'))
 
 
