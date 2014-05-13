@@ -17,7 +17,7 @@ class EditCheckbox(object):
 		u""" Initialize plugin """
 		object.__init__(self)
 		# menu entries this plugin should create
-		self.menu = ORGMODE.orgmenu + Submenu(u'EditCheckbox')
+		self.menu = ORGMODE.orgmenu + Submenu(u'Edit Checkbox')
 
 		# key bindings for this plugin
 		# key bindings are also registered through the menu so only additional
