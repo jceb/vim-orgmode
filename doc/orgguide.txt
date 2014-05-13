@@ -1437,6 +1437,7 @@ LINKS                                                           *orgguide-links*
 CHANGELOG                                                   *orgguide-changelog*
 
 0.5.0-0
+- add tests for the tags plugin
 - fix highlighting of todo keywords that are followed by additional characters,
   i.e. TODOs
 - omit status when entering new checkbox item if current checkbox doesn't have one
