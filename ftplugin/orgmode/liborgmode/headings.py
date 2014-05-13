@@ -65,9 +65,10 @@ class Heading(DomObj):
 		if self.tags:
 			tabs = 0
 			spaces = 2
-			tags = (u':%s:' % (u':'.join(self.tags)))
+			tags = u':%s:' % (u':'.join(self.tags), )
 
-			ts = 8
+			# FIXME this is broken because of missing associations for headings
+			ts = 6
 			tag_column = 77
 			if self.document:
 				ts = self.document.tabstop

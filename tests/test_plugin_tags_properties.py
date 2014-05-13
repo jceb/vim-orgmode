@@ -138,6 +138,38 @@ Bla Bla bla bla
 		self.tagsproperties.set_tags()
 		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1'.encode('utf-8'))
 
+	def test_realign_tags_noop(self):
+		vim.current.window.cursor = (2, 0)
+		self.tagsproperties.realign_tags()
+		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1'.encode('utf-8'))
+
+	def test_realign_tags_remove_spaces(self):
+		# remove spaces in multiple locations
+		vim.current.buffer[1] = u'*  Überschrift 1 '.encode(u'utf-8')
+		vim.current.window.cursor = (2, 0)
+		self.tagsproperties.realign_tags()
+		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1'.encode('utf-8'))
+
+		# remove tabs and spaces in multiple locations
+		vim.current.buffer[1] = u'*\t  \tÜberschrift 1 \t'.encode(u'utf-8')
+		vim.current.window.cursor = (2, 0)
+		self.tagsproperties.realign_tags()
+		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1'.encode('utf-8'))
+
+	def test_realign_tags(self):
+		vim.current.window.cursor = (2, 0)
+		vim.EVALRESULTS[u'input("Tags: ", "", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u':hello:world:'.encode('utf-8')
+		self.tagsproperties.set_tags()
+		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
+
+		d = ORGMODE.get_document()
+		heading = d.find_current_heading()
+		self.assertEqual(str(heading), u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
+		self.tagsproperties.realign_tags()
+		heading = d.find_current_heading()
+		self.assertEqual(str(heading), u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
+
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(TagsPropertiesTestCase)
