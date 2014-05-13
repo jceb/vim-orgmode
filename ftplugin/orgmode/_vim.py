@@ -17,7 +17,6 @@ import orgmode.keybinding
 import orgmode.menu
 import orgmode.plugins
 import orgmode.settings
-from orgmode.liborgmode.dom_obj import UnOrderListType
 from orgmode.exceptions import PluginError
 from orgmode.vimbuffer import VimBuffer
 from orgmode.liborgmode.agenda import AgendaManager
@@ -184,16 +183,7 @@ def indent_orgmode():
 			level = level + checkbox.number_of_parents * 6
 			if line != checkbox.start_vim:
 				# indent body up to the beginning of the checkbox' text
-				if checkbox.status:
-					if checkbox.type in UnOrderListType:
-						level += 6
-					else:
-						level += len(checkbox.type) + 5
-				else:
-					if checkbox.type in UnOrderListType:
-						level += 2
-					else:
-						level += len(checkbox.type) + 1
+				level += len(checkbox.type) + 1 + (4 if checkbox.status else 0)
 		vim.command((u'let b:indent_level = %d' % level).encode(u'utf-8'))
 
 
