@@ -61,7 +61,7 @@ Bla Bla bla bla
 		u""" TODO: Docstring for test_new_property
 
 		:returns: TODO
-		u"""
+		"""
 		pass
 
 def suite():
