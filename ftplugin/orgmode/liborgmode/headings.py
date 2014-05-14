@@ -234,8 +234,7 @@ class Heading(DomObj):
 			c = c.next_sibling
 		raise StopIteration()
 
-	def find_checkbox(
-		self, position=0, direction=Direction.FORWARD,
+	def find_checkbox(self, position=0, direction=Direction.FORWARD,
 		checkbox=Checkbox, connect_with_heading=True):
 		u""" Find checkbox in the given direction
 
