@@ -183,7 +183,10 @@ def indent_orgmode():
 			level = level + checkbox.number_of_parents * 6
 			if line != checkbox.start_vim:
 				# indent body up to the beginning of the checkbox' text
-				level += len(checkbox.type) + 1 + (4 if checkbox.status else 0)
+				# if checkbox isn't indented to the proper location, the body
+				# won't be indented either
+				level = checkbox.level + len(checkbox.type) + 1 + \
+						(4 if checkbox.status else 0)
 		vim.command((u'let b:indent_level = %d' % level).encode(u'utf-8'))
 
 
