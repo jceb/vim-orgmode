@@ -49,17 +49,8 @@ class Checkbox(DomObj):
 			self.status = status
 
 	def __unicode__(self):
-		heading_level = 0
-		if self._heading:
-			heading_level = self._heading.level + 1
-		if self.status is None:
-			res = u' ' * (heading_level + self.number_of_parents * 6) + \
-					self.type + u' ' + self.title
-		else:
-			res = u' ' * (heading_level + self.number_of_parents * 6) + \
-					self.type + u' ' + self.status + u' ' + self.title
-
-		return res
+		return u' ' * self.level + self.type + u' ' + \
+			(self.status + u' ' if self.status else u'') + self.title
 
 	def __str__(self):
 		return self.__unicode__().encode(u'utf-8')

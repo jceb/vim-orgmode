@@ -62,9 +62,9 @@ class CheckboxTestCase(unittest.TestCase):
 	def test_init(self):
 		# test initialize Checkbox
 		c = Checkbox(level=1, title="checkbox1")
-		self.assertEqual(str(c), "- [ ] checkbox1")
+		self.assertEqual(str(c), " - [ ] checkbox1")
 		c = Checkbox(level=3, title="checkbox2", status="[X]")
-		self.assertEqual(str(c), "- [X] checkbox2")
+		self.assertEqual(str(c), "   - [X] checkbox2")
 
 	def test_basic(self):
 		bufnr = 1
