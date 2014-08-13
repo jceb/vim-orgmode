@@ -34,7 +34,7 @@
 
    More features are coming...
 
-   [[file:examples/mylife.png][file:examples/mylife.org]]
+   [[file:examples/mylife.org][file:examples/mylife.png]]
 
 * License
   Information about the license are found in the file LICENSE.
