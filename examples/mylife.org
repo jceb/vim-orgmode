@@ -1,0 +1,10 @@
+* My Life
+  - [-] in plain text [50%]
+        - [X] some task
+        - [ ] some other task
+* TODO Write minutes of last meeting					     :work:
+** DONE John said
+   this
+** TODO Mary said
+   that
+** WAITING What did Mark say?
