@@ -10,12 +10,7 @@
   scheduling of tasks.  These are completed by hyperlinks, tags, todo states,
   priorities aso.
 
-  Vim-orgmode aims at providing the same functionality for Vim and for command
-  line tools*.
-
-  *for command line tools and other programs a library named liborgmode is
-   provided. It encapsulates all functionality for parsing and modifying
-   Org-Mode files.
+  vim-orgmode aims at providing the same functionality for Vim.
 
    [[https://raw.githubusercontent.com/jceb/vim-orgmode/master/examples/mylife.org][file:examples/mylife.png]]
 
@@ -23,7 +18,8 @@
    vim-orgmode is still very young but already quite usable. Here is a short
    list of the already supported features:
 
-   - Cycle visibility of headings
+   - Proper syntax highlighting
+   - Cycle visibility of headings (foliding)
    - Navigate between headings
    - Edit the structure of the document: add, move, promote, denote headings
      and more
@@ -32,12 +28,12 @@
    - Tags for headings
    - Lists in alphanumeric and bullet item notation and checkbox support
    - Basic date handling
-   - Export (via emacs)
+   - Export to other formats (via Emacs' Org-Mode)
 
    More features are coming...
 
 * License
-  Information about the license are found in the file LICENSE.
+  Information about the license are found in the file [[LICENSE]].
 
 * Installation and Usage
   Installation and usage instructions are found in the file [[doc/orgguide.txt][doc/orgguide.txt]].
