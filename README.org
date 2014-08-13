@@ -17,6 +17,8 @@
    provided. It encapsulates all functionality for parsing and modifying
    Org-Mode files.
 
+   [[https://raw.githubusercontent.com/jceb/vim-orgmode/master/examples/mylife.org][file:examples/mylife.png]]
+
 ** Features
    vim-orgmode is still very young but already quite usable. Here is a short
    list of the already supported features:
@@ -33,8 +35,6 @@
    - Export (via emacs)
 
    More features are coming...
-
-   [[file:examples/mylife.org][file:examples/mylife.png]]
 
 * License
   Information about the license are found in the file LICENSE.
