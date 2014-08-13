@@ -2,7 +2,7 @@
   - [X] birth
   - [-] life [50%]
         - [X] use vim
-        - [ ] get everything done
+        - [ ] get everything else done
 * Write minutes of last meeting <2014-08-08 Fri>			     :work:
 ** DONE John said
    this
@@ -23,4 +23,4 @@
 * Some folding headline 4
 ** Folded
 *** Even more folded
-    unfolded
+    completely unfolded
