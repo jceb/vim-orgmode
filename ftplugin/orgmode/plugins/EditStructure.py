@@ -346,7 +346,7 @@ class EditStructure(object):
 
 		self.keybindings.append(Keybinding(u'<C-CR>', Plug(u'OrgNewHeadingBelowAfterChildrenNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=True, end_of_last_child=True)<CR>')))
 		self.menu + ActionEntry(u'New Heading below, after &children', self.keybindings[-1])
-		self.keybindings.append(Keybinding(u'<localleader>hn', u'<Plug>OrgNewHeadingAboveNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'<localleader>hn', u'<Plug>OrgNewHeadingBelowAfterChildrenNormal', mode=MODE_NORMAL))
 
 		self.keybindings.append(Keybinding(u'<C-S-CR>', Plug(u'OrgNewHeadingAboveInsert', u'<C-o>:<C-u>silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=False, insert_mode=True)<CR>', mode=MODE_INSERT)))
 		self.keybindings.append(Keybinding(u'<S-CR>', Plug(u'OrgNewHeadingBelowInsert', u'<C-o>:<C-u>silent! py ORGMODE.plugins[u"EditStructure"].new_heading(insert_mode=True)<CR>', mode=MODE_INSERT)))
