@@ -97,6 +97,10 @@ class EditCheckbox(object):
 			vim.command(u"normal! O")
 
 		insert_at_cursor(unicode(nc))
+
+		# update checkboxes status
+		cls.update_checkboxes_status()
+
 		vim.command(u"call feedkeys('a')")
 
 	@classmethod
