@@ -41,13 +41,11 @@ class EditCheckbox(object):
 		nc._heading = h
 
 		# default checkbox level
-		level = h.level
+		level = h.level + 1
 		start = vim.current.window.cursor[0] - 1
 		# if no checkbox is found, insert at current line with indent level=1
 		if c is None:
-			if h.checkboxes:
-				level = h.first_checkbox.level
-				h.checkboxes.append(nc)
+			h.checkboxes.append(nc)
 		else:
 			l = c.get_parent_list()
 			idx = c.get_index_in_parent_list()
@@ -94,12 +92,12 @@ class EditCheckbox(object):
 		vim.current.window.cursor = (start + 1, 0)
 
 		if below:
-			vim.command("normal o")
+			vim.command(u"normal! o")
 		else:
-			vim.command("normal O")
+			vim.command(u"normal! O")
 
-		insert_at_cursor(str(nc))
-		vim.command("call feedkeys('a')")
+		insert_at_cursor(unicode(nc))
+		vim.command(u"call feedkeys('a')")
 
 	@classmethod
 	def toggle(cls, checkbox=None):
@@ -197,7 +195,7 @@ class EditCheckbox(object):
 				current_status = None
 			# the checkbox needs to have status
 			else:
-				total +=  1
+				total += 1
 
 			# count number of status in this checkbox level
 			if current_status == Checkbox.STATUS_OFF:
