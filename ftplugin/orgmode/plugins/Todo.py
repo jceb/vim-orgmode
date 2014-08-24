@@ -252,7 +252,7 @@ class Todo(object):
 		vim.command(u'au orgmode BufEnter <buffer> :if ! exists("g:org_sav_timeoutlen")|let g:org_sav_timeoutlen=&timeoutlen|set timeoutlen=1|endif'.encode(u'utf-8'))
 		vim.command(u'au orgmode BufLeave <buffer> :if exists("g:org_sav_timeoutlen")|let &timeoutlen=g:org_sav_timeoutlen|unlet g:org_sav_timeoutlen|endif'.encode(u'utf-8'))
 		# make window a scratch window and set the statusline differently
-		vim.command(u'setlocal tabstop=16 buftype=nofile timeout timeoutlen=1 winfixheight'.encode(u'utf-8'))
+		vim.command(u'setlocal nolist tabstop=16 buftype=nofile timeout timeoutlen=1 winfixheight'.encode(u'utf-8'))
 		vim.command((u'setlocal statusline=Org\\ todo\\ (%s)' % vim.eval((u'fnameescape(fnamemodify(bufname(%d), ":t"))' % bufnr).encode(u'utf-8'))).encode(u'utf-8'))
 		vim.command((u'nnoremap <silent> <buffer> <Esc> :%sbw<CR>' % (vim.eval(u'bufnr("%")'.encode(u'utf-8')), )).encode(u'utf-8'))
 		vim.command(u'nnoremap <silent> <buffer> <CR> :let g:org_state = fnameescape(expand("<cword>"))<Bar>bw<Bar>exec "py ORGMODE.plugins[u\'Todo\'].set_todo_state(\'".g:org_state."\')"<Bar>unlet! g:org_state<CR>'.encode(u'utf-8'))
