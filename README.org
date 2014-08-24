@@ -12,7 +12,7 @@
 
   vim-orgmode aims at providing the same functionality for Vim.
 
-   [[https://raw.githubusercontent.com/jceb/vim-orgmode/master/examples/mylife.org][file:examples/mylife.png]]
+   [[https://raw.githubusercontent.com/jceb/vim-orgmode/master/examples/mylife.org][file:examples/mylife.gif]]
 
 ** Features
    vim-orgmode is still very young but already quite usable. Here is a short
