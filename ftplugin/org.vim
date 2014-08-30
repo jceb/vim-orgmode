@@ -11,7 +11,7 @@ if ! has('python') || v:version < 703
 	finish
 endif
 
-if ! exists("b:did_ftplugin")
+if ! exists('b:did_ftplugin')
 	" default emacs settings
 	setlocal comments-=s1:/*,mb:*,ex:*/
 	setlocal commentstring=#\ %s
@@ -19,6 +19,11 @@ if ! exists("b:did_ftplugin")
 	" original emacs settings are: setlocal tabstop=6 shiftwidth=6, but because
 	" of checkbox indentation the following settings are used:
 	setlocal tabstop=6 shiftwidth=6
+	if exists('g:org_tag_column')
+		exe 'setlocal textwidth='.g:org_tag_column
+	else
+		setlocal textwidth=77
+	endif
 
 	" expand tab for counting level of checkbox
 	setlocal expandtab
@@ -29,7 +34,7 @@ if ! exists("b:did_ftplugin")
 	endif
 endif
 
-" Load orgmode just once
+" Load orgmode just once {{{1
 if &cp || exists("g:loaded_org")
     finish
 endif
@@ -44,7 +49,7 @@ if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_hi
 	let g:org_syntax_highlight_leading_stars = 1
 endif
 
-" Menu and document handling {{{
+" Menu and document handling {{{1
 function! <SID>OrgRegisterMenu()
 	python ORGMODE.register_menu()
 endfunction
@@ -67,8 +72,8 @@ augroup orgmode
 	au BufLeave * :if &filetype == "org" | call <SID>OrgUnregisterMenu() | endif
 	au BufDelete * :call <SID>OrgDeleteUnusedDocument(expand('<abuf>'))
 augroup END
-" }}}
-" Start orgmode {{{
+
+" Start orgmode {{{1
 " Expand our path
 python << EOF
 import vim, os, sys
@@ -86,15 +91,15 @@ ORGMODE.start()
 from Date import Date
 import datetime
 EOF
-" }}}
-" 3rd Party Plugin Integration {{{
-" * Repeat {{{
+
+" 3rd Party Plugin Integration {{{1
+" * Repeat {{{2
 try
 	call repeat#set()
 catch
 endtry
-" }}}
-" * Tagbar {{{
+
+" * Tagbar {{{2
 let g:tagbar_type_org = {
 			\ 'ctagstype' : 'org',
 			\ 'kinds'     : [
@@ -105,16 +110,14 @@ let g:tagbar_type_org = {
 			\ 'deffile' : expand('<sfile>:p:h') . '/org.cnf'
 			\ }
 
-" }}}
-" * Taglist {{{
+" * Taglist {{{2
 if exists('g:Tlist_Ctags_Cmd')
 	" Pass parameters to taglist
 	let g:tlist_org_settings = 'org;s:section;h:hyperlinks'
 	let g:Tlist_Ctags_Cmd .= ' --options=' . expand('<sfile>:p:h') . '/org.cnf '
 endif
 
-" }}}
-" * Calendar.vim {{{
+" * Calendar.vim {{{2
 fun CalendarAction(day, month, year, week, dir)
 	let g:org_timestamp = printf("%04d-%02d-%02d Fri", a:year, a:month, a:day)
 	let datetime_date = printf("datetime.date(%d, %d, %d)", a:year, a:month, a:day)
@@ -135,5 +138,3 @@ fun CalendarAction(day, month, year, week, dir)
 	" restore calendar_action
 	let g:calendar_action = g:org_calendar_action_backup
 endf
-" }}}
-" }}}
