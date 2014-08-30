@@ -31,6 +31,7 @@
 *** Removed
     - Nothing
 *** Fixed
+    - change commentstring to "# %s"
     - fix syntax highlighting of list items
     - fix indentation of first checkbox of a heading
     - fix indentation of first checkbox of a heading
