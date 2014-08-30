@@ -4,6 +4,7 @@
   This log is kept according to the [[http://keepachangelog.com/][Keep a CHANGELOG]] manifesto
 ** 0.5.0									     :inprogress:
 *** Added
+    - improve incrementing and decrementing of list items
     - moved changelog information to its own file
     - add tests for the tags plugin
     - copy type and indentation when creating new list items
@@ -30,6 +31,7 @@
 *** Removed
     - Nothing
 *** Fixed
+    - fix syntax highlighting of list items
     - fix indentation of first checkbox of a heading
     - fix indentation of first checkbox of a heading
     - disable highlighting of non-printable characters in todo state

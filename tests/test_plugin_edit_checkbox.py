@@ -58,6 +58,18 @@ class EditCheckboxTestCase(unittest.TestCase):
 * heading
 """.split(u'\n')
 
+		self.c5 = u"""
+* heading1
+  1. item
+  9. item
+  }. item
+  a. item
+  z. item
+  A. item
+  Z. item
+  aa. item
+""".split("\n")
+
 	def test_toggle(self):
 		global bufnr
 		bufnr += 1
@@ -79,9 +91,15 @@ class EditCheckboxTestCase(unittest.TestCase):
 		self.assertEqual(vim.current.buffer[6], u"  - [-] checkbox5")
 
 		# new_checkbox
-		vim.current.window.cursor = (10, 0)
+		bufnr += 1
+		set_vim_buffer(buf=self.c1, cursor=(9, 0), bufnr=bufnr)
+		vim.current.window.cursor = (9, 0)
+		self.assertEqual(vim.current.buffer[9], u'              - [ ] checkbox8')
 		self.editcheckbox.new_checkbox(below=True)
-		self.assertEqual(vim.current.buffer[10], u'              - [ ] ')
+		# vim's buffer behave just opposite to Python's list when inserting a
+		# new item.  The new entry is appended in vim put prepended in Python!
+		self.assertEqual(vim.current.buffer[10], u'              - [ ] checkbox8')
+		self.assertEqual(vim.current.buffer[9], u'              - [ ] ')
 		self.editcheckbox.update_checkboxes_status()
 
 	def test_no_status_checkbox(self):
@@ -111,12 +129,91 @@ class EditCheckboxTestCase(unittest.TestCase):
 		global bufnr
 		bufnr += 1
 		set_vim_buffer(buf=self.c4, bufnr=bufnr)
-		vim.current.window.cursor = (3, 1)
+		vim.current.window.cursor = (2, 1)
 		self.editcheckbox.new_checkbox(below=True)
 		self.assertEqual(vim.current.buffer[2], u"  - [ ] ")
 
+	def test_item_decrement(self):
+		global bufnr
+		bufnr += 1
+		set_vim_buffer(buf=self.c5, bufnr=bufnr)
+
+		vim.current.window.cursor = (3, 1)
+		self.editcheckbox.new_checkbox(below=False)
+		self.assertEqual(vim.current.buffer[2], u"  0. ")
+		self.assertEqual(vim.current.buffer[3], u"  1. item")
+
+		vim.current.window.cursor = (3, 1)
+		self.editcheckbox.new_checkbox(below=False)
+		self.assertEqual(vim.current.buffer[1], u"* heading1")
+		self.assertEqual(vim.current.buffer[2], u"  0. ")
+		self.assertEqual(vim.current.buffer[3], u"  1. item")
+
+		vim.current.window.cursor = (5, 1)
+		self.editcheckbox.new_checkbox(below=False)
+		self.assertEqual(vim.current.buffer[4], u"  8. ")
+		self.assertEqual(vim.current.buffer[5], u"  9. item")
+
+		vim.current.window.cursor = (8, 1)
+		self.editcheckbox.new_checkbox(below=False)
+		# no further decrement than a
+		self.assertEqual(vim.current.buffer[6], u"  }. item")
+		self.assertEqual(vim.current.buffer[7], u"  a. item")
+		self.assertEqual(vim.current.buffer[8], u"  z. item")
+
+	def test_item_decrementA(self):
+		global bufnr
+		bufnr += 1
+		set_vim_buffer(buf=self.c5, bufnr=bufnr)
+		vim.current.window.cursor = (8, 1)
+		self.editcheckbox.new_checkbox(below=False)
+		# decrement from A to z
+		self.assertEqual(vim.current.buffer[7], u"  z. ")
+		self.assertEqual(vim.current.buffer[8], u"  A. item")
+
+	def test_item_increment(self):
+		global bufnr
+		bufnr += 1
+		set_vim_buffer(buf=self.c5, bufnr=bufnr)
+
+		vim.current.window.cursor = (3, 1)
+		self.editcheckbox.new_checkbox(below=True)
+		self.assertEqual(vim.current.buffer[2], u"  1. item")
+		self.assertEqual(vim.current.buffer[3], u"  2. ")
+
+		vim.current.window.cursor = (5, 1)
+		self.editcheckbox.new_checkbox(below=True)
+		self.assertEqual(vim.current.buffer[4], u"  9. item")
+		self.assertEqual(vim.current.buffer[5], u"  }. item")
+		self.assertEqual(vim.current.buffer[6], u"  10. ")
+
+	def test_item_incrementz(self):
+		global bufnr
+		bufnr += 1
+		set_vim_buffer(buf=self.c5, bufnr=bufnr)
+
+		vim.current.window.cursor = (6, 1)
+		self.editcheckbox.new_checkbox(below=True)
+		self.assertEqual(vim.current.buffer[5], u"  a. item")
+		self.assertEqual(vim.current.buffer[6], u"  b. ")
+
+		vim.current.window.cursor = (8, 1)
+		self.editcheckbox.new_checkbox(below=True)
+		self.assertEqual(vim.current.buffer[7], u"  z. item")
+		self.assertEqual(vim.current.buffer[8], u"  A. ")
+
+		vim.current.window.cursor = (11, 1)
+		self.editcheckbox.new_checkbox(below=True)
+		self.assertEqual(vim.current.buffer[10], u"  Z. item")
+		self.assertEqual(vim.current.buffer[11], u"  aa. item")
+		self.assertEqual(vim.current.buffer[12], u"")
+
+		vim.current.window.cursor = (12, 1)
+		self.editcheckbox.new_checkbox(below=True)
+		self.assertEqual(vim.current.buffer[11], u"  aa. item")
+		self.assertEqual(vim.current.buffer[12], u"")
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(EditCheckboxTestCase)
 
-# vim: set noexpandtab:
+# vim: set noexpandtab

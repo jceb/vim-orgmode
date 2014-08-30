@@ -71,11 +71,31 @@ class EditCheckbox(object):
 			if t[-1] in OrderListType:
 				try:
 					num = int(t[:-1]) + (1 if below else -1)
+					if num < 0:
+						# don't decrease to numbers below zero
+						echom(u"Can't decrement further than '0'")
+						return
 					t = '%d%s' % (num, t[-1])
 				except ValueError:
 					try:
 						char = ord(t[:-1]) + (1 if below else -1)
-						t = '%s%s' % (chr(char), t[-1])
+						if below:
+							if char == 91:
+								# stop incrementing at Z (90)
+								echom(u"Can't increment further than 'Z'")
+								return
+							elif char == 123:
+								# increment from z (122) to A
+								char = 65
+						else:
+							if char == 96:
+								# stop decrementing at a (97)
+								echom(u"Can't decrement further than 'a'")
+								return
+							elif char == 64:
+								# decrement from A (65) to z
+								char = 122
+						t = u'%s%s' % (chr(char), t[-1])
 					except ValueError:
 						pass
 			nc.type = t
@@ -89,19 +109,18 @@ class EditCheckbox(object):
 				start = c.start
 		nc.level = level
 
-		vim.current.window.cursor = (start + 1, 0)
-
 		if below:
-			vim.command(u"normal! o")
-		else:
-			vim.command(u"normal! O")
+			start += 1
+		# vim's buffer behave just opposite to Python's list when inserting a
+		# new item.  The new entry is appended in vim put prepended in Python!
+		vim.current.buffer[start:start] = [unicode(nc)]
 
-		insert_at_cursor(unicode(nc))
+		vim.current.window.cursor = (start + 1, 0)
 
 		# update checkboxes status
 		cls.update_checkboxes_status()
 
-		vim.command(u"call feedkeys('a')")
+		vim.command(u"call feedkeys('A', 'n')")
 
 	@classmethod
 	def toggle(cls, checkbox=None):
@@ -171,6 +190,8 @@ class EditCheckbox(object):
 	def update_checkboxes_status(cls):
 		d = ORGMODE.get_document()
 		h = d.current_heading()
+		if h is None:
+			return
 		# init checkboxes for current heading
 		h.init_checkboxes()
 
