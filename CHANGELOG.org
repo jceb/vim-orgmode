@@ -4,6 +4,8 @@
   This log is kept according to the [[http://keepachangelog.com/][Keep a CHANGELOG]] manifesto
 ** 0.5.0									     :inprogress:
 *** Added
+    - show link description in headings when folded, instead of the whole
+      link
     - add simplified mappings to create new headings with
       [<localleader>|<leader>]<CR>
     - improve incrementing and decrementing of list items

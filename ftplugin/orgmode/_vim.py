@@ -9,6 +9,7 @@
 
 import imp
 import types
+import re
 
 import vim
 from datetime import datetime
@@ -216,11 +217,8 @@ def fold_text(allow_dirty=False):
 			str_heading = str_heading.replace(u'\t', u' ' * ts)
 
 		# Workaround for vim.command seems to break the completion menu
-		vim.eval((u'SetOrgFoldtext("%s...")' % (str_heading.replace(
-				u'\\', u'\\\\').replace(u'"', u'\\"'), )).encode(u'utf-8'))
-		#vim.command((u'let b:foldtext = "%s... "' % \
-		#		(str_heading.replace(u'\\', u'\\\\')
-		#		.replace(u'"', u'\\"'), )).encode('utf-8'))
+		vim.eval((u'SetOrgFoldtext("%s...")' % (re.sub(r'\[\[([^[\]]*\]\[)?([^[\]]+)\]\]', r'\2',
+				str_heading).replace( u'\\', u'\\\\').replace(u'"', u'\\"'), )).encode(u'utf-8'))
 
 
 def fold_orgmode(allow_dirty=False):
