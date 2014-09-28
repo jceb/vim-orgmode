@@ -137,7 +137,6 @@ def get_domobj_range(content=[], position=0, direction=Direction.FORWARD, identi
 	start = None
 	end = None
 
-	# Search heading upwards
 	if direction == Direction.FORWARD:
 		while tmp_line < len_cb:
 			if identify_fun(content[tmp_line]) is not None:

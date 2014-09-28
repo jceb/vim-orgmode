@@ -5,6 +5,7 @@ from orgmode._vim import echo, echom, echoe, ORGMODE, apply_count, repeat, inser
 from orgmode.menu import Submenu, Separator, ActionEntry, add_cmd_mapping_menu
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode.liborgmode.checkboxes import Checkbox
+from orgmode.liborgmode.dom_obj import OrderListType
 
 
 class EditCheckbox(object):
@@ -16,7 +17,7 @@ class EditCheckbox(object):
 		u""" Initialize plugin """
 		object.__init__(self)
 		# menu entries this plugin should create
-		self.menu = ORGMODE.orgmenu + Submenu(u'EditCheckbox')
+		self.menu = ORGMODE.orgmenu + Submenu(u'Edit Checkbox')
 
 		# key bindings for this plugin
 		# key bindings are also registered through the menu so only additional
@@ -36,30 +37,90 @@ class EditCheckbox(object):
 		h.init_checkboxes()
 		c = h.current_checkbox()
 
+		nc = Checkbox()
+		nc._heading = h
+
 		# default checkbox level
-		level = h.level
+		level = h.level + 1
+		start = vim.current.window.cursor[0] - 1
 		# if no checkbox is found, insert at current line with indent level=1
 		if c is None:
-			start = h.start
-			if h.checkboxes:
-				level = h.first_checkbox.level
+			h.checkboxes.append(nc)
 		else:
+			l = c.get_parent_list()
+			idx = c.get_index_in_parent_list()
+			if l is not None and idx is not None:
+				l.insert(idx + (1 if below else 0), nc)
+				# workaround for broken associations, Issue #165
+				nc._parent = c.parent
+				if below:
+					if c.next_sibling:
+						c.next_sibling._previous_sibling = nc
+					nc._next_sibling = c.next_sibling
+					c._next_sibling = nc
+					nc._previous_sibling = c
+				else:
+					if c.previous_sibling:
+						c.previous_sibling._next_sibling = nc
+					nc._next_sibling = c
+					nc._previous_sibling = c.previous_sibling
+					c._previous_sibling = nc
+
+			t = c.type
+			# increase key for ordered lists
+			if t[-1] in OrderListType:
+				try:
+					num = int(t[:-1]) + (1 if below else -1)
+					if num < 0:
+						# don't decrease to numbers below zero
+						echom(u"Can't decrement further than '0'")
+						return
+					t = '%d%s' % (num, t[-1])
+				except ValueError:
+					try:
+						char = ord(t[:-1]) + (1 if below else -1)
+						if below:
+							if char == 91:
+								# stop incrementing at Z (90)
+								echom(u"Can't increment further than 'Z'")
+								return
+							elif char == 123:
+								# increment from z (122) to A
+								char = 65
+						else:
+							if char == 96:
+								# stop decrementing at a (97)
+								echom(u"Can't decrement further than 'a'")
+								return
+							elif char == 64:
+								# decrement from A (65) to z
+								char = 122
+						t = u'%s%s' % (chr(char), t[-1])
+					except ValueError:
+						pass
+			nc.type = t
+			if not c.status:
+				nc.status = None
 			level = c.level
+
 			if below:
 				start = c.end_of_last_child
 			else:
 				start = c.start
+		nc.level = level
+
+		if below:
+			start += 1
+		# vim's buffer behave just opposite to Python's list when inserting a
+		# new item.  The new entry is appended in vim put prepended in Python!
+		vim.current.buffer[start:start] = [unicode(nc)]
 
 		vim.current.window.cursor = (start + 1, 0)
 
-		if below:
-			vim.command("normal o")
-		else:
-			vim.command("normal O")
+		# update checkboxes status
+		cls.update_checkboxes_status()
 
-		new_checkbox = Checkbox(level=level)
-		insert_at_cursor(str(new_checkbox))
-		vim.command("call feedkeys('a')")
+		vim.command(u"call feedkeys('A', 'n')")
 
 	@classmethod
 	def toggle(cls, checkbox=None):
@@ -129,6 +190,8 @@ class EditCheckbox(object):
 	def update_checkboxes_status(cls):
 		d = ORGMODE.get_document()
 		h = d.current_heading()
+		if h is None:
+			return
 		# init checkboxes for current heading
 		h.init_checkboxes()
 
@@ -157,7 +220,7 @@ class EditCheckbox(object):
 				current_status = None
 			# the checkbox needs to have status
 			else:
-				total +=  1
+				total += 1
 
 			# count number of status in this checkbox level
 			if current_status == Checkbox.STATUS_OFF:

@@ -68,7 +68,7 @@ These are completed by hyperlinks, tags, todo states, priorities aso.
 Vim-orgmode aims at providing the same functionality for Vim and for command
 line tools*.
 
-* for command line tools and other programs a library liborgmode is provided.
+* WAITING for command line tools and other programs a library liborgmode is provided.
   It encapsulates all functionality for parsing and modifying org files.
 
 ------------------------------------------------------------------------------
@@ -260,6 +260,14 @@ Suggested plugins~
   calendar~
     (http://www.vim.org/scripts/script.php?script_id=52)
     This plugin will create a calendar window for timestamp insertion.
+
+  SyntaxRange~
+    (http://www.vim.org/scripts/script.php?script_id=4168)
+    Use proper syntax highlighting for code blocks such as: >
+    #+BEGIN_SRC cpp
+    int i = 1;
+    #+END_SRC
+<
 
 ------------------------------------------------------------------------------
 Feedback~
@@ -1430,107 +1438,7 @@ LINKS                                                           *orgguide-links*
 ==============================================================================
 CHANGELOG                                                   *orgguide-changelog*
 
-0.5.0-0
-- fix CalendarAction is undefined (closes issue #142)
-- correct overlapping mappings in PluginDate
-- add test cases for overlapping mappings
-- add three dots after folded text, like in orgmode
-- improve highlighting of org-mode properties (closes issue #130)
-- implement global visibility as it works in Emacs org-mode (closes issue #119)
-- improve detection of speeddating plugin (closes issue #121)
-- add support for high speed searching of headings that use certain tags
-	(closes issue #58)
-- fix cache problems when inserting a new heading, together with multi line
-	text (closes issue #116)
-- rename plug to OrgTodoToggleNonInteractive (closes issue #114)
-- make echo, echom and echoe split messages a line ends and execute a single
-	vim command for each line
-- add export commands OrgExportToPDF and OrgExportToHTML (closes issue #107)
-- add variables for customizing the export via Emacs: g:org_export_emacs,
-	g:org_export_verbose, g:org_export_init_script (closes issue #107)
-- switch to subprocess.Popen for Emcas export (closes issue #107)
-- add defaults and examples for all variables
-
-0.4.0-0, 2011-10-16
-- fix broken repeat settings for moving a heading
-- improve performance when moving a heading upward or downward (closes issue #108)
-- improve performance when changing the level of a heading (related to issue #108)
-- extend liborgmode.headings.HeadingList to allow headings to not be tainted when moving them around
-- change heading tree text object to ir/ar... because of vim's it/at text object (closes issue #106)
-- improve performance when inserting a new heading below (closes issue #105)
-- remove duplicate tags (closes issue #104)
-- improve performance in insert mode (closes issue #103)
-- improve performance when opening larger org files (closes issue #103)
-- replace org.txt by orgguide.txt (closes issue #77)
-- replace g:org_leader by <LocalLeader> (closes issue #101)
-  To restore the previous behavior add the following line to your vimrc:
->
-  let maplocalleader = ','
-<
-- change normal command execution to not remap any key (related to issue #85)
-- fix regression timeout when opening folds (closes issue #100)
-- vim-orgmode multistate documentation (closes issue #77)
-- add support for @-signs in tags (closes issue #98)
-- enable file completion for hyperlinks by default (closes issue #97)
-- fix traceback when pressing <Esc> while editing a link (closes issue #96)
-- implement reverse visibility cycling using <S-Tab> (closes issue #95)
-- change ,, and ,. to remap zr and zm. (closes issue #73)
-- add .cnf files to the vimball archive (closes #93)
-- integrate pylint code checker (closes issue #87)
-- solve encoding issues in the agenda plugin (closes issue #86)
-- add description for writing test cases
-- add coverage report target (closes issue #74)
-- add support for plain lists, thanks to Aleksandar Dimitrov (closes issue #81)
-- add agenda view, many thanks to Stefan Otte (closes issue #34)
-- move cursor to the current todo state when selecting the todo state
-  interactively (closes issue #61)
-- add parameter scope to method settings.get
-- add method settings.unset
-- fix cursor positioning when selecting todo states
-- improve date plugin
-- update vba targets to its new name vmb
-- demoting a newly created second level heading doesn't cause all children to
-  be deleted anymore (closes issue #65)
-- add error message for missing dependencies (closes issue #59)
-- rename tests directory
-- change licensing of the documentation to GNU Free Documentation License
-- integrate orgguide (closes issue #57)
-- replace DIRECTION_* with an enum (closes issue #56 and issue #49)
-
-0.3.1-0, 2011-08-14
-- demoting a newly created second level heading doesn't cause all children to
-  be deleted anymore (closes issue #65)
-- add error message for missing dependencies (closes issue #59)
-
-0.3.0-0, 2011-08-09
-- fix completion menu popup that disappeared because of the usage of vim.command
-  (closes issue #48)
-- implement interactive todo state selection (closes issue #5)
-- add orgmode group to au commands in TagProperties plugin (closes issue #53)
-- allow demotion of first level headings (closes issue #27)
-- fix encoding issues in Date plugin
-- add general support for multiple todo sequences (closes Issue #46)
-- fix folded text for headings containing backslashes or double quotes (closes
-  issue #26)
-- add Document.get_todo_states() and Document.get_all_todo_states()
-- don't confuse upper case words at the beginning of a heading with a todo
-    state (closes issue #28)
-- fix error in setting tags (issue #25)
-- improve split of heading (issue #24)
-- add variable g:org_improve_split_heading to enable/disable improve the split
-  of headings (issue #24)
-- implement shortcut for moving to the partent's next sibling (g}) (issue #22)
-- fix duplication of children when inserting a new heading (issue #20)
-- always start insert mode when adding a new heading (issue #21)
-
-0.2.1-0, 2011-06-26
-- fix encoding of todo states set by the Todo plugin (thanks to Daniel Carl
-  and kien for pointing out the issue)
-- add documentation for remapping shortcuts
-- add documentation for customizing syntax highlighting
-
-0.2.0-0, 2011-06-25
-- initial release
+Is found in file CHANGELOG.org
 
 ==============================================================================
 CONTRIBUTORS                                             *orgguide-contributors*

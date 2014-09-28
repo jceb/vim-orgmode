@@ -155,7 +155,7 @@ class TagsProperties(object):
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
-		settings.set(u'org_tag_column', u'77')
+		settings.set(u'org_tag_column', vim.eval(u'&textwidth'))
 		settings.set(u'org_tag_completion_ignorecase', int(vim.eval(u'&ignorecase')))
 
 		cmd = Command(

@@ -34,9 +34,9 @@ class VimBuffer(Document):
 		:bufnr:		0: current buffer, every other number refers to another buffer
 		"""
 		Document.__init__(self)
-		self._bufnr            = vim.current.buffer.number if bufnr == 0 else bufnr
-		self._changedtick      = -1
-		self._cached_heading   = None
+		self._bufnr          = vim.current.buffer.number if bufnr == 0 else bufnr
+		self._changedtick    = -1
+		self._cached_heading = None
 
 		if self._bufnr == vim.current.buffer.number:
 			self._content = VimBufferContent(vim.current.buffer)
@@ -60,7 +60,7 @@ class VimBuffer(Document):
 
 	@property
 	def tag_column(self):
-		return int(settings.get('org_tag_column', '77'))
+		return int(settings.get(u'org_tag_column', u'77'))
 
 	@property
 	def is_insync(self):
@@ -76,7 +76,7 @@ class VimBuffer(Document):
 		return self._bufnr
 
 	def changedtick():
-		""" Number of changes in vimbuffer """
+		u""" Number of changes in vimbuffer """
 		def fget(self):
 			return self._changedtick
 		def fset(self, value):

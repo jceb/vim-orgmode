@@ -9,6 +9,7 @@
 
 import imp
 import types
+import re
 
 import vim
 from datetime import datetime
@@ -178,13 +179,16 @@ def indent_orgmode():
 	if heading and line != heading.start_vim:
 		heading.init_checkboxes()
 		checkbox = heading.current_checkbox()
+		level = heading.level + 1
 		if checkbox:
-			print checkbox
-			vim.command((u'let b:indent_level = %d' % (checkbox.level + 6))
-					.encode(u'utf-8'))
-		else:	
-			vim.command((u'let b:indent_level = %d' % (heading.level + 1))
-					.encode(u'utf-8'))
+			level = level + checkbox.number_of_parents * 6
+			if line != checkbox.start_vim:
+				# indent body up to the beginning of the checkbox' text
+				# if checkbox isn't indented to the proper location, the body
+				# won't be indented either
+				level = checkbox.level + len(checkbox.type) + 1 + \
+						(4 if checkbox.status else 0)
+		vim.command((u'let b:indent_level = %d' % level).encode(u'utf-8'))
 
 
 def fold_text(allow_dirty=False):
@@ -213,11 +217,8 @@ def fold_text(allow_dirty=False):
 			str_heading = str_heading.replace(u'\t', u' ' * ts)
 
 		# Workaround for vim.command seems to break the completion menu
-		vim.eval((u'SetOrgFoldtext("%s...")' % (str_heading.replace(
-				u'\\', u'\\\\').replace(u'"', u'\\"'), )).encode(u'utf-8'))
-		#vim.command((u'let b:foldtext = "%s... "' % \
-		#		(str_heading.replace(u'\\', u'\\\\')
-		#		.replace(u'"', u'\\"'), )).encode('utf-8'))
+		vim.eval((u'SetOrgFoldtext("%s...")' % (re.sub(r'\[\[([^[\]]*\]\[)?([^[\]]+)\]\]', r'\2',
+				str_heading).replace( u'\\', u'\\\\').replace(u'"', u'\\"'), )).encode(u'utf-8'))
 
 
 def fold_orgmode(allow_dirty=False):

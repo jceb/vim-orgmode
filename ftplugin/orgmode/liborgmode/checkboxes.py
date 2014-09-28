@@ -49,13 +49,8 @@ class Checkbox(DomObj):
 			self.status = status
 
 	def __unicode__(self):
-		if self.status is None:
-			res = u' ' * self.level + self.type + u' ' + self.title
-		else:
-			res = u' ' * self.level + self.type + u' ' + self.status \
-									+ u' ' + self.title
-
-		return res
+		return u' ' * self.level + self.type + u' ' + \
+			(self.status + u' ' if self.status else u'') + self.title
 
 	def __str__(self):
 		return self.__unicode__().encode(u'utf-8')
@@ -128,7 +123,7 @@ class Checkbox(DomObj):
 			nc._orig_start = orig_start
 			nc._orig_len = len(nc)
 		if heading:
-			nc.heading = heading
+			nc._heading = heading
 
 		return nc
 
@@ -141,7 +136,7 @@ class Checkbox(DomObj):
 		count = "%d/%d" % (on, total)
 		self.title = REGEX_SUBTASK.sub("[%s]" % (count), self.title)
 		self.title = REGEX_SUBTASK_PERCENT.sub("[%d%%]" % (percent), self.title)
-		d = self.heading.document.write_checkbox(self, including_children=False)
+		d = self._heading.document.write_checkbox(self, including_children=False)
 
 	@classmethod
 	def identify_checkbox(cls, line):
@@ -179,22 +174,21 @@ class Checkbox(DomObj):
 					parent/document or is not in the list of checkboxes
 		"""
 		if self.parent:
-			if self in self.parent.children:
-				return self.parent.children.index(self)
+			return super(Checkbox, self).get_index_in_parent_list()
 		elif self.document:
-			if self in self.document.checkboxes:
-				return self.document.checkboxes.index(self)
+			l = self.get_parent_list()
+			if l:
+				return l.index(self)
 
 	def get_parent_list(self):
-		""" Retrieve the parents list of headings. This works also for top
+		""" Retrieve the parents' list of headings. This works also for top
 		level headings.
 
 		:returns:	List of headings or None if heading doesn't have a
 					parent/document or is not in the list of headings
 		"""
 		if self.parent:
-			if self in self.parent.children:
-				return self.parent.children
+			return super(Checkbox, self).get_parent_list()
 		elif self.document:
 			if self in self.document.checkboxes:
 				return self.document.checkboxes
@@ -256,7 +250,7 @@ class Checkbox(DomObj):
 
 	def all_siblings(self):
 		if not self.parent:
-			p = self.heading
+			p = self._heading
 		else:
 			p = self.parent
 			if not p.children:

@@ -29,10 +29,10 @@ REGEX_TODO = re.compile(r'^[^\s]*$')
 # - [X] checkbox item
 # - [ ]
 # - no status checkbox
-UnOrderListType = ['-', '+', '*']
-OrderListType = ['.', ')']
+UnOrderListType = [u'-', 'u+', 'u*']
+OrderListType = [u'.', u')']
 REGEX_CHECKBOX = re.compile(
-	r'^(?P<level>\s*)(?P<type>[%s]|\d+[%s])\s*(?P<status>\[.\])?\s*(?P<title>.*)$'
+	r'^(?P<level>\s*)(?P<type>[%s]|([a-zA-Z]|[\d]+)[%s])\s*(?P<status>\[.\])?\s*(?P<title>.*)$'
 	% (''.join(UnOrderListType), ''.join(OrderListType)), flags=re.U | re.L)
 
 
@@ -105,9 +105,9 @@ class DomObj(object):
 		:returns:	Index value or None if dom obj doesn't have a
 					parent/document or is not in the list of dom objs
 		"""
-		if self.parent:
-			if self in self.parent.children:
-				return self.parent.children.index(self)
+		l = self.get_parent_list()
+		if l:
+			return l.index(self)
 
 	def get_parent_list(self):
 		""" Retrieve the parents list of dom objs. This works also for top
@@ -428,16 +428,16 @@ class DomObjList(MultiPurposeList):
 			raise ValueError(u'Item is not a heading!')
 		if item in self:
 			raise ValueError(u'Heading is already part of this list!')
-		self._associate_domobj(
-			item, self[-1] if len(self) > 0 else None,
-			None, taint=taint)
+		# self._associate_domobj(
+		# 	item, self[-1] if len(self) > 0 else None,
+		# 	None, taint=taint)
 		MultiPurposeList.append(self, item)
 
 	def insert(self, i, item, taint=True):
-		self._associate_domobj(
-			item,
-			self[i - 1] if i - 1 >= 0 and i - 1 < len(self) else None,
-			self[i] if i >= 0 and i < len(self) else None, taint=taint)
+		# self._associate_domobj(
+		# 	item,
+		# 	self[i - 1] if i - 1 >= 0 and i - 1 < len(self) else None,
+		# 	self[i] if i >= 0 and i < len(self) else None, taint=taint)
 		MultiPurposeList.insert(self, i, item)
 
 	def pop(self, i=-1):

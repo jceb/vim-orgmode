@@ -65,9 +65,10 @@ class Heading(DomObj):
 		if self.tags:
 			tabs = 0
 			spaces = 2
-			tags = (u':%s:' % (u':'.join(self.tags)))
+			tags = u':%s:' % (u':'.join(self.tags), )
 
-			ts = 8
+			# FIXME this is broken because of missing associations for headings
+			ts = 6
 			tag_column = 77
 			if self.document:
 				ts = self.document.tabstop
@@ -233,8 +234,7 @@ class Heading(DomObj):
 			c = c.next_sibling
 		raise StopIteration()
 
-	def find_checkbox(
-		self, position=0, direction=Direction.FORWARD,
+	def find_checkbox(self, position=0, direction=Direction.FORWARD,
 		checkbox=Checkbox, connect_with_heading=True):
 		u""" Find checkbox in the given direction
 
@@ -504,22 +504,21 @@ class Heading(DomObj):
 					parent/document or is not in the list of headings
 		"""
 		if self.parent:
-			if self in self.parent.children:
-				return self.parent.children.index(self)
+			return super(Heading, self).get_index_in_parent_list()
 		elif self.document:
-			if self in self.document.headings:
-				return self.document.headings.index(self)
+			l = self.get_parent_list()
+			if l:
+				return l.index(self)
 
 	def get_parent_list(self):
-		""" Retrieve the parents list of headings. This works also for top
+		""" Retrieve the parents' list of headings. This works also for top
 		level headings.
 
 		:returns:	List of headings or None if heading doesn't have a
 					parent/document or is not in the list of headings
 		"""
 		if self.parent:
-			if self in self.parent.children:
-				return self.parent.children
+			return super(Heading, self).get_parent_list()
 		elif self.document:
 			if self in self.document.headings:
 				return self.document.headings
