@@ -735,9 +735,11 @@ The following commands work with checkboxes:
 <localleader>cc         Toggle checkbox status or (with prefix arg) checkbox
                         presence at point.
 
-<localleader>cn         Insert a new checkbox below current line.
+<localleader>cn    or
+<S-CR>                  Insert a new checkbox below current line.
 
-<localleader>cN         Insert a new checkbox above current line.
+<localleader>cN    or
+<C-S-CR>                Insert a new checkbox above current line.
 
 ==============================================================================
 TAGS                                                             *orgguide-tags*

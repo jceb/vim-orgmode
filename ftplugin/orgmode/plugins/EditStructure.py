@@ -50,6 +50,13 @@ class EditStructure(object):
 			vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
 			return heading
 
+		# check for plain list(checkbox)
+		current_heading.init_checkboxes()
+		c = current_heading.current_checkbox()
+		if c is not None:
+			ORGMODE.plugins[u"EditCheckbox"].new_checkbox(below)
+			return
+
 		heading = Heading(level=current_heading.level)
 
 		# it's weird but this is the behavior of original orgmode
