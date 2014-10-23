@@ -115,12 +115,10 @@ class EditCheckbox(object):
 		# new item.  The new entry is appended in vim put prepended in Python!
 		vim.current.buffer[start:start] = [unicode(nc)]
 
-		vim.current.window.cursor = (start + 1, 0)
-
 		# update checkboxes status
 		cls.update_checkboxes_status()
 
-		vim.command(u"call feedkeys('A', 'n')")
+		vim.command((u'exe "normal %dgg"|startinsert!' % (start + 1, )).encode(u'utf-8'))
 
 	@classmethod
 	def toggle(cls, checkbox=None):

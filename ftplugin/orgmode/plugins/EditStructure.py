@@ -50,6 +50,13 @@ class EditStructure(object):
 			vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
 			return heading
 
+		# check for plain list(checkbox)
+		current_heading.init_checkboxes()
+		c = current_heading.current_checkbox()
+		if c is not None:
+			ORGMODE.plugins[u"EditCheckbox"].new_checkbox(below)
+			return
+
 		heading = Heading(level=current_heading.level)
 
 		# it's weird but this is the behavior of original orgmode
@@ -352,7 +359,7 @@ class EditStructure(object):
 		self.keybindings.append(Keybinding(u'<CR>', u'<Plug>OrgNewHeadingBelowAfterChildrenNormal', mode=MODE_NORMAL))
 
 		self.keybindings.append(Keybinding(u'<C-S-CR>', Plug(u'OrgNewHeadingAboveInsert', u'<C-o>:<C-u>silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=False, insert_mode=True)<CR>', mode=MODE_INSERT)))
-		self.keybindings.append(Keybinding(u'<S-CR>', Plug(u'OrgNewHeadingBelowInsert', u'<C-o>:<C-u>silent! py ORGMODE.plugins[u"EditStructure"].new_heading(insert_mode=True)<CR>', mode=MODE_INSERT)))
+		self.keybindings.append(Keybinding(u'<S-CR>', Plug(u'OrgNewHeadingBelowInsert', u'<C-o>:<C-u>silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=True, insert_mode=True)<CR>', mode=MODE_INSERT)))
 		self.keybindings.append(Keybinding(u'<C-CR>', Plug(u'OrgNewHeadingBelowAfterChildrenInsert', u'<C-o>:<C-u>silent! py ORGMODE.plugins[u"EditStructure"].new_heading(insert_mode=True, end_of_last_child=True)<CR>', mode=MODE_INSERT)))
 
 		self.menu + Separator()
