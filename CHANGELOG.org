@@ -2,7 +2,7 @@
   All notable changes to this project will be documented in this file.
 
   This log is kept according to the [[http://keepachangelog.com/][Keep a CHANGELOG]] manifesto
-** 0.5.0									     :inprogress:
+** 0.5.0									     :unreleased:
 *** Added
     - show link description in headings when folded, instead of the whole
       link
@@ -30,6 +30,8 @@
       g:org_export_verbose, g:org_export_init_script (closes issue #107)
     - switch to subprocess.Popen for Emcas export (closes issue #107)
     - add defaults and examples for all variables
+    - add support for inserting new checkboxes with the same keybinging as
+      inserting new headings (thanks to Powen Tan)
 *** Deprecated
     - Nothing
 *** Removed
@@ -52,6 +54,7 @@
     - fix cache problems when inserting a new heading, together with multi
       line text (closes issue #116)
     - rename plug to OrgTodoToggleNonInteractive (closes issue #114)
+    - fix jumping to the first character within the body of a heading
 ** 0.4.0-0 <2011-10-16 Sun>							 :released:
    - fix broken repeat settings for moving a heading
    - improve performance when moving a heading upward or downward (closes

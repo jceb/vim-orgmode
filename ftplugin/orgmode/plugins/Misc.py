@@ -24,7 +24,7 @@ class Misc(object):
 	@classmethod
 	def jump_to_first_character(cls):
 		heading = ORGMODE.get_document().current_heading()
-		if not heading:
+		if not heading or heading.start_vim != vim.current.window.cursor[0]:
 			vim.eval(u'feedkeys("^", "n")'.encode(u'utf-8'))
 			return
 
