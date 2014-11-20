@@ -48,7 +48,7 @@ let s:contains = ' contains=org_timestamp,org_timestamp_inactive,org_subtask_per
 if g:org_heading_shade_leading_stars == 1
 	let s:contains = s:contains . ',org_shade_stars'
 	syntax match org_shade_stars /^\*\{2,\}/me=e-1 contained
-	hi def link org_shade_stars NonText
+	hi def link org_shade_stars Ignore
 else
 	hi clear org_shade_stars
 endif
