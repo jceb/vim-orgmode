@@ -258,7 +258,7 @@ hi def link org_comment Comment
 " 1) list item
 " a. list item
 " a) list item
-syn match org_list_ordered "^\s*\(\a\|\d\+\)[.)]\s" nextgroup=org_list_item
+syn match org_list_ordered "^\s*\(\a\|\d\+\)[.)]\(\s\|$\)" nextgroup=org_list_item
 hi def link org_list_ordered Identifier
 
 " Unordered Lists:
@@ -266,7 +266,7 @@ hi def link org_list_ordered Identifier
 " * list item
 " + list item
 " + and - don't need a whitespace prefix
-syn match org_list_unordered "^\(\s*[-+]\|\s\+\*\)\s" nextgroup=org_list_item
+syn match org_list_unordered "^\(\s*[-+]\|\s\+\*\)\(\s\|$\)" nextgroup=org_list_item
 hi def link org_list_unordered Identifier
 
 " Definition Lists:

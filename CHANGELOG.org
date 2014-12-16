@@ -37,7 +37,8 @@
 *** Removed
     - Nothing
 *** Fixed
-    - optimize checkbox regex
+    - optimize checkbox regex to match also just the type without status and
+      title
     - fix broken unordered lists
     - set org_tag_column to textwidth
     - change commentstring to "# %s"

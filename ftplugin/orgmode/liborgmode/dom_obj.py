@@ -32,7 +32,7 @@ REGEX_TODO = re.compile(r'^[^\s]*$')
 UnOrderListType = [u'-', u'+', u'*']
 OrderListType = [u'.', u')']
 REGEX_CHECKBOX = re.compile(
-	r'^(?P<level>\s*)(?P<type>[%s]|([a-zA-Z]|[\d]+)[%s])(\s+(?P<status>\[.\]))?(\s+(?P<title>.*))$'
+	r'^(?P<level>\s*)(?P<type>[%s]|([a-zA-Z]|[\d]+)[%s])(\s+(?P<status>\[.\]))?\s*(?P<title>.*)$'
 	% (''.join(UnOrderListType), ''.join(OrderListType)), flags=re.U | re.L)
 
 
