@@ -37,6 +37,8 @@
 *** Removed
     - Nothing
 *** Fixed
+    - optimize checkbox regex
+    - fix broken unordered lists
     - set org_tag_column to textwidth
     - change commentstring to "# %s"
     - fix syntax highlighting of list items
