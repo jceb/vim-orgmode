@@ -143,10 +143,13 @@ class EditCheckbox(object):
 		else:
 			c = checkbox
 
-		if c.status == Checkbox.STATUS_OFF:
+		if c.status == Checkbox.STATUS_OFF or c.status is None:
 			# set checkbox status on if all children are on
 			if not c.children or c.are_children_all(Checkbox.STATUS_ON):
 				c.toggle()
+				d.write_checkbox(c)
+			elif c.status is None:
+				c.status = Checkbox.STATUS_OFF
 				d.write_checkbox(c)
 
 		elif c.status == Checkbox.STATUS_ON:

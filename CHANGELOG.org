@@ -37,6 +37,9 @@
 *** Removed
     - Nothing
 *** Fixed
+    - allow checkbox status to be toggled when there is no indicator present
+      ([])
+    - improve installation instructions (related to issues #111 and #176)
     - optimize checkbox regex to match also just the type without status and
       title
     - fix broken unordered lists
@@ -58,7 +61,8 @@
       line text (closes issue #116)
     - rename plug to OrgTodoToggleNonInteractive (closes issue #114)
     - fix jumping to the first character within the body of a heading
-    - use Ignore highlighting instead of NonText for shaded stars (closes issues #173)
+    - use Ignore highlighting instead of NonText for shaded stars (closes
+      issues #173)
 ** 0.4.0-0 <2011-10-16 Sun>							 :released:
    - fix broken repeat settings for moving a heading
    - improve performance when moving a heading upward or downward (closes

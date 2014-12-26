@@ -242,7 +242,7 @@ class Checkbox(DomObj):
 
 	def toggle(self):
 		u""" Toggle status of this checkbox """
-		if self.status == Checkbox.STATUS_OFF:
+		if self.status == Checkbox.STATUS_OFF or self.status is None:
 			self.status = Checkbox.STATUS_ON
 		else:
 			self.status = Checkbox.STATUS_OFF
