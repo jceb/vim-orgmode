@@ -168,7 +168,7 @@ class Agenda(object):
 				# update last_date
 				last_date = h.active_date
 
-			bufname = os.path.basename(vim.buffers[h.document.bufnr - 1].name)
+			bufname = os.path.basename(vim.buffers[h.document.bufnr].name)
 			bufname = bufname[:-4] if bufname.endswith(u'.org') else bufname
 			formated = u"  %(bufname)s (%(bufnr)d)  %(todo)s  %(title)s" % {
 				'bufname': bufname,
