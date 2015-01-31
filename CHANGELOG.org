@@ -64,6 +64,7 @@
     - use Ignore highlighting instead of NonText for shaded stars (closes
       issues #173)
     - fix broken buffer number (closes issue #177)
+    - make exports work with emacs 24.4 (closes issue #178)
 ** 0.4.0-0 <2011-10-16 Sun>							 :released:
    - fix broken repeat settings for moving a heading
    - improve performance when moving a heading upward or downward (closes
