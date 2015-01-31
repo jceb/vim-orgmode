@@ -65,7 +65,7 @@ class Export(object):
 			u'-nw',
 			u'--batch',
 			u'--visit=%s' % vim.eval(u'expand("%:p")'),
-			u'--funcall=org-export-as-%s' % format_
+			u'--funcall=%s' % format_
 		]
 		# source init script as well
 		init_script = cls._get_init_script()
@@ -83,7 +83,7 @@ class Export(object):
 	@classmethod
 	def topdf(cls):
 		u"""Export the current buffer as pdf using emacs orgmode."""
-		ret = cls._export(u'pdf')
+		ret = cls._export(u'org-latex-export-to-pdf')
 		if ret != 0:
 			echoe(u'PDF export failed.')
 		else:
@@ -92,7 +92,7 @@ class Export(object):
 	@classmethod
 	def tohtml(cls):
 		u"""Export the current buffer as html using emacs orgmode."""
-		ret = cls._export(u'html')
+		ret = cls._export(u'org-html-export-to-html')
 		if ret != 0:
 			echoe(u'HTML export failed.')
 		else:
@@ -101,7 +101,7 @@ class Export(object):
 	@classmethod
 	def tolatex(cls):
 		u"""Export the current buffer as latex using emacs orgmode."""
-		ret = cls._export(u'latex')
+		ret = cls._export(u'org-latex-export-to-latex')
 		if ret != 0:
 			echoe(u'latex export failed.')
 		else:
