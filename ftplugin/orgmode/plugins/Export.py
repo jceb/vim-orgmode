@@ -107,6 +107,15 @@ class Export(object):
 		else:
 			echom(u'Export successful: %s.%s' % (vim.eval(u'expand("%:r")'), 'tex'))
 
+	@classmethod
+	def tomarkdown(cls):
+		u"""Export the current buffer as markdown using emacs orgmode."""
+		ret = cls._export(u'org-md-export-to-markdown')
+		if ret != 0:
+			echoe('Markdown export failed. Make sure org-md-export-to-markdown is loaded in emacs, see the manual for details.')
+		else:
+			echom(u'Export successful: %s.%s' % (vim.eval(u'expand("%:r")'), 'md'))
+
 	def register(self):
 		u"""Registration and keybindings."""
 
@@ -140,6 +149,14 @@ class Export(object):
 			function=u':py ORGMODE.plugins[u"Export"].tohtml()<CR>',
 			key_mapping=u'<localleader>eh',
 			menu_desrc=u'To HTML (via Emacs)'
+		)
+		# to Markdown
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgExportToMarkdown',
+			function=u':py ORGMODE.plugins[u"Export"].tomarkdown()<CR>',
+			key_mapping=u'<localleader>em',
+			menu_desrc=u'To Markdown (via Emacs)'
 		)
 
 # vim: set noexpandtab:
