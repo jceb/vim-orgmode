@@ -19,7 +19,7 @@
    list of the already supported features:
 
    - Proper syntax highlighting
-   - Cycle visibility of headings (foliding)
+   - Cycle visibility of headings (folding)
    - Navigate between headings
    - Edit the structure of the document: add, move, promote, denote headings
      and more
