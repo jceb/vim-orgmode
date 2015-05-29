@@ -1063,13 +1063,25 @@ of many other formats using DocBook tools. There is also export to
 iCalendar format so that planning information can be incorporated into
 desktop calendars.
 
-Currently, the export to pdf, html, and latex is supported via the following
-commands and the 'export' menu:
+Currently, the export to pdf, html, latex and markdown is supported via the
+following commands and the 'export' menu:
 >
   :OrgExportToPDF
   :OrgExportToHTML
   :OrgExportToLaTeX
+  :OrgExportToMarkdown
 <
+
+Make sure that you have configured your emacs accordingly, as for instance
+the markdown exporter is not loaded by default. To load it, add
+
+>
+ (eval-after-load "org"
+     '(require 'ox-md nil t))
+<
+
+to your init.el. Make also sure to specify your path by using the
+|g:org_export_init_script| option.
 
                                                             *g:org_export_emacs*
 Default: "/usr/bin/emacs"
