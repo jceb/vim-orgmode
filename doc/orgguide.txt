@@ -522,11 +522,11 @@ Link format~
     [[link][description]]       or alternatively           [[link]]
 <
 
-  Once a link in the buffer is complete (all brackets present), and you are
-  not in insert mode, or you are editing another line, vim-orgmode will change
-  the display so that 'description' is displayed instead of
-  '[[link][description]]' and 'link' is displayed instead of '[[link]]'.  To
-  edit the invisible ‘link’ part, go into insert mode, or call the
+  If vim was compiled with |+conceal|, vim-orgmode will shorten this format to
+  just display 'description' or 'link' once the link was completely entered
+  (that is, if all brackets are present) and you've left insert mode or
+  you're editing another line.
+  To edit the invisible ‘link’ part, go into insert mode, or call the
   'Insert/edit Link' command by pressing 'gil'.
 
 ------------------------------------------------------------------------------
