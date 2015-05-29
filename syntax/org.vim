@@ -298,9 +298,9 @@ hi def link org_title           Title
 " TODO: http://vim.wikia.com/wiki/Different_syntax_highlighting_within_regions_of_a_file
 syntax match  org_verbatim /^\s*>.*/
 syntax match  org_code     /^\s*:.*/
-syntax region org_verbatim start="^#+BEGIN_.*"      end="^#+END_.*"      keepend contains=org_block_delimiter
-syntax region org_code     start="^#+BEGIN_SRC"     end="^#+END_SRC"     keepend contains=org_block_delimiter
-syntax region org_code     start="^#+BEGIN_EXAMPLE" end="^#+END_EXAMPLE" keepend contains=org_block_delimiter
+syntax region org_verbatim start="^\s*#+BEGIN_.*"      end="^\s*#+END_.*"      keepend contains=org_block_delimiter
+syntax region org_code     start="^\s*#+BEGIN_SRC"     end="^\s*#+END_SRC"     keepend contains=org_block_delimiter
+syntax region org_code     start="^\s*#+BEGIN_EXAMPLE" end="^\s*#+END_EXAMPLE" keepend contains=org_block_delimiter
 hi def link org_code     String
 hi def link org_verbatim String
 
