@@ -12,6 +12,7 @@ import test_liborgdate_parsing
 import test_liborgdatetime
 import test_liborgtimerange
 
+import test_plugin_babel_tangle
 import test_plugin_date
 import test_plugin_edit_structure
 import test_plugin_edit_checkbox
@@ -41,6 +42,7 @@ if __name__ == '__main__':
 	tests.addTests(test_liborgtimerange.suite())
 
 	# plugins
+	tests.addTests(test_plugin_babel_tangle.suite())
 	tests.addTests(test_plugin_date.suite())
 	tests.addTests(test_plugin_edit_structure.suite())
 	tests.addTests(test_plugin_edit_checkbox.suite())

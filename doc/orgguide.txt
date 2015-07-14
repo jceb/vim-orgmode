@@ -1120,7 +1120,67 @@ PUBLISHING                                                 *orgguide-publishing*
 ==============================================================================
 WORKING WITH SOURCE CODE                                       *orgguide-source*
 
-  Not yet implemented in vim-orgmode~
+
+NOTE: vim-orgmode relies on Emacs for this feature. Emacs _and_ Emacs'
+      org-mode need to be installed!
+
+------------------------------------------------------------------------------
+Extracting Source Code~
+                                                        *orgguide-source-extract*
+
+vim-orgmode allows to extract ("tangle") source blocks, that is, to extract source code
+from your org-file and write them into file(s) on your filesystem. This
+actually uses emacs in the background, meaning that the behavior of
+vim-orgmode is identical with emacs org-mode! One implication of this is that
+"noweb" syntax can be used to re-order code blocks in your org document. For
+more details, please see the org-manual Section 14.10 (available at
+http://orgmode.org/manual/Noweb-reference-syntax.html#Noweb-reference-syntax)
+and the noweb reference: http://www.cs.tufts.edu/~nr/noweb/
+
+Currently, the following commands are supported:
+>
+  :OrgBabelTangle
+  :OrgBabelTangleFile
+<
+While the first command simply tangles the current file, the second
+command prompts for a filename to be entered; this file will then be tangled.
+
+Here is an example of a code block with the tangle header:
+
+>
+   #+BEGIN_SRC sh :tangle filename
+       print -- "This Works!"
+   #+END_SRC
+<
+You can explicitly exclude a code block from being tangled (though this is the
+default):
+
+>
+   #+BEGIN_SRC sh :tangle no
+       print -- "Excluded from tangling!"
+   #+END_SRC
+<
+
+Another way to mark a block for tangling is the following:
+>
+   #+BEGIN_SRC sh :tangle yes
+       print -- "Included"
+   #+END_SRC
+<
+In the last example, the output will be written to org-file-name.sh, as the
+filename will be the filename of your orgfile with the ".org"-extension being
+replaced by the language name (here: "sh").
+------------------------------------------------------------------------------
+Keybindings~
+
+                                                     *orgguide-<LocalLeader>cvt*
+    <LocalLeader>cvt    Call :OrgBabelTangle -- this tangles the current file
+                        only
+
+                                                     *orgguide-<LocalLeader>cvf*
+    <LocalLeader>cvf    Call :OrgBabelTangleFile -- prompts for a filename to
+                        be entered and attempts to tangle this file.
+                        Unfortunately, there is no autocompletion available...
 
 ==============================================================================
 MISCELLANEOUS                                                    *orgguide-misc*
