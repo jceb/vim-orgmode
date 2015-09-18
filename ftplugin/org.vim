@@ -13,7 +13,7 @@ endif
 
 if ! exists('b:did_ftplugin')
 	" default emacs settings
-	setlocal comments-=s1:/*,mb:*,ex:*/
+	setlocal comments=fb:*,b:#,fb:-
 	setlocal commentstring=#\ %s
 	setlocal conceallevel=2 concealcursor="nc"
 	" original emacs settings are: setlocal tabstop=6 shiftwidth=6, but because
