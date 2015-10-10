@@ -2,7 +2,7 @@
   All notable changes to this project will be documented in this file.
 
   This log is kept according to the [[http://keepachangelog.com/][Keep a CHANGELOG]] manifesto
-** 0.5.0									     :unreleased:
+** 0.5.0 <2015-10-10 Sat>							 :released:
 *** Added
     - show link description in headings when folded, instead of the whole
       link
@@ -32,6 +32,7 @@
     - add defaults and examples for all variables
     - add support for inserting new checkboxes with the same keybinging as
       inserting new headings (thanks to Powen Tan)
+    - implemented support for markdown export (issue #185)
 *** Deprecated
     - Nothing
 *** Removed
@@ -65,6 +66,8 @@
       issues #173)
     - fix broken buffer number (closes issue #177)
     - make exports work with emacs 24.4 (closes issue #178)
+    - improve comments
+    - fix syntax for #+BEGIN_* blocks (issue #186)
 ** 0.4.0-0 <2011-10-16 Sun>							 :released:
    - fix broken repeat settings for moving a heading
    - improve performance when moving a heading upward or downward (closes
