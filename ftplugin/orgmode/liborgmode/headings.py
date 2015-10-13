@@ -74,8 +74,13 @@ class Heading(DomObj):
 				ts = self.document.tabstop
 				tag_column = self.document.tag_column
 
-			len_heading = len(res)
+			# XXX deal with multibytes string, like Chinese, Japanese
+			# so it's length will be original length of string, plus count of multibytes chars
+			utf8_res = res.encode('utf-8')
+			mb_count = (len(utf8_res) - len(res)) / 2
+			len_heading = len(res) + mb_count
 			len_tags = len(tags)
+			
 			if len_heading + spaces + len_tags < tag_column:
 				spaces_to_next_tabstop = ts - divmod(len_heading, ts)[1]
 
