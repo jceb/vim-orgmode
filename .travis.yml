@@ -1,0 +1,15 @@
+language: python
+python:
+    - "2.6"
+    - "2.7"
+
+# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
+install:
+    - pip install flake8
+    - pip install coverage
+
+# command to run tests, e.g. python setup.py test
+script:
+    # - "flake8 --ignore=W191,E101 --max-complexity=10 **/**.py"
+    - cd tests
+    - nosetests --with-coverage .

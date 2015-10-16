@@ -239,7 +239,6 @@ def fold_orgmode(allow_dirty=False):
 		heading = d.find_current_heading(line - 1)
 	else:
 		heading = d.current_heading(line - 1)
-	
 	# if cache_heading != heading:
 		# heading.init_checkboxes()
 		# checkbox = heading.current_checkbox()

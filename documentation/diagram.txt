@@ -1,0 +1,75 @@
+ /------------------------------\         +-----------------------------------+
+ | Legend                       |         | vim-orgmode                       |
+ | cCCC                         |         | cBLU                              |
+ |                              |         | o support for plugins             |
+ |                              |         | o plugins implement orgmode       |
+ +--------------+---------------+         |   functionality in vim            |
+ | vim-orgmode  | liborgmode    |         | o mainly plugins implement        |
+ | cBLU         | cYEL          |         |   keybindings for interactively   |
+ |              |               |         |   changing org-mode files         |
+ |              |               |         |                                   |
+ +--------------+---------------+         |                                   |
+ | orgcmd       | doesn't exist |         +---+-------------------------------+
+ | cRED         | yet           |             |1
+ |              |               |             |
+ |              |               |             |
+ \--------------+-=-------------/             |x
+                                              v
+                                          +-----------------------------------+
+                                          | Plugins                           |
+                                          | cBLU                              |
+                                          | o manipulate headings             |
+                                          | o change tags, todo states, lists |
+                                          | o integrate with orgcmd           |
+                                          | o reusable functionality doesn't  |
+                                          |   belong here but into liborgmode!|
+                                          | o timer, time tracking            |
+                                          |                                   |
+                                          |                                   |
+                                          +---+-------------------------------+                                  +------------+
+                                              |                                                                  | VimBuffer  |
+                                              |                                                                  | {d}        |
+                                              |                                                        /---------+ cBLU       |
+                                              |                                                        |         |            |
+                                              v                                                        |         +------------+
+                                          +-----------------------------------+        +---------------++
+                                        1 | Document                          |        | Extend Document|       +-=------------+
+                                    /-----+ cYEL                              |<-------+ cYEL           |       |+------------+|
+                                    |     | o represents an org-mode document |        | o abstraction  |       || file       ||
+                                    |     | o contains links to other         |        |   of data/file |       || {d}        ||
+                                    |   x |   documents                       |        |   access       +-------+| cYEL       ||
+                                    \---->| o contains meta information       |        | o read         |       ||            ||
+                                          | o contains headings               |        | o write        |       |+------------+|
+                                          |                                   |        |                |       +--------------+
+                                          |                                   |        |                |
+                                          |                                   |        +---------------++       +-=------------+
+                                          +----+------------------------------+                        |        |+------------+|
+                                               |1                          ^                           |        || stdin/     ||
+                                               |                           |                           \--------+| stdout     ||
+                                               |                           |                                    || {d}        ||
+                                               |                           \------------\                       || cRED       ||
+                                               |x                                       |                       |+------------+|
+                                               v                                        |                       +--------------+
+                                          +-----------------------------------+       +-+=--------------------------+
+                                        1 | Heading                           |       |+---------------------------+|
+                                    /-----+ cYEL                              |       || orgcmd                    ||
+                                    |     | o represents a single heading     |       || cRED                      ||
+                                    |     | o contains links to other headings|       || o implement command line  ||
+                                    |   x | o parent heading                  |       ||   tool for processing org ||
+                                    \---->| o siblings                        |       ||   files                   ||
+                                          | o children                        |       || o provide output filter   ||
+                                          |                                   |       || o convert org-mode docs   ||
+                                          | o title                           |       ||   to other formats        ||
+                                          | o level                           |       |+---------------------------+|
+                                          | o body                            |       +-----------------------------+
+                                          | o tags                            |
+                                          | o todo state                      |
+                                          | o closing date                    |
+                                          | o scheduled date                  |
+                                          | o priority                        |
+                                          | o item lists (class hierarchy)    |
+                                          |                                   |
+                                          |                                   |
+                                          |                                   |
+                                          +-----------------------------------+
+

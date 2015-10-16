@@ -1,0 +1,11 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+DESTDIR=$(CURDIR)/debian/vim-orgmode
+ADDONSDIR=/usr/share/vim/addons
+
+override_dh_auto_install:
+	dh_auto_install -- DESTDIR=$(DESTDIR) VIMDIR=$(ADDONSDIR)
+
+%:
+	dh $@

@@ -1,0 +1,869 @@
+vim-orgmode (0.3.0-2) unstable; urgency=low
+
+  * update documentation
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 09 Aug 2011 21:13:40 +0200
+
+vim-orgmode (0.3.0-1) unstable; urgency=low
+
+  * update documentation
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 09 Aug 2011 08:37:25 +0200
+
+vim-orgmode (0.3.0-0) unstable; urgency=low
+
+  * fix completion menu popup that disappeared because of the usage of
+  	vim.command
+  * closes issue #48
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 09 Aug 2011 08:25:03 +0200
+
+vim-orgmode (0.2.1-25) unstable; urgency=low
+
+  * playing around with ftdetect vs. setfiletype
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 08 Aug 2011 08:11:23 +0200
+
+vim-orgmode (0.2.1-24) unstable; urgency=low
+
+  * improve implementation of todo state selection (issue #5)
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 07 Aug 2011 19:55:06 +0200
+
+vim-orgmode (0.2.1-23) unstable; urgency=low
+
+  * more precise regex for dates - pull request by sotte
+  * closes issue #52
+
+ -- Roman Asendorf <roman.asendorf@gmail.com> Wed, 03 Aug 2011 22:40:48 +0200
+
+vim-orgmode (0.2.1-22) unstable; urgency=low
+
+  * implement interactive todo state selection
+  * closes issue #5
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Wed, 03 Aug 2011 22:23:14 +0200
+
+vim-orgmode (0.2.1-21) unstable; urgency=low
+
+  * added emacs as suggested package - pull request by sotte
+  * closes issue #54
+
+ -- Roman Asendorf <roman.asendorf@gmail.com> Wed, 03 Aug 2011 21:52:15 +0200
+
+vim-orgmode (0.2.1-20) unstable; urgency=low
+
+  * simple export via emacs for pdf and html - pull request by sotte
+  * closes issue #54
+
+ -- Roman Asendorf <roman.asendorf@gmail.com> Wed, 03 Aug 2011 21:43:15 +0200
+
+vim-orgmode (0.2.1-19) unstable; urgency=low
+
+  * add orgmode group to au commands in TagProperties plugin
+  * closes issue #53
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Wed, 03 Aug 2011 20:02:08 +0200
+
+vim-orgmode (0.2.1-18) unstable; urgency=low
+
+  * allow demotion of first level headings
+  * closes issue #27
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 01 Aug 2011 21:59:32 +0200
+
+vim-orgmode (0.2.1-17) unstable; urgency=low
+
+  * fix encoding issues in Date plugin
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Tue, 12 Jul 2011 17:59:41 +0200
+
+vim-orgmode (0.2.1-16) unstable; urgency=low
+
+  * update installvba target to also work with older vim version
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Mon, 11 Jul 2011 08:23:18 +0200
+
+vim-orgmode (0.2.1-15) unstable; urgency=low
+
+  * make switching to the next todo sequence more convenient
+  * fix issue in offset calculation when old and new state are None
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 09 Jul 2011 17:54:46 +0200
+
+vim-orgmode (0.2.1-14) unstable; urgency=low
+
+  * make switching to the next todo sequence more consistent
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 09 Jul 2011 17:38:18 +0200
+
+vim-orgmode (0.2.1-13) unstable; urgency=low
+
+  * fix minor issues related to switching to the next todo sequence
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 09 Jul 2011 17:33:56 +0200
+
+vim-orgmode (0.2.1-12) unstable; urgency=low
+
+  * add general support for multiple todo sequences
+  * closes issue #46
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 09 Jul 2011 16:39:49 +0200
+
+vim-orgmode (0.2.1-11) unstable; urgency=low
+
+  * update documentation
+  * update clean target
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 09 Jul 2011 11:29:57 +0200
+
+vim-orgmode (0.2.1-10) unstable; urgency=low
+
+  * fix todo tests broken by version 0.2.1-8
+  * fix DONE result of VimBuffer.get_todo_states.parse_states
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 09 Jul 2011 09:49:07 +0200
+
+vim-orgmode (0.2.1-9) unstable; urgency=low
+
+  * fix folded text for headings containing backslashes or double quotes
+  * closes issue #26
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 08 Jul 2011 23:21:07 +0200
+
+vim-orgmode (0.2.1-8) unstable; urgency=low
+
+  * add Document.get_todo_states() and Document.get_all_todo_states()
+  * don't confuse upper case words at the beginning of a heading with a todo
+  	state
+  * closes issue #28
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 08 Jul 2011 22:30:29 +0200
+
+vim-orgmode (0.2.1-7) unstable; urgency=low
+
+  * fix error in setting tags
+  * closes issue #25
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Mon, 04 Jul 2011 12:56:27 +0200
+
+vim-orgmode (0.2.1-6) unstable; urgency=low
+
+  * improve split of heading
+  * add variable g:org_improve_split_heading to enable/disable improve
+  	the split of headings
+  * closes issue #24
+  * change Makefile to be more generic
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 04 Jul 2011 07:54:17 +0200
+
+vim-orgmode (0.2.1-5) unstable; urgency=low
+
+  * implement shortcut for moving to the partent's next sibling
+  * closes issue #22
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 03 Jul 2011 13:21:04 +0200
+
+vim-orgmode (0.2.1-4) unstable; urgency=low
+
+  * fix duplication of children when inserting a new heading
+  * closes issue #20
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 03 Jul 2011 12:43:32 +0200
+
+vim-orgmode (0.2.1-3) unstable; urgency=low
+
+  * add support for new vimball file extension .vmb
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 03 Jul 2011 12:27:07 +0200
+
+vim-orgmode (0.2.1-2) unstable; urgency=low
+
+  * always start insert mode when adding a new heading
+  * closes issue #21
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 03 Jul 2011 12:25:20 +0200
+
+vim-orgmode (0.2.1-1) unstable; urgency=low
+
+  * make target installvba create the VIMPLUGINDIR before attempting the
+  	installation
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 26 Jun 2011 21:07:54 +0200
+
+vim-orgmode (0.2.1-0) unstable; urgency=low
+
+  * add documentation for customizing syntax highlighting
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 26 Jun 2011 19:08:59 +0200
+
+vim-orgmode (0.2.0-6) unstable; urgency=low
+
+  * add dependency to clean target to orgmode.vba
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 26 Jun 2011 14:03:18 +0200
+
+vim-orgmode (0.2.0-5) unstable; urgency=low
+
+  * add documentation for remapping shortcuts
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 26 Jun 2011 13:47:30 +0200
+
+vim-orgmode (0.2.0-4) unstable; urgency=low
+
+  * fix <Plug> names for Todo plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 26 Jun 2011 13:24:07 +0200
+
+vim-orgmode (0.2.0-3) unstable; urgency=low
+
+  * fix encoding of todo states set by the Todo plugin (thanks to Daniel Carl
+  	for pointing out the issue)
+  * add target installvba to locally install orgmode.vba
+  * cleanup Makefile
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 26 Jun 2011 13:15:34 +0200
+
+vim-orgmode (0.2.0-2) unstable; urgency=low
+
+  * add hint for updateing vim-orgmode from a previous version
+  * move all documentation related to installation and usage to doc/org.txt
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 26 Jun 2011 12:46:55 +0200
+
+vim-orgmode (0.2.0-1) unstable; urgency=low
+
+  * minor changes to the build files
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 17:43:48 +0200
+
+vim-orgmode (0.2.0-0) unstable; urgency=low
+
+  * remove unused echo command in Makefile
+  * add vim help file doc/org.txt
+  * first release
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 17:35:31 +0200
+
+vim-orgmode (0.1.0-89) unstable; urgency=low
+
+  * add separate target to generate the vba.gz archive
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 16:47:23 +0200
+
+vim-orgmode (0.1.0-88) unstable; urgency=low
+
+  * improve error message in case ditaa is not available
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 16:42:36 +0200
+
+vim-orgmode (0.1.0-87) unstable; urgency=low
+
+  * update README and diagram
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 16:38:31 +0200
+
+vim-orgmode (0.1.0-86) unstable; urgency=low
+
+  * fix issue in EditStructure._move_heading that caused the current heading
+  	not to be removed from the list of heading
+  * improve error messages for non-allowed characters in tags or todo states
+  * allow \t and space in tags because of an automatic replacement by _ later
+  	on
+  * fix issue when creating the debian package an not all path components
+  	exist
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 16:36:39 +0200
+
+vim-orgmode (0.1.0-85) unstable; urgency=low
+
+  * add support and tests for splitting a headings title in insert mode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 15:55:16 +0200
+
+vim-orgmode (0.1.0-84) unstable; urgency=low
+
+  * correct test cases for Navigator plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 14:05:17 +0200
+
+vim-orgmode (0.1.0-83) unstable; urgency=low
+
+  * remove LoggingWork from loaded plugins
+  * fix a problem when positioning the cursor on a newly created heading
+  * fix a problem when positioning the cursor on the first character of a
+  	non-heading line
+  * fix a problem when indenting non-heading lines in insert mode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 13:13:41 +0200
+
+vim-orgmode (0.1.0-82) unstable; urgency=low
+
+  * change global function insert_at_cursor to append text after cursor
+  * add support for insert mode to insert_at_cursor
+  * fix traceback in Date plugin caused by conversion to unicode
+  * change insert date mappings to ,si and ,sa
+  * add submenu Change Date to Date plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 25 Jun 2011 13:00:54 +0200
+
+vim-orgmode (0.1.0-81) unstable; urgency=low
+
+  * fix error in TagsProperties.set_tags when None type object is returned
+  * change TagsProperties.realign_tags to use VimBuffer.write_heading instead
+  	of VimBuffer.write method
+  * add convenience function VimBuffer.find_current_heading
+  * remove trailing spaces when a heading contains a single uppercase word
+  	(pseudo TODO state)
+  * change Heading.copy to create a completely detached heading even without a
+  	connection to a document
+  * change Heading.start to reture Heading._orig_start when the heading has no
+  	connection to a document
+  * add parameter connect_with_document to Document.find_heading
+  * convert plugins and global functions to use VimBuffer.find_current_heading
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 21 Jun 2011 23:26:25 +0200
+
+vim-orgmode (0.1.0-80) unstable; urgency=low
+
+  * update README
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 21 Jun 2011 07:46:04 +0200
+
+vim-orgmode (0.1.0-79) unstable; urgency=low
+
+  * implement VimBuffer.write_heading to just update a single heading
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 22:19:00 +0200
+
+vim-orgmode (0.1.0-78) unstable; urgency=low
+
+  * fix assignment to vim.current.buffer in test cases
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 15:21:39 +0200
+
+vim-orgmode (0.1.0-77) unstable; urgency=low
+
+  * improve memory usage by removing unused document objects
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 14:33:10 +0200
+
+vim-orgmode (0.1.0-76) unstable; urgency=low
+
+  * improve speed by implementing a better reuse of document objects
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 14:18:26 +0200
+
+vim-orgmode (0.1.0-75) unstable; urgency=low
+
+  * fix issue with tag recognition in headings that contain zero or just one
+  	word
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 14:07:29 +0200
+
+vim-orgmode (0.1.0-74) unstable; urgency=low
+
+  * change EditStructure mappings back to using the shift key
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 13:29:50 +0200
+
+vim-orgmode (0.1.0-73) unstable; urgency=low
+
+  * fix regression introduced in version 0.1.0-71
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 13:28:43 +0200
+
+vim-orgmode (0.1.0-72) unstable; urgency=low
+
+  * change default value of g:org_tag_completion_ignorecase to &ignorecase
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 13:20:55 +0200
+
+vim-orgmode (0.1.0-71) unstable; urgency=low
+
+  * convert vim.eval return values to unicode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 19 Jun 2011 13:15:51 +0200
+
+vim-orgmode (0.1.0-70) unstable; urgency=low
+
+  * update README
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 18 Jun 2011 19:21:04 +0200
+
+vim-orgmode (0.1.0-69) unstable; urgency=low
+
+  * add support for tagbar plugin
+  * move ctags support to file ftplugin/org.cnf
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 18 Jun 2011 19:15:13 +0200
+
+vim-orgmode (0.1.0-68) unstable; urgency=low
+
+  * fix encoding error for plugins that directly access vim.current.buffer
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Thu, 16 Jun 2011 12:44:06 +0200
+
+vim-orgmode (0.1.0-67) unstable; urgency=low
+
+  * change regex strings to raw strings
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 17 Jun 2011 08:09:23 +0200
+
+vim-orgmode (0.1.0-66) unstable; urgency=low
+
+  * remove highlighting group Question from title colors
+  * fix utf-8 encoding for vim.command calls
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Thu, 16 Jun 2011 12:39:46 +0200
+
+vim-orgmode (0.1.0-65) unstable; urgency=low
+
+  * fix error when aktivating lazyredraw and hidden for the current buffer
+  * set commentstring to "# %s"
+  * fix error when switching buffers to get current changetick
+  * fix error when running get_document with bufnr 0 that opened to the first
+  	document that was queried instead of return the current document
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Wed, 15 Jun 2011 12:42:03 +0200
+
+vim-orgmode (0.1.0-64) unstable; urgency=low
+
+  * remove parameter mode from function change_visual_selection
+  * add more test cases for Navigator plugin, current this plugin is somehow
+  	broken
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 14 Jun 2011 20:30:45 +0200
+
+vim-orgmode (0.1.0-63) unstable; urgency=low
+
+  * convert LoggingWork plugin to unicode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 14 Jun 2011 18:47:52 +0200
+
+vim-orgmode (0.1.0-62) unstable; urgency=low
+
+  * move initialization of speeddating commands to __init__ method
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 14 Jun 2011 18:45:16 +0200
+
+vim-orgmode (0.1.0-61) unstable; urgency=low
+
+  * convert Date plugin to unicode
+  * correct a typo in mapping for May
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 14 Jun 2011 18:36:18 +0200
+
+vim-orgmode (0.1.0-60) unstable; urgency=low
+
+  * add missing counter to test_edit_structure.py
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 14 Jun 2011 18:34:51 +0200
+
+vim-orgmode (0.1.0-59) unstable; urgency=low
+
+  * convert Todo plugin to unicode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 14 Jun 2011 18:32:01 +0200
+
+vim-orgmode (0.1.0-58) unstable; urgency=low
+
+  * fix indentation of docstring in VimBuffer
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 13 Jun 2011 21:51:16 +0200
+
+vim-orgmode (0.1.0-57) unstable; urgency=low
+
+  * convert TagsProperties to liborgmode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 13 Jun 2011 21:48:07 +0200
+
+vim-orgmode (0.1.0-56) unstable; urgency=low
+
+  * add missing % when doing string formatting in EditStructure plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 13 Jun 2011 19:27:38 +0200
+
+vim-orgmode (0.1.0-55) unstable; urgency=low
+
+  * fix encoding error in keybinding.py when evaluation self.overwrite_exisiting
+  * convert Hyperlink plugin to unicode
+  * add hint to current plugin when a traceback occures during initialization
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 13 Jun 2011 19:23:13 +0200
+
+vim-orgmode (0.1.0-54) unstable; urgency=low
+
+  * add copy method to Heading class to make a copy of the object
+  * track orig_start in Document.write method instead of the heading objects
+  * convert EditStructure plugin to liborgmode
+  * swap promote/demote meaning
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 13 Jun 2011 18:59:21 +0200
+
+vim-orgmode (0.1.0-53) unstable; urgency=low
+
+  * fix performance issue when identing/folding text
+  * rename method load to init_dom
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 28 May 2011 15:21:58 +0200
+
+vim-orgmode (0.1.0-52) unstable; urgency=low
+
+  * fix performance issue by introducing static computation of start value
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 28 May 2011 14:51:38 +0200
+
+vim-orgmode (0.1.0-51) unstable; urgency=low
+
+  * add support for multiple color definitions for :foreground and :background
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Fri, 20 May 2011 08:29:59 +0200
+
+vim-orgmode (0.1.0-50) unstable; urgency=low
+
+  * add support for org-todo-keyword-faces
+  * add support for nested org-todo-keyword lists
+  * add descriptions and examples for variables
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 15 May 2011 12:00:41 +0200
+
+vim-orgmode (0.1.0-49) unstable; urgency=low
+
+  * general cleanup in syntax file
+  * add keyword default to all highlighting statements
+  * add syntax support for comments
+  * clear highlighting for org_shade_stars group if
+  	g:org_heading_shade_leading_stars is not set
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 14 May 2011 23:33:50 +0200
+
+vim-orgmode (0.1.0-48) unstable; urgency=low
+
+  * add syntax support for tables
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 14 May 2011 23:04:46 +0200
+
+vim-orgmode (0.1.0-47) unstable; urgency=low
+
+  * add syntax support for DEADLINE and SCHEDULED
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 14 May 2011 21:27:07 +0200
+
+vim-orgmode (0.1.0-46) unstable; urgency=low
+
+  * add syntax support for timestamps
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 14 May 2011 21:11:13 +0200
+
+vim-orgmode (0.1.0-45) unstable; urgency=low
+
+  * add syntax support for properties
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sat, 14 May 2011 20:52:29 +0200
+
+vim-orgmode (0.1.0-44) unstable; urgency=low
+
+  * convert tests to unicode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 13 May 2011 23:39:38 +0200
+
+vim-orgmode (0.1.0-43) unstable; urgency=low
+
+  * change comparison of None to "is" instead of "=="
+  * add function flatten_list to prevent sublists
+  * add convenience methods get_index_in_parent_list and get_parent_list to Heading class
+  * add __unicode__ and __str__ methods to Document
+  * started porting of EditStructure plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 13 May 2011 22:59:41 +0200
+
+vim-orgmode (0.1.0-42) unstable; urgency=low
+
+  * fix syntax error in syntax/org.vim
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 13 May 2011 19:30:44 +0200
+
+vim-orgmode (0.1.0-41) unstable; urgency=low
+
+  * replace hbsitz's org syntax file
+  * change highlighting to integrate much better with colorschemes
+  * change license to AGPL 3
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Thu, 12 May 2011 18:46:13 +0200
+
+vim-orgmode (0.1.0-40) unstable; urgency=low
+
+  * add tag_column and tabstop implementation to VimBuffer
+  * rename setting org_tags_column to org_tag_column
+  * rename setting org_tags_completion_ignorecase to
+  	org_tag_completion_ignorecase
+  * fix unicode settings in test cases
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 10 May 2011 13:16:35 +0900
+
+vim-orgmode (0.1.0-39) unstable; urgency=low
+
+  * fix bug in echo function - use echo command
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 21:17:50 +0900
+
+vim-orgmode (0.1.0-38) unstable; urgency=low
+
+  * convert Navigator plugin to unicode and liborgmode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 21:17:17 +0900
+
+vim-orgmode (0.1.0-37) unstable; urgency=low
+
+  * change echo function to use vim echo function
+  * add missing unicode parameter to string in ShowHide keybinding
+  * enable Misc plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 20:32:22 +0900
+
+vim-orgmode (0.1.0-36) unstable; urgency=low
+
+  * convert Misc plugin to unicode and liborgmode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 20:14:04 +0900
+
+vim-orgmode (0.1.0-35) unstable; urgency=low
+
+  * fix a bug in ShowHide.toggle_folding when folding the first heading in
+  	document when it doesn't have a child heading
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 19:55:52 +0900
+
+vim-orgmode (0.1.0-34) unstable; urgency=low
+
+  * enable tests for ShowHide plugin
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 18:40:11 +0900
+
+vim-orgmode (0.1.0-33) unstable; urgency=low
+
+  * optimize update_changedtick to not run through all but just the wanted
+  	buffer
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 18:33:14 +0900
+
+vim-orgmode (0.1.0-32) unstable; urgency=low
+
+  * remove debug infomation from liborgmode.py
+  * add __str__ method for for Heading class
+  * port base functionality of orgmode to unicode
+  * echo a message instead of an error when no plugins are definied
+  * add heading parameter to VimBuffer methods
+  * add functionality to reuse VimBuffer objects and recognise user changes
+  * add BufNotInSync exception
+  * disable all but ShowHide plugin
+  * port ShowHide plugin to unicode and liborgmode
+  * port PluginExample to unicode and liborgmode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 18:20:59 +0900
+
+vim-orgmode (0.1.0-31) unstable; urgency=low
+
+  * add vim swap files to gitignore list
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 14:29:41 +0900
+
+vim-orgmode (0.1.0-30) unstable; urgency=low
+
+  * add support for unicode
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 14:27:37 +0900
+
+vim-orgmode (0.1.0-29) unstable; urgency=low
+
+  * remove unsued import from liborgmode
+  * add heading parameter to VimBuffer.loag function
+  * update tests to use renamed liborgmode/document files
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 11:49:25 +0900
+
+vim-orgmode (0.1.0-28) unstable; urgency=low
+
+  * rename ftplugin/orgmode/liborgmode.py to ftplugin/liborgmode.py
+  * rename ftplugin/orgmode/vimbuffer.py to ftplugin/orgmode/document.py
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 09 May 2011 11:46:39 +0900
+
+vim-orgmode (0.1.0-27) unstable; urgency=low
+
+  * update README
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 06 May 2011 21:40:48 +0900
+
+vim-orgmode (0.1.0-26) unstable; urgency=low
+
+  * add load method to documents for initializing the DOM
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 06 May 2011 21:21:39 +0900
+
+vim-orgmode (0.1.0-25) unstable; urgency=low
+
+  * fix heading initialization (Heading.parse_heading_from_data) when orig_start == 0
+  * fix comparing of deleted headings
+  * fix overwriting a single item in a heading
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 06 May 2011 21:12:49 +0900
+
+vim-orgmode (0.1.0-24) unstable; urgency=low
+
+  * add support for tags and todo
+  * externalize heading create to a separate classmethod
+  * add all relevant parameters to the heading constructor
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 06 May 2011 20:20:37 +0900
+
+vim-orgmode (0.1.0-23) unstable; urgency=low
+
+  * make Document.is_dirty function test all headings not just the first two
+  	levels
+  * add more tests for replacing headings
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Thu, 05 May 2011 21:37:27 +0900
+
+vim-orgmode (0.1.0-22) unstable; urgency=low
+
+  * distinguish between heading and body changes
+  * make writing the VimBuffer more efficient
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Thu, 05 May 2011 21:03:28 +0900
+
+vim-orgmode (0.1.0-21) unstable; urgency=low
+
+  * use functionality of UserList in MultiPurposeList
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Thu, 05 May 2011 20:13:26 +0900
+
+vim-orgmode (0.1.0-20) unstable; urgency=low
+
+  * update README
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Thu, 05 May 2011 10:51:12 +0900
+
+vim-orgmode (0.1.0-19) unstable; urgency=low
+
+  * major refactoring of liborgmode
+  * tests and plugins are currently broken
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Thu, 05 May 2011 10:48:44 +0900
+
+vim-orgmode (0.1.0-18) unstable; urgency=low
+
+  * install -D doesn't work on BSD based systems; migrate commands to install -d
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 02 May 2011 15:41:17 +0900
+
+vim-orgmode (0.1.0-17) unstable; urgency=low
+
+  * merge date-plugin from sotte
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 02 May 2011 15:40:40 +0900
+
+vim-orgmode (0.1.0-16) unstable; urgency=low
+
+  * rename heading.py to liborgmode.py
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 26 Apr 2011 21:55:17 +0900
+
+vim-orgmode (0.1.0-15) unstable; urgency=low
+
+  * add variable g:org_syntax_highlight_leading_stars to customize
+  	highlighting of leading stars
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 26 Apr 2011 21:30:31 +0900
+
+vim-orgmode (0.1.0-14) unstable; urgency=low
+
+  * merge todo_refactoring from sotte
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 26 Apr 2011 21:16:19 +0900
+
+vim-orgmode (0.1.0-13) unstable; urgency=low
+
+  * add documentation in form of a diagram describing the functionality of
+  	vim-orgmode, liborgmode and orgcmd
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 26 Apr 2011 20:41:20 +0900
+
+vim-orgmode (0.1.0-12) unstable; urgency=low
+
+  * update todos
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Mon, 28 Mar 2011 00:07:37 +0200
+
+vim-orgmode (0.1.0-11) unstable; urgency=low
+
+  * move initialization to start method
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Thu, 24 Mar 2011 20:39:49 +0100
+
+vim-orgmode (0.1.0-10) unstable; urgency=low
+
+  * fix problem with the order of decorators (@classmethod must be first)
+  * remove silence from
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Thu, 24 Mar 2011 17:36:55 +0100
+
+vim-orgmode (0.1.0-9) unstable; urgency=low
+
+  * rename update_tag_alignment
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Wed, 23 Mar 2011 19:40:44 +0100
+
+vim-orgmode (0.1.0-8) unstable; urgency=low
+
+  * make edit tasks update tags alignment
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 22 Mar 2011 22:28:59 +0100
+
+vim-orgmode (0.1.0-7) unstable; urgency=low
+
+  * clean up of unused imports
+  * change a bunch of methods into classmethods
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 22 Mar 2011 22:17:44 +0100
+
+vim-orgmode (0.1.0-6) unstable; urgency=low
+
+  * add vim as build dependency
+  * update Installation and Building information in README
+  * update todos
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 22 Mar 2011 21:35:02 +0100
+
+vim-orgmode (0.1.0-5) unstable; urgency=low
+
+  * fix passing of function arguments
+  * fix empty links creation
+  * update todos for Hyperlinks plugin
+
+ -- Jan Christoph Ebersbach <ebersbach@univention.de>  Mon, 21 Mar 2011 12:35:14 +0100
+
+vim-orgmode (0.1.0-4) unstable; urgency=low
+
+  * implement Hyperlinks plugin (closes: #11)
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Sun, 20 Mar 2011 00:07:04 +0100
+
+vim-orgmode (0.1.0-3) unstable; urgency=low
+
+  * fix syntax issue in PluginExample.py
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Fri, 11 Mar 2011 08:47:34 +0100
+
+vim-orgmode (0.1.0-2) unstable; urgency=low
+
+  * correct filename of PluginExample.py (closes: #3)
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Wed, 09 Mar 2011 22:02:49 +0100
+
+vim-orgmode (0.1.0-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Jan Christoph Ebersbach <jceb@e-jc.de>  Tue, 22 Feb 2011 22:14:01 +0100

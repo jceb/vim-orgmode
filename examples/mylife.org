@@ -1,0 +1,26 @@
+* My Life in plain text
+  - [X] birth
+  - [-] life [50%]
+        - [X] use vim
+        - [ ] get everything else done
+* Write minutes of last meeting <2014-08-08 Fri>			     :work:
+** DONE John said
+   this
+** TODO Mary said
+   that
+** WAITING What did Mark say?
+   [[http://example.com/here/is/the/recording][1st recording]]
+   [[http://example.com/here/is/the/recording][2nd recording]]
+* Some folding headline 1								:one:
+** Folded
+*** Even more folded
+* Some folding headline 2
+** Folded											:two:
+*** Even more folded
+* Some folding headline 3
+** Folded
+*** Even more folded								    :three:
+* Some folding headline 4
+** Folded
+*** Even more folded
+    completely unfolded

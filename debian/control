@@ -1,0 +1,14 @@
+Source: vim-orgmode
+Priority: extra
+Section: editors
+Maintainer: Jan Christoph Ebersbach <jceb@e-jc.de>
+Build-Depends: debhelper (>= 7), vim
+Standards-Version: 3.7.3
+Homepage: http://www.e-jc.de/
+
+Package: vim-orgmode
+Architecture: all
+Depends: python, vim-common, vim
+Suggests: emacs
+Description: Clone of Org-mode for Vim
+ Clone of Org-mode for Vim
