@@ -63,16 +63,17 @@ class ShowHide(object):
 
 		cursor = vim.current.window.cursor[:]
 
-		if int(vim.eval((u'foldclosed(%d)' % heading.start_vim).encode(u'utf-8'))) != -1:
+		if int(vim.eval((u'foldclosed(%d)' % (heading.start_vim + 1)).encode(u'utf-8'))) != -1:
 			if not reverse:
 				# open closed fold
 				p = heading.number_of_parents
 				if not p:
 					p = heading.level
+				vim.current.window.cursor = (cursor[0] + 1, cursor[1])
 				vim.command((u'normal! %dzo' % p).encode(u'utf-8'))
 			else:
 				# reverse folding opens all folds under the cursor
-				vim.command((u'%d,%dfoldopen!' % (heading.start_vim, heading.end_of_last_child_vim)).encode(u'utf-8'))
+				vim.command((u'%d,%dfoldopen!' % ((heading.start_vim + 1), heading.end_of_last_child_vim)).encode(u'utf-8'))
 			vim.current.window.cursor = cursor
 			return heading
 

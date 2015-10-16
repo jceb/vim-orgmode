@@ -72,8 +72,8 @@ while s:i <= g:vimwiki_org_heading_highlight_levels
 endwhile
 unlet! s:i
 
-if !exists('g:loaded_org_syntax')
-	let g:loaded_org_syntax = 1
+if !exists('g:loaded_vimwiki_org_syntax')
+	let g:loaded_vimwiki_org_syntax = 1
 
 	function! OrgExtendHighlightingGroup(base_group, new_group, settings)
 		let l:base_hi = ''
@@ -177,7 +177,7 @@ if !exists('g:loaded_org_syntax')
 			let l:group = l:default_group
 			for l:j in g:vimwiki_org_todo_keyword_faces
 				if l:j[0] == l:_i
-					let l:group = 'org_todo_keyword_face_' . l:_i
+					let l:group = 'vimwiki_org_todo_keyword_face_' . l:_i
 					call OrgExtendHighlightingGroup(l:default_group, l:group, OrgInterpretFaces(l:j[1]))
 					break
 				endif
