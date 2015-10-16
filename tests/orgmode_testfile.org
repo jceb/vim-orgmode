@@ -1,0 +1,37 @@
+
+* bold, italics and underline syntax matching
+** Should match:
+
+*foo*  *foo* 
+*Really, quite long sentence*.
+_foo_  _foo_ 
+_really, quite long sentence._.
+
+ *Übermensch á* *eä* *ý€* 
+ _Ÿ ï_
+
+ *sdf   l.*
+ *sdfsdf   ,.* 
+ *foo_ sdf /*  
+ /sdf sdf sdf ./
+
+  /google.com/
+
+ *[sdf]*
+*a* /a/ =b= ~b~ `d`
+
+*abc* /abc/ =bde= ~bde~ `def`
+ *=*a*=*
+** Should not match
+http://google.com/
+ //google.com/
+ * sdf* _ sdf_  
+ *sdfsdf   sdf,*
+ *foo *
+ foo_not underlined_bar
+
+ *.sdf*[
+ [*.sdf*
+ [*sdf*]
+ *=*a*=
+
