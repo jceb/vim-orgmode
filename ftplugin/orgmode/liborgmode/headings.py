@@ -55,7 +55,7 @@ class Heading(DomObj):
 		self._cached_checkbox = None
 
 	def __unicode__(self):
-		res = u'*' * self.level
+		res = u'#' * self.level
 		if self.todo:
 			res = u' '.join((res, self.todo))
 		if self.title:
@@ -74,8 +74,13 @@ class Heading(DomObj):
 				ts = self.document.tabstop
 				tag_column = self.document.tag_column
 
-			len_heading = len(res)
+			# XXX deal with multibytes string, like Chinese, Japanese
+			# so it's length will be original length of string, plus count of multibytes chars
+			utf8_res = res.encode('utf-8')
+			mb_count = (len(utf8_res) - len(res)) / 2
+			len_heading = len(res) + mb_count
 			len_tags = len(tags)
+			
 			if len_heading + spaces + len_tags < tag_column:
 				spaces_to_next_tabstop = ts - divmod(len_heading, ts)[1]
 
@@ -479,7 +484,7 @@ class Heading(DomObj):
 		if not line:
 			return None
 		for i in xrange(0, len(line)):
-			if line[i] == u'*':
+			if line[i] == u'#':
 				level += 1
 				if len(line) > (i + 1) and line[i + 1] in (u'\t', u' '):
 					return level

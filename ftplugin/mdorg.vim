@@ -4,6 +4,7 @@
 " @Created      : 2010-10-03
 " @Last Modified: Tue 13. Sep 2011 20:52:57 +0200 CEST
 " @Revision     : 0.4
+" @Modified 	: 2015-10-15 by kongluoxing
 " vi: ft=vim:tw=80:sw=4:ts=4:fdm=marker
 
 if ! has('python') || v:version < 703
@@ -13,14 +14,14 @@ endif
 
 if ! exists('b:did_ftplugin')
 	" default emacs settings
-	setlocal comments=fb:*,b:#,fb:-
-	setlocal commentstring=#\ %s
+	" setlocal comments=fb:*,b:#,fb:-
+	" setlocal commentstring=#\ %s
 	setlocal conceallevel=2 concealcursor="nc"
 	" original emacs settings are: setlocal tabstop=6 shiftwidth=6, but because
 	" of checkbox indentation the following settings are used:
 	setlocal tabstop=6 shiftwidth=6
-	if exists('g:org_tag_column')
-		exe 'setlocal textwidth='.g:org_tag_column
+	if exists('g:vimwiki_org_tag_column')
+		exe 'setlocal textwidth=' . g:vimwiki_org_tag_column
 	else
 		setlocal textwidth=77
 	endif
@@ -29,24 +30,24 @@ if ! exists('b:did_ftplugin')
 	setlocal expandtab
 
 	" register keybindings if they don't have been registered before
-	if exists("g:loaded_org")
+	if exists("g:loaded_vimwiki_org")
 		python ORGMODE.register_keybindings()
 	endif
 endif
 
 " Load orgmode just once {{{1
-if &cp || exists("g:loaded_org")
+if &cp || exists("g:loaded_vimwiki_org")
     finish
 endif
-let g:loaded_org = 1
+let g:loaded_vimwiki_org = 1
 
 " Default org plugins that will be loaded (in the given order)
 if ! exists('g:org_plugins') && ! exists('b:org_plugins')
 	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', 'EditCheckbox', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|', 'Export']
 endif
 
-if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_highlight_leading_stars')
-	let g:org_syntax_highlight_leading_stars = 1
+if ! exists('g:vimwiki_org_syntax_highlight_leading_stars') && ! exists('b:vimwiki_org_syntax_highlight_leading_stars')
+	let g:vimwiki_org_syntax_highlight_leading_stars = 1
 endif
 
 " Menu and document handling {{{1
@@ -68,8 +69,8 @@ endfunction
 
 " show and hide Org menu depending on the filetype
 augroup orgmode
-	au BufEnter * :if &filetype == "org" | call <SID>OrgRegisterMenu() | endif
-	au BufLeave * :if &filetype == "org" | call <SID>OrgUnregisterMenu() | endif
+	au BufEnter * :if &filetype == "mdorg" | call <SID>OrgRegisterMenu() | endif
+	au BufLeave * :if &filetype == "mdorg" | call <SID>OrgUnregisterMenu() | endif
 	au BufDelete * :call <SID>OrgDeleteUnusedDocument(expand('<abuf>'))
 augroup END
 

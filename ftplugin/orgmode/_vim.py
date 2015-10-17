@@ -239,7 +239,6 @@ def fold_orgmode(allow_dirty=False):
 		heading = d.find_current_heading(line - 1)
 	else:
 		heading = d.current_heading(line - 1)
-
 	# if cache_heading != heading:
 		# heading.init_checkboxes()
 		# checkbox = heading.current_checkbox()
@@ -248,18 +247,18 @@ def fold_orgmode(allow_dirty=False):
 	if heading:
 		# if checkbox:
 			# vim.command((u'let b:fold_expr = ">%d"' % heading.level + checkbox.level).encode(u'utf-8'))
-		if 0:
-			pass
-		elif line == heading.start_vim:
+		# vim.command((u'let b:fold_expr = "0"').encode('utf-8'))
+		if line == heading.start_vim:
+			vim.command((u'let b:fold_expr = %d' % heading.level - 1).encode(u'utf-8'))
+		elif line - heading.start_vim == 1:
 			vim.command((u'let b:fold_expr = ">%d"' % heading.level).encode(u'utf-8'))
-		#elif line == heading.end_vim:
-		#	vim.command((u'let b:fold_expr = "<%d"' % heading.level).encode(u'utf-8'))
-		# end_of_last_child_vim is a performance junky and is actually not needed
-		#elif line == heading.end_of_last_child_vim:
-		#	vim.command((u'let b:fold_expr = "<%d"' % heading.level).encode(u'utf-8'))
 		else:
 			vim.command((u'let b:fold_expr = %d' % heading.level).encode(u'utf-8'))
-
+		# elif line == heading.end_vim:
+		# 	vim.command((u'let b:fold_expr = "<%d"' % heading.level).encode(u'utf-8'))
+		#  end_of_last_child_vim is a performance junky and is actually not needed
+		# elif line == heading.end_of_last_child_vim:
+		# 	vim.command((u'let b:fold_expr = "<%d"' % heading.level).encode(u'utf-8'))
 
 def date_to_str(date):
 	if isinstance(date, datetime):

@@ -60,7 +60,7 @@ class VimBuffer(Document):
 
 	@property
 	def tag_column(self):
-		return int(settings.get(u'org_tag_column', u'77'))
+		return int(settings.get(u'vimwiki_org_tag_column', u'77'))
 
 	@property
 	def is_insync(self):
@@ -91,7 +91,7 @@ class VimBuffer(Document):
 
 		:returns:	[([todo states], [done states]), ..]
 		"""
-		states = settings.get(u'org_todo_keywords', [])
+		states = settings.get(u'vimwiki_org_todo_keywords', [])
 		if type(states) not in (list, tuple):
 			return []
 

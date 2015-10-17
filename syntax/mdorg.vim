@@ -15,65 +15,54 @@
 " FIXME: Always make org_bold syntax define before org_heading syntax
 "        to make sure that org_heading syntax got higher priority(help :syn-priority) than org_bold.
 "        If there is any other good solution, please help fix it.
-syntax region org_bold      start="\S\@<=\*\|\*\S\@="   end="\S\@<=\*\|\*\S\@="  keepend oneline
-syntax region org_italic    start="\S\@<=\/\|\/\S\@="   end="\S\@<=\/\|\/\S\@="  keepend oneline
-syntax region org_underline start="\S\@<=_\|_\S\@="       end="\S\@<=_\|_\S\@="    keepend oneline
-syntax region org_code      start="\S\@<==\|=\S\@="       end="\S\@<==\|=\S\@="    keepend oneline
-syntax region org_code      start="\S\@<=`\|`\S\@="       end="\S\@<='\|'\S\@="    keepend oneline
-syntax region org_verbatim  start="\S\@<=\~\|\~\S\@="     end="\S\@<=\~\|\~\S\@="  keepend oneline
-
-hi def org_bold      term=bold      cterm=bold      gui=bold
-hi def org_italic    term=italic    cterm=italic    gui=italic
-hi def org_underline term=underline cterm=underline gui=underline
-
 " Headings: {{{1
 " Load Settings: {{{2
-if !exists('g:org_heading_highlight_colors')
-	let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
+if !exists('g:vimwiki_org_heading_highlight_colors')
+	let g:vimwiki_org_heading_highlight_colors = ['Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
 endif
 
-if !exists('g:org_heading_highlight_levels')
-	let g:org_heading_highlight_levels = len(g:org_heading_highlight_colors)
+if !exists('g:vimwiki_org_heading_highlight_levels')
+	let g:vimwiki_org_heading_highlight_levels = len(g:vimwiki_org_heading_highlight_colors)
 endif
 
-if !exists('g:org_heading_shade_leading_stars')
-	let g:org_heading_shade_leading_stars = 1
+if !exists('g:vimwiki_org_heading_shade_leading_stars')
+	let g:vimwiki_org_heading_shade_leading_stars = 1
 endif
 
 " Enable Syntax HL: {{{2
 unlet! s:i s:j s:contains
 let s:i = 1
-let s:j = len(g:org_heading_highlight_colors)
+let s:j = len(g:vimwiki_org_heading_highlight_colors)
 let s:contains = ' contains=org_timestamp,org_timestamp_inactive,org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all,org_list_checkbox,org_bold,org_italic,org_underline,org_code,org_verbatim'
-if g:org_heading_shade_leading_stars == 1
+if g:vimwiki_org_heading_shade_leading_stars == 1
 	let s:contains = s:contains . ',org_shade_stars'
-	syntax match org_shade_stars /^\*\{2,\}/me=e-1 contained
+	syntax match org_shade_stars /^\#\{2,\}/me=e-1 contained
 	hi def link org_shade_stars Ignore
 else
 	hi clear org_shade_stars
 endif
 
-while s:i <= g:org_heading_highlight_levels
-	exec 'syntax match org_heading' . s:i . ' /^\*\{' . s:i . '\}\s.*/' . s:contains
-	exec 'hi def link org_heading' . s:i . ' ' . g:org_heading_highlight_colors[(s:i - 1) % s:j]
+while s:i <= g:vimwiki_org_heading_highlight_levels
+	exec 'syntax match org_heading' . s:i . ' /^\#\{' . s:i . '\}\s.*/' . s:contains
+	exec 'hi def link org_heading' . s:i . ' ' . g:vimwiki_org_heading_highlight_colors[(s:i - 1) % s:j]
 	let s:i += 1
 endwhile
 unlet! s:i s:j s:contains
 
 " Todo Keywords: {{{1
 " Load Settings: {{{2
-if !exists('g:org_todo_keywords')
-	let g:org_todo_keywords = ['TODO', '|', 'DONE']
+if !exists('g:vimwiki_org_todo_keywords')
+	let g:vimwiki_org_todo_keywords = ['TODO', '|', 'DONE']
 endif
 
-if !exists('g:org_todo_keyword_faces')
-	let g:org_todo_keyword_faces = []
+if !exists('g:vimwiki_org_todo_keyword_faces')
+	let g:vimwiki_org_todo_keyword_faces = []
 endif
 
 " Enable Syntax HL: {{{2
 let s:todo_headings = ''
 let s:i = 1
-while s:i <= g:org_heading_highlight_levels
+while s:i <= g:vimwiki_org_heading_highlight_levels
 	if s:todo_headings == ''
 		let s:todo_headings = 'containedin=org_heading' . s:i
 	else
@@ -83,8 +72,8 @@ while s:i <= g:org_heading_highlight_levels
 endwhile
 unlet! s:i
 
-if !exists('g:loaded_org_syntax')
-	let g:loaded_org_syntax = 1
+if !exists('g:loaded_vimwiki_org_syntax')
+	let g:loaded_vimwiki_org_syntax = 1
 
 	function! OrgExtendHighlightingGroup(base_group, new_group, settings)
 		let l:base_hi = ''
@@ -186,20 +175,20 @@ if !exists('g:loaded_org_syntax')
 			let l:_i = substitute(l:i, "\(.*$", "", "")
 
 			let l:group = l:default_group
-			for l:j in g:org_todo_keyword_faces
+			for l:j in g:vimwiki_org_todo_keyword_faces
 				if l:j[0] == l:_i
-					let l:group = 'org_todo_keyword_face_' . l:_i
+					let l:group = 'vimwiki_org_todo_keyword_face_' . l:_i
 					call OrgExtendHighlightingGroup(l:default_group, l:group, OrgInterpretFaces(l:j[1]))
 					break
 				endif
 			endfor
-			exec 'syntax match org_todo_keyword_' . l:_i . ' /\*\{1,\}\s\{1,\}\zs' . l:_i .'\(\s\|$\)/ ' . a:todo_headings
+			exec 'syntax match org_todo_keyword_' . l:_i . ' /\#\{1,\}\s\{1,\}\zs' . l:_i .'\(\s\|$\)/ ' . a:todo_headings
 			exec 'hi def link org_todo_keyword_' . l:_i . ' ' . l:group
 		endfor
 	endfunction
 endif
 
-call s:ReadTodoKeywords(g:org_todo_keywords, s:todo_headings)
+call s:ReadTodoKeywords(g:vimwiki_org_todo_keywords, s:todo_headings)
 unlet! s:todo_headings
 
 " Timestamps: {{{1
@@ -248,10 +237,6 @@ syntax match hyperlinkURL				    contained "[^][]*\]\[" conceal
 syntax match hyperlinkBracketsRight	contained "\]\{2}"     conceal
 hi def link hyperlink Underlined
 
-" Comments: {{{1
-syntax match org_comment /^#.*/
-hi def link org_comment Comment
-
 " Bullet Lists: {{{1
 " Ordered Lists:
 " 1. list item
@@ -282,10 +267,6 @@ hi def link org_list_checkbox     PreProc
 
 " Block Delimiters: {{{1
 syntax case ignore
-syntax match  org_block_delimiter /^#+BEGIN_.*/
-syntax match  org_block_delimiter /^#+END_.*/
-syntax match  org_key_identifier  /^#+[^ ]*:/
-syntax match  org_title           /^#+TITLE:.*/  contains=org_key_identifier
 hi def link org_block_delimiter Comment
 hi def link org_key_identifier  Comment
 hi def link org_title           Title
@@ -298,9 +279,6 @@ hi def link org_title           Title
 " TODO: http://vim.wikia.com/wiki/Different_syntax_highlighting_within_regions_of_a_file
 syntax match  org_verbatim /^\s*>.*/
 syntax match  org_code     /^\s*:.*/
-syntax region org_verbatim start="^\s*#+BEGIN_.*"      end="^\s*#+END_.*"      keepend contains=org_block_delimiter
-syntax region org_code     start="^\s*#+BEGIN_SRC"     end="^\s*#+END_SRC"     keepend contains=org_block_delimiter
-syntax region org_code     start="^\s*#+BEGIN_EXAMPLE" end="^\s*#+END_EXAMPLE" keepend contains=org_block_delimiter
 hi def link org_code     String
 hi def link org_verbatim String
 
@@ -322,25 +300,6 @@ hi def link org_subtask_percent String
 hi def link org_subtask_percent_100 Identifier
 hi def link org_subtask_number_all Identifier
 
-" Plugin SyntaxRange: {{{1
-" This only works if you have SyntaxRange installed:
-" https://github.com/vim-scripts/SyntaxRange
-
-" BEGIN_SRC
-if exists('g:loaded_SyntaxRange')
-  call SyntaxRange#Include('#+BEGIN_SRC\ vim', '#+END_SRC', 'vim', 'comment')
-  call SyntaxRange#Include('#+BEGIN_SRC\ python', '#+END_SRC', 'python', 'comment')
-  call SyntaxRange#Include('#+BEGIN_SRC\ c', '#+END_SRC', 'c', 'comment')
-  " cpp must be below c, otherwise you get c syntax hl for cpp files
-  call SyntaxRange#Include('#+BEGIN_SRC\ cpp', '#+END_SRC', 'cpp', 'comment')
-  call SyntaxRange#Include('#+BEGIN_SRC\ ruby', '#+END_SRC', 'ruby', 'comment')
-  " call SyntaxRange#Include('#+BEGIN_SRC\ lua', '#+END_SRC', 'lua', 'comment')
-  " call SyntaxRange#Include('#+BEGIN_SRC\ lisp', '#+END_SRC', 'lisp', 'comment')
-
-  " LaTeX
-  call SyntaxRange#Include('\\begin[.*]{.*}', '\\end{.*}', 'tex')
-  call SyntaxRange#Include('\\begin{.*}', '\\end{.*}', 'tex')
-  call SyntaxRange#Include('\\\[', '\\\]', 'tex')
-endif
-
+hi clear Folded
+hi def link Folded Comment
 " vi: ft=vim:tw=80:sw=4:ts=4:fdm=marker

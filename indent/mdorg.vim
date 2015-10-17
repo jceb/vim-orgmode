@@ -3,9 +3,10 @@ if !exists("g:org_indent")
   let g:org_indent = 1
 endif
 
-setlocal foldtext=GetOrgFoldtext()
+" setlocal foldtext=GetOrgFoldtext()
 setlocal fillchars-=fold:-
 setlocal fillchars+=fold:\ 
+setlocal foldtext='\ \ \ \ \ \ ------\ FOLED\ TEXT\ ------'
 setlocal foldexpr=GetOrgFolding()
 setlocal foldmethod=expr
 setlocal indentexpr=GetOrgIndent()
@@ -42,11 +43,11 @@ function! GetOrgFolding()
 		endif
 
 		if has_key(b:org_folding_cache, v:lnum)
-			if match(b:org_folding_cache[v:lnum], '^>') == 0 &&
-						\ match(getline(v:lnum), '^\*\+\s') != 0
-				" when the user pastes text or presses enter, it happens that
-				" the cache starts to confuse vim's folding abilities
-				" these entries can safely be removed
+		  if match(b:org_folding_cache[v:lnum], '^>') == 0 &&
+			\ match(getline(v:lnum), '^\#\+\s') != 0
+		    " when the user pastes text or presses enter, it happens that
+		    " the cache starts to confuse vim's folding abilities
+		    " these entries can safely be removed
 				unlet b:org_folding_cache[v:lnum]
 
 				" the fold text cache is probably also damaged, delete it as
