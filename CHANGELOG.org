@@ -2,6 +2,15 @@
   All notable changes to this project will be documented in this file.
 
   This log is kept according to the [[http://keepachangelog.com/][Keep a CHANGELOG]] manifesto
+** 0.6.0                  					 :unreleased:
+*** Added
+    - Nothing
+*** Deprecated
+    - Nothing
+*** Removed
+    - Nothing
+*** Fixed
+    - Return to right window before setting todo (closes issue #220)
 ** 0.5.0 <2015-10-10 Sat>							 :released:
 *** Added
     - show link description in headings when folded, instead of the whole
