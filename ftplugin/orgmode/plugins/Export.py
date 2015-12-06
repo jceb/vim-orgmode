@@ -90,6 +90,15 @@ class Export(object):
 			echom(u'Export successful: %s.%s' % (vim.eval(u'expand("%:r")'), 'pdf'))
 
 	@classmethod
+	def tobeamer(cls):
+		u"""Export the current buffer as beamer pdf using emacs orgmode."""
+		ret = cls._export(u'org-beamer-export-to-pdf')
+		if ret != 0:
+			echoe(u'PDF export failed.')
+		else:
+			echom(u'Export successful: %s.%s' % (vim.eval(u'expand("%:r")'), 'pdf'))
+
+	@classmethod
 	def tohtml(cls):
 		u"""Export the current buffer as html using emacs orgmode."""
 		ret = cls._export(u'org-html-export-to-html')
@@ -133,6 +142,14 @@ class Export(object):
 			function=u':py ORGMODE.plugins[u"Export"].topdf()<CR>',
 			key_mapping=u'<localleader>ep',
 			menu_desrc=u'To PDF (via Emacs)'
+		)
+		# to Beamer PDF
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgExportToBeamerPDF',
+			function=u':py ORGMODE.plugins[u"Export"].tobeamer()<CR>',
+			key_mapping=u'<localleader>eb',
+			menu_desrc=u'To Beamer PDF (via Emacs)'
 		)
 		# to latex
 		add_cmd_mapping_menu(
