@@ -18,7 +18,7 @@ if ! exists('b:did_ftplugin')
 	setlocal conceallevel=2 concealcursor="nc"
 	" original emacs settings are: setlocal tabstop=6 shiftwidth=6, but because
 	" of checkbox indentation the following settings are used:
-	setlocal tabstop=6 shiftwidth=6
+	setlocal tabstop=2 shiftwidth=2
 	if exists('g:org_tag_column')
 		exe 'setlocal textwidth='.g:org_tag_column
 	else
