@@ -118,7 +118,9 @@ class EditCheckbox(object):
 		# update checkboxes status
 		cls.update_checkboxes_status()
 
-		vim.command((u'exe "normal %dgg"|startinsert!' % (start + 1, )).encode(u'utf-8'))
+		# do not start insert upon adding new checkbox, Issue #211
+#		vim.command((u'exe "normal %dgg"|startinsert!' % (start + 1, )).encode(u'utf-8'))
+		vim.command((u'exe "normal %dgg$"' % (start + 1, )).encode(u'utf-8'))
 
 	@classmethod
 	def toggle(cls, checkbox=None):
