@@ -113,7 +113,9 @@ class EditCheckbox(object):
 			start += 1
 		# vim's buffer behave just opposite to Python's list when inserting a
 		# new item.  The new entry is appended in vim put prepended in Python!
+		vim.current.buffer.append("")
 		vim.current.buffer[start:start] = [unicode(nc)]
+		del vim.current.buffer[-1]
 
 		# update checkboxes status
 		cls.update_checkboxes_status()
