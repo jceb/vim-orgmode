@@ -147,7 +147,7 @@ class EditCheckbox(object):
 
 		if c.status == Checkbox.STATUS_OFF or c.status is None:
 			# set checkbox status on if all children are on
-			if not c.children or c.are_children_all(Checkbox.STATUS_ON):
+			if c.all_children_status()[0] == 0 or c.are_children_all(Checkbox.STATUS_ON):
 				c.toggle()
 				d.write_checkbox(c)
 			elif c.status is None:
@@ -155,7 +155,7 @@ class EditCheckbox(object):
 				d.write_checkbox(c)
 
 		elif c.status == Checkbox.STATUS_ON:
-			if not c.children or c.is_child_one(Checkbox.STATUS_OFF):
+			if c.all_children_status()[0] == 0 or c.is_child_one(Checkbox.STATUS_OFF):
 				c.toggle()
 				d.write_checkbox(c)
 
@@ -215,7 +215,7 @@ class EditCheckbox(object):
 		for c in checkbox.all_siblings():
 			current_status = c.status
 			# if this checkbox is not leaf, its status should determine by all its children
-			if c.children:
+			if c.all_children_status()[0] > 0:
 				current_status = cls._update_checkboxes_status(c.first_child)
 
 			# don't update status if the checkbox has no status
@@ -241,7 +241,9 @@ class EditCheckbox(object):
 
 		parent_status = Checkbox.STATUS_INT
 		# all silbing checkboxes are off status
-		if status_off == total:
+		if total == 0:
+			pass
+		elif status_off == total:
 			parent_status = Checkbox.STATUS_OFF
 		# all silbing checkboxes are on status
 		elif status_on == total:
