@@ -148,6 +148,10 @@ via the 'Org' menu. Most are only usable in command mode.
     <C-S-Left>      - previous keyword set
     <C-S-Right>     - next keyword set
 
+  Plain List:~
+    <localleader>cl or <CR>     - insert plainlist item below 
+    <localleader>cL or <C-S-CR> - insert plainlist item above
+
   Checkboxes:~
     <localleader>cc             - toggle status
     <localleader>cn or <CR>     - insert checkbox below
