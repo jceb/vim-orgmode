@@ -107,15 +107,15 @@ class EditCheckbox(object):
 					except ValueError:
 						pass
 			nc.type = t
-#			if not c.status:
-			if plain:  	# only create plainlist item when requested
-				nc.status = None
 			level = c.level
 
 			if below:
 				start = c.end_of_last_child
 			else:
 				start = c.start
+
+		if plain:  	# only create plainlist item when requested
+			nc.status = None
 		nc.level = level
 
 		if below:
