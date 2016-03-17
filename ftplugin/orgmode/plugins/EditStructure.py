@@ -97,9 +97,11 @@ class EditStructure(object):
 			current_heading.body = []
 
 		d.write()
-		# do not start insert upon adding new headings, Issue #211
-#		vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
-		vim.command((u'exe "normal %dgg"' % (heading.start_vim, )).encode(u'utf-8'))
+		# do not start insert upon adding new headings, unless already in insert mode. Issue #211
+		if insert_mode:
+			vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
+		else:
+			vim.command((u'exe "normal %dgg$"' % (heading.start_vim, )).encode(u'utf-8'))
 
 		# return newly created heading
 		return heading
