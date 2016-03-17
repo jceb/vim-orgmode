@@ -72,7 +72,7 @@ Bla Bla bla bla
 		vim.current.window.cursor = (2, 0)
 		vim.current.buffer[5] = u'** Überschrift 1.1 :Tag:'.encode(u'utf-8')
 		self.assertNotEqual(self.editstructure.new_heading(below=True, insert_mode=False), None)
-		self.assertEqual(vim.CMDHISTORY[-1], u'exe "normal 6gg"|startinsert!'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u'exe "normal 6gg$'.encode(u'utf-8'))
 		self.assertEqual(vim.current.buffer[4], u'Bla bla'.encode(u'utf-8'))
 		self.assertEqual(vim.current.buffer[5], u'* '.encode(u'utf-8'))
 		self.assertEqual(vim.current.buffer[6], u'** Überschrift 1.1 :Tag:'.encode(u'utf-8'))
@@ -293,7 +293,7 @@ Bla Bla bla bla
 
 		vim.current.window.cursor = (13, 3)
 		self.assertNotEqual(self.editstructure.demote_heading(including_children=False, on_heading=True), None)
-		self.assertEqual(vim.CMDHISTORY[-1], u'exe "normal 13gg"|startinsert!'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u'exe "normal 13gg$'.encode(u'utf-8'))
 		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1'.encode(u'utf-8'))
 		self.assertEqual(vim.current.buffer[5], u'** Überschrift 1.1'.encode(u'utf-8'))
 		self.assertEqual(vim.current.buffer[9], u'** Überschrift 1.2'.encode(u'utf-8'))
