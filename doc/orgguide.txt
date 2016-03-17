@@ -148,6 +148,10 @@ via the 'Org' menu. Most are only usable in command mode.
     <C-S-Left>      - previous keyword set
     <C-S-Right>     - next keyword set
 
+  Plain List:~
+    <localleader>cl or <CR>     - insert plainlist item below 
+    <localleader>cL or <C-S-CR> - insert plainlist item above
+
   Checkboxes:~
     <localleader>cc             - toggle status
     <localleader>cn or <CR>     - insert checkbox below
@@ -226,7 +230,7 @@ INSTALLATION AND UPGRADE                                 *orgguide-installation*
   are listed in the following section.
 
   Note: If you want to insert timestamp by using a calendar, you should
-  install calendar(http://www.vim.org/scripts/script.php?script_id=52) to
+  install calendar(https://github.com/mattn/calendar-vim) to
   enable this feature.
 
 ------------------------------------------------------------------------------
@@ -267,7 +271,7 @@ Suggested plugins~
     Easy management of multiple vim plugins.
 
   calendar~
-    (http://www.vim.org/scripts/script.php?script_id=52)
+    (https://github.com/mattn/calendar-vim)
     This plugin will create a calendar window for timestamp insertion.
 
   SyntaxRange~

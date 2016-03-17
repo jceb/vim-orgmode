@@ -175,6 +175,7 @@ class VimBuffer(Document):
 		# update changed headings and add new headings
 		for h in self.all_headings():
 			if h.is_dirty:
+				vim.current.buffer.append("") # workaround for neovim bug
 				if h._orig_start is not None:
 					# this is a heading that existed before and was changed. It
 					# needs to be replaced
@@ -185,6 +186,7 @@ class VimBuffer(Document):
 				else:
 					# this is a new heading. It needs to be inserted
 					self._content[h.start:h.start] = [unicode(h)] + h.body
+				del vim.current.buffer[-1] # restore workaround for neovim bug
 				h._dirty_heading = False
 				h._dirty_body = False
 			# for all headings the length and start offset needs to be updated

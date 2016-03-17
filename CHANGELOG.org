@@ -4,13 +4,20 @@
   This log is kept according to the [[http://keepachangelog.com/][Keep a CHANGELOG]] manifesto
 ** 0.6.0                  					 :unreleased:
 *** Added
-    - Nothing
+    - Keybinding to create plainlist item directlyi(`<localleader>c[l/L]` for
+      plainlist item [below/above]). (issue #190)
 *** Deprecated
     - Nothing
 *** Removed
-    - Nothing
+    - Using `<localleader>c[n/N]` to create new plainlist item following
+      current plainlist item. Now these keybindings will unconditionally create
+      empty checkbox.  
 *** Fixed
     - Return to right window before setting todo (closes issue #220)
+    - Fix toggling checkboxes with plain embedded lists (closes issue #209)
+    - Fix link to calendar-vim (closes issue #197)
+    - Fix `out of bound` issue when creating heading/checkbox after last
+      instance in document on NeoVim.
 ** 0.5.0 <2015-10-10 Sat>							 :released:
 *** Added
     - show link description in headings when folded, instead of the whole

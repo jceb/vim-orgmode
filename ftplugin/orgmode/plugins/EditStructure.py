@@ -54,7 +54,7 @@ class EditStructure(object):
 		current_heading.init_checkboxes()
 		c = current_heading.current_checkbox()
 		if c is not None:
-			ORGMODE.plugins[u"EditCheckbox"].new_checkbox(below)
+			ORGMODE.plugins[u"EditCheckbox"].new_checkbox(below, not c.status)
 			return
 
 		heading = Heading(level=current_heading.level)
