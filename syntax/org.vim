@@ -328,14 +328,14 @@ hi def link org_subtask_number_all Identifier
 
 " BEGIN_SRC
 if exists('g:loaded_SyntaxRange')
-  call SyntaxRange#Include('#+BEGIN_SRC\ vim', '#+END_SRC', 'vim', 'comment')
-  call SyntaxRange#Include('#+BEGIN_SRC\ python', '#+END_SRC', 'python', 'comment')
-  call SyntaxRange#Include('#+BEGIN_SRC\ c', '#+END_SRC', 'c', 'comment')
+  call SyntaxRange#Include('#+BEGIN_SRC vim', '#+END_SRC', 'vim', 'comment')
+  call SyntaxRange#Include('#+BEGIN_SRC python', '#+END_SRC', 'python', 'comment')
+  call SyntaxRange#Include('#+BEGIN_SRC c', '#+END_SRC', 'c', 'comment')
   " cpp must be below c, otherwise you get c syntax hl for cpp files
-  call SyntaxRange#Include('#+BEGIN_SRC\ cpp', '#+END_SRC', 'cpp', 'comment')
-  call SyntaxRange#Include('#+BEGIN_SRC\ ruby', '#+END_SRC', 'ruby', 'comment')
-  " call SyntaxRange#Include('#+BEGIN_SRC\ lua', '#+END_SRC', 'lua', 'comment')
-  " call SyntaxRange#Include('#+BEGIN_SRC\ lisp', '#+END_SRC', 'lisp', 'comment')
+  call SyntaxRange#Include('#+BEGIN_SRC cpp', '#+END_SRC', 'cpp', 'comment')
+  call SyntaxRange#Include('#+BEGIN_SRC ruby', '#+END_SRC', 'ruby', 'comment')
+  " call SyntaxRange#Include('#+BEGIN_SRC lua', '#+END_SRC', 'lua', 'comment')
+  " call SyntaxRange#Include('#+BEGIN_SRC lisp', '#+END_SRC', 'lisp', 'comment')
 
   " LaTeX
   call SyntaxRange#Include('\\begin[.*]{.*}', '\\end{.*}', 'tex')
