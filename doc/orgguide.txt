@@ -112,26 +112,31 @@ via the 'Org' menu. Most are only usable in command mode.
     <TAB>           - Cycle Visibility
 
   Editing Structure:~
-    <C-S-CR>        - insert heading above
-    <S-CR>          - insert heading below
-    <CR>            - insert heading below
-    <C-CR>          - insert heading above, after children
+    In GVIM:~
+      <C-S-CR>        - insert heading above
+      <S-CR>          - insert heading below, taking over children
+      <CR>            - insert heading below, taking over children
+      <C-CR>          - insert heading above, after children
+    In general Vim Versions:~
+      <localleader>hN  - insert heading above
+      <localleader>hh  - insert heading below, taking over children
+      <localleader>hn  - insert heading above, after children
 
-    m}              - move heading down
-    m{              - move heading up
-    m]]             - move subtree down
-    m[[             - move subtree up
+      m}              - move heading down
+      m{              - move heading up
+      m]]             - move subtree down
+      m[[             - move subtree up
 
-    yah             - yank heading
-    dah             - delete heading
-    yar             - yank subtree
-    dar             - delete subtree
-    p               - paste subtree
+      yah             - yank heading
+      dah             - delete heading
+      yar             - yank subtree
+      dar             - delete subtree
+      p               - paste subtree
 
-    >> or >ah       - demote heading
-    << or <ah       - promote heading
-    >ar             - demote subtree
-    <ar             - promote subtree
+      >> or >ah       - demote heading
+      << or <ah       - promote heading
+      >ar             - demote subtree
+      <ar             - promote subtree
 
   Hyperlinks:~
     gl              - goto link
