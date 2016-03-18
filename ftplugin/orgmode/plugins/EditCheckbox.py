@@ -279,7 +279,7 @@ class EditCheckbox(object):
 		Key bindings and other initialization should be done here.
 		"""
 # default setting if it is not already set.
-		settings.set(u'org_improve_split_heading', u'1')
+		settings.set(u'org_prefer_insert_mode', u'1')
 
 # checkbox related operation
 		add_cmd_mapping_menu(

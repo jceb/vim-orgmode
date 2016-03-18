@@ -347,7 +347,7 @@ class EditStructure(object):
 		"""
 # EditStructure related default settings
 		settings.set(u'org_improve_split_heading', u'1')
-		settings.set(u'org_improve_split_heading', u'1')
+		settings.set(u'org_prefer_insert_mode', u'1')
 # EditStructure related keybindings
 		self.keybindings.append(Keybinding(u'<C-S-CR>', Plug(u'OrgNewHeadingAboveNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=False)<CR>')))
 		self.menu + ActionEntry(u'New Heading &above', self.keybindings[-1])
