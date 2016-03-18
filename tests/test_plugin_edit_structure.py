@@ -33,8 +33,8 @@ class EditStructureTestCase(unittest.TestCase):
 				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8'),
 				# jump to insert mode after adding heading/checkbox
-				u'exists("g:org_prefer_insert_mode")'.encode(u'utf-8'): u'1'.encode(u'utf-8'),
-				u'exists("b:org_prefer_insert_mode")'.encode(u'utf-8'): u'1'.encode(u'utf-8')}
+				u'exists("g:org_prefer_insert_mode")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_prefer_insert_mode")'.encode(u'utf-8'): u'0'.encode(u'utf-8')}
 		if not u'EditStructure' in ORGMODE.plugins:
 			ORGMODE.register_plugin(u'EditStructure')
 		self.editstructure = ORGMODE.plugins[u'EditStructure']
