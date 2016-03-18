@@ -52,12 +52,12 @@ if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_hi
 endif
 
 " Defined in separate plugins
-" " Adding Behavior preference:
-" "       1:          go into insert-mode when new heading/checkbox/plainlist added
-" "       0:          retain original mode when new heading/checkbox/plainlist added
-" if ! exists('g:org_prefer_insert_mode') && ! exists('b:org_prefer_insert_mode')
-"     let g:org_prefer_insert_mode = 1
-" endif
+" Adding Behavior preference:
+"       1:          go into insert-mode when new heading/checkbox/plainlist added
+"       0:          retain original mode when new heading/checkbox/plainlist added
+if ! exists('g:org_prefer_insert_mode') && ! exists('b:org_prefer_insert_mode')
+    let g:org_prefer_insert_mode = 1
+endif
 
 " Menu and document handling {{{1
 function! <SID>OrgRegisterMenu()
