@@ -2,6 +2,7 @@
 
 import vim
 from orgmode._vim import echo, echom, echoe, ORGMODE, apply_count, repeat, insert_at_cursor, indent_orgmode
+from orgmode import settings
 from orgmode.menu import Submenu, Separator, ActionEntry, add_cmd_mapping_menu
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode.liborgmode.checkboxes import Checkbox
@@ -130,8 +131,10 @@ class EditCheckbox(object):
 		cls.update_checkboxes_status()
 
 		# do not start insert upon adding new checkbox, Issue #211
-#		vim.command((u'exe "normal %dgg"|startinsert!' % (start + 1, )).encode(u'utf-8'))
-		vim.command((u'exe "normal %dgg$"' % (start + 1, )).encode(u'utf-8'))
+		if int(settings.get(u'org_prefer_insert_mode', u'1')):
+			vim.command((u'exe "normal %dgg"|startinsert!' % (start + 1, )).encode(u'utf-8'))
+		else:
+			vim.command((u'exe "normal %dgg$"' % (start + 1, )).encode(u'utf-8'))
 
 	@classmethod
 	def toggle(cls, checkbox=None):

@@ -98,7 +98,7 @@ class EditStructure(object):
 
 		d.write()
 		# do not start insert upon adding new headings, unless already in insert mode. Issue #211
-		if insert_mode:
+		if int(settings.get(u'org_prefer_insert_mode', u'1')) or insert_mode:
 			vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
 		else:
 			vim.command((u'exe "normal %dgg$"' % (heading.start_vim, )).encode(u'utf-8'))
