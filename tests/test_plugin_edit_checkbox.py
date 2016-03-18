@@ -25,6 +25,9 @@ class EditCheckboxTestCase(unittest.TestCase):
 		if PLUGIN_NAME not in ORGMODE.plugins:
 			ORGMODE.register_plugin(PLUGIN_NAME)
 		self.editcheckbox = ORGMODE.plugins[PLUGIN_NAME]
+		vim.EVALRESULTS = {
+				# jump to insert mode after adding heading/checkbox
+				u'exists("b:org_prefer_insert_mode")'.encode(u'utf-8'): u'1'.encode(u'utf-8')}
 
 		self.c1 = u"""
 * heading1 [%]
