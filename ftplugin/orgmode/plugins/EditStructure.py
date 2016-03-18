@@ -345,8 +345,10 @@ class EditStructure(object):
 		u"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
+# EditStructure related default settings
 		settings.set(u'org_improve_split_heading', u'1')
-
+		settings.set(u'org_improve_split_heading', u'1')
+# EditStructure related keybindings
 		self.keybindings.append(Keybinding(u'<C-S-CR>', Plug(u'OrgNewHeadingAboveNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=False)<CR>')))
 		self.menu + ActionEntry(u'New Heading &above', self.keybindings[-1])
 		self.keybindings.append(Keybinding(u'<localleader>hN', u'<Plug>OrgNewHeadingAboveNormal', mode=MODE_NORMAL))
