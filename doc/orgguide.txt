@@ -1320,7 +1320,7 @@ Structure and Source Code~
     ├── tests                   - Tests to verify the consistency and
     │                             correctness of orgmode and the plugins
     ├── build_vmb.vim           - Build file for creating a Vimball
-    ├── install-vbm.vim         - Local installation of vbm via make target
+    ├── install-vmb.vim         - Local installation of vmb via make target
     ├── LICENSE                 - License Information
     ├── README.org              - README :)
     └── Makefile                - make commands
@@ -1435,7 +1435,7 @@ Building a Vimball~
   make vmb
 <
 
-  For installing the plugin form the resulting orgmode.vbm.gz file, please
+  For installing the plugin form the resulting orgmode.vmb.gz file, please
   refer to the Installation section.
 
 ------------------------------------------------------------------------------
