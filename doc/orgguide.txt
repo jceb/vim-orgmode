@@ -1432,7 +1432,7 @@ Building a Vimball~
   following command in the root folder of this plugin.  Please make sure that
   vim is installed on your computer:
 >
-  make vbm
+  make vmb
 <
 
   For installing the plugin form the resulting orgmode.vbm.gz file, please
