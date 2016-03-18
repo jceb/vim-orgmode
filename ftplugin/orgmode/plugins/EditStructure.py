@@ -97,7 +97,11 @@ class EditStructure(object):
 			current_heading.body = []
 
 		d.write()
-		vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
+		# do not start insert upon adding new headings, unless already in insert mode. Issue #211
+		if int(settings.get(u'org_prefer_insert_mode', u'1')) or insert_mode:
+			vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
+		else:
+			vim.command((u'exe "normal %dgg$"' % (heading.start_vim, )).encode(u'utf-8'))
 
 		# return newly created heading
 		return heading
@@ -341,8 +345,10 @@ class EditStructure(object):
 		u"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
+# EditStructure related default settings
 		settings.set(u'org_improve_split_heading', u'1')
-
+		settings.set(u'org_prefer_insert_mode', u'1')
+# EditStructure related keybindings
 		self.keybindings.append(Keybinding(u'<C-S-CR>', Plug(u'OrgNewHeadingAboveNormal', u':silent! py ORGMODE.plugins[u"EditStructure"].new_heading(below=False)<CR>')))
 		self.menu + ActionEntry(u'New Heading &above', self.keybindings[-1])
 		self.keybindings.append(Keybinding(u'<localleader>hN', u'<Plug>OrgNewHeadingAboveNormal', mode=MODE_NORMAL))

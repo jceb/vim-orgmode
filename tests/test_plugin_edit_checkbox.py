@@ -20,11 +20,31 @@ def set_vim_buffer(buf=None, cursor=(2, 0), bufnr=0):
 	vim.current.buffer.number = bufnr
 
 
+counter = 0
 class EditCheckboxTestCase(unittest.TestCase):
 	def setUp(self):
 		if PLUGIN_NAME not in ORGMODE.plugins:
 			ORGMODE.register_plugin(PLUGIN_NAME)
 		self.editcheckbox = ORGMODE.plugins[PLUGIN_NAME]
+		vim.EVALRESULTS = {
+				# no org_todo_keywords for b
+				u'exists("b:org_todo_keywords")'.encode(u'utf-8'): '0'.encode(u'utf-8'),
+				# global values for org_todo_keywords
+				u'exists("g:org_todo_keywords")'.encode(u'utf-8'): '1'.encode(u'utf-8'),
+				u'g:org_todo_keywords'.encode(u'utf-8'): [u'TODO'.encode(u'utf-8'), u'DONE'.encode(u'utf-8'), u'|'.encode(u'utf-8')],
+				u'exists("g:org_improve_split_heading")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_improve_split_heading")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'b:changedtick'.encode(u'utf-8'): (u'%d' % counter).encode(u'utf-8'),
+				u'&ts'.encode(u'utf-8'): u'8'.encode(u'utf-8'),
+				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				# jump to insert mode after adding heading/checkbox
+				u'exists("g:org_prefer_insert_mode")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
+				u'exists("b:org_prefer_insert_mode")'.encode(u'utf-8'): u'0'.encode(u'utf-8')}
 
 		self.c1 = u"""
 * heading1 [%]

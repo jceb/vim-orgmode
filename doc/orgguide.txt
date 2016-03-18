@@ -1175,7 +1175,22 @@ Remapping shortcuts~
 <
 
 ------------------------------------------------------------------------------
-Syntax highlighting and indentation~
+Alternate behavior~
+  vim-orgmode provides some variables for users to customize certain behaviors
+  of their orgmode if so desired.
+
+                                                      *g:org_prefer_insert_mode*
+  Default: 1
+  Defines if vim-orgmode will automatically jump into Insert Mode after a new
+  heading/checkbox/plainlist instance is created through keyboard bindings. If
+  value is set to 0, orgmode will retain it's original mode.
+  Example:
+>
+  let org_prefer_insert_mode = 1
+<
+
+------------------------------------------------------------------------------
+syntax highlighting and indentation~
   Syntax highlighting is customizable to fit nicely with the user's
   colorscheme.
 

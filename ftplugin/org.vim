@@ -40,11 +40,13 @@ if &cp || exists("g:loaded_org")
 endif
 let g:loaded_org = 1
 
-" Default org plugins that will be loaded (in the given order)
+" Default org plugins that will be loaded (in the given order) {{{2
 if ! exists('g:org_plugins') && ! exists('b:org_plugins')
 	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', 'EditCheckbox', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|', 'Export']
 endif
 
+" Default org plugin settings {{{2
+" What does this do?
 if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_highlight_leading_stars')
 	let g:org_syntax_highlight_leading_stars = 1
 endif

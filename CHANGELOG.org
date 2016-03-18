@@ -4,12 +4,15 @@
   This log is kept according to the [[http://keepachangelog.com/][Keep a CHANGELOG]] manifesto
 ** 0.6.0                  					 :unreleased:
 *** Added
-    - Keybinding to create plainlist item directlyi(`<localleader>c[l/L]` for
-      plainlist item [below/above]). (issue #190)
+    - Keybinding to create plainlist item directlyi(=<localleader>c[l/L]= for
+      plainlist item [below/above]). (closes issue #190)
+    - Add alternative behavior: refrain from entering insert mode after
+      heading/checkbox creation through keybindings. Activate by setting
+      =g:org_prefer_insert_mode= to 0. (closes issue #211)
 *** Deprecated
     - Nothing
 *** Removed
-    - Using `<localleader>c[n/N]` to create new plainlist item following
+    - Using =<localleader>c[n/N]= to create new plainlist item following
       current plainlist item. Now these keybindings will unconditionally create
       empty checkbox.  
 *** Fixed

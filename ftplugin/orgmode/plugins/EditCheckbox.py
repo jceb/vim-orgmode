@@ -2,6 +2,7 @@
 
 import vim
 from orgmode._vim import echo, echom, echoe, ORGMODE, apply_count, repeat, insert_at_cursor, indent_orgmode
+from orgmode import settings
 from orgmode.menu import Submenu, Separator, ActionEntry, add_cmd_mapping_menu
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode.liborgmode.checkboxes import Checkbox
@@ -129,7 +130,11 @@ class EditCheckbox(object):
 		# update checkboxes status
 		cls.update_checkboxes_status()
 
-		vim.command((u'exe "normal %dgg"|startinsert!' % (start + 1, )).encode(u'utf-8'))
+		# do not start insert upon adding new checkbox, Issue #211
+		if int(settings.get(u'org_prefer_insert_mode', u'1')):
+			vim.command((u'exe "normal %dgg"|startinsert!' % (start + 1, )).encode(u'utf-8'))
+		else:
+			vim.command((u'exe "normal %dgg$"' % (start + 1, )).encode(u'utf-8'))
 
 	@classmethod
 	def toggle(cls, checkbox=None):
@@ -272,6 +277,9 @@ class EditCheckbox(object):
 
 		Key bindings and other initialization should be done here.
 		"""
+# default setting if it is not already set.
+		settings.set(u'org_prefer_insert_mode', u'1')
+
 # checkbox related operation
 		add_cmd_mapping_menu(
 			self,
