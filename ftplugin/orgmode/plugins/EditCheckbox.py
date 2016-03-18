@@ -135,6 +135,7 @@ class EditCheckbox(object):
 			vim.command((u'exe "normal %dgg"|startinsert!' % (start + 1, )).encode(u'utf-8'))
 		else:
 			vim.command((u'exe "normal %dgg$"' % (start + 1, )).encode(u'utf-8'))
+		return
 
 	@classmethod
 	def toggle(cls, checkbox=None):
