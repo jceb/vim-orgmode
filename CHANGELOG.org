@@ -7,6 +7,7 @@
     - Add alternative behavior: refrain from entering insert mode after
       heading/checkbox creation through keybindings. Activate by setting
       =g:org_prefer_insert_mode= to 0. (closes issue #211)
+    - Add export as LaTeX beamer slides (merges PR #206)
     - Keybinding to create plainlist item directly. (closes issue #190)
 *** Changed
     - Using =<localleader>c[n/N]= to create new plainlist item following
@@ -17,8 +18,8 @@
 *** Removed
 *** Fixed
     - Fixed utl error when =\= or white space is in the link by auto-escaping(issue #220)
-    - Fix typo vbm -> vmb (merge PR #219.)
-      instance in document on NeoVim.(close issue #213)
+    - Fix typo vbm -> vmb (merges PR #219.)
+      instance in document on NeoVim.(closes issue #213)
     - Fix toggling checkboxes with plain embedded lists (closes issue #209)
     - Return to right window before setting todo (closes issue #202)
     - Fix link to calendar-vim (closes issue #197)
