@@ -180,6 +180,7 @@ via the 'Org' menu. Most are only usable in command mode.
 
   Export:~
     <localleader>ep     - export as PDF
+    <localleader>eb     - export as Beamer PDF
     <localleader>eh     - export as HTML
     <localleader>el     - export as LaTeX
 
@@ -1076,6 +1077,7 @@ Currently, the export to pdf, html, latex and markdown is supported via the
 following commands and the 'export' menu:
 >
   :OrgExportToPDF
+  :OrgExportToBeamerPDF
   :OrgExportToHTML
   :OrgExportToLaTeX
   :OrgExportToMarkdown
