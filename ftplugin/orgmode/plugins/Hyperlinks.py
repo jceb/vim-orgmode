@@ -63,6 +63,8 @@ class Hyperlinks(object):
 				u'description': None}
 			if match:
 				res.update(match.groupdict())
+			# reverse character escaping(partly done due to matching)
+			res[u'uri'] = res[u'uri'].replace(u'\\\\', u'\\')
 			return res
 
 	@classmethod
@@ -124,6 +126,10 @@ class Hyperlinks(object):
 			return
 		else:
 			uri = uri.decode(u'utf-8')
+
+		# character escaping
+		uri = uri.replace(u'\\', u'\\\\\\\\')
+		uri = uri.replace(u' ', u'\ ')
 
 		if description is None:
 			description = vim.eval(u'input("Description: ")').decode(u'utf-8')
