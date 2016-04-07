@@ -197,10 +197,16 @@ else
 endif
 endfunction""".encode(u'utf-8'))
 
-		# this is for all org files opened after this file
-		vim.command(u"au orgmode FileType org :au orgmode InsertLeave <buffer> :py ORGMODE.plugins[u'TagsProperties'].realign_tags()".encode(u'utf-8'))
+		vim.command(u"""function Org_realign_tags_on_insert_leave()
+if !exists('b:org_insert_leave_set')
+	:au orgmode InsertLeave <buffer> :py ORGMODE.plugins[u'TagsProperties'].realign_tags()
+	let b:org_insert_leave_set = 1
+endif
+endfunction""".encode(u'utf-8'))
 
+		# this is for all org files opened after this file
+		vim.command(u"au orgmode FileType org call Org_realign_tags_on_insert_leave()".encode(u'utf-8'))
 		# this is for the current file
-		vim.command(u"au orgmode InsertLeave <buffer> :py ORGMODE.plugins[u'TagsProperties'].realign_tags()".encode(u'utf-8'))
+		vim.command(u"call Org_realign_tags_on_insert_leave()".encode(u'utf-8'))
 
 # vim: set noexpandtab:
