@@ -17,7 +17,8 @@
     - Nothing
 *** Removed
 *** Fixed
-    - Fixed utl error when =\= or white space is in the link by auto-escaping(issue #220)
+    - Fix duplicate =InsertLeave= autocmd for =tag_complete=(close issue #223)
+    - Fix utl error when =\= or white space is in the link by auto-escaping(issue #220)
     - Fix typo vbm -> vmb (merges PR #219.)
       instance in document on NeoVim.(closes issue #213)
     - Fix toggling checkboxes with plain embedded lists (closes issue #209)
