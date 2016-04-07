@@ -198,9 +198,9 @@ endif
 endfunction""".encode(u'utf-8'))
 
 		vim.command(u"""function Org_realign_tags_on_insert_leave()
-if !exists('b:org_insert_leave_set')
+if !exists('b:org_complete_tag_on_insertleave_au')
 	:au orgmode InsertLeave <buffer> :py ORGMODE.plugins[u'TagsProperties'].realign_tags()
-	let b:org_insert_leave_set = 1
+	let b:org_complete_tag_on_insertleave_au = 1
 endif
 endfunction""".encode(u'utf-8'))
 
