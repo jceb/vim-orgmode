@@ -51,6 +51,12 @@ if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_hi
 	let g:org_syntax_highlight_leading_stars = 1
 endif
 
+
+" setting to conceal aggresively
+if ! exists('g:org_aggressive_conceal') && ! exists('b:org_aggressive_conceal')
+	let g:org_aggressive_conceal = 0
+endif
+
 " Defined in separate plugins
 " Adding Behavior preference:
 "       1:          go into insert-mode when new heading/checkbox/plainlist added

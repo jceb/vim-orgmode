@@ -1,6 +1,13 @@
 " Support org authoring markup as closely as possible
 " (we're adding two markdown-like variants for =code= and blockquotes)
 " -----------------------------------------------------------------------------
+"
+" Do we use aggresive conceal?
+if exists("b:org_aggressive_conceal")
+    let s:conceal_aggressively=b:org_aggressive_conceal
+else
+    let s:conceal_aggressively=g:org_aggressive_conceal
+endif
 
 " Inline markup
 " *bold*, /italic/, _underline_, +strike-through+, =code=, ~verbatim~
@@ -15,12 +22,21 @@
 " FIXME: Always make org_bold syntax define before org_heading syntax
 "        to make sure that org_heading syntax got higher priority(help :syn-priority) than org_bold.
 "        If there is any other good solution, please help fix it.
-syntax region org_bold      start="\S\@<=\*\|\*\S\@="   end="\S\@<=\*\|\*\S\@="  keepend oneline
-syntax region org_italic    start="\S\@<=\/\|\/\S\@="   end="\S\@<=\/\|\/\S\@="  keepend oneline
-syntax region org_underline start="\S\@<=_\|_\S\@="       end="\S\@<=_\|_\S\@="    keepend oneline
-syntax region org_code      start="\S\@<==\|=\S\@="       end="\S\@<==\|=\S\@="    keepend oneline
-syntax region org_code      start="\S\@<=`\|`\S\@="       end="\S\@<='\|'\S\@="    keepend oneline
-syntax region org_verbatim  start="\S\@<=\~\|\~\S\@="     end="\S\@<=\~\|\~\S\@="  keepend oneline
+if (s:conceal_aggressively == 1)
+    syntax region org_bold      matchgroup=org_border start="\S\@<=\*\|\*\S\@="   end="\S\@<=\*\|\*\S\@="  concealends oneline
+    syntax region org_italic    matchgroup=org_border start="\S\@<=\/\|\/\S\@="   end="\S\@<=\/\|\/\S\@="  concealends oneline
+    syntax region org_underline matchgroup=org_border start="\S\@<=_\|_\S\@="       end="\S\@<=_\|_\S\@="    concealends oneline
+    syntax region org_code      matchgroup=org_border start="\S\@<==\|=\S\@="       end="\S\@<==\|=\S\@="    concealends oneline
+    syntax region org_code      matchgroup=org_border start="\S\@<=`\|`\S\@="       end="\S\@<='\|'\S\@="    concealends oneline
+    syntax region org_verbatim  matchgroup=org_border start="\S\@<=\~\|\~\S\@="     end="\S\@<=\~\|\~\S\@="  concealends oneline
+else
+    syntax region org_bold      matchgroup=org_border start="\S\@<=\*\|\*\S\@="   end="\S\@<=\*\|\*\S\@="  keepend oneline
+    syntax region org_italic    matchgroup=org_border start="\S\@<=\/\|\/\S\@="   end="\S\@<=\/\|\/\S\@="  keepend oneline
+    syntax region org_underline matchgroup=org_border start="\S\@<=_\|_\S\@="       end="\S\@<=_\|_\S\@="    keepend oneline
+    syntax region org_code      matchgroup=org_border start="\S\@<==\|=\S\@="       end="\S\@<==\|=\S\@="    keepend oneline
+    syntax region org_code      matchgroup=org_border start="\S\@<=`\|`\S\@="       end="\S\@<='\|'\S\@="    keepend oneline
+    syntax region org_verbatim  matchgroup=org_border start="\S\@<=\~\|\~\S\@="     end="\S\@<=\~\|\~\S\@="  keepend oneline
+endif
 
 hi def org_bold      term=bold      cterm=bold      gui=bold
 hi def org_italic    term=italic    cterm=italic    gui=italic
@@ -341,6 +357,7 @@ if exists('g:loaded_SyntaxRange')
   call SyntaxRange#Include('\\begin[.*]{.*}', '\\end{.*}', 'tex')
   call SyntaxRange#Include('\\begin{.*}', '\\end{.*}', 'tex')
   call SyntaxRange#Include('\\\[', '\\\]', 'tex')
+  call SyntaxRange#Include('\$', '\$', 'tex')
 endif
 
 " vi: ft=vim:tw=80:sw=4:ts=4:fdm=marker
