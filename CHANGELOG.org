@@ -9,6 +9,8 @@
       =g:org_prefer_insert_mode= to 0. (closes issue #211)
     - Add export as LaTeX beamer slides (merges PR #206)
     - Keybinding to create plainlist item directly. (closes issue #190)
+    - =g:org_aggressive_conceal=, if value =1=, will conceal all simple format
+      identifying characters, default =0=.
 *** Changed
     - Using =<localleader>c[n/N]= to create new plainlist item following
       current plainlist item. Now these keybindings will unconditionally
