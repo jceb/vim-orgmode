@@ -154,7 +154,7 @@ via the 'Org' menu. Most are only usable in command mode.
     <C-S-Right>     - next keyword set
 
   Plain List:~
-    <localleader>cl or <CR>     - insert plainlist item below 
+    <localleader>cl or <CR>     - insert plainlist item below
     <localleader>cL or <C-S-CR> - insert plainlist item above
 
   Checkboxes:~
@@ -1196,6 +1196,17 @@ syntax highlighting and indentation~
   Syntax highlighting is customizable to fit nicely with the user's
   colorscheme.
 
+                                                      *g:org_aggressive_conceal*
+  Default: 0
+  Defines if format indicating characters for inline markups(bold, italic,
+  inline code, verbatims, in-file hyper-link, etc.) are displayed. Format
+  indicating characters will be concealed if value is `1`, rendering a much
+  cleaner view. However, since this feature is newly introduced(<2016-04-08>)
+  and still need further testing. It is inactive by default. Example:
+>
+  let g:org_aggressive_conceal = 0
+<
+
                                                 *g:org_heading_highlight_colors*
   Default: ['Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type',
           \ 'Special']
@@ -1222,15 +1233,6 @@ syntax highlighting and indentation~
   let g:org_heading_shade_leading_stars = 1
 <
 
-                                                      *g:org_aggressive_conceal*
-  Default: 0
-  Defines if format indicating characters are displayed. Format indicating
-  characters will be concealed if value is `1`, rendering a cleaner view.
-  Note that, strings indicating formatting information such as `#+BEGIN_SRC`
-  and `#+END_SRC` will not be affected. They will always be displayed. Example:
->
-  let g:org_aggressive_conceal = 0
-<
                                                            *g:org_todo_keywords*
   Default: ['TODO', '|', 'DONE']
   Defines the keywords that are highlighted in headings. For more information

@@ -4,14 +4,18 @@
   This log is kept according to the [[http://keepachangelog.com/][Keep a CHANGELOG]] manifesto
 ** 0.6.0                  					 :unreleased:
 *** Added
+    - =g:org_aggressive_conceal=, if value =1=, will conceal all simple format
+      identifying characters, default =0=. (merges PR #188)
+    - (testing on `g:org_aggressive_conceal=1' mode) Add possibility to escape
+      format indicating characters from leading inline markup, by escaping with
+      "\".
     - Add alternative behavior: refrain from entering insert mode after
       heading/checkbox creation through keybindings. Activate by setting
       =g:org_prefer_insert_mode= to 0. (closes issue #211)
     - Add export as LaTeX beamer slides (merges PR #206)
     - Keybinding to create plainlist item directly. (closes issue #190)
-    - =g:org_aggressive_conceal=, if value =1=, will conceal all simple format
-      identifying characters, default =0=. (merges PR #188)
 *** Changed
+    - In [[syntax/org.vim][syntax/org.vim]], changed `\@<=' with computational faster `\zs'
     - Using =<localleader>c[n/N]= to create new plainlist item following
       current plainlist item. Now these keybindings will unconditionally
       create empty checkbox. (issue #190)

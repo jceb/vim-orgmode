@@ -22,20 +22,21 @@ endif
 " FIXME: Always make org_bold syntax define before org_heading syntax
 "        to make sure that org_heading syntax got higher priority(help :syn-priority) than org_bold.
 "        If there is any other good solution, please help fix it.
+"  \\\\*sinuate*
 if (s:conceal_aggressively == 1)
-    syntax region org_bold      matchgroup=org_border_bold start="\S\@<=\*\|\*\S\@="   end="\S\@<=\*\|\*\S\@="  concealends oneline
-    syntax region org_italic    matchgroup=org_border_ital start="\S\@<=\/\|\/\S\@="   end="\S\@<=\/\|\/\S\@="  concealends oneline
-    syntax region org_underline matchgroup=org_border_undl start="\S\@<=_\|_\S\@="       end="\S\@<=_\|_\S\@="    concealends oneline
-    syntax region org_code      matchgroup=org_border_code start="\S\@<==\|=\S\@="       end="\S\@<==\|=\S\@="    concealends oneline
-    syntax region org_code      matchgroup=org_border_code start="\S\@<=`\|`\S\@="       end="\S\@<='\|'\S\@="    concealends oneline
-    syntax region org_verbatim  matchgroup=org_border_verb start="\S\@<=\~\|\~\S\@="     end="\S\@<=\~\|\~\S\@="  concealends oneline
+   syntax region org_bold      matchgroup=org_border_bold start="[^ \\]\zs\*\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs\*\|\(^\|[^\\]\)\zs\*\S\@="     end="[^ \\]\zs\*\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs\*\|[^\\]\zs\*\S\@="  concealends oneline
+   syntax region org_italic    matchgroup=org_border_ital start="[^ \\]\zs\/\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs\/\|\(^\|[^\\]\)\zs\/\S\@="     end="[^ \\]\zs\/\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs\/\|[^\\]\zs\/\S\@="  concealends oneline
+   syntax region org_underline matchgroup=org_border_undl start="[^ \\]\zs_\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs_\|\(^\|[^\\]\)\zs_\S\@="        end="[^ \\]\zs_\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs_\|[^\\]\zs_\S\@="     concealends oneline
+   syntax region org_code      matchgroup=org_border_code start="[^ \\]\zs=\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs=\|\(^\|[^\\]\)\zs=\S\@="        end="[^ \\]\zs=\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs=\|[^\\]\zs=\S\@="     concealends oneline
+   syntax region org_code      matchgroup=org_border_code start="[^ \\]\zs`\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs`\|\(^\|[^\\]\)\zs`\S\@="        end="[^ \\]\zs'\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs'\|[^\\]\zs'\S\@="     concealends oneline
+   syntax region org_verbatim  matchgroup=org_border_verb start="[^ \\]\zs\~\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs\~\|\(^\|[^\\]\)\zs\~\S\@="     end="[^ \\]\zs\~\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs\~\|[^\\]\zs\~\S\@="  concealends oneline
 else
-    syntax region org_bold      start="\S\@<=\*\|\*\S\@="   end="\S\@<=\*\|\*\S\@="  keepend oneline
-    syntax region org_italic    start="\S\@<=\/\|\/\S\@="   end="\S\@<=\/\|\/\S\@="  keepend oneline
-    syntax region org_underline start="\S\@<=_\|_\S\@="       end="\S\@<=_\|_\S\@="    keepend oneline
-    syntax region org_code      start="\S\@<==\|=\S\@="       end="\S\@<==\|=\S\@="    keepend oneline
-    syntax region org_code      start="\S\@<=`\|`\S\@="       end="\S\@<='\|'\S\@="    keepend oneline
-    syntax region org_verbatim  start="\S\@<=\~\|\~\S\@="     end="\S\@<=\~\|\~\S\@="  keepend oneline
+    syntax region org_bold      start="\S\zs\*\|\*\S\@="     end="\S\zs\*\|\*\S\@="  keepend oneline
+    syntax region org_italic    start="\S\zs\/\|\/\S\@="     end="\S\zs\/\|\/\S\@="  keepend oneline
+    syntax region org_underline start="\S\zs_\|_\S\@="       end="\S\zs_\|_\S\@="    keepend oneline
+    syntax region org_code      start="\S\zs=\|=\S\@="       end="\S\zs=\|=\S\@="    keepend oneline
+    syntax region org_code      start="\S\zs`\|`\S\@="       end="\S\zs'\|'\S\@="    keepend oneline
+    syntax region org_verbatim  start="\S\zs\~\|\~\S\@="     end="\S\zs\~\|\~\S\@="  keepend oneline
 endif
 
 hi def org_bold      term=bold      cterm=bold      gui=bold
