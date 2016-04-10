@@ -11,11 +11,12 @@ if ! has('python') || v:version < 703
 	finish
 endif
 
+" Init buffer for file {{{1
 if ! exists('b:did_ftplugin')
 	" default emacs settings
 	setlocal comments=fb:*,b:#,fb:-
 	setlocal commentstring=#\ %s
-	setlocal conceallevel=2 concealcursor="nc"
+	setlocal conceallevel=2 concealcursor=nc
 	" original emacs settings are: setlocal tabstop=6 shiftwidth=6, but because
 	" of checkbox indentation the following settings are used:
 	setlocal tabstop=6 shiftwidth=6
@@ -50,7 +51,6 @@ endif
 if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_highlight_leading_stars')
 	let g:org_syntax_highlight_leading_stars = 1
 endif
-
 
 " setting to conceal aggresively
 if ! exists('g:org_aggressive_conceal') && ! exists('b:org_aggressive_conceal')
