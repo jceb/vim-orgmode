@@ -23,6 +23,7 @@
     - Nothing
 *** Removed
 *** Fixed
+    - Fix =concealcursor= mis-setting. (from ="nc"= to =nc=)
     - Fix duplicate =InsertLeave= autocmd for =tag_complete=(close issue #223)
     - Fix utl error when =\= or white space is in the link by auto-escaping(issue #220)
     - Fix typo vbm -> vmb (merges PR #219.)
