@@ -140,6 +140,11 @@ class Agenda(object):
 		raw_agenda = ORGMODE.agenda_manager.get_next_week_and_active_todo(
 			agenda_documents)
 
+		# if raw_agenda is empty, return directly
+		if not raw_agenda:
+			vim.command('echom "All caught-up. No agenda or active todo next week."')
+			return
+
 		# create buffer at bottom
 		cmd = [u'setlocal filetype=orgagenda', ]
 		cls._switch_to(u'AGENDA', cmd)
