@@ -5,8 +5,10 @@
 " Do we use aggresive conceal?
 if exists("b:org_aggressive_conceal")
     let s:conceal_aggressively=b:org_aggressive_conceal
-else
+elseif exists("g:org_aggressive_conceal")
     let s:conceal_aggressively=g:org_aggressive_conceal
+else
+    let s:conceal_aggressively=0
 endif
 
 " Inline markup {{{1

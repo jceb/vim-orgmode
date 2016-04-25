@@ -53,7 +53,7 @@ if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_hi
 endif
 
 " setting to conceal aggresively
-if ! exists('g:org_aggressive_conceal') && ! exists('b:org_aggressive_conceal')
+if ! exists('g:org_aggressive_conceal')
 	let g:org_aggressive_conceal = 0
 endif
 
