@@ -280,7 +280,7 @@ class Agenda(object):
 		)
 		add_cmd_mapping_menu(
 			self,
-			name=u"OrgAgendaTodoBuffer",
+			name=u"OrgBufferAgendaTodo",
 			function=u':py ORGMODE.plugins[u"Agenda"].list_all_todos(current_buffer=True)',
 			key_mapping=u'<localleader>caT',
 			menu_desrc=u'Agenda for all TODOs based on current buffer'
@@ -294,7 +294,7 @@ class Agenda(object):
 		)
 		add_cmd_mapping_menu(
 			self,
-			name=u"OrgAgendaWeekBuffer",
+			name=u"OrgBufferAgendaWeek",
 			function=u':py ORGMODE.plugins[u"Agenda"].list_next_week_for_buffer()',
 			key_mapping=u'<localleader>caA',
 			menu_desrc=u'Agenda for the week based on current buffer'
