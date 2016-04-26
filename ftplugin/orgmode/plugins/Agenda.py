@@ -77,7 +77,10 @@ class Agenda(object):
 				u"g:org_agenda_files=['~/org/index.org'] to add "
 				u"files to the agenda view."))
 			return
+		return self._load_agendafiles(agenda_files)
 
+	@classmethod
+	def _load_agendafiles(self, agenda_files):
 		# glob for files in agenda_files
 		resolved_files = []
 		for f in agenda_files:
@@ -137,6 +140,17 @@ class Agenda(object):
 		agenda_documents = cls._get_agendadocuments()
 		if not agenda_documents:
 			return
+		cls.list_next_week_for(agenda_documents)
+
+	@classmethod
+	def list_next_week_for_buffer(cls):
+		agenda_documents = vim.current.buffer.name
+		loaded_agendafiles = cls._load_agendafiles([agenda_documents])
+		cls.list_next_week_for(loaded_agendafiles)
+
+
+	@classmethod
+	def list_next_week_for(cls, agenda_documents):
 		raw_agenda = ORGMODE.agenda_manager.get_next_week_and_active_todo(
 			agenda_documents)
 
@@ -263,6 +277,13 @@ class Agenda(object):
 			function=u':py ORGMODE.plugins[u"Agenda"].list_next_week()',
 			key_mapping=u'<localleader>caa',
 			menu_desrc=u'Agenda for the week'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u"OrgAgendaBuffer",
+			function=u':py ORGMODE.plugins[u"Agenda"].list_next_week_for_buffer()',
+			key_mapping=u'<localleader>caT',
+			menu_desrc=u'Agenda for the week based on current buffer'
 		)
 		add_cmd_mapping_menu(
 			self,
