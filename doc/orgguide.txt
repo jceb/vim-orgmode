@@ -174,9 +174,11 @@ via the 'Org' menu. Most are only usable in command mode.
   Agenda:~
     <localleader>caa    - agenda for the week
     <localleader>cat    - agenda of all TODOs
+    <localleader>caA    - agenda for the week for current buffer
+    <localleader>caT    - agenda of all TODOs for current buffer
 
     Not yet implemented in vim-orgmode~
-    <localleader>caT    - timeline for current buffer
+    <localleader>caL    - timeline of current buffer
 
   Export:~
     <localleader>ep     - export as PDF
