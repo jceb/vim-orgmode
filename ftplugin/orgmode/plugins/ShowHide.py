@@ -8,6 +8,10 @@ from orgmode import settings
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, MODE_NORMAL
 
+try:
+	from __builtin__ import xrange as range
+except:
+	pass
 
 class ShowHide(object):
 	u""" Show Hide plugin """
@@ -169,5 +173,5 @@ class ShowHide(object):
 		self.keybindings.append(Keybinding(u'<localleader>,', Plug(u'OrgGlobalToggleFoldingReverse', u':py ORGMODE.plugins[u"ShowHide"].global_toggle_folding(reverse=True)<CR>')))
 		self.menu + ActionEntry(u'Cycle Visibility Reverse G&lobally', self.keybindings[-1])
 
-		for i in xrange(0, 10):
+		for i in range(0, 10):
 			self.keybindings.append(Keybinding(u'<localleader>%d' % (i, ), u'zM:set fdl=%d<CR>' % i, mode=MODE_NORMAL))

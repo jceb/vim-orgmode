@@ -11,6 +11,10 @@ from orgmode.keybinding import Keybinding, Plug
 # temporary todo states for differnent orgmode buffers
 ORGTODOSTATES = {}
 
+try:
+	from __builtin__ import xrange as range
+except:
+	pass
 
 def split_access_key(t):
 	u"""
@@ -86,7 +90,7 @@ class Todo(object):
 			:return:	first position of todo state in list in the form
 						(IDX_TOPLEVEL, IDX_SECOND_LEVEL (0|1), IDX_OF_ITEM)
 			"""
-			for i in xrange(0, len(a)):
+			for i in range(0, len(a)):
 				if type(a[i]) in (tuple, list) and stop < 2:
 					r = find_current_todo_state(c, a[i], stop=stop + 1)
 					if r:
@@ -261,9 +265,9 @@ class Todo(object):
 			vim.command(u'bw'.encode(u'utf-8'))
 			echom(u'No todo states avaiable for buffer %s' % vim.current.buffer.name)
 
-		for l in xrange(0, len(all_states)):
+		for l in range(0, len(all_states)):
 			res = u''
-			for j in xrange(0, 2):
+			for j in range(0, 2):
 				if j < len(all_states[l]):
 					for i in all_states[l][j]:
 						if type(i) != unicode:
@@ -289,7 +293,7 @@ class Todo(object):
 		current_state = settings.unset(u'org_current_state_%d' % bufnr)
 		found = False
 		if current_state is not None and current_state != '':
-			for i in xrange(0, len(vim.current.buffer)):
+			for i in range(0, len(vim.current.buffer)):
 				idx = vim.current.buffer[i].find(current_state)
 				if idx != -1:
 					vim.current.window.cursor = (i + 1, idx)

@@ -17,6 +17,10 @@ from orgmode.liborgmode.orgdate import get_orgdate
 from orgmode.liborgmode.checkboxes import Checkbox, CheckboxList
 from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT, REGEX_HEADING, REGEX_TAG, REGEX_TODO
 
+try:
+	from __builtin__ import xrange as range
+except:
+	pass
 
 class Heading(DomObj):
 	u""" Structural heading object """
@@ -478,7 +482,7 @@ class Heading(DomObj):
 		level = 0
 		if not line:
 			return None
-		for i in xrange(0, len(line)):
+		for i in range(0, len(line)):
 			if line[i] == u'*':
 				level += 1
 				if len(line) > (i + 1) and line[i + 1] in (u'\t', u' '):
