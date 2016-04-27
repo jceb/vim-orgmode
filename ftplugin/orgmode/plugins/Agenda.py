@@ -77,7 +77,10 @@ class Agenda(object):
 				u"g:org_agenda_files=['~/org/index.org'] to add "
 				u"files to the agenda view."))
 			return
+		return self._load_agendafiles(agenda_files)
 
+	@classmethod
+	def _load_agendafiles(self, agenda_files):
 		# glob for files in agenda_files
 		resolved_files = []
 		for f in agenda_files:
@@ -137,6 +140,17 @@ class Agenda(object):
 		agenda_documents = cls._get_agendadocuments()
 		if not agenda_documents:
 			return
+		cls.list_next_week_for(agenda_documents)
+
+	@classmethod
+	def list_next_week_for_buffer(cls):
+		agenda_documents = vim.current.buffer.name
+		loaded_agendafiles = cls._load_agendafiles([agenda_documents])
+		cls.list_next_week_for(loaded_agendafiles)
+
+
+	@classmethod
+	def list_next_week_for(cls, agenda_documents):
 		raw_agenda = ORGMODE.agenda_manager.get_next_week_and_active_todo(
 			agenda_documents)
 
@@ -194,14 +208,21 @@ class Agenda(object):
 			pass
 
 	@classmethod
-	def list_all_todos(cls):
+	def list_all_todos(cls, current_buffer=False):
 		u"""
-		List all todos in all agenda files in one buffer.
+		List all todos in:
+			current_buffer = False 		all agenda files
+			current_buffer = True 		current org_file
+		in one buffer.
 		"""
-		agenda_documents = cls._get_agendadocuments()
-		if not agenda_documents:
+		if current_buffer:
+			agenda_documents = vim.current.buffer.name
+			loaded_agendafiles = cls._load_agendafiles([agenda_documents])
+		else:
+			loaded_agendafiles = cls._get_agendadocuments()
+		if not loaded_agendafiles:
 			return
-		raw_agenda = ORGMODE.agenda_manager.get_todo(agenda_documents)
+		raw_agenda = ORGMODE.agenda_manager.get_todo(loaded_agendafiles)
 
 		cls.line2doc = {}
 		# create buffer at bottom
@@ -259,10 +280,24 @@ class Agenda(object):
 		)
 		add_cmd_mapping_menu(
 			self,
+			name=u"OrgBufferAgendaTodo",
+			function=u':py ORGMODE.plugins[u"Agenda"].list_all_todos(current_buffer=True)',
+			key_mapping=u'<localleader>caT',
+			menu_desrc=u'Agenda for all TODOs based on current buffer'
+		)
+		add_cmd_mapping_menu(
+			self,
 			name=u"OrgAgendaWeek",
 			function=u':py ORGMODE.plugins[u"Agenda"].list_next_week()',
 			key_mapping=u'<localleader>caa',
 			menu_desrc=u'Agenda for the week'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u"OrgBufferAgendaWeek",
+			function=u':py ORGMODE.plugins[u"Agenda"].list_next_week_for_buffer()',
+			key_mapping=u'<localleader>caA',
+			menu_desrc=u'Agenda for the week based on current buffer'
 		)
 		add_cmd_mapping_menu(
 			self,
