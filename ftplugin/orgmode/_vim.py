@@ -76,7 +76,7 @@ def apply_count(f):
 			# visual count is not implemented yet
 			#if not count:
 			#	count = int(vim.eval(u'v:prevcount'.encode(u'utf-8')))
-		except Exception, e:
+		except Exception as e:
 			pass
 
 		res = f(*args, **kwargs)
@@ -354,7 +354,7 @@ class OrgMode(object):
 			if self.debug:
 				echo(u'Plugin registered: %s' % plugin)
 			return self._plugins[plugin]
-		except Exception, e:
+		except Exception as e:
 			echoe(u'Unable to activate plugin: %s' % plugin)
 			echoe(u"%s" % e)
 			if self.debug:
@@ -386,7 +386,7 @@ class OrgMode(object):
 		if isinstance(plugins, basestring):
 			try:
 				self.register_plugin(plugins)
-			except Exception, e:
+			except Exception as e:
 				import traceback
 				traceback.print_exc()
 		elif isinstance(plugins, types.ListType) or \
@@ -394,7 +394,7 @@ class OrgMode(object):
 			for p in plugins:
 				try:
 					self.register_plugin(p)
-				except Exception, e:
+				except Exception as e:
 					echoe('Error in %s plugin:' % p)
 					import traceback
 					traceback.print_exc()
