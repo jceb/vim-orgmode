@@ -11,6 +11,7 @@ from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode.menu import Submenu, ActionEntry, add_cmd_mapping_menu
 
+from orgmode.py3compat.encode_compatibility import *
 
 class Agenda(object):
 	u"""
@@ -59,7 +60,7 @@ class Agenda(object):
 		if vim_commands:
 			cmds.extend(vim_commands)
 		for cmd in cmds:
-			vim.command(cmd.encode(u'utf-8'))
+			vim.command(u_encode(cmd))
 
 	@classmethod
 	def _get_agendadocuments(self):
@@ -93,7 +94,7 @@ class Agenda(object):
 
 		# load the agenda files into buffers
 		for agenda_file in agenda_files:
-			vim.command((u'badd %s' % agenda_file.replace(" ", "\ ")).encode(u'utf-8'))
+			vim.command(u_encode(u'badd %s' % agenda_file.replace(" ", "\ ")))
 
 		# determine the buffer nr of the agenda files
 		agenda_nums = [get_bufnumber(fn) for fn in agenda_files]
@@ -119,7 +120,7 @@ class Agenda(object):
 
 		# reload source file if it is not loaded
 		if get_bufname(bufnr) is None:
-			vim.command((u'badd %s' % bufname).encode(u'utf-8'))
+			vim.command(u_encode(u'badd %s' % bufname))
 			bufnr = get_bufnumber(bufname)
 			tmp = cls.line2doc[row]
 			cls.line2doc[bufnr] = tmp
@@ -127,13 +128,13 @@ class Agenda(object):
 			del cls.line2doc[row]
 
 		if split:
-			vim.command((u"sbuffer %s" % bufnr).encode(u'utf-8'))
+			vim.command(u_encode(u"sbuffer %s" % bufnr))
 		elif switch:
-			vim.command(u"wincmd w".encode(u'utf-8'))
-			vim.command((u"buffer %d" % bufnr).encode(u'utf-8'))
+			vim.command(u_encode(u"wincmd w"))
+			vim.command(u_encode(u"buffer %d" % bufnr))
 		else:
-			vim.command((u"buffer %s" % bufnr).encode(u'utf-8'))
-		vim.command((u"normal! %dgg <CR>" % (destrow + 1)).encode(u'utf-8'))
+			vim.command(u_encode(u"buffer %s" % bufnr))
+		vim.command(u_encode(u"normal! %dgg <CR>" % (destrow + 1)))
 
 	@classmethod
 	def list_next_week(cls):
@@ -199,11 +200,11 @@ class Agenda(object):
 			cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
 
 		# show agenda
-		vim.current.buffer[:] = [i.encode(u'utf-8') for i in final_agenda]
-		vim.command(u'setlocal nomodifiable  conceallevel=2 concealcursor=nc'.encode(u'utf-8'))
+		vim.current.buffer[:] = [u_encode(i) for i in final_agenda]
+		vim.command(u_encode(u'setlocal nomodifiable  conceallevel=2 concealcursor=nc'))
 		# try to jump to the positon of today
 		try:
-			vim.command((u'normal! %sgg<CR>' % today_row).encode(u'utf-8'))
+			vim.command(u_encode(u'normal! %sgg<CR>' % today_row))
 		except:
 			pass
 
@@ -237,8 +238,8 @@ class Agenda(object):
 			cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
 
 		# show agenda
-		vim.current.buffer[:] = [i.encode(u'utf-8') for i in final_agenda]
-		vim.command(u'setlocal nomodifiable  conceallevel=2 concealcursor=nc'.encode(u'utf-8'))
+		vim.current.buffer[:] = [u_encode(i) for i in final_agenda]
+		vim.command(u_encode(u'setlocal nomodifiable  conceallevel=2 concealcursor=nc'))
 
 	@classmethod
 	def list_timeline(cls):
@@ -262,8 +263,8 @@ class Agenda(object):
 			cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
 
 		# show agenda
-		vim.current.buffer[:] = [i.encode(u'utf-8') for i in final_agenda]
-		vim.command(u'setlocal nomodifiable conceallevel=2 concealcursor=nc'.encode(u'utf-8'))
+		vim.current.buffer[:] = [u_encode(i) for i in final_agenda]
+		vim.command(u_encode(u'setlocal nomodifiable conceallevel=2 concealcursor=nc'))
 
 	def register(self):
 		u"""

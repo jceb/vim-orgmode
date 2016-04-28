@@ -7,6 +7,7 @@ from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_OPERATOR, Plug
 from orgmode.liborgmode.documents import Direction
 
+from orgmode.py3compat.encode_compatibility import *
 
 class Navigator(object):
 	u""" Implement navigation in org-mode documents """
@@ -27,14 +28,14 @@ class Navigator(object):
 		heading = ORGMODE.get_document().current_heading()
 		if not heading:
 			if mode == u'visual':
-				vim.command(u'normal! gv'.encode(u'utf-8'))
+				vim.command(u_encode(u'normal! gv'))
 			else:
 				echo(u'No heading found')
 			return
 
 		if not heading.parent:
 			if mode == u'visual':
-				vim.command(u'normal! gv'.encode(u'utf-8'))
+				vim.command(u_encode(u'normal! gv'))
 			else:
 				echo(u'No parent heading found')
 			return
@@ -58,14 +59,14 @@ class Navigator(object):
 		heading = ORGMODE.get_document().current_heading()
 		if not heading:
 			if mode == u'visual':
-				vim.command(u'normal! gv'.encode(u'utf-8'))
+				vim.command(u_encode(u'normal! gv'))
 			else:
 				echo(u'No heading found')
 			return
 
 		if not heading.parent or not heading.parent.next_sibling:
 			if mode == u'visual':
-				vim.command(u'normal! gv'.encode(u'utf-8'))
+				vim.command(u_encode(u'normal! gv'))
 			else:
 				echo(u'No parent heading found')
 			return
@@ -83,8 +84,8 @@ class Navigator(object):
 	@classmethod
 	def _change_visual_selection(cls, current_heading, heading, direction=Direction.FORWARD, noheadingfound=False, parent=False):
 		current = vim.current.window.cursor[0]
-		line_start, col_start = [int(i) for i in vim.eval(u'getpos("\'<")'.encode(u'utf-8'))[1:3]]
-		line_end, col_end = [int(i) for i in vim.eval(u'getpos("\'>")'.encode(u'utf-8'))[1:3]]
+		line_start, col_start = [int(i) for i in vim.eval(u_encode(u'getpos("\'<")'))[1:3]]
+		line_end, col_end = [int(i) for i in vim.eval(u_encode(u'getpos("\'>")'))[1:3]]
 
 		f_start = heading.start_vim
 		f_end = heading.end_vim
@@ -173,9 +174,7 @@ class Navigator(object):
 		move_col_end = u'%dl' % (col_end - 1) if (col_end - 1) > 0 and (col_end - 1) < 2000000000 else u''
 		swap = u'o' if swap_cursor else u''
 
-		vim.command((
-			u'normal! %dgg%s%s%dgg%s%s' %
-			(line_start, move_col_start, vim.eval(u'visualmode()'.encode(u'utf-8')), line_end, move_col_end, swap)).encode(u'utf-8'))
+		vim.command(u_encode(( u'normal! %dgg%s%s%dgg%s%s' % (line_start, move_col_start, vim.eval(u_encode(u'visualmode()')), line_end, move_col_end, swap))))
 
 	@classmethod
 	def _focus_heading(cls, mode, direction=Direction.FORWARD, skip_children=False):
@@ -200,7 +199,7 @@ class Navigator(object):
 			if not (heading or focus_heading):
 				if mode == u'visual':
 					# restore visual selection when no heading was found
-					vim.command(u'normal! gv'.encode(u'utf-8'))
+					vim.command(u_encode(u'normal! gv'))
 				else:
 					echo(u'No heading found')
 				return
@@ -209,8 +208,9 @@ class Navigator(object):
 				# the cursor is in the body of the current heading, therefore
 				# the current heading will be focused
 				if mode == u'visual':
-					line_start, col_start = [int(i) for i in vim.eval(u'getpos("\'<")'.encode(u'utf-8'))[1:3]]
-					line_end, col_end = [int(i) for i in vim.eval(u'getpos("\'>")'.encode(u'utf-8'))[1:3]]
+					line_start, col_start = [int(i) for i in
+							  vim.eval(u_encode(u'getpos("\'<")'))[1:3]]
+					line_end, col_end = [int(i) for i in vim.eval(u_encode(u'getpos("\'>")'))[1:3]]
 					if line_start >= heading.start_vim and line_end > heading.start_vim:
 						focus_heading = heading
 				else:

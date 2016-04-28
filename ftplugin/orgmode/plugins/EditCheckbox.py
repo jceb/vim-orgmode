@@ -8,6 +8,7 @@ from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode.liborgmode.checkboxes import Checkbox
 from orgmode.liborgmode.dom_obj import OrderListType
 
+from orgmode.py3compat.encode_compatibility import *
 
 class EditCheckbox(object):
 	u"""
@@ -132,9 +133,9 @@ class EditCheckbox(object):
 
 		# do not start insert upon adding new checkbox, Issue #211
 		if int(settings.get(u'org_prefer_insert_mode', u'1')):
-			vim.command((u'exe "normal %dgg"|startinsert!' % (start + 1, )).encode(u'utf-8'))
+			vim.command(u_encode((u'exe "normal %dgg"|startinsert!' % (start + 1, ))))
 		else:
-			vim.command((u'exe "normal %dgg$"' % (start + 1, )).encode(u'utf-8'))
+			vim.command(u_encode((u'exe "normal %dgg$"' % (start + 1, ))))
 
 	@classmethod
 	def toggle(cls, checkbox=None):

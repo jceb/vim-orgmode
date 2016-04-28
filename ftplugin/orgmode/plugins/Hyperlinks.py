@@ -8,6 +8,7 @@ from orgmode._vim import echom, ORGMODE, realign_tags
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
 
+from orgmode.py3compat.encode_compatibility import *
 
 class Hyperlinks(object):
 	u""" Hyperlinks plugin """
@@ -92,12 +93,11 @@ class Hyperlinks(object):
 
 		if link and link[u'uri'] is not None:
 			# call UTL with the URI
-			vim.command((
-				u'Utl %s %s %s' % (action, visual, link[u'uri'])).encode(u'utf-8'))
+			vim.command(u_encode((u'Utl %s %s %s' % (action, visual, link[u'uri']))))
 			return link[u'uri']
 		else:
 			# call UTL and let it decide what to do
-			vim.command((u'Utl %s %s' % (action, visual)).encode(u'utf-8'))
+			vim.command(u_encode((u'Utl %s %s' % (action, visual))))
 
 	@classmethod
 	@realign_tags
@@ -151,11 +151,10 @@ class Hyperlinks(object):
 
 		if uri or description:
 			vim.current.buffer[cursor[0] - 1] = \
-				(u''.join((head, u'[[%s%s%s]]' %
-					(uri, separator, description), tail))).encode(u'utf-8')
+				u_encode(u''.join((head, u'[[%s%s%s]]' % (uri, separator, description), tail)))
 		elif link:
 			vim.current.buffer[cursor[0] - 1] = \
-				(u''.join((head, tail))).encode(u'utf-8')
+				u_encode(u''.join((head, tail)))
 
 	def register(self):
 		u"""

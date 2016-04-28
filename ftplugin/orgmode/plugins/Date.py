@@ -9,6 +9,7 @@ from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry, add_cmd_mapping_menu
 
+from orgmode.py3compat.encode_compatibility import *
 
 class Date(object):
 	u"""
@@ -42,9 +43,9 @@ class Date(object):
 
 		# set speeddating format that is compatible with orgmode
 		try:
-			if int(vim.eval(u'exists(":SpeedDatingFormat")'.encode(u'utf-8'))) == 2:
-				vim.command(u':1SpeedDatingFormat %Y-%m-%d %a'.encode(u'utf-8'))
-				vim.command(u':1SpeedDatingFormat %Y-%m-%d %a %H:%M'.encode(u'utf-8'))
+			if int(vim.eval(u_encode(u'exists(":SpeedDatingFormat")'))) == 2:
+				vim.command(u_encode(u':1SpeedDatingFormat %Y-%m-%d %a'))
+				vim.command(u_encode(u':1SpeedDatingFormat %Y-%m-%d %a %H:%M'))
 			else:
 				echom(u'Speeddating plugin not installed. Please install it.')
 		except:
@@ -235,10 +236,10 @@ class Date(object):
 		# format
 		if isinstance(newdate, datetime):
 			newdate = newdate.strftime(
-				u'%Y-%m-%d %a %H:%M'.encode(u'utf-8')).decode(u'utf-8')
+				u_encode(u'%Y-%m-%d %a %H:%M')).decode(u'utf-8')
 		else:
 			newdate = newdate.strftime(
-				u'%Y-%m-%d %a'.encode(u'utf-8')).decode(u'utf-8')
+				u_encode(u'%Y-%m-%d %a')).decode(u'utf-8')
 		timestamp = u'<%s>' % newdate if active else u'[%s]' % newdate
 
 		insert_at_cursor(timestamp)
@@ -251,7 +252,7 @@ class Date(object):
 
 		TODO: add all modifier of orgmode.
 		"""
-		if int(vim.eval(u'exists(":CalendarH")'.encode(u'utf-8'))) != 2:
+		if int(vim.eval(u_encode(u'exists(":CalendarH")'))) != 2:
 			vim.command("echo 'Please install plugin Calendar to enable this function'")
 			return
 		vim.command("CalendarH")

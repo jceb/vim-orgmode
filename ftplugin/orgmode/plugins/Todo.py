@@ -11,10 +11,8 @@ from orgmode.keybinding import Keybinding, Plug
 # temporary todo states for differnent orgmode buffers
 ORGTODOSTATES = {}
 
-try:
-	from __builtin__ import xrange as range
-except:
-	pass
+from orgmode.py3compat.xrange_compatibility import *
+from orgmode.py3compat.encode_compatibility import *
 
 def split_access_key(t):
 	u"""
@@ -181,16 +179,16 @@ class Todo(object):
 			settings.set(
 				u'org_current_state_%d' % d.bufnr,
 				current_state if current_state is not None else u'', overwrite=True)
-			todo_buffer_exists = bool(int(vim.eval((
-				u'bufexists("org:todo/%d")' % (d.bufnr, )).encode(u'utf-8'))))
+			todo_buffer_exists = bool(int(vim.eval(u_encode(
+				u'bufexists("org:todo/%d")' % (d.bufnr, )))))
 			if todo_buffer_exists:
 				# if the buffer already exists, reuse it
-				vim.command((
-					u'%s sbuffer org:todo/%d' % (prompt_pos, d.bufnr, )).encode(u'utf-8'))
+				vim.command(u_encode(
+					u'%s sbuffer org:todo/%d' % (prompt_pos, d.bufnr, )))
 			else:
 				# create a new window
-				vim.command((
-					u'keepalt %s %dsplit org:todo/%d' % (prompt_pos, len(todo_states), d.bufnr)).encode(u'utf-8'))
+				vim.command(u_encode(
+					u'keepalt %s %dsplit org:todo/%d' % (prompt_pos, len(todo_states), d.bufnr)))
 		else:
 			new_state = Todo._get_next_state(
 				current_state, todo_states, direction=direction,
@@ -252,17 +250,17 @@ class Todo(object):
 		all_states = ORGTODOSTATES.get(bufnr, None)
 
 		# because timeoutlen can only be set globally it needs to be stored and restored later
-		vim.command(u'let g:org_sav_timeoutlen=&timeoutlen'.encode(u'utf-8'))
-		vim.command(u'au orgmode BufEnter <buffer> :if ! exists("g:org_sav_timeoutlen")|let g:org_sav_timeoutlen=&timeoutlen|set timeoutlen=1|endif'.encode(u'utf-8'))
-		vim.command(u'au orgmode BufLeave <buffer> :if exists("g:org_sav_timeoutlen")|let &timeoutlen=g:org_sav_timeoutlen|unlet g:org_sav_timeoutlen|endif'.encode(u'utf-8'))
+		vim.command(u_encode(u'let g:org_sav_timeoutlen=&timeoutlen'))
+		vim.command(u_encode(u'au orgmode BufEnter <buffer> :if ! exists("g:org_sav_timeoutlen")|let g:org_sav_timeoutlen=&timeoutlen|set timeoutlen=1|endif'))
+		vim.command(u_encode(u'au orgmode BufLeave <buffer> :if exists("g:org_sav_timeoutlen")|let &timeoutlen=g:org_sav_timeoutlen|unlet g:org_sav_timeoutlen|endif'))
 		# make window a scratch window and set the statusline differently
-		vim.command(u'setlocal nolist tabstop=16 buftype=nofile timeout timeoutlen=1 winfixheight'.encode(u'utf-8'))
-		vim.command((u'setlocal statusline=Org\\ todo\\ (%s)' % vim.eval((u'fnameescape(fnamemodify(bufname(%d), ":t"))' % bufnr).encode(u'utf-8'))).encode(u'utf-8'))
-		vim.command((u'nnoremap <silent> <buffer> <Esc> :%sbw<CR>' % (vim.eval(u'bufnr("%")'.encode(u'utf-8')), )).encode(u'utf-8'))
-		vim.command(u'nnoremap <silent> <buffer> <CR> :let g:org_state = fnameescape(expand("<cword>"))<Bar>bw<Bar>exec "py ORGMODE.plugins[u\'Todo\'].set_todo_state(\'".g:org_state."\')"<Bar>unlet! g:org_state<CR>'.encode(u'utf-8'))
+		vim.command(u_encode(u'setlocal nolist tabstop=16 buftype=nofile timeout timeoutlen=1 winfixheight'))
+		vim.command(u_encode((u'setlocal statusline=Org\\ todo\\ (%s)' % vim.eval(u_encode((u'fnameescape(fnamemodify(bufname(%d), ":t"))' % bufnr))))))
+		vim.command(u_encode((u'nnoremap <silent> <buffer> <Esc> :%sbw<CR>' % (vim.eval(u_encode(u'bufnr("%")')), ))))
+		vim.command(u_encode(u'nnoremap <silent> <buffer> <CR> :let g:org_state = fnameescape(expand("<cword>"))<Bar>bw<Bar>exec "py ORGMODE.plugins[u\'Todo\'].set_todo_state(\'".g:org_state."\')"<Bar>unlet! g:org_state<CR>'))
 
 		if all_states is None:
-			vim.command(u'bw'.encode(u'utf-8'))
+			vim.command(u_encode(u'bw'))
 			echom(u'No todo states avaiable for buffer %s' % vim.current.buffer.name)
 
 		for l in range(0, len(all_states)):
@@ -277,7 +275,7 @@ class Todo(object):
 							res += (u'\t' if res else u'') + u'[%s] %s' % (k, v)
 							# map access keys to callback that updates current heading
 							# map selection keys
-							vim.command((u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>:py ORGMODE.plugins[u"Todo"].set_todo_state("%s".decode(u"utf-8"))<CR>' % (k, v)).encode(u'utf-8'))
+							vim.command(u_encode((u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>:py ORGMODE.plugins[u"Todo"].set_todo_state("%s".decode(u"utf-8"))<CR>' % (k, v))))
 						elif v:
 							res += (u'\t' if res else u'') + v
 			if res:
@@ -285,11 +283,11 @@ class Todo(object):
 					# WORKAROUND: the cursor can not be positioned properly on
 					# the first line. Another line is just inserted and it
 					# works great
-					vim.current.buffer[0] = u''.encode(u'utf-8')
-				vim.current.buffer.append(res.encode(u'utf-8'))
+					vim.current.buffer[0] = u_encode(u'')
+				vim.current.buffer.append(u_encode(res))
 
 		# position the cursor of the current todo item
-		vim.command(u'normal! G'.encode(u'utf-8'))
+		vim.command(u_encode(u'normal! G'))
 		current_state = settings.unset(u'org_current_state_%d' % bufnr)
 		found = False
 		if current_state is not None and current_state != '':
@@ -303,8 +301,8 @@ class Todo(object):
 			vim.current.window.cursor = (2, 4)
 
 		# finally make buffer non modifiable
-		vim.command(u'setfiletype orgtodo'.encode(u'utf-8'))
-		vim.command(u'setlocal nomodifiable'.encode(u'utf-8'))
+		vim.command(u_encode(u'setfiletype orgtodo'))
+		vim.command(u_encode(u'setlocal nomodifiable'))
 
 		# remove temporary todo states for the current buffer
 		del ORGTODOSTATES[bufnr]
@@ -346,10 +344,10 @@ class Todo(object):
 			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=2, next_set=True)<CR>')))
 		submenu + ActionEntry(u'Previous &keyword set', self.keybindings[-1])
 
-		settings.set(u'org_todo_keywords', [u'TODO'.encode(u'utf-8'), u'|'.encode(u'utf-8'), u'DONE'.encode(u'utf-8')])
+		settings.set(u'org_todo_keywords', [u_encode(u'TODO'), u_encode(u'|'), u_encode(u'DONE')])
 
 		settings.set(u'org_todo_prompt_position', u'botright')
 
-		vim.command(u'au orgmode BufReadCmd org:todo/* :py ORGMODE.plugins[u"Todo"].init_org_todo()'.encode(u'utf-8'))
+		vim.command(u_encode(u'au orgmode BufReadCmd org:todo/* :py ORGMODE.plugins[u"Todo"].init_org_todo()'))
 
 # vim: set noexpandtab:
