@@ -604,7 +604,7 @@ class Heading(DomObj):
 			else:
 				v = value
 				if type(v) == str:
-					v = v.decode(u'utf-8')
+					v = u_decode(v)
 				self._todo = v.upper()
 			self.set_dirty_heading()
 
@@ -642,7 +642,7 @@ class Heading(DomObj):
 				raise ValueError(u'Title must be a string.')
 			v = value
 			if type(v) == str:
-				v = v.decode(u'utf-8')
+				v = u_decode(v)
 			self._title = v.strip()
 			self.set_dirty_heading()
 
@@ -672,7 +672,7 @@ class Heading(DomObj):
 					raise ValueError(u'Found non allowed character in tag! %s' % i)
 				i_tmp = i.strip().replace(' ', '_').replace('\t', '_')
 				if type(i) == str:
-					i_tmp = i.decode(u'utf-8')
+					i_tmp = u_decode(i)
 				v_decoded.append(i_tmp)
 
 			self._tags[:] = v_decoded

@@ -297,7 +297,7 @@ class DomObj(object):
 				raise ValueError(u'Title must be a string.')
 			v = value
 			if type(v) == str:
-				v = v.decode(u'utf-8')
+				v = u_decode(v)
 			self._title = v.strip()
 			self.set_dirty()
 
@@ -316,7 +316,7 @@ class DomObj(object):
 			if type(value) in (list, tuple) or isinstance(value, UserList):
 				self._body[:] = flatten_list(value)
 			elif type(value) in (str, ):
-				self._body[:] = value.decode('utf-8').split(u'\n')
+				self._body[:] = u_decode(value).split(u'\n')
 			elif type(value) in (unicode, ):
 				self._body[:] = value.split(u'\n')
 			else:

@@ -275,7 +275,7 @@ class Todo(object):
 							res += (u'\t' if res else u'') + u'[%s] %s' % (k, v)
 							# map access keys to callback that updates current heading
 							# map selection keys
-							vim.command(u_encode((u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>:py ORGMODE.plugins[u"Todo"].set_todo_state("%s".decode(u"utf-8"))<CR>' % (k, v))))
+							vim.command(u_encode((u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>:py ORGMODE.plugins[u"Todo"].set_todo_state(u_decode("%s")))<CR>' % (k, v))))
 						elif v:
 							res += (u'\t' if res else u'') + v
 			if res:

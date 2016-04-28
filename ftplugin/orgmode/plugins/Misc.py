@@ -82,7 +82,7 @@ class Misc(object):
 				if h:
 					heading = h
 
-			visualmode = vim.eval(u'visualmode()').decode(u'utf-8') if mode == u'visual' else u'v'
+			visualmode = u_decode(vim.eval(u'visualmode()')) if mode == u'visual' else u'v'
 
 			if line_start == start and line_start != heading.start_vim:
 				if col_start in (0, 1):

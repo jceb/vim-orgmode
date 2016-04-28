@@ -35,7 +35,7 @@ class TagsProperties(object):
 		if not heading:
 			return
 
-		leading_portion = vim.eval(u'a:ArgLead').decode(u'utf-8')
+		leading_portion = u_decode(vim.eval(u'a:ArgLead'))
 		cursor = int(vim.eval(u'a:CursorPos'))
 
 		# extract currently completed tag
@@ -91,7 +91,7 @@ class TagsProperties(object):
 			return
 
 		# remove empty tags
-		heading.tags = filter(lambda x: x.strip() != u'', res.decode(u'utf-8').strip().strip(u':').split(u':'))
+		heading.tags = filter(lambda x: x.strip() != u'', u_decode(res).strip().strip(u':').split(u':'))
 
 		d.write()
 
@@ -106,7 +106,7 @@ class TagsProperties(object):
 			# user pressed <Esc> abort any further processing
 			return
 
-		tags = filter(lambda x: x.strip() != u'', tags.decode(u'utf-8').strip().strip(u':').split(u':'))
+		tags = filter(lambda x: x.strip() != u'', u_decode(tags).strip().strip(u':').split(u':'))
 		if tags:
 			searchstring = u'\\('
 			first = True

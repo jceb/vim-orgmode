@@ -41,7 +41,7 @@ class Hyperlinks(object):
 				or uri and description could be None if not set
 		"""
 		cursor = cursor if cursor else vim.current.window.cursor
-		line = vim.current.buffer[cursor[0] - 1].decode(u'utf-8')
+		line = u_decode(vim.current.buffer[cursor[0] - 1])
 
 		# if the cursor is on the last bracket, it's not recognized as a hyperlink
 		start = line.rfind(u'[[', 0, cursor[1])
@@ -125,23 +125,23 @@ class Hyperlinks(object):
 		if uri is None:
 			return
 		else:
-			uri = uri.decode(u'utf-8')
+			uri = u_decode(uri)
 
 		# character escaping
 		uri = uri.replace(u'\\', u'\\\\\\\\')
 		uri = uri.replace(u' ', u'\ ')
 
 		if description is None:
-			description = vim.eval(u'input("Description: ")').decode(u'utf-8')
+			description = u_decode(vim.eval(u'input("Description: ")'))
 		elif link:
 			description = vim.eval(
 				u'input("Description: ", "%s")' %
-				link[u'description']).decode(u'utf-8')
+				u_decode(link[u'description']))
 		if description is None:
 			return
 
 		cursor = vim.current.window.cursor
-		cl = vim.current.buffer[cursor[0] - 1].decode(u'utf-8')
+		cl = u_decode(vim.current.buffer[cursor[0] - 1])
 		head = cl[:cursor[1] + 1] if not link else cl[:link[u'start']]
 		tail = cl[cursor[1] + 1:] if not link else cl[link[u'end']:]
 

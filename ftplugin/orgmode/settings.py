@@ -36,14 +36,14 @@ def get(setting, default=None, scope=SCOPE_ALL):
 			int(vim.eval(u_encode(u'exists("b:%s")' % setting))):
 		res = vim.eval(u_encode(u"b:%s" % setting))
 		if type(res) in (unicode, str):
-			return res.decode(u'utf-8')
+			return u_decode(res)
 		return res
 
 	elif (scope & SCOPE_ALL | SCOPE_GLOBAL) and \
 			int(vim.eval(u_encode(u'exists("g:%s")' % setting))):
 		res = vim.eval(u_encode(u"g:%s" % setting))
 		if type(res) in (unicode, str):
-			return res.decode(u'utf-8')
+			return u_decode(res)
 		return res
 	return default
 
@@ -69,7 +69,7 @@ def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):
 		res = vim.eval(
 				u_encode(u'%s:%s' % (VARIABLE_LEADER[scope], setting)))
 		if type(res) in (unicode, str):
-			return res.decode(u'utf-8')
+			return u_decode(res)
 		return res
 	v = repr(value)
 	if type(value) == unicode:

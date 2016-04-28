@@ -108,7 +108,7 @@ class VimBuffer(Document):
 				for i in s:
 					_i = i
 					if type(_i) == str:
-						_i = _i.decode(u'utf-8')
+						_i = u_decode(_i)
 					if type(_i) == unicode and _i:
 						if strip_access_key and u'(' in _i:
 							_i = _i[:_i.index(u'(')]
@@ -390,11 +390,11 @@ class VimBufferContent(MultiPurposeList):
 	def __getitem__(self, i):
 		item = MultiPurposeList.__getitem__(self, i)
 		if type(item) is str:
-			return item.decode(u'utf-8')
+			return u_decode(item)
 		return item
 
 	def __getslice__(self, i, j):
-		return [item.decode(u'utf-8') if type(item) is str else item \
+		return [u_decode(item) if type(item) is str else item \
 				for item in MultiPurposeList.__getslice__(self, i, j)]
 
 	def __setitem__(self, i, item):
@@ -468,7 +468,7 @@ class VimBufferContent(MultiPurposeList):
 		MultiPurposeList.index(self, i, *args)
 
 	def pop(self, i=-1):
-		return MultiPurposeList.pop(self, i).decode(u'utf-8')
+		return u_decode(MultiPurposeList.pop(self, i))
 
 	def extend(self, other):
 		o = []

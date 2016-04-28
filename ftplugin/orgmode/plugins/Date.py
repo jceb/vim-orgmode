@@ -236,10 +236,10 @@ class Date(object):
 		# format
 		if isinstance(newdate, datetime):
 			newdate = newdate.strftime(
-				u_encode(u'%Y-%m-%d %a %H:%M')).decode(u'utf-8')
+				u_decode(u_encode(u'%Y-%m-%d %a %H:%M')))
 		else:
 			newdate = newdate.strftime(
-				u_encode(u'%Y-%m-%d %a')).decode(u'utf-8')
+				u_decode(u_encode(u'%Y-%m-%d %a')))
 		timestamp = u'<%s>' % newdate if active else u'[%s]' % newdate
 
 		insert_at_cursor(timestamp)

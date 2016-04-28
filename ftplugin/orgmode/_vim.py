@@ -105,7 +105,7 @@ def echom(message):
 	"""
 	# probably some escaping is needed here
 	for m in message.split(u'\n'):
-		vim.command(u_encode((u':echomsg "%s"' % m)))
+		vim.command(u_encode(u':echomsg "%s"' % m))
 
 
 def echoe(message):
@@ -114,7 +114,7 @@ def echoe(message):
 	"""
 	# probably some escaping is needed here
 	for m in message.split(u'\n'):
-		vim.command(u_encode((u':echoerr "%s"' % m)))
+		vim.command(u_encode(u':echoerr "%s"' % m))
 
 
 def insert_at_cursor(text, move=True, start_insertmode=False):
@@ -140,7 +140,7 @@ def get_user_input(message):
 	vim.command(u_encode((u"let user_input = input('" + message + u": ')")))
 	vim.command(u_encode(u'call inputrestore()'))
 	try:
-		return vim.eval(u_encode(u'user_input')).decode(u'utf-8')
+		return u_decode(vim.eval(u_encode(u'user_input')))
 	except:
 		return None
 
@@ -263,11 +263,9 @@ def fold_orgmode(allow_dirty=False):
 
 def date_to_str(date):
 	if isinstance(date, datetime):
-		date = date.strftime(
-				u_encode(u'%Y-%m-%d %a %H:%M')).decode(u'utf-8')
+		date = date.strftime(u_decode(u_encode(u'%Y-%m-%d %a %H:%M')))
 	else:
-		date = date.strftime(
-				u_encode(u'%Y-%m-%d %a')).decode(u'utf-8')
+		date = date.strftime(u_decode(u_encode(u'%Y-%m-%d %a')))
 	return date
 
 class OrgMode(object):

@@ -178,7 +178,7 @@ class Document(object):
 			if type(value) in (list, tuple) or isinstance(value, UserList):
 				self._meta_information[:] = flatten_list(value)
 			elif type(value) in (str, ):
-				self._meta_information[:] = value.decode(u'utf-8').split(u'\n')
+				self._meta_information[:] = u_decode(value).split(u'\n')
 			elif type(value) in (unicode, ):
 				self._meta_information[:] = value.split(u'\n')
 			self.set_dirty_meta_information()
