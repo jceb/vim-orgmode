@@ -17,10 +17,8 @@ from orgmode.liborgmode.orgdate import get_orgdate
 from orgmode.liborgmode.checkboxes import Checkbox, CheckboxList
 from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT, REGEX_HEADING, REGEX_TAG, REGEX_TODO
 
-try:
-	from __builtin__ import xrange as range
-except:
-	pass
+from orgmode.py3compat.xrange_compatibility import *
+from orgmode.py3compat.encode_compatibility import *
 
 class Heading(DomObj):
 	u""" Structural heading object """
@@ -101,7 +99,7 @@ class Heading(DomObj):
 		return res
 
 	def __str__(self):
-		return self.__unicode__().encode(u'utf-8')
+		return u_encode(self.__unicode__())
 
 	def __len__(self):
 		# 1 is for the heading's title

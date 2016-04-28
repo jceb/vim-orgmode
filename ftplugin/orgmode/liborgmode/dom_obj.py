@@ -11,6 +11,8 @@ import re
 from UserList import UserList
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list
 
+from orgmode.py3compat.encode_compatibility import *
+
 # breaking down tasks regex
 REGEX_SUBTASK = re.compile(r'\[(\d*)/(\d*)\]')
 REGEX_SUBTASK_PERCENT = re.compile(r'\[(\d*)%\]')
@@ -82,7 +84,7 @@ class DomObj(object):
 		return u'<dom obj level=%s, title=%s>' % (level, title)
 
 	def __str__(self):
-		return self.__unicode__().encode(u'utf-8')
+		return u_encode(self.__unicode__())
 
 	def __len__(self):
 		# 1 is for the heading's title

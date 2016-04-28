@@ -12,6 +12,7 @@ from UserList import UserList
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list, Direction, get_domobj_range
 from orgmode.liborgmode.headings import Heading, HeadingList
 
+from orgmode.py3compat.encode_compatibility import *
 
 class Document(object):
 	u"""
@@ -52,7 +53,7 @@ class Document(object):
 		return u'\n'.join(self.meta_information) + u'\n' + u'\n'.join([u'\n'.join([unicode(i)] + i.body) for i in self.all_headings()])
 
 	def __str__(self):
-		return self.__unicode__().encode(u'utf-8')
+		return u_encode(self.__unicode__())
 
 	def get_all_todo_states(self):
 		u""" Convenience function that returns all todo and done states and
