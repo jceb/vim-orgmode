@@ -8,7 +8,6 @@
 """
 
 import imp
-import types
 import re
 
 import vim
@@ -390,8 +389,8 @@ class OrgMode(object):
 			except Exception as e:
 				import traceback
 				traceback.print_exc()
-		elif isinstance(plugins, types.ListType) or \
-				isinstance(plugins, types.TupleType):
+		elif isinstance(plugins, list) or \
+				isinstance(plugins, tuple):
 			for p in plugins:
 				try:
 					self.register_plugin(p)
