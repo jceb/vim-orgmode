@@ -54,7 +54,7 @@ class Checkbox(DomObj):
 			(self.status + u' ' if self.status else u'') + self.title
 
 	def __str__(self):
-		return u_encode(self.__unicode__()
+		return u_encode(self.__unicode__())
 
 	def __len__(self):
 		# 1 is for the heading's title

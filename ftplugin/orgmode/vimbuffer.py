@@ -18,7 +18,10 @@
 	is UTF-8.
 """
 
-from UserList import UserList
+try:
+	from collections import UserList
+except:
+	from UserList import UserList
 
 import vim
 
