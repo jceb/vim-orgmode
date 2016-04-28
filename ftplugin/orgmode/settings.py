@@ -3,6 +3,7 @@
 import vim
 
 from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.unicode_compatibility import *
 
 SCOPE_ALL = 1
 
