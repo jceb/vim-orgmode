@@ -2,6 +2,7 @@
 
 import vim
 
+import sys
 from orgmode.py3compat.encode_compatibility import *
 from orgmode.py3compat.unicode_compatibility import *
 
@@ -72,7 +73,7 @@ def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):
 			return u_decode(res)
 		return res
 	v = repr(value)
-	if type(value) == unicode:
+	if type(value) == unicode and sys.version_info < (3,):
 		# strip leading u of unicode string representations
 		v = v[1:]
 
