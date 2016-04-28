@@ -6,7 +6,7 @@
 " @Revision     : 0.4
 " vi: ft=vim:tw=80:sw=4:ts=4:fdm=marker
 
-if ! has('python') || v:version < 703
+if ! has('python3') || v:version < 703
 	echoerr "Unable to start orgmode. Orgmode depends on Vim >= 7.3 with Python support complied in."
 	finish
 endif
@@ -31,7 +31,7 @@ if ! exists('b:did_ftplugin')
 
 	" register keybindings if they don't have been registered before
 	if exists("g:loaded_org")
-		python ORGMODE.register_keybindings()
+		python3 ORGMODE.register_keybindings()
 	endif
 endif
 
@@ -53,7 +53,7 @@ if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_hi
 endif
 
 " setting to conceal aggresively
-if ! exists('g:org_aggressive_conceal')
+if ! exists('g:org_aggressive_conceal') && ! exists('b:org_aggressive_conceal')
 	let g:org_aggressive_conceal = 0
 endif
 
@@ -67,15 +67,15 @@ endif
 
 " Menu and document handling {{{1
 function! <SID>OrgRegisterMenu()
-	python ORGMODE.register_menu()
+	python3 ORGMODE.register_menu()
 endfunction
 
 function! <SID>OrgUnregisterMenu()
-	python ORGMODE.unregister_menu()
+	python3 ORGMODE.unregister_menu()
 endfunction
 
 function! <SID>OrgDeleteUnusedDocument(bufnr)
-python << EOF
+python3 << EOF
 b = int(vim.eval('a:bufnr'))
 if b in ORGMODE._documents:
 	del ORGMODE._documents[b]
@@ -91,7 +91,7 @@ augroup END
 
 " Start orgmode {{{1
 " Expand our path
-python << EOF
+python3 << EOF
 import vim, os, sys
 
 for p in vim.eval("&runtimepath").split(','):
