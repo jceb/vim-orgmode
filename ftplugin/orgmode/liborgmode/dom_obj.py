@@ -8,10 +8,13 @@
 """
 
 import re
-from UserList import UserList
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list
 
 from orgmode.py3compat.encode_compatibility import *
+try:
+	from collections import UserList
+except:
+	from UserList import UserList
 
 # breaking down tasks regex
 REGEX_SUBTASK = re.compile(r'\[(\d*)/(\d*)\]')
