@@ -332,7 +332,7 @@ class OrgMode(object):
 		# locate module and initialize plugin class
 		try:
 			module = imp.find_module(plugin, orgmode.plugins.__path__)
-		except ImportError, e:
+		except ImportError as e:
 			echom(u'Plugin not found: %s' % plugin)
 			if self.debug:
 				raise e
