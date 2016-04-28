@@ -283,6 +283,6 @@ class OrgTimeRange(object):
 					self.end.strftime(u'%Y-%m-%d %a'))
 
 	def __str__(self):
-		return self.__unicode__().encode(u'utf-8')
+		return u_encode(self.__unicode__())
 
 # vim: set noexpandtab:
