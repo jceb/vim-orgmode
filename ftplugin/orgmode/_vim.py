@@ -27,10 +27,8 @@ REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
 TAGSPROPERTIES_EXISTS = False
 
 cache_heading = None
-try:
-	unicode
-except NameError:
-	basestring = unicode = str
+
+from py3compat.unicode_compatibility import *
 
 def realign_tags(f):
 	u"""
