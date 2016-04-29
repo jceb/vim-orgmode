@@ -11,6 +11,8 @@ import re
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list
 
 from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.unicode_compatibility import *
+
 try:
 	from collections import UserList
 except:

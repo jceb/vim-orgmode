@@ -18,6 +18,8 @@ from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_
 
 from orgmode.py3compat.xrange_compatibility import *
 from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.unicode_compatibility import *
+
 try:
 	from collections import UserList
 except:

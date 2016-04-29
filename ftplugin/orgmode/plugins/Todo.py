@@ -13,6 +13,7 @@ ORGTODOSTATES = {}
 
 from orgmode.py3compat.xrange_compatibility import *
 from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.unicode_compatibility import *
 
 def split_access_key(t):
 	u"""

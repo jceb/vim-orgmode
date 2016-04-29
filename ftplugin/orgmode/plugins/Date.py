@@ -10,6 +10,7 @@ from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry, add_cmd_mapping_menu
 
 from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.unicode_compatibility import *
 
 class Date(object):
 	u"""

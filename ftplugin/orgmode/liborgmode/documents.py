@@ -16,6 +16,7 @@ from orgmode.liborgmode.base import MultiPurposeList, flatten_list, Direction, g
 from orgmode.liborgmode.headings import Heading, HeadingList
 
 from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.unicode_compatibility import *
 
 class Document(object):
 	u"""
