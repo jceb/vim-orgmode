@@ -10,6 +10,7 @@ from orgmode.keybinding import Keybinding, Plug, MODE_NORMAL
 
 from orgmode.py3compat.encode_compatibility import *
 from orgmode.py3compat.xrange_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 class ShowHide(object):
 	u""" Show Hide plugin """
@@ -159,16 +160,21 @@ class ShowHide(object):
 		"""
 		# register plug
 
-		self.keybindings.append(Keybinding(u'<Tab>', Plug(u'OrgToggleFoldingNormal', u':py ORGMODE.plugins[u"ShowHide"].toggle_folding()<CR>')))
+		self.keybindings.append(Keybinding(u'<Tab>',
+									 Plug(u'OrgToggleFoldingNormal', u'%s ORGMODE.plugins[u"ShowHide"].toggle_folding()<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'&Cycle Visibility', self.keybindings[-1])
 
-		self.keybindings.append(Keybinding(u'<S-Tab>', Plug(u'OrgToggleFoldingReverse', u':py ORGMODE.plugins[u"ShowHide"].toggle_folding(reverse=True)<CR>')))
+		self.keybindings.append(Keybinding(u'<S-Tab>',
+									 Plug(u'OrgToggleFoldingReverse', u'%s ORGMODE.plugins[u"ShowHide"].toggle_folding(reverse=True)<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'Cycle Visibility &Reverse', self.keybindings[-1])
 
-		self.keybindings.append(Keybinding(u'<localleader>.', Plug(u'OrgGlobalToggleFoldingNormal', u':py ORGMODE.plugins[u"ShowHide"].global_toggle_folding()<CR>')))
+		self.keybindings.append(Keybinding(u'<localleader>.',
+									 Plug(u'OrgGlobalToggleFoldingNormal', u'%s ORGMODE.plugins[u"ShowHide"].global_toggle_folding()<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'Cycle Visibility &Globally', self.keybindings[-1])
 
-		self.keybindings.append(Keybinding(u'<localleader>,', Plug(u'OrgGlobalToggleFoldingReverse', u':py ORGMODE.plugins[u"ShowHide"].global_toggle_folding(reverse=True)<CR>')))
+		self.keybindings.append(Keybinding(u'<localleader>,',
+									 Plug(u'OrgGlobalToggleFoldingReverse',
+			   u'%s ORGMODE.plugins[u"ShowHide"].global_toggle_folding(reverse=True)<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'Cycle Visibility Reverse G&lobally', self.keybindings[-1])
 
 		for i in range(0, 10):

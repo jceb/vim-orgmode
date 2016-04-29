@@ -11,6 +11,7 @@ from orgmode.menu import Submenu, ActionEntry, add_cmd_mapping_menu
 
 from orgmode.py3compat.encode_compatibility import *
 from orgmode.py3compat.unicode_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 class Date(object):
 	u"""
@@ -276,28 +277,28 @@ class Date(object):
 			self,
 			name=u'OrgDateInsertTimestampActiveCmdLine',
 			key_mapping=u'<localleader>sa',
-			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp()',
+			function=u'%s ORGMODE.plugins[u"Date"].insert_timestamp()' % VIM_PY_CALL,
 			menu_desrc=u'Timest&amp'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateInsertTimestampInactiveCmdLine',
 			key_mapping='<localleader>si',
-			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp(False)',
+			function=u'%s ORGMODE.plugins[u"Date"].insert_timestamp(False)' % VIM_PY_CALL,
 			menu_desrc=u'Timestamp (&inactive)'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateInsertTimestampActiveWithCalendar',
 			key_mapping=u'<localleader>pa',
-			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar()',
+			function=u'%s ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar()' % VIM_PY_CALL,
 			menu_desrc=u'Timestamp with Calendar'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateInsertTimestampInactiveWithCalendar',
 			key_mapping=u'<localleader>pi',
-			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar(False)',
+			function=u'%s ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar(False)' % VIM_PY_CALL,
 			menu_desrc=u'Timestamp with Calendar(inactive)'
 		)
 

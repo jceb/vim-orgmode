@@ -6,6 +6,7 @@ from orgmode._vim import echo, echom, echoe, ORGMODE, apply_count, repeat
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
 
+from orgmode.py3compat.py_py3_string import *
 
 class LoggingWork(object):
 	u""" LoggingWork plugin """
@@ -37,5 +38,5 @@ class LoggingWork(object):
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
 		# an Action menu entry which binds "keybinding" to action ":action"
-		self.commands.append(Command(u'OrgLoggingRecordDoneTime', u':py ORGMODE.plugins[u"LoggingWork"].action()'))
+		self.commands.append(Command(u'OrgLoggingRecordDoneTime', u'%s ORGMODE.plugins[u"LoggingWork"].action()' % VIM_PY_CALL))
 		self.menu + ActionEntry(u'&Record DONE time', self.commands[-1])

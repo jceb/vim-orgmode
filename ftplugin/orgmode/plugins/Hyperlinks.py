@@ -9,6 +9,7 @@ from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
 
 from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 class Hyperlinks(object):
 	u""" Hyperlinks plugin """
@@ -162,7 +163,7 @@ class Hyperlinks(object):
 		"""
 		cmd = Command(
 			u'OrgHyperlinkFollow',
-			u':py ORGMODE.plugins[u"Hyperlinks"].follow()')
+			u'%s ORGMODE.plugins[u"Hyperlinks"].follow()' % VIM_PY_CALL)
 		self.commands.append(cmd)
 		self.keybindings.append(
 			Keybinding(u'gl', Plug(u'OrgHyperlinkFollow', self.commands[-1])))
@@ -170,7 +171,7 @@ class Hyperlinks(object):
 
 		cmd = Command(
 			u'OrgHyperlinkCopy',
-			u':py ORGMODE.plugins[u"Hyperlinks"].follow(action=u"copy")')
+			u'%s ORGMODE.plugins[u"Hyperlinks"].follow(action=u"copy")' % VIM_PY_CALL)
 		self.commands.append(cmd)
 		self.keybindings.append(
 			Keybinding(u'gyl', Plug(u'OrgHyperlinkCopy', self.commands[-1])))
@@ -178,7 +179,7 @@ class Hyperlinks(object):
 
 		cmd = Command(
 			u'OrgHyperlinkInsert',
-			u':py ORGMODE.plugins[u"Hyperlinks"].insert(<f-args>)',
+			u'%s ORGMODE.plugins[u"Hyperlinks"].insert(<f-args>)' % VIM_PY_CALL,
 			arguments=u'*')
 		self.commands.append(cmd)
 		self.keybindings.append(

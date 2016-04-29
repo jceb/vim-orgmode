@@ -7,6 +7,7 @@ from orgmode.menu import Submenu
 from orgmode.keybinding import Keybinding, Plug, MODE_VISUAL, MODE_OPERATOR
 
 from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 class Misc(object):
 	u""" Miscellaneous functionality """
@@ -144,8 +145,10 @@ class Misc(object):
 		u"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		self.keybindings.append(Keybinding(u'^', Plug(u'OrgJumpToFirstCharacter', u':py ORGMODE.plugins[u"Misc"].jump_to_first_character()<CR>')))
-		self.keybindings.append(Keybinding(u'I', Plug(u'OrgEditAtFirstCharacter', u':py ORGMODE.plugins[u"Misc"].edit_at_first_character()<CR>')))
+		self.keybindings.append(Keybinding(u'^',
+									 Plug(u'OrgJumpToFirstCharacter', u'%s ORGMODE.plugins[u"Misc"].jump_to_first_character()<CR>' % VIM_PY_CALL)))
+		self.keybindings.append(Keybinding(u'I',
+									 Plug(u'OrgEditAtFirstCharacter', u'%s ORGMODE.plugins[u"Misc"].edit_at_first_character()<CR>' % VIM_PY_CALL)))
 
 		self.keybindings.append(Keybinding(u'ih', Plug(u'OrgInnerHeadingVisual', u':<C-u>py ORGMODE.plugins[u"Misc"].i_heading()<CR>', mode=MODE_VISUAL)))
 		self.keybindings.append(Keybinding(u'ah', Plug(u'OrgAInnerHeadingVisual', u':<C-u>py ORGMODE.plugins[u"Misc"].a_heading()<CR>', mode=MODE_VISUAL)))

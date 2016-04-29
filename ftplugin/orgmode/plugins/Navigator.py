@@ -8,6 +8,7 @@ from orgmode.keybinding import Keybinding, MODE_VISUAL, MODE_OPERATOR, Plug
 from orgmode.liborgmode.documents import Direction
 
 from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 class Navigator(object):
 	u""" Implement navigation in org-mode documents """
@@ -278,13 +279,17 @@ class Navigator(object):
 
 	def register(self):
 		# normal mode
-		self.keybindings.append(Keybinding(u'g{', Plug('OrgJumpToParentNormal', u':py ORGMODE.plugins[u"Navigator"].parent(mode=u"normal")<CR>')))
+		self.keybindings.append(Keybinding(u'g{', Plug('OrgJumpToParentNormal',
+												 u'%s ORGMODE.plugins[u"Navigator"].parent(mode=u"normal")<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'&Up', self.keybindings[-1])
-		self.keybindings.append(Keybinding(u'g}', Plug('OrgJumpToParentsSiblingNormal', u':py ORGMODE.plugins[u"Navigator"].parent_next_sibling(mode=u"normal")<CR>')))
+		self.keybindings.append(Keybinding(u'g}',
+									 Plug('OrgJumpToParentsSiblingNormal', u'%s ORGMODE.plugins[u"Navigator"].parent_next_sibling(mode=u"normal")<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'&Down', self.keybindings[-1])
-		self.keybindings.append(Keybinding(u'{', Plug(u'OrgJumpToPreviousNormal', u':py ORGMODE.plugins[u"Navigator"].previous(mode=u"normal")<CR>')))
+		self.keybindings.append(Keybinding(u'{',
+									 Plug(u'OrgJumpToPreviousNormal', u'%s ORGMODE.plugins[u"Navigator"].previous(mode=u"normal")<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'&Previous', self.keybindings[-1])
-		self.keybindings.append(Keybinding(u'}', Plug(u'OrgJumpToNextNormal', u':py ORGMODE.plugins[u"Navigator"].next(mode=u"normal")<CR>')))
+		self.keybindings.append(Keybinding(u'}', Plug(u'OrgJumpToNextNormal',
+												u'%s ORGMODE.plugins[u"Navigator"].next(mode=u"normal")<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'&Next', self.keybindings[-1])
 
 		# visual mode
@@ -301,9 +306,13 @@ class Navigator(object):
 
 		# section wise movement (skip children)
 		# normal mode
-		self.keybindings.append(Keybinding(u'[[', Plug(u'OrgJumpToPreviousSkipChildrenNormal', u':py ORGMODE.plugins[u"Navigator"].previous(mode=u"normal", skip_children=True)<CR>')))
+		self.keybindings.append(Keybinding(u'[[',
+									 Plug(u'OrgJumpToPreviousSkipChildrenNormal',
+			   u'%s ORGMODE.plugins[u"Navigator"].previous(mode=u"normal", skip_children=True)<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'Ne&xt Same Level', self.keybindings[-1])
-		self.keybindings.append(Keybinding(u']]', Plug(u'OrgJumpToNextSkipChildrenNormal', u':py ORGMODE.plugins[u"Navigator"].next(mode=u"normal", skip_children=True)<CR>')))
+		self.keybindings.append(Keybinding(u']]',
+									 Plug(u'OrgJumpToNextSkipChildrenNormal',
+			   u'%s ORGMODE.plugins[u"Navigator"].next(mode=u"normal", skip_children=True)<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'Pre&vious Same Level', self.keybindings[-1])
 
 		# visual mode

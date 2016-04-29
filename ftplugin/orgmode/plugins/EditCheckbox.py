@@ -9,6 +9,7 @@ from orgmode.liborgmode.checkboxes import Checkbox
 from orgmode.liborgmode.dom_obj import OrderListType
 
 from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 class EditCheckbox(object):
 	u"""
@@ -284,14 +285,14 @@ class EditCheckbox(object):
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgCheckBoxNewAbove',
-			function=u':py ORGMODE.plugins[u"EditCheckbox"].new_checkbox()<CR>',
+			function=u'%s ORGMODE.plugins[u"EditCheckbox"].new_checkbox()<CR>' % VIM_PY_CALL,
 			key_mapping=u'<localleader>cN',
 			menu_desrc=u'New CheckBox Above'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgCheckBoxNewBelow',
-			function=u':py ORGMODE.plugins[u"EditCheckbox"].new_checkbox(below=True)<CR>',
+			function=u'%s ORGMODE.plugins[u"EditCheckbox"].new_checkbox(below=True)<CR>' % VIM_PY_CALL,
 			key_mapping=u'<localleader>cn',
 			menu_desrc=u'New CheckBox Below'
 		)
@@ -313,14 +314,14 @@ class EditCheckbox(object):
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgPlainListItemNewAbove',
-			function=u':py ORGMODE.plugins[u"EditCheckbox"].new_checkbox(plain=True)<CR>',
+			function=u'%s ORGMODE.plugins[u"EditCheckbox"].new_checkbox(plain=True)<CR>' % VIM_PY_CALL,
 			key_mapping=u'<localleader>cL',
 			menu_desrc=u'New PlainList Item Above'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgPlainListItemNewBelow',
-			function=u':py ORGMODE.plugins[u"EditCheckbox"].new_checkbox(below=True, plain=True)<CR>',
+			function=u'%s ORGMODE.plugins[u"EditCheckbox"].new_checkbox(below=True, plain=True)<CR>' % VIM_PY_CALL,
 			key_mapping=u'<localleader>cl',
 			menu_desrc=u'New PlainList Item Below'
 		)

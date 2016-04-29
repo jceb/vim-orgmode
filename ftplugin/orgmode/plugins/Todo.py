@@ -14,6 +14,7 @@ ORGTODOSTATES = {}
 from orgmode.py3compat.xrange_compatibility import *
 from orgmode.py3compat.encode_compatibility import *
 from orgmode.py3compat.unicode_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 def split_access_key(t):
 	u"""
@@ -276,7 +277,7 @@ class Todo(object):
 							res += (u'\t' if res else u'') + u'[%s] %s' % (k, v)
 							# map access keys to callback that updates current heading
 							# map selection keys
-							vim.command(u_encode((u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>:py ORGMODE.plugins[u"Todo"].set_todo_state(u_decode("%s")))<CR>' % (k, v))))
+							vim.command(u_encode((u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>%s ORGMODE.plugins[u"Todo"].set_todo_state(u_decode("%s")))<CR>' % (k, VIM_PY_CALL, v))))
 						elif v:
 							res += (u'\t' if res else u'') + v
 			if res:
@@ -314,12 +315,12 @@ class Todo(object):
 		"""
 		self.keybindings.append(Keybinding(u'<localleader>ct', Plug(
 			u'OrgTodoToggleNonInteractive',
-			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=False)<CR>')))
+			u'%s ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=False)<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'&TODO/DONE/-', self.keybindings[-1])
 
 		self.keybindings.append(Keybinding(u'<localleader>d', Plug(
 			u'OrgTodoToggleInteractive',
-			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=True)<CR>')))
+			u'%s ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=True)<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'&TODO/DONE/- (interactiv)', self.keybindings[-1])
 
 		# add submenu
@@ -327,28 +328,28 @@ class Todo(object):
 
 		self.keybindings.append(Keybinding(u'<S-Right>', Plug(
 			u'OrgTodoForward',
-			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state()<CR>')))
+			u'%s ORGMODE.plugins[u"Todo"].toggle_todo_state()<CR>' % VIM_PY_CALL)))
 		submenu + ActionEntry(u'&Next keyword', self.keybindings[-1])
 
 		self.keybindings.append(Keybinding(u'<S-Left>', Plug(
 			u'OrgTodoBackward',
-			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=2)<CR>')))
+			u'%s ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=2)<CR>' % VIM_PY_CALL)))
 		submenu + ActionEntry(u'&Previous keyword', self.keybindings[-1])
 
 		self.keybindings.append(Keybinding(u'<C-S-Right>', Plug(
 			u'OrgTodoSetForward',
-			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(next_set=True)<CR>')))
+			u'%s ORGMODE.plugins[u"Todo"].toggle_todo_state(next_set=True)<CR>' % VIM_PY_CALL)))
 		submenu + ActionEntry(u'Next keyword &set', self.keybindings[-1])
 
 		self.keybindings.append(Keybinding(u'<C-S-Left>', Plug(
 			u'OrgTodoSetBackward',
-			u':py ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=2, next_set=True)<CR>')))
+			u'%s ORGMODE.plugins[u"Todo"].toggle_todo_state(direction=2, next_set=True)<CR>' % VIM_PY_CALL)))
 		submenu + ActionEntry(u'Previous &keyword set', self.keybindings[-1])
 
 		settings.set(u'org_todo_keywords', [u_encode(u'TODO'), u_encode(u'|'), u_encode(u'DONE')])
 
 		settings.set(u'org_todo_prompt_position', u'botright')
 
-		vim.command(u_encode(u'au orgmode BufReadCmd org:todo/* :py ORGMODE.plugins[u"Todo"].init_org_todo()'))
+		vim.command(u_encode(u'au orgmode BufReadCmd org:todo/* %s ORGMODE.plugins[u"Todo"].init_org_todo()' % VIM_PY_CALL))
 
 # vim: set noexpandtab:

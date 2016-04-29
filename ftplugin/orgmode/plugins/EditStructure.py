@@ -11,6 +11,7 @@ from orgmode.liborgmode.base import Direction
 from orgmode.liborgmode.headings import Heading
 
 from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 class EditStructure(object):
 	u""" EditStructure plugin """
@@ -370,11 +371,15 @@ class EditStructure(object):
 
 		self.menu + Separator()
 
-		self.keybindings.append(Keybinding(u'm{', Plug(u'OrgMoveHeadingUpward', u':py ORGMODE.plugins[u"EditStructure"].move_heading_upward(including_children=False)<CR>')))
-		self.keybindings.append(Keybinding(u'm[[', Plug(u'OrgMoveSubtreeUpward', u':py ORGMODE.plugins[u"EditStructure"].move_heading_upward()<CR>')))
+		self.keybindings.append(Keybinding(u'm{', Plug(u'OrgMoveHeadingUpward',
+												 u'%s ORGMODE.plugins[u"EditStructure"].move_heading_upward(including_children=False)<CR>' % VIM_PY_CALL)))
+		self.keybindings.append(Keybinding(u'm[[',
+									 Plug(u'OrgMoveSubtreeUpward', u'%s ORGMODE.plugins[u"EditStructure"].move_heading_upward()<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'Move Subtree &Up', self.keybindings[-1])
-		self.keybindings.append(Keybinding(u'm}', Plug(u'OrgMoveHeadingDownward', u':py ORGMODE.plugins[u"EditStructure"].move_heading_downward(including_children=False)<CR>')))
-		self.keybindings.append(Keybinding(u'm]]', Plug(u'OrgMoveSubtreeDownward', u':py ORGMODE.plugins[u"EditStructure"].move_heading_downward()<CR>')))
+		self.keybindings.append(Keybinding(u'm}',
+									 Plug(u'OrgMoveHeadingDownward', u'%s ORGMODE.plugins[u"EditStructure"].move_heading_downward(including_children=False)<CR>' % VIM_PY_CALL)))
+		self.keybindings.append(Keybinding(u'm]]',
+									 Plug(u'OrgMoveSubtreeDownward', u'%s ORGMODE.plugins[u"EditStructure"].move_heading_downward()<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'Move Subtree &Down', self.keybindings[-1])
 
 		self.menu + Separator()
