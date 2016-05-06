@@ -52,15 +52,15 @@ unlet! s:todo_headings
 
 " Timestamps
 "<2003-09-16 Tue>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a>\)/
+syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \k\k\k>\)/
 "<2003-09-16 Tue 12:00>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d>\)/
+syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \k\k\k \d\d:\d\d>\)/
 "<2003-09-16 Tue 12:00-12:30>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d-\d\d:\d\d>\)/
+syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \k\k\k \d\d:\d\d-\d\d:\d\d>\)/
 "<2003-09-16 Tue>--<2003-09-16 Tue>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a>--<\d\d\d\d-\d\d-\d\d \a\a\a>\)/
+syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \k\k\k>--<\d\d\d\d-\d\d-\d\d \k\k\k>\)/
 "<2003-09-16 Tue 12:00>--<2003-09-16 Tue 12:00>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d>--<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d>\)/
+syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \k\k\k \d\d:\d\d>--<\d\d\d\d-\d\d-\d\d \k\k\k \d\d:\d\d>\)/
 syn match org_timestamp /\(<%%(diary-float.\+>\)/
 hi def link org_timestamp PreProc
 
