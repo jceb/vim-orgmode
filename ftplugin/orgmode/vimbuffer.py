@@ -168,7 +168,7 @@ class VimBuffer(Document):
 
 		# remove deleted headings
 		already_deleted = []
-		for h in sorted(self._deleted_headings, cmp=lambda x, y: cmp(x._orig_start, y._orig_start), reverse=True):
+		for h in sorted(self._deleted_headings, key=lambda x: x._orig_start, reverse=True):
 			if h._orig_start is not None and h._orig_start not in already_deleted:
 				# this is a heading that actually exists on the buffer and it
 				# needs to be removed
