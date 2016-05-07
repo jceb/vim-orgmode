@@ -10,6 +10,8 @@ from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.liborgmode.base import Direction
 from orgmode.liborgmode.headings import Heading
 
+from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 class EditStructure(object):
 	u""" EditStructure plugin """
@@ -47,7 +49,7 @@ class EditStructure(object):
 			d.headings.insert(0, heading)
 			del d.meta_information[pos:]
 			d.write()
-			vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
+			vim.command(u_encode((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, ))))
 			return heading
 
 		# check for plain list(checkbox)
@@ -99,9 +101,9 @@ class EditStructure(object):
 		d.write()
 		# do not start insert upon adding new headings, unless already in insert mode. Issue #211
 		if int(settings.get(u'org_prefer_insert_mode', u'1')) or insert_mode:
-			vim.command((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, )).encode(u'utf-8'))
+			vim.command(u_encode((u'exe "normal %dgg"|startinsert!' % (heading.start_vim, ))))
 		else:
-			vim.command((u'exe "normal %dgg$"' % (heading.start_vim, )).encode(u'utf-8'))
+			vim.command(u_encode((u'exe "normal %dgg$"' % (heading.start_vim, ))))
 
 		# return newly created heading
 		return heading
@@ -133,22 +135,22 @@ class EditStructure(object):
 			# keys instead of making keys up like this
 			if level > 0:
 				if insert_mode:
-					vim.eval(u'feedkeys("\<C-t>", "n")'.encode(u'utf-8'))
+					vim.eval(u_encode(u'feedkeys("\<C-t>", "n")'))
 				elif including_children:
-					vim.eval(u'feedkeys(">]]", "n")'.encode(u'utf-8'))
+					vim.eval(u_encode(u'feedkeys(">]]", "n")'))
 				elif on_heading:
-					vim.eval(u'feedkeys(">>", "n")'.encode(u'utf-8'))
+					vim.eval(u_encode(u'feedkeys(">>", "n")'))
 				else:
-					vim.eval(u'feedkeys(">}", "n")'.encode(u'utf-8'))
+					vim.eval(u_encode(u'feedkeys(">}", "n")'))
 			else:
 				if insert_mode:
-					vim.eval(u'feedkeys("\<C-d>", "n")'.encode(u'utf-8'))
+					vim.eval(u_encode(u'feedkeys("\<C-d>", "n")'))
 				elif including_children:
-					vim.eval(u'feedkeys("<]]", "n")'.encode(u'utf-8'))
+					vim.eval(u_encode(u'feedkeys("<]]", "n")'))
 				elif on_heading:
-					vim.eval(u'feedkeys("<<", "n")'.encode(u'utf-8'))
+					vim.eval(u_encode(u'feedkeys("<<", "n")'))
 				else:
-					vim.eval(u'feedkeys("<}", "n")'.encode(u'utf-8'))
+					vim.eval(u_encode(u'feedkeys("<}", "n")'))
 			# return True because otherwise apply_count will not work
 			return True
 
@@ -244,7 +246,7 @@ class EditStructure(object):
 
 		d.write()
 		if indent_end_vim != current_heading.start_vim:
-			vim.command((u'normal %dggV%dgg=' % (current_heading.start_vim, indent_end_vim)).encode(u'utf-8'))
+			vim.command(u_encode((u'normal %dggV%dgg=' % (current_heading.start_vim, indent_end_vim))))
 		# restore cursor position
 		vim.current.window.cursor = (c[0], c[1] + level)
 
@@ -369,11 +371,15 @@ class EditStructure(object):
 
 		self.menu + Separator()
 
-		self.keybindings.append(Keybinding(u'm{', Plug(u'OrgMoveHeadingUpward', u':py ORGMODE.plugins[u"EditStructure"].move_heading_upward(including_children=False)<CR>')))
-		self.keybindings.append(Keybinding(u'm[[', Plug(u'OrgMoveSubtreeUpward', u':py ORGMODE.plugins[u"EditStructure"].move_heading_upward()<CR>')))
+		self.keybindings.append(Keybinding(u'm{', Plug(u'OrgMoveHeadingUpward',
+												 u'%s ORGMODE.plugins[u"EditStructure"].move_heading_upward(including_children=False)<CR>' % VIM_PY_CALL)))
+		self.keybindings.append(Keybinding(u'm[[',
+									 Plug(u'OrgMoveSubtreeUpward', u'%s ORGMODE.plugins[u"EditStructure"].move_heading_upward()<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'Move Subtree &Up', self.keybindings[-1])
-		self.keybindings.append(Keybinding(u'm}', Plug(u'OrgMoveHeadingDownward', u':py ORGMODE.plugins[u"EditStructure"].move_heading_downward(including_children=False)<CR>')))
-		self.keybindings.append(Keybinding(u'm]]', Plug(u'OrgMoveSubtreeDownward', u':py ORGMODE.plugins[u"EditStructure"].move_heading_downward()<CR>')))
+		self.keybindings.append(Keybinding(u'm}',
+									 Plug(u'OrgMoveHeadingDownward', u'%s ORGMODE.plugins[u"EditStructure"].move_heading_downward(including_children=False)<CR>' % VIM_PY_CALL)))
+		self.keybindings.append(Keybinding(u'm]]',
+									 Plug(u'OrgMoveSubtreeDownward', u'%s ORGMODE.plugins[u"EditStructure"].move_heading_downward()<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'Move Subtree &Down', self.keybindings[-1])
 
 		self.menu + Separator()

@@ -8,7 +8,10 @@
 	the liborgmode.
 """
 
-from UserList import UserList
+try:
+	from collections import UserList
+except:
+	from UserList import UserList
 
 
 def flatten_list(l):

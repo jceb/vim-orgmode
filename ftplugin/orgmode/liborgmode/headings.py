@@ -8,7 +8,6 @@
 """
 
 import re
-from UserList import UserList
 
 import vim
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list, Direction, get_domobj_range
@@ -17,6 +16,14 @@ from orgmode.liborgmode.orgdate import get_orgdate
 from orgmode.liborgmode.checkboxes import Checkbox, CheckboxList
 from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT, REGEX_HEADING, REGEX_TAG, REGEX_TODO
 
+from orgmode.py3compat.xrange_compatibility import *
+from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.unicode_compatibility import *
+
+try:
+	from collections import UserList
+except:
+	from UserList import UserList
 
 class Heading(DomObj):
 	u""" Structural heading object """
@@ -97,7 +104,7 @@ class Heading(DomObj):
 		return res
 
 	def __str__(self):
-		return self.__unicode__().encode(u'utf-8')
+		return u_encode(self.__unicode__())
 
 	def __len__(self):
 		# 1 is for the heading's title
@@ -478,7 +485,7 @@ class Heading(DomObj):
 		level = 0
 		if not line:
 			return None
-		for i in xrange(0, len(line)):
+		for i in range(0, len(line)):
 			if line[i] == u'*':
 				level += 1
 				if len(line) > (i + 1) and line[i + 1] in (u'\t', u' '):
@@ -599,7 +606,7 @@ class Heading(DomObj):
 			else:
 				v = value
 				if type(v) == str:
-					v = v.decode(u'utf-8')
+					v = u_decode(v)
 				self._todo = v.upper()
 			self.set_dirty_heading()
 
@@ -637,7 +644,7 @@ class Heading(DomObj):
 				raise ValueError(u'Title must be a string.')
 			v = value
 			if type(v) == str:
-				v = v.decode(u'utf-8')
+				v = u_decode(v)
 			self._title = v.strip()
 			self.set_dirty_heading()
 
@@ -667,7 +674,7 @@ class Heading(DomObj):
 					raise ValueError(u'Found non allowed character in tag! %s' % i)
 				i_tmp = i.strip().replace(' ', '_').replace('\t', '_')
 				if type(i) == str:
-					i_tmp = i.decode(u'utf-8')
+					i_tmp = u_decode(i)
 				v_decoded.append(i_tmp)
 
 			self._tags[:] = v_decoded

@@ -8,7 +8,10 @@
 """
 
 import re
-from UserList import UserList
+try:
+	from collections import UserList
+except:
+	from UserList import UserList
 
 import vim
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list
@@ -16,6 +19,8 @@ from orgmode.liborgmode.orgdate import OrgTimeRange
 from orgmode.liborgmode.orgdate import get_orgdate
 from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT, REGEX_HEADING, REGEX_CHECKBOX
 
+from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.unicode_compatibility import *
 
 class Checkbox(DomObj):
 	u""" Structural checkbox object """
@@ -53,7 +58,7 @@ class Checkbox(DomObj):
 			(self.status + u' ' if self.status else u'') + self.title
 
 	def __str__(self):
-		return self.__unicode__().encode(u'utf-8')
+		return u_encode(self.__unicode__())
 
 	def __len__(self):
 		# 1 is for the heading's title
@@ -363,7 +368,7 @@ class Checkbox(DomObj):
 				raise ValueError(u'Title must be a string.')
 			v = value
 			if type(v) == str:
-				v = v.decode(u'utf-8')
+				v = u_decode(v)
 			self._title = v.strip()
 			self.set_dirty_checkbox()
 

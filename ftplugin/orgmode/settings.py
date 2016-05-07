@@ -2,6 +2,10 @@
 
 import vim
 
+import sys
+from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.unicode_compatibility import *
+
 SCOPE_ALL = 1
 
 # for all vim-orgmode buffers
@@ -30,17 +34,17 @@ def get(setting, default=None, scope=SCOPE_ALL):
 	# TODO first read setting from org file which take precedence over vim
 	# variable settings
 	if (scope & SCOPE_ALL | SCOPE_BUFFER) and \
-			int(vim.eval((u'exists("b:%s")' % setting).encode(u'utf-8'))):
-		res = vim.eval((u"b:%s" % setting).encode(u'utf-8'))
+			int(vim.eval(u_encode(u'exists("b:%s")' % setting))):
+		res = vim.eval(u_encode(u"b:%s" % setting))
 		if type(res) in (unicode, str):
-			return res.decode(u'utf-8')
+			return u_decode(res)
 		return res
 
 	elif (scope & SCOPE_ALL | SCOPE_GLOBAL) and \
-			int(vim.eval((u'exists("g:%s")' % setting).encode(u'utf-8'))):
-		res = vim.eval((u"g:%s" % setting).encode(u'utf-8'))
+			int(vim.eval(u_encode(u'exists("g:%s")' % setting))):
+		res = vim.eval(u_encode(u"g:%s" % setting))
 		if type(res) in (unicode, str):
-			return res.decode(u'utf-8')
+			return u_decode(res)
 		return res
 	return default
 
@@ -61,20 +65,20 @@ def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):
 	:returns: the new value in case of overwrite==False the current value
 	"""
 	if (not overwrite) and (
-			int(vim.eval((u'exists("%s:%s")' % \
-			(VARIABLE_LEADER[scope], setting)).encode(u'utf-8')))):
+			int(vim.eval(u_encode(u'exists("%s:%s")' % \
+			(VARIABLE_LEADER[scope], setting))))):
 		res = vim.eval(
-				(u'%s:%s' % (VARIABLE_LEADER[scope], setting)).encode(u'utf-8'))
+				u_encode(u'%s:%s' % (VARIABLE_LEADER[scope], setting)))
 		if type(res) in (unicode, str):
-			return res.decode(u'utf-8')
+			return u_decode(res)
 		return res
 	v = repr(value)
-	if type(value) == unicode:
+	if type(value) == unicode and sys.version_info < (3,):
 		# strip leading u of unicode string representations
 		v = v[1:]
 
 	cmd = u'let %s:%s = %s' % (VARIABLE_LEADER[scope], setting, v)
-	vim.command(cmd.encode(u'utf-8'))
+	vim.command(u_encode(cmd))
 	return value
 
 
@@ -87,7 +91,7 @@ def unset(setting, scope=SCOPE_GLOBAL):
 	"""
 	value = get(setting, scope=scope)
 	cmd = u'unlet! %s:%s' % (VARIABLE_LEADER[scope], setting)
-	vim.command(cmd.encode(u'utf-8'))
+	vim.command(u_encode(cmd))
 	return value
 
 

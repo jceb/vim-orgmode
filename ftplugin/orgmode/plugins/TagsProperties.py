@@ -7,6 +7,8 @@ from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode import settings
 
+from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 class TagsProperties(object):
 	u""" TagsProperties plugin """
@@ -34,7 +36,7 @@ class TagsProperties(object):
 		if not heading:
 			return
 
-		leading_portion = vim.eval(u'a:ArgLead').decode(u'utf-8')
+		leading_portion = u_decode(vim.eval(u'a:ArgLead'))
 		cursor = int(vim.eval(u'a:CursorPos'))
 
 		# extract currently completed tag
@@ -66,7 +68,7 @@ class TagsProperties(object):
 			elif t.startswith(current_tag):
 				possible_tags.append(t)
 
-		vim.command((u'let b:org_complete_tags = [%s]' % u', '.join([u'"%s%s:%s"' % (head, i, tail) for i in possible_tags])).encode(u'utf-8'))
+		vim.command(u_encode((u'let b:org_complete_tags = [%s]' % u', '.join([u'"%s%s:%s"' % (head, i, tail) for i in possible_tags]))))
 
 	@classmethod
 	@repeat
@@ -90,7 +92,7 @@ class TagsProperties(object):
 			return
 
 		# remove empty tags
-		heading.tags = filter(lambda x: x.strip() != u'', res.decode(u'utf-8').strip().strip(u':').split(u':'))
+		heading.tags = filter(lambda x: x.strip() != u'', u_decode(res).strip().strip(u':').split(u':'))
 
 		d.write()
 
@@ -105,7 +107,7 @@ class TagsProperties(object):
 			# user pressed <Esc> abort any further processing
 			return
 
-		tags = filter(lambda x: x.strip() != u'', tags.decode(u'utf-8').strip().strip(u':').split(u':'))
+		tags = filter(lambda x: x.strip() != u'', u_decode(tags).strip().strip(u':').split(u':'))
 		if tags:
 			searchstring = u'\\('
 			first = True
@@ -160,7 +162,7 @@ class TagsProperties(object):
 
 		cmd = Command(
 			u'OrgSetTags',
-			u':py ORGMODE.plugins[u"TagsProperties"].set_tags()')
+			u'%s ORGMODE.plugins[u"TagsProperties"].set_tags()' % VIM_PY_CALL)
 		self.commands.append(cmd)
 		keybinding = Keybinding(
 			u'<localleader>st',
@@ -170,7 +172,7 @@ class TagsProperties(object):
 
 		cmd = Command(
 			u'OrgFindTags',
-			u':py ORGMODE.plugins[u"TagsProperties"].find_tags()')
+			u'%s ORGMODE.plugins[u"TagsProperties"].find_tags()' % VIM_PY_CALL)
 		self.commands.append(cmd)
 		keybinding = Keybinding(
 			u'<localleader>ft',
@@ -180,11 +182,11 @@ class TagsProperties(object):
 
 		cmd = Command(
 			u'OrgTagsRealign',
-			u":py ORGMODE.plugins[u'TagsProperties'].realign_all_tags()")
+			u"%s ORGMODE.plugins[u'TagsProperties'].realign_all_tags()" % VIM_PY_CALL)
 		self.commands.append(cmd)
 
 		# workaround to align tags when user is leaving insert mode
-		vim.command(u"""function Org_complete_tags(ArgLead, CmdLine, CursorPos)
+		vim.command(u_encode(u"""function Org_complete_tags(ArgLead, CmdLine, CursorPos)
 python << EOF
 ORGMODE.plugins[u'TagsProperties'].complete_tags()
 EOF
@@ -195,18 +197,18 @@ if exists('b:org_complete_tags')
 else
 	return []
 endif
-endfunction""".encode(u'utf-8'))
+endfunction"""))
 
-		vim.command(u"""function Org_realign_tags_on_insert_leave()
+		vim.command(u_encode(u"""function Org_realign_tags_on_insert_leave()
 if !exists('b:org_complete_tag_on_insertleave_au')
-	:au orgmode InsertLeave <buffer> :py ORGMODE.plugins[u'TagsProperties'].realign_tags()
+	:au orgmode InsertLeave <buffer> %s ORGMODE.plugins[u'TagsProperties'].realign_tags()
 	let b:org_complete_tag_on_insertleave_au = 1
 endif
-endfunction""".encode(u'utf-8'))
+endfunction""" % VIM_PY_CALL))
 
 		# this is for all org files opened after this file
-		vim.command(u"au orgmode FileType org call Org_realign_tags_on_insert_leave()".encode(u'utf-8'))
+		vim.command(u_encode(u"au orgmode FileType org call Org_realign_tags_on_insert_leave()"))
 		# this is for the current file
-		vim.command(u"call Org_realign_tags_on_insert_leave()".encode(u'utf-8'))
+		vim.command(u_encode(u"call Org_realign_tags_on_insert_leave()"))
 
 # vim: set noexpandtab:
