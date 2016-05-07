@@ -27,32 +27,32 @@ import re
 from orgmode.py3compat.encode_compatibility import *
 
 # <2011-09-12 Mon>
-_DATE_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>")
+_DATE_REGEX = re.compile(r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>", re.UNICODE)
 # [2011-09-12 Mon]
-_DATE_PASSIVE_REGEX = re.compile(r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w\]")
+_DATE_PASSIVE_REGEX = re.compile(r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w\]", re.UNICODE)
 
 # <2011-09-12 Mon 10:20>
 _DATETIME_REGEX = re.compile(
-	r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)>")
+	r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)>", re.UNICODE)
 # [2011-09-12 Mon 10:20]
 _DATETIME_PASSIVE_REGEX = re.compile(
-	r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)\]")
+	r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)\]", re.UNICODE)
 
 # <2011-09-12 Mon>--<2011-09-13 Tue>
 _DATERANGE_REGEX = re.compile(
 	# <2011-09-12 Mon>--
 	r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>--"
 	# <2011-09-13 Tue>
-	"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>")
+	"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>", re.UNICODE)
 # <2011-09-12 Mon 10:00>--<2011-09-12 Mon 11:00>
 _DATETIMERANGE_REGEX = re.compile(
 	# <2011-09-12 Mon 10:00>--
 	r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)>--"
 	# <2011-09-12 Mon 11:00>
-	"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)>")
+	"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)>", re.UNICODE)
 # <2011-09-12 Mon 10:00--12:00>
 _DATETIMERANGE_SAME_DAY_REGEX = re.compile(
-	r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)-(\d\d):(\d\d)>")
+	r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)-(\d\d):(\d\d)>", re.UNICODE)
 
 
 def get_orgdate(data):
@@ -188,6 +188,9 @@ class OrgDate(datetime.date):
 	def __str__(self):
 		return u_encode(self.__unicode__())
 
+	def strftime(self, fmt):
+		return datetime.date.strftime(self, fmt.encode(u'utf-8')).decode(u'utf-8')
+
 
 class OrgDateTime(datetime.datetime):
 	u"""
@@ -216,6 +219,9 @@ class OrgDateTime(datetime.datetime):
 
 	def __str__(self):
 		return u_encode(self.__unicode__())
+
+	def strftime(self, fmt):
+		return datetime.datetime.strftime(self, fmt.encode(u'utf-8')).decode(u'utf-8')
 
 
 class OrgTimeRange(object):
