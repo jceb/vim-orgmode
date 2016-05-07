@@ -24,7 +24,7 @@ class OrgDateParsingTestCase(unittest.TestCase):
 
 	def test_get_orgdate_parsing_active(self):
 		u"""
-		get_orgdate should recognice all orgdates in a given text
+		get_orgdate should recognize all orgdates in a given text
 		"""
 		result = get_orgdate(self.text)
 		self.assertNotEqual(result, None)
@@ -38,9 +38,10 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		datestr = u"This date <2011-08-30 Tue> is embedded"
 		self.assertTrue(isinstance(get_orgdate(datestr), OrgDate))
 
+
 	def test_get_orgdatetime_parsing_active(self):
 		u"""
-		get_orgdate should recognice all orgdatetimess in a given text
+		get_orgdate should recognize all orgdatetimes in a given text
 		"""
 		result = get_orgdate(u"<2011-09-12 Mon 10:20>")
 		self.assertNotEqual(result, None)
@@ -55,9 +56,10 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		result = get_orgdate(u"some datetime <2011-09-12 Mon 10:20> stuff")
 		self.assertTrue(isinstance(result, OrgDateTime))
 
+
 	def test_get_orgtimerange_parsing_active(self):
 		u"""
-		get_orgdate should recognice all orgtimeranges in a given text
+		get_orgdate should recognize all orgtimeranges in a given text
 		"""
 		daterangestr = u"<2011-09-12 Mon>--<2011-09-13 Tue>"
 		result = get_orgdate(daterangestr)
@@ -82,7 +84,7 @@ class OrgDateParsingTestCase(unittest.TestCase):
 
 	def test_get_orgdate_parsing_inactive(self):
 		u"""
-		get_orgdate should recognice all inactive orgdates in a given text
+		get_orgdate should recognize all inactive orgdates in a given text
 		"""
 		result = get_orgdate(self.textinactive)
 		self.assertNotEqual(result, None)
@@ -98,7 +100,7 @@ class OrgDateParsingTestCase(unittest.TestCase):
 
 	def test_get_orgdatetime_parsing_passive(self):
 		u"""
-		get_orgdate should recognice all orgdatetimess in a given text
+		get_orgdate should recognize all orgdatetimes in a given text
 		"""
 		result = get_orgdate(u"[2011-09-12 Mon 10:20]")
 		self.assertNotEqual(result, None)
@@ -192,6 +194,51 @@ class OrgDateParsingTestCase(unittest.TestCase):
 
 		datestr = u"<2012-03-40 Tue 24:70>"
 		self.assertEqual(get_orgdate(datestr), None)
+
+	def test_get_orgdate_parsing_with_utf8(self):
+		u"""
+		get_orgdate should recognize all orgdates within a given utf-8 text
+		"""
+		result = get_orgdate(u'<2016-05-07 Sáb>')
+		self.assertNotEqual(result, None)
+		self.assertTrue(isinstance(result, OrgDate))
+		self.assertEqual(result.year, 2016)
+		self.assertEqual(result.month, 5)
+		self.assertEqual(result.day, 7)
+		self.assertTrue(result.active)
+
+		datestr = u"This date <2016-05-07 Sáb> is embedded"
+		self.assertTrue(isinstance(get_orgdate(datestr), OrgDate))
+
+		result = get_orgdate(u'[2016-05-07 Sáb]')
+		self.assertFalse(result.active)
+
+		datestr = u"This date [2016-05-07 Sáb] is embedded"
+		self.assertTrue(isinstance(get_orgdate(datestr), OrgDate))
+
+	def test_get_orgdatetime_parsing_with_utf8(self):
+		u"""
+		get_orgdate should recognize all orgdatetimes in a given utf-8 text
+		"""
+		result = get_orgdate(u"<2016-05-07 Sáb 10:20>")
+		self.assertNotEqual(result, None)
+		self.assertTrue(isinstance(result, OrgDateTime))
+		self.assertEqual(result.year, 2016)
+		self.assertEqual(result.month, 5)
+		self.assertEqual(result.day, 7)
+		self.assertEqual(result.hour, 10)
+		self.assertEqual(result.minute, 20)
+		self.assertTrue(result.active)
+
+		result = get_orgdate(u"some datetime <2016-05-07 Sáb 10:20> stuff")
+		self.assertTrue(isinstance(result, OrgDateTime))
+
+		result = get_orgdate(u"[2016-05-07 Sáb 10:20]")
+		self.assertFalse(result.active)
+
+		result = get_orgdate(u"some datetime [2016-05-07 Sáb 10:20] stuff")
+		self.assertTrue(isinstance(result, OrgDateTime))
+
 
 
 def suite():
