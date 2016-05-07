@@ -54,9 +54,9 @@ class Agenda(object):
 			u'setlocal modifiable',
 			u'setlocal nonumber',
 			# call opendoc() on enter the original todo item
-			u'nnoremap <silent> <buffer> <CR> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc()"<CR>',
-			u'nnoremap <silent> <buffer> <TAB> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc(switch=True)"<CR>',
-			u'nnoremap <silent> <buffer> <S-CR> :exec "py ORGMODE.plugins[u\'Agenda\'].opendoc(split=True)"<CR>',
+			u'nnoremap <silent> <buffer> <CR> :exec "%s ORGMODE.plugins[u\'Agenda\'].opendoc()"<CR>' % VIM_PY_CALL,
+			u'nnoremap <silent> <buffer> <TAB> :exec "%s ORGMODE.plugins[u\'Agenda\'].opendoc(switch=True)"<CR>' % VIM_PY_CALL,
+			u'nnoremap <silent> <buffer> <S-CR> :exec "%s ORGMODE.plugins[u\'Agenda\'].opendoc(split=True)"<CR>' % VIM_PY_CALL,
 			# statusline
 			u'setlocal statusline=Org\\ %s' % bufname]
 		if vim_commands:

@@ -300,14 +300,14 @@ class EditCheckbox(object):
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgCheckBoxToggle',
-			function=u':silent! py ORGMODE.plugins[u"EditCheckbox"].toggle()<CR>',
+			function=u':silent! %s ORGMODE.plugins[u"EditCheckbox"].toggle()<CR>' % VIM_PY_CALL,
 			key_mapping=u'<localleader>cc',
 			menu_desrc=u'Toggle Checkbox'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgCheckBoxUpdate',
-			function=u':silent! py ORGMODE.plugins[u"EditCheckbox"].update_checkboxes_status()<CR>',
+			function=u':silent! %s ORGMODE.plugins[u"EditCheckbox"].update_checkboxes_status()<CR>' % VIM_PY_CALL,
 			key_mapping=u'<localleader>c#',
 			menu_desrc=u'Update Subtasks'
 		)

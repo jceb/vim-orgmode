@@ -293,16 +293,16 @@ class Navigator(object):
 		self.menu + ActionEntry(u'&Next', self.keybindings[-1])
 
 		# visual mode
-		self.keybindings.append(Keybinding(u'g{', Plug(u'OrgJumpToParentVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Navigator"].parent(mode=u"visual")<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding(u'g}', Plug('OrgJumpToParentsSiblingVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Navigator"].parent_next_sibling(mode=u"visual")<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding(u'{', Plug(u'OrgJumpToPreviousVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Navigator"].previous(mode=u"visual")<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding(u'}', Plug(u'OrgJumpToNextVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Navigator"].next(mode=u"visual")<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'g{', Plug(u'OrgJumpToParentVisual', u'<Esc>:<C-u>%s ORGMODE.plugins[u"Navigator"].parent(mode=u"visual")<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'g}', Plug('OrgJumpToParentsSiblingVisual', u'<Esc>:<C-u>%s ORGMODE.plugins[u"Navigator"].parent_next_sibling(mode=u"visual")<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'{', Plug(u'OrgJumpToPreviousVisual', u'<Esc>:<C-u>%s ORGMODE.plugins[u"Navigator"].previous(mode=u"visual")<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'}', Plug(u'OrgJumpToNextVisual', u'<Esc>:<C-u>%s ORGMODE.plugins[u"Navigator"].next(mode=u"visual")<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
 
 		# operator-pending mode
-		self.keybindings.append(Keybinding(u'g{', Plug(u'OrgJumpToParentOperator', u':<C-u>py ORGMODE.plugins[u"Navigator"].parent(mode=u"operator")<CR>', mode=MODE_OPERATOR)))
-		self.keybindings.append(Keybinding(u'g}', Plug('OrgJumpToParentsSiblingOperator', u':<C-u>py ORGMODE.plugins[u"Navigator"].parent_next_sibling(mode=u"operator")<CR>', mode=MODE_OPERATOR)))
-		self.keybindings.append(Keybinding(u'{', Plug(u'OrgJumpToPreviousOperator', u':<C-u>py ORGMODE.plugins[u"Navigator"].previous(mode=u"operator")<CR>', mode=MODE_OPERATOR)))
-		self.keybindings.append(Keybinding(u'}', Plug(u'OrgJumpToNextOperator', u':<C-u>py ORGMODE.plugins[u"Navigator"].next(mode=u"operator")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding(u'g{', Plug(u'OrgJumpToParentOperator', u':<C-u>%s ORGMODE.plugins[u"Navigator"].parent(mode=u"operator")<CR>' % VIM_PY_CALL, mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding(u'g}', Plug('OrgJumpToParentsSiblingOperator', u':<C-u>%s ORGMODE.plugins[u"Navigator"].parent_next_sibling(mode=u"operator")<CR>' % VIM_PY_CALL, mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding(u'{', Plug(u'OrgJumpToPreviousOperator', u':<C-u>%s ORGMODE.plugins[u"Navigator"].previous(mode=u"operator")<CR>' % VIM_PY_CALL, mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding(u'}', Plug(u'OrgJumpToNextOperator', u':<C-u>%s ORGMODE.plugins[u"Navigator"].next(mode=u"operator")<CR>' % VIM_PY_CALL, mode=MODE_OPERATOR)))
 
 		# section wise movement (skip children)
 		# normal mode
@@ -316,11 +316,11 @@ class Navigator(object):
 		self.menu + ActionEntry(u'Pre&vious Same Level', self.keybindings[-1])
 
 		# visual mode
-		self.keybindings.append(Keybinding(u'[[', Plug(u'OrgJumpToPreviousSkipChildrenVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Navigator"].previous(mode=u"visual", skip_children=True)<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding(u']]', Plug(u'OrgJumpToNextSkipChildrenVisual', u'<Esc>:<C-u>py ORGMODE.plugins[u"Navigator"].next(mode=u"visual", skip_children=True)<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'[[', Plug(u'OrgJumpToPreviousSkipChildrenVisual', u'<Esc>:<C-u>%s ORGMODE.plugins[u"Navigator"].previous(mode=u"visual", skip_children=True)<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u']]', Plug(u'OrgJumpToNextSkipChildrenVisual', u'<Esc>:<C-u>%s ORGMODE.plugins[u"Navigator"].next(mode=u"visual", skip_children=True)<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
 
 		# operator-pending mode
-		self.keybindings.append(Keybinding(u'[[', Plug(u'OrgJumpToPreviousSkipChildrenOperator', u':<C-u>py ORGMODE.plugins[u"Navigator"].previous(mode=u"operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
-		self.keybindings.append(Keybinding(u']]', Plug(u'OrgJumpToNextSkipChildrenOperator', u':<C-u>py ORGMODE.plugins[u"Navigator"].next(mode=u"operator", skip_children=True)<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding(u'[[', Plug(u'OrgJumpToPreviousSkipChildrenOperator', u':<C-u>%s ORGMODE.plugins[u"Navigator"].previous(mode=u"operator", skip_children=True)<CR>' % VIM_PY_CALL, mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding(u']]', Plug(u'OrgJumpToNextSkipChildrenOperator', u':<C-u>%s ORGMODE.plugins[u"Navigator"].next(mode=u"operator", skip_children=True)<CR>' % VIM_PY_CALL, mode=MODE_OPERATOR)))
 
 # vim: set noexpandtab:
