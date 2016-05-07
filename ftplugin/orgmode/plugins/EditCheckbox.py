@@ -10,6 +10,7 @@ from orgmode.liborgmode.dom_obj import OrderListType
 
 from orgmode.py3compat.encode_compatibility import *
 from orgmode.py3compat.py_py3_string import *
+from orgmode.py3compat.unicode_compatibility import *
 
 class EditCheckbox(object):
 	u"""
