@@ -1,4 +1,8 @@
 language: python
+
+before_install:
+    - sudo apt-get update && sudo apt-get --reinstall install -qq language-pack-pt
+
 python:
     - "2.6"
     - "2.7"
