@@ -8,6 +8,7 @@ import test_libcheckbox
 import test_libbase
 import test_libheading
 import test_liborgdate
+import test_liborgdate_utf8
 import test_liborgdate_parsing
 import test_liborgdatetime
 import test_liborgtimerange
@@ -36,6 +37,7 @@ if __name__ == '__main__':
 	tests.addTests(test_libagendafilter.suite())
 	tests.addTests(test_libheading.suite())
 	tests.addTests(test_liborgdate.suite())
+	tests.addTests(test_liborgdate_utf8.suite())
 	tests.addTests(test_liborgdate_parsing.suite())
 	tests.addTests(test_liborgdatetime.suite())
 	tests.addTests(test_liborgtimerange.suite())
