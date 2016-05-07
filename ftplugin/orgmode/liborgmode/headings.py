@@ -24,6 +24,7 @@ try:
 	from collections import UserList
 except:
 	from UserList import UserList
+	from itertools import ifilter as filter
 
 class Heading(DomObj):
 	u""" Structural heading object """
@@ -416,12 +417,14 @@ class Heading(DomObj):
 				todo = None
 				title = u''
 				tags = filter(test_not_empty, r[u'tags'].split(u':')) if r[u'tags'] else []
+				tags = list(tags)
 
 				# if there is just one or no word in the heading, redo the parsing
 				mt = REGEX_TAG.match(r[u'title'])
 				if not tags and mt:
 					r = mt.groupdict()
 					tags = filter(test_not_empty, r[u'tags'].split(u':')) if r[u'tags'] else []
+					tags = list(tags)
 				if r[u'title'] is not None:
 					_todo_title = [i.strip() for i in r[u'title'].split(None, 1)]
 					if _todo_title and _todo_title[0] in allowed_todo_states:
