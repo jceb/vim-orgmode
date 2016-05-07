@@ -92,7 +92,7 @@ class TagsProperties(object):
 			return
 
 		# remove empty tags
-		heading.tags = filter(lambda x: x.strip() != u'', u_decode(res).strip().strip(u':').split(u':'))
+		heading.tags = [x for x in u_decode(res).strip().strip(u':').split(u':') if x.strip() != u'']
 
 		d.write()
 
@@ -107,7 +107,7 @@ class TagsProperties(object):
 			# user pressed <Esc> abort any further processing
 			return
 
-		tags = filter(lambda x: x.strip() != u'', u_decode(tags).strip().strip(u':').split(u':'))
+		heading.tags = [x for x in u_decode(tags).strip().strip(u':').split(u':') if x.strip() != u'']
 		if tags:
 			searchstring = u'\\('
 			first = True
