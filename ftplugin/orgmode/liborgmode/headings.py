@@ -261,10 +261,10 @@ class Heading(DomObj):
 		(start, end) = get_domobj_range(content=doc._content, position=position, direction=direction, identify_fun=checkbox.identify_checkbox)
 		# if out of current headinig range, reutrn None
 		heading_end = self.start + len(self) - 1
-		if start > heading_end:
+		if start is not None and start > heading_end:
 			return None
 
-		if end > heading_end:
+		if end is not None and end > heading_end:
 			end = heading_end
 
 		if start is not None and end is None:
