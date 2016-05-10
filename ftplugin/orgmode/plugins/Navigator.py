@@ -252,7 +252,7 @@ class Navigator(object):
 			cls._change_visual_selection(current_heading, focus_heading, direction=direction, noheadingfound=noheadingfound)
 		elif mode == u'operator':
 			if direction == Direction.FORWARD and vim.current.window.cursor[0] >= focus_heading.start_vim:
-				vim.current.window.cursor = (focus_heading.end_vim, len(vim.current.buffer[focus_heading.end].decode(u'utf-8')))
+				vim.current.window.cursor = (focus_heading.end_vim, len(u_decode(vim.current.buffer[focus_heading.end])))
 			else:
 				vim.current.window.cursor = (focus_heading.start_vim, 0)
 		else:
