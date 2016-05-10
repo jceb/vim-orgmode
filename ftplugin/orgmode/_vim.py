@@ -9,6 +9,7 @@
 
 import imp
 import re
+import sys
 
 import vim
 from datetime import datetime
@@ -364,8 +365,12 @@ class OrgMode(object):
 		def dummy(plugin):
 			return plugin
 
-		for p in self.plugins.itervalues():
-			dummy(p)
+		if sys.version_info < (3, ):
+			for p in self.plugins.itervalues():
+				dummy(p)
+		else:
+			for p in self.plugins.values():
+				dummy(p)
 
 	def register_menu(self):
 		self.orgmenu.create()
