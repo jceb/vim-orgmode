@@ -189,7 +189,7 @@ class OrgDate(datetime.date):
 		return u_encode(self.__unicode__())
 
 	def strftime(self, fmt):
-		return datetime.date.strftime(self, fmt.encode(u'utf-8')).decode(u'utf-8')
+		return u_decode(datetime.date.strftime(self, u_encode(fmt)))
 
 
 class OrgDateTime(datetime.datetime):
@@ -221,7 +221,7 @@ class OrgDateTime(datetime.datetime):
 		return u_encode(self.__unicode__())
 
 	def strftime(self, fmt):
-		return datetime.datetime.strftime(self, fmt.encode(u'utf-8')).decode(u'utf-8')
+		return u_decode(datetime.datetime.strftime(self, u_encode(fmt)))
 
 
 class OrgTimeRange(object):
