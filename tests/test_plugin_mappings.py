@@ -12,6 +12,8 @@ from orgmode.keybinding import MODE_ALL, Plug
 
 import vim
 
+from orgmode.py3compat.encode_compatibility import *
+
 ORG_PLUGINS = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|', 'Export']
 
 
@@ -46,9 +48,9 @@ class MappingTestCase(unittest.TestCase):
 				u'exists("b:org_debug")': 0,
 				u'exists("*repeat#set()")': 0,
 				u'b:changedtick': 0,
-				u'exists("b:org_plugins")'.encode(u'utf-8'): 0,
-				u'exists("g:org_plugins")'.encode(u'utf-8'): 1,
-				u'g:org_plugins'.encode(u'utf-8'): ORG_PLUGINS,
+				u_encode(u'exists("b:org_plugins")'): 0,
+				u_encode(u'exists("g:org_plugins")'): 1,
+				u_encode(u'g:org_plugins'): ORG_PLUGINS,
 				}
 		for plugin in filter(lambda p: p != '|', ORG_PLUGINS):
 			try:
