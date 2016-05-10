@@ -27,7 +27,7 @@ class ShowHideTestCase(unittest.TestCase):
 				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
 				u_encode(u'exists("b:org_debug")'): u_encode(u'0'),
 				u_encode(u'exists("*repeat#set()")'): u_encode(u'0'),
-				u_encode(u'b:changedtick'): (u_encode(u'%d' % counter)),
+				u_encode(u'b:changedtick'): u_encode(u'%d' % counter),
 				u_encode(u"v:count"): u_encode(u'0')}
 		if not u'ShowHide' in ORGMODE.plugins:
 			ORGMODE.register_plugin(u'ShowHide')

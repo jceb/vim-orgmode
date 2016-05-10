@@ -32,7 +32,7 @@ class TodoTestCase(unittest.TestCase):
 				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
 				u_encode(u'exists("b:org_debug")'): u_encode(u'0'),
 				u_encode(u'exists("*repeat#set()")'): u_encode(u'0'),
-				u_encode(u'b:changedtick'): (u_encode(u'%d' % counter)),
+				u_encode(u'b:changedtick'): u_encode(u'%d' % counter),
 				u_encode(u"v:count"): u_encode(u'0')
 				}
 
