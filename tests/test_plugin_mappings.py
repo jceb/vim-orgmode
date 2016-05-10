@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 
 import sys
 sys.path.append(u'../ftplugin')
@@ -28,7 +29,7 @@ class MappingTestCase(unittest.TestCase):
 						akb = kb.action
 						atkb = tkb.action
 						if (akb.startswith(atkb) or atkb.startswith(akb)) and akb != atkb:
-							print u'\nERROR: Found overlapping mapping: %s (%s), %s (%s)' % (kb.key, akb, tkb.key, atkb)
+							print(u'\nERROR: Found overlapping mapping: %s (%s), %s (%s)' % (kb.key, akb, tkb.key, atkb))
 							found_overlapping_mapping = True
 
 			if all_keybindings:

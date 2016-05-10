@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 import unittest
 import sys
 sys.path.append(u'../ftplugin')
@@ -89,7 +91,7 @@ class DateTestCase(unittest.TestCase):
 	def test_modify_time_with_given_weekday(self):
 		# use custom day instead of self.d to ease testing
 		cust_day = date(2011, 5, 25)  # it's a Wednesday
-		#print cust_day.weekday()  # 2
+		#print(cust_day.weekday())  # 2
 		test_data = [(u'Thu', date(2011, 5, 26)),
 				(u'thu', date(2011, 5, 26)),
 				(u'tHU', date(2011, 5, 26)),
