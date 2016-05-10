@@ -403,6 +403,14 @@ class VimBufferContent(MultiPurposeList):
 		if type(_i) is unicode:
 			_i = u_encode(item)
 
+		# TODO: fix this bug properly, it is really strange that it fails on
+		# python3 without it. Problem is that when _i = ['* '] it fails in
+		# UserList.__setitem__() but if it is changed in debuggr in __setitem__
+		# like item[0] = '* ' it works, hence this is some quirk with unicode
+		# stuff but very likely vim 7.4 BUG too.
+		if isinstance(_i, UserList) and sys.version_info > (3, ):
+			_i = [s.encode('utf8').decode('utf8') for s in _i]
+
 		MultiPurposeList.__setitem__(self, i, _i)
 
 	def __setslice__(self, i, j, other):
