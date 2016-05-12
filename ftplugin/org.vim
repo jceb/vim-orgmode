@@ -83,6 +83,7 @@ function! <SID>OrgUnregisterMenu()
 		python3 ORGMODE.unregister_menu()
 	else
 		python ORGMODE.unregister_menu()
+	endif
 endfunction
 
 if has('python3')
