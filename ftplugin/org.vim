@@ -90,7 +90,7 @@ function! <SID>OrgDeleteUnusedDocument(bufnr)
 python3 << EOF
 b = int(vim.eval('a:bufnr'))
 if b in ORGMODE._documents:
-del ORGMODE._documents[b]
+	del ORGMODE._documents[b]
 EOF
 endfunction
 
@@ -100,7 +100,7 @@ function! <SID>OrgDeleteUnusedDocument(bufnr)
 python << EOF
 b = int(vim.eval('a:bufnr'))
 if b in ORGMODE._documents:
-del ORGMODE._documents[b]
+	del ORGMODE._documents[b]
 EOF
 endfunction
 endif
