@@ -24,6 +24,7 @@ try:
 	from collections import UserList
 except:
 	from UserList import UserList
+	from itertools import ifilter as filter
 
 class Heading(DomObj):
 	u""" Structural heading object """
@@ -260,10 +261,10 @@ class Heading(DomObj):
 		(start, end) = get_domobj_range(content=doc._content, position=position, direction=direction, identify_fun=checkbox.identify_checkbox)
 		# if out of current headinig range, reutrn None
 		heading_end = self.start + len(self) - 1
-		if start > heading_end:
+		if start is not None and start > heading_end:
 			return None
 
-		if end > heading_end:
+		if end is not None and end > heading_end:
 			end = heading_end
 
 		if start is not None and end is None:
@@ -416,12 +417,14 @@ class Heading(DomObj):
 				todo = None
 				title = u''
 				tags = filter(test_not_empty, r[u'tags'].split(u':')) if r[u'tags'] else []
+				tags = list(tags)
 
 				# if there is just one or no word in the heading, redo the parsing
 				mt = REGEX_TAG.match(r[u'title'])
 				if not tags and mt:
 					r = mt.groupdict()
 					tags = filter(test_not_empty, r[u'tags'].split(u':')) if r[u'tags'] else []
+					tags = list(tags)
 				if r[u'title'] is not None:
 					_todo_title = [i.strip() for i in r[u'title'].split(None, 1)]
 					if _todo_title and _todo_title[0] in allowed_todo_states:
@@ -607,6 +610,9 @@ class Heading(DomObj):
 				v = value
 				if type(v) == str:
 					v = u_decode(v)
+				# TODO think if you want to fix this i.e. german 'ß'.upper()
+				# is converted to SS and that is by the rules... cf.
+				# https://bugs.python.org/issue4610
 				self._todo = v.upper()
 			self.set_dirty_heading()
 
@@ -812,23 +818,54 @@ class HeadingList(DomObjList):
 				children=True, taint=taint)
 
 	def __setitem__(self, i, item):
-		if not self.__class__.is_heading(item):
-			raise ValueError(u'Item is not a heading!')
-		if item in self:
-			raise ValueError(u'Heading is already part of this list!')
-		self._add_to_deleted_headings(self[i])
+		# TODO rewrite this so that it can work when item is a tuple and i is slice
+		# it should be made to work with any item that is iterable
+		# It is also very poor design to just check for tuple and not raise any
+		# errors otherwise or implement list also
+		# TODO slice must differentiate between couple of cases:
+		# slice(None,None)
+		# slice(int, None)
+		# slice(None, int)
+		# this must be done because of _associate_heading and other methods
+		# that dont take into account slicing
+		if isinstance(i, slice):
+			# TODO fix this mess it is only copy pasted from setslice
+			sl = i
+			o = item
+			if self.__class__.is_heading(o):
+				o = (o, )
+			o = flatten_list(o)
+			for head in o:
+				if not self.__class__.is_heading(head):
+					raise ValueError(u'List contains items that are not a heading!')
 
-		self._associate_heading(
-			item,
-			self[i - 1] if i - 1 >= 0 else None,
-			self[i + 1] if i + 1 < len(self) else None)
-		MultiPurposeList.__setitem__(self, i, item)
+			i = sl.start if sl.start is not None else 0
+			j = sl.stop if sl.stop is not None else len(self) - 1
+
+			self._add_to_deleted_headings(self[sl])
+			self._associate_heading(
+				o,
+				self[i - 1] if i - 1 >= 0 and i < len(self) else None,
+				self[j] if j >= 0 and j < len(self) else None)
+			MultiPurposeList.__setitem__(self, sl, o)
+		else:
+			if not self.__class__.is_heading(item):
+				raise ValueError(u'Item is not a heading!')
+			if item in self:
+				raise ValueError(u'Heading is already part of this list!')
+			self._add_to_deleted_headings(self[i])
+			self._associate_heading(
+				item,
+				self[i - 1] if i - 1 >= 0 else None,
+				self[i + 1] if i + 1 < len(self) else None)
+
+			MultiPurposeList.__setitem__(self, i, item)
 
 	def __setslice__(self, i, j, other):
 		o = other
 		if self.__class__.is_heading(o):
-			o = (o, )
-		o = flatten_list(o)
+			o = [o]
+		#o = flatten_list(o)
 		for item in o:
 			if not self.__class__.is_heading(item):
 				raise ValueError(u'List contains items that are not a heading!')
@@ -842,15 +879,29 @@ class HeadingList(DomObjList):
 		MultiPurposeList.__setslice__(self, i, j, o)
 
 	def __delitem__(self, i, taint=True):
-		item = self[i]
-		if item.previous_sibling:
-			item.previous_sibling._next_sibling = item.next_sibling
-		if item.next_sibling:
-			item.next_sibling._previous_sibling = item.previous_sibling
+		# TODO this method needs more work
+		if isinstance(i, slice):
+			items = self[i]
+			if items:
+				first = items[0]
+				last = items[-1]
+				if first.previous_sibling:
+					first.previous_sibling._next_sibling = last.next_sibling
+				if last.next_sibling:
+					last.next_sibling._previous_sibling = first.previous_sibling
+			if taint:
+				self._add_to_deleted_headings(items)
+			MultiPurposeList.__delitem__(self, i)
+		else:
+			item = self[i]
+			if item.previous_sibling:
+				item.previous_sibling._next_sibling = item.next_sibling
+			if item.next_sibling:
+				item.next_sibling._previous_sibling = item.previous_sibling
 
-		if taint:
-			self._add_to_deleted_headings(item)
-		MultiPurposeList.__delitem__(self, i)
+			if taint:
+				self._add_to_deleted_headings(item)
+			MultiPurposeList.__delitem__(self, i)
 
 	def __delslice__(self, i, j, taint=True):
 		i = max(i, 0)

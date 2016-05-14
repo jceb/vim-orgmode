@@ -7,6 +7,7 @@ from datetime import datetime
 sys.path.append(u'../ftplugin')
 from orgmode.liborgmode.orgdate import OrgDateTime
 
+from orgmode.py3compat.unicode_compatibility import *
 
 class OrgDateTimeTestCase(unittest.TestCase):
 	u"""

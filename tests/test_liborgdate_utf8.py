@@ -8,6 +8,8 @@ import threading
 from datetime import date
 from contextlib import contextmanager
 
+from orgmode.py3compat.unicode_compatibility import *
+
 sys.path.append(u'../ftplugin')
 from orgmode.liborgmode.orgdate import OrgDate
 

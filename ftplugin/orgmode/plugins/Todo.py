@@ -259,7 +259,7 @@ class Todo(object):
 		vim.command(u_encode(u'setlocal nolist tabstop=16 buftype=nofile timeout timeoutlen=1 winfixheight'))
 		vim.command(u_encode((u'setlocal statusline=Org\\ todo\\ (%s)' % vim.eval(u_encode((u'fnameescape(fnamemodify(bufname(%d), ":t"))' % bufnr))))))
 		vim.command(u_encode((u'nnoremap <silent> <buffer> <Esc> :%sbw<CR>' % (vim.eval(u_encode(u'bufnr("%")')), ))))
-		vim.command(u_encode(u'nnoremap <silent> <buffer> <CR> :let g:org_state = fnameescape(expand("<cword>"))<Bar>bw<Bar>exec "py ORGMODE.plugins[u\'Todo\'].set_todo_state(\'".g:org_state."\')"<Bar>unlet! g:org_state<CR>'))
+		vim.command(u_encode(u'nnoremap <silent> <buffer> <CR> :let g:org_state = fnameescape(expand("<cword>"))<Bar>bw<Bar>exec "%s ORGMODE.plugins[u\'Todo\'].set_todo_state(\'".g:org_state."\')"<Bar>unlet! g:org_state<CR>' % VIM_PY_CALL))
 
 		if all_states is None:
 			vim.command(u_encode(u'bw'))

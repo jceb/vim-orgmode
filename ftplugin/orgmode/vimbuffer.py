@@ -168,7 +168,7 @@ class VimBuffer(Document):
 
 		# remove deleted headings
 		already_deleted = []
-		for h in sorted(self._deleted_headings, cmp=lambda x, y: cmp(x._orig_start, y._orig_start), reverse=True):
+		for h in sorted(self._deleted_headings, key=lambda x: x._orig_start, reverse=True):
 			if h._orig_start is not None and h._orig_start not in already_deleted:
 				# this is a heading that actually exists on the buffer and it
 				# needs to be removed
@@ -402,6 +402,14 @@ class VimBufferContent(MultiPurposeList):
 		_i = item
 		if type(_i) is unicode:
 			_i = u_encode(item)
+
+		# TODO: fix this bug properly, it is really strange that it fails on
+		# python3 without it. Problem is that when _i = ['* '] it fails in
+		# UserList.__setitem__() but if it is changed in debuggr in __setitem__
+		# like item[0] = '* ' it works, hence this is some quirk with unicode
+		# stuff but very likely vim 7.4 BUG too.
+		if isinstance(_i, UserList) and sys.version_info > (3, ):
+			_i = [s.encode('utf8').decode('utf8') for s in _i]
 
 		MultiPurposeList.__setitem__(self, i, _i)
 

@@ -83,6 +83,7 @@ function! <SID>OrgUnregisterMenu()
 		python3 ORGMODE.unregister_menu()
 	else
 		python ORGMODE.unregister_menu()
+	endif
 endfunction
 
 if has('python3')
@@ -90,7 +91,7 @@ function! <SID>OrgDeleteUnusedDocument(bufnr)
 python3 << EOF
 b = int(vim.eval('a:bufnr'))
 if b in ORGMODE._documents:
-del ORGMODE._documents[b]
+	del ORGMODE._documents[b]
 EOF
 endfunction
 
@@ -100,7 +101,7 @@ function! <SID>OrgDeleteUnusedDocument(bufnr)
 python << EOF
 b = int(vim.eval('a:bufnr'))
 if b in ORGMODE._documents:
-del ORGMODE._documents[b]
+	del ORGMODE._documents[b]
 EOF
 endfunction
 endif

@@ -13,6 +13,7 @@ try:
 except:
 	from UserList import UserList
 
+import sys
 
 def flatten_list(l):
 	"""TODO"""
@@ -67,19 +68,25 @@ class MultiPurposeList(UserList):
 		self._changed()
 
 	def __setslice__(self, i, j, other):
-		UserList.__setslice__(self, i, j, other)
+		# if sys.version_info < (2,6):
+		# 	UserList.__setslice__(self, i, j, other)
+		UserList.__setitem__(self, slice(i, j), other)
 		self._changed()
 
 	def __delslice__(self, i, j):
-		UserList.__delslice__(self, i, j)
+		# if sys.version_info < (2,6):
+		# 	UserList.__delslice__(self, i, j)
+		UserList.__delitem__(self, slice(i, j))
 		self._changed()
 
 	def __getslice__(self, i, j):
 		# fix UserList - don't return a new list of the same type but just the
 		# normal list item
-		i = max(i, 0)
-		j = max(j, 0)
-		return self.data[i:j]
+		# if sys.version_info < (2,6):
+		# 	i = max(i, 0)
+		# 	j = max(j, 0)
+		# 	return self.data[i:j]
+		return UserList.__getitem__(self, slice(i, j))
 
 	def __iadd__(self, other):
 		res = UserList.__iadd__(self, other)

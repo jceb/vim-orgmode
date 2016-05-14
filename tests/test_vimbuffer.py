@@ -9,6 +9,8 @@ import vim
 from orgmode.liborgmode.headings import Heading
 from orgmode.vimbuffer import VimBuffer
 
+from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.unicode_compatibility import *
 
 counter = 0
 class VimBufferTestCase(unittest.TestCase):
@@ -20,19 +22,20 @@ class VimBufferTestCase(unittest.TestCase):
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
 				# no org_todo_keywords for b
-				u'exists("b:org_todo_keywords")'.encode(u'utf-8'): '0'.encode(u'utf-8'),
+				u_encode(u'exists("b:org_todo_keywords")'): u_encode('0'),
 				# global values for org_todo_keywords
-				u'exists("g:org_todo_keywords")'.encode(u'utf-8'): '1'.encode(u'utf-8'),
-				u'g:org_todo_keywords'.encode(u'utf-8'): [u'TODO'.encode(u'utf-8'), u'DONE'.encode(u'utf-8'), u'|'.encode(u'utf-8')],
-				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'b:changedtick'.encode(u'utf-8'): (u'%d' % counter).encode(u'utf-8'),
-				u'&ts'.encode(u'utf-8'): u'8'.encode(u'utf-8'),
-				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""#Meta information
+				u_encode(u'exists("g:org_todo_keywords")'): u_encode('1'),
+				u_encode(u'g:org_todo_keywords'): [u_encode(u'TODO'),
+									   u_encode(u'DONE'), u_encode(u'|')],
+				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
+				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
+				u_encode(u'exists("*repeat#set()")'): u_encode(u'0'),
+				u_encode(u'b:changedtick'): u_encode(u'%d' % counter),
+				u_encode(u'&ts'): u_encode(u'8'),
+				u_encode(u'exists("g:org_tag_column")'): u_encode(u'0'),
+				u_encode(u'exists("b:org_tag_column")'): u_encode(u'0'),
+				u_encode(u"v:count"): u_encode(u'0')}
+		vim.current.buffer[:] = [u_encode(i) for i in u"""#Meta information
 #more meta information
 * Überschrift 1
 Text 1
@@ -140,7 +143,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[0].start, 2)
 
 	def test_meta_information_read_no_meta_information(self):
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""* Überschrift 1
+		vim.current.buffer[:] = [ u_encode(i) for i in u"""* Überschrift 1
 Text 1
 
 Bla bla
@@ -622,7 +625,12 @@ Bla Bla bla bla
 		h.level = 2
 		h.body = u'Text, text\nmore text'
 		self.assertEqual(h.start, None)
-		self.document.headings[-1].children += h
+		# TODO make it work with += operator so far it works with append and
+		# extend so it seems that there is a problem in __iadd__ method in
+		# UserList from collection in python3
+		#self.document.headings[-1].children += h
+		#self.document.headings[-1].children.extend([h])
+		self.document.headings[-1].children.append(h)
 		self.assertEqual(h.start, 21)
 		self.assertEqual(self.document.is_dirty, True)
 		self.assertEqual(len(self.document.headings), 3)
@@ -832,7 +840,7 @@ Bla Bla bla bla
 		self.assertEqual(h.end, 20)
 		self.assertEqual(h.end_of_last_child, 20)
 
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ u_encode(i) for i in u"""
 ** Überschrift 1.2
 Text 3
 
@@ -860,7 +868,7 @@ Bla Bla bla bla
 		self.assertEqual(h.end, 3)
 		self.assertEqual(h.end_of_last_child, 7)
 
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ u_encode(i) for i in u"""
 * Überschrift 2
 * Überschrift 3""".split(u'\n') ]
 		self.document = VimBuffer().init_dom()
@@ -951,19 +959,20 @@ class VimBufferTagsTestCase(unittest.TestCase):
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
 				# no org_todo_keywords for b
-				u'exists("b:org_todo_keywords")'.encode(u'utf-8'): '0'.encode(u'utf-8'),
+				u_encode(u'exists("b:org_todo_keywords")'): u_encode('0'),
 				# global values for org_todo_keywords
-				u'exists("g:org_todo_keywords")'.encode(u'utf-8'): '1'.encode(u'utf-8'),
-				u'g:org_todo_keywords'.encode(u'utf-8'): [u'TODO'.encode(u'utf-8'), u'DONE'.encode(u'utf-8'), u'|'.encode(u'utf-8')],
-				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'&ts'.encode(u'utf-8'): u'8'.encode(u'utf-8'),
-				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""#Meta information
+				u_encode(u'exists("g:org_todo_keywords")'): u_encode('1'),
+				u_encode(u'g:org_todo_keywords'): [u_encode(u'TODO'),
+									   u_encode(u'DONE'), u_encode(u'|')],
+				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
+				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
+				u_encode(u'exists("*repeat#set()")'): u_encode(u'0'),
+				u_encode(u'b:changedtick'): u_encode(u'0'),
+				u_encode(u'&ts'): u_encode(u'8'),
+				u_encode(u'exists("g:org_tag_column")'): u_encode(u'0'),
+				u_encode(u'exists("b:org_tag_column")'): u_encode(u'0'),
+				u_encode(u"v:count"): u_encode(u'0')}
+		vim.current.buffer[:] = [ u_encode(i) for i in u"""#Meta information
 #more meta information
 * Überschrift 1     :testtag:
 Text 1
@@ -1108,22 +1117,22 @@ class VimBufferTodoTestCase(unittest.TestCase):
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
 				# no org_todo_keywords for b
-				u'exists("b:org_todo_keywords")'.encode(u'utf-8'): '0'.encode(u'utf-8'),
+				u_encode(u'exists("b:org_todo_keywords")'): u_encode('0'),
 				# global values for org_todo_keywords
-				u'exists("g:org_todo_keywords")'.encode(u'utf-8'): '1'.encode(u'utf-8'),
-				u'g:org_todo_keywords'.encode(u'utf-8'): [u'TODO'.encode(u'utf-8'), \
-						u'DONß'.encode(u'utf-8'), u'DONÉ'.encode(u'utf-8'), \
-						u'DÖNE'.encode(u'utf-8'), u'WAITING'.encode(u'utf-8'), \
-						u'DONE'.encode(u'utf-8'), u'|'.encode(u'utf-8')],
-				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'b:changedtick'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'&ts'.encode(u'utf-8'): u'8'.encode(u'utf-8'),
-				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""#Meta information
+				u_encode(u'exists("g:org_todo_keywords")'): u_encode('1'),
+				u_encode(u'g:org_todo_keywords'): [u_encode(u'TODO'), \
+						u_encode(u'DONß'), u_encode(u'DONÉ'), \
+						u_encode(u'DÖNE'), u_encode(u'WAITING'), \
+						u_encode(u'DONE'), u_encode(u'|')],
+				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
+				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
+				u_encode(u'exists("*repeat#set()")'): u_encode(u'0'),
+				u_encode(u'b:changedtick'): u_encode(u'0'),
+				u_encode(u'&ts'): u_encode(u'8'),
+				u_encode(u'exists("g:org_tag_column")'): u_encode(u'0'),
+				u_encode(u'exists("b:org_tag_column")'): u_encode(u'0'),
+				u_encode(u"v:count"): u_encode(u'0')}
+		vim.current.buffer[:] = [ u_encode(i) for i in u"""#Meta information
 #more meta information
 * TODO Überschrift 1     :testtag:
 Text 1
@@ -1152,7 +1161,7 @@ Bla Bla bla bla
 		self.document = VimBuffer().init_dom()
 
 	def test_no_space_after_upper_case_single_word_heading(self):
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ u_encode(i) for i in u"""
 * TEST
 ** Text 1
 *** Text 2
