@@ -1198,7 +1198,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[3].todo, u'DÖNE')
 		self.assertEqual(self.document.headings[3].title, u'Überschrift 4')
 
-		self.assertEqual(self.document.headings[4].todo, u'DONß')
+		self.assertEqual(self.document.headings[4].todo, u'DONSS')
 		self.assertEqual(self.document.headings[4].title, u'Überschrift 5')
 
 		self.assertEqual(self.document.headings[5].todo, u'DONÉ')
