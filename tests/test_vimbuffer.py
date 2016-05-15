@@ -1198,7 +1198,7 @@ Bla Bla bla bla
 		self.assertEqual(self.document.headings[3].todo, u'DÖNE')
 		self.assertEqual(self.document.headings[3].title, u'Überschrift 4')
 
-		#self.assertEqual(self.document.headings[4].todo, u'DONSS')
+		self.assertEqual(self.document.headings[4].todo, u'DONß')
 		self.assertEqual(self.document.headings[4].title, u'Überschrift 5')
 
 		self.assertEqual(self.document.headings[5].todo, u'DONÉ')
@@ -1222,22 +1222,6 @@ Bla Bla bla bla
 		self.assertEqual(d.headings[0].todo, None)
 		self.assertEqual(d.headings[0].title, u'Überschrift 1')
 		self.assertEqual(unicode(d.headings[0]), u'* Überschrift 1							    :testtag:')
-
-	def test_todo_write_todo_lowercase(self):
-		self.assertEqual(self.document.headings[0].todo, u'TODO')
-		self.document.headings[0].todo = u'waiting'
-		self.assertEqual(self.document.headings[0].is_dirty_body, False)
-		self.assertEqual(self.document.headings[0].is_dirty_heading, True)
-		self.assertEqual(self.document.headings[0].todo, u'WAITING')
-		self.assertEqual(self.document.headings[0].title, u'Überschrift 1')
-		self.assertEqual(unicode(self.document.headings[0]), u'* WAITING Überschrift 1						    :testtag:')
-		self.assertEqual(self.document.write(), True)
-
-		# sanity check
-		d = VimBuffer().init_dom()
-		self.assertEqual(d.headings[0].todo, u'WAITING')
-		self.assertEqual(d.headings[0].title, u'Überschrift 1')
-		self.assertEqual(unicode(d.headings[0]), u'* WAITING Überschrift 1						    :testtag:')
 
 	def test_todo_write_todo_uppercase(self):
 		self.assertEqual(self.document.headings[0].todo, u'TODO')
