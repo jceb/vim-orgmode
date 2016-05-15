@@ -613,7 +613,7 @@ class Heading(DomObj):
 				# TODO think if you want to fix this i.e. german 'ß'.upper()
 				# is converted to SS and that is by the rules... cf.
 				# https://bugs.python.org/issue4610
-				self._todo = v.upper()
+				self._todo = v
 			self.set_dirty_heading()
 
 		def fdel(self):
