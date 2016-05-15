@@ -592,8 +592,7 @@ class Heading(DomObj):
 	level = property(**level())
 
 	def todo():
-		u""" Todo state of current heading. When todo state is set, it will be
-		converted to uppercase """
+		u""" Todo state of current heading. When todo state is set"""
 		def fget(self):
 			# extract todo state from heading
 			return self._todo
@@ -610,10 +609,7 @@ class Heading(DomObj):
 				v = value
 				if type(v) == str:
 					v = u_decode(v)
-				# TODO think if you want to fix this i.e. german 'ß'.upper()
-				# is converted to SS and that is by the rules... cf.
-				# https://bugs.python.org/issue4610
-				self._todo = v.upper()
+				self._todo = v
 			self.set_dirty_heading()
 
 		def fdel(self):
