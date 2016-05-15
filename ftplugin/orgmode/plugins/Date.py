@@ -9,6 +9,9 @@ from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry, add_cmd_mapping_menu
 
+from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.unicode_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 class Date(object):
 	u"""
@@ -42,9 +45,9 @@ class Date(object):
 
 		# set speeddating format that is compatible with orgmode
 		try:
-			if int(vim.eval(u'exists(":SpeedDatingFormat")'.encode(u'utf-8'))) == 2:
-				vim.command(u':1SpeedDatingFormat %Y-%m-%d %a'.encode(u'utf-8'))
-				vim.command(u':1SpeedDatingFormat %Y-%m-%d %a %H:%M'.encode(u'utf-8'))
+			if int(vim.eval(u_encode(u'exists(":SpeedDatingFormat")'))) == 2:
+				vim.command(u_encode(u':1SpeedDatingFormat %Y-%m-%d %a'))
+				vim.command(u_encode(u':1SpeedDatingFormat %Y-%m-%d %a %H:%M'))
 			else:
 				echom(u'Speeddating plugin not installed. Please install it.')
 		except:
@@ -222,7 +225,7 @@ class Date(object):
 		today = date.today()
 		msg = u''.join([
 			u'Inserting ',
-			unicode(today.strftime(u'%Y-%m-%d %a'), u'utf-8'),
+			unicode(u_decode(today.strftime(u'%Y-%m-%d %a'))),
 			u' | Modify date'])
 		modifier = get_user_input(msg)
 
@@ -235,10 +238,10 @@ class Date(object):
 		# format
 		if isinstance(newdate, datetime):
 			newdate = newdate.strftime(
-				u'%Y-%m-%d %a %H:%M'.encode(u'utf-8')).decode(u'utf-8')
+				u_decode(u_encode(u'%Y-%m-%d %a %H:%M')))
 		else:
 			newdate = newdate.strftime(
-				u'%Y-%m-%d %a'.encode(u'utf-8')).decode(u'utf-8')
+				u_decode(u_encode(u'%Y-%m-%d %a')))
 		timestamp = u'<%s>' % newdate if active else u'[%s]' % newdate
 
 		insert_at_cursor(timestamp)
@@ -251,7 +254,7 @@ class Date(object):
 
 		TODO: add all modifier of orgmode.
 		"""
-		if int(vim.eval(u'exists(":CalendarH")'.encode(u'utf-8'))) != 2:
+		if int(vim.eval(u_encode(u'exists(":CalendarH")'))) != 2:
 			vim.command("echo 'Please install plugin Calendar to enable this function'")
 			return
 		vim.command("CalendarH")
@@ -274,28 +277,28 @@ class Date(object):
 			self,
 			name=u'OrgDateInsertTimestampActiveCmdLine',
 			key_mapping=u'<localleader>sa',
-			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp()',
+			function=u'%s ORGMODE.plugins[u"Date"].insert_timestamp()' % VIM_PY_CALL,
 			menu_desrc=u'Timest&amp'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateInsertTimestampInactiveCmdLine',
 			key_mapping='<localleader>si',
-			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp(False)',
+			function=u'%s ORGMODE.plugins[u"Date"].insert_timestamp(False)' % VIM_PY_CALL,
 			menu_desrc=u'Timestamp (&inactive)'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateInsertTimestampActiveWithCalendar',
 			key_mapping=u'<localleader>pa',
-			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar()',
+			function=u'%s ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar()' % VIM_PY_CALL,
 			menu_desrc=u'Timestamp with Calendar'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateInsertTimestampInactiveWithCalendar',
 			key_mapping=u'<localleader>pi',
-			function=u':py ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar(False)',
+			function=u'%s ORGMODE.plugins[u"Date"].insert_timestamp_with_calendar(False)' % VIM_PY_CALL,
 			menu_desrc=u'Timestamp with Calendar(inactive)'
 		)
 

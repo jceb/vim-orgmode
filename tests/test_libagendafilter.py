@@ -17,12 +17,13 @@ from orgmode.liborgmode.agendafilter import is_within_week
 from orgmode.liborgmode.agendafilter import is_within_week_and_active_todo
 from orgmode.liborgmode.agendafilter import filter_items
 
+from orgmode.py3compat.encode_compatibility import *
 
 class AgendaFilterTestCase(unittest.TestCase):
 	u"""Tests all the functionality of the Agenda filter module."""
 
 	def setUp(self):
-		self.text = [ i.encode(u'utf-8') for i in u"""
+		self.text = [ u_encode(i) for i in u"""
 * TODO Heading 1
   some text
 """.split(u'\n') ]

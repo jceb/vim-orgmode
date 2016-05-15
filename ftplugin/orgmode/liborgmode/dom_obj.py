@@ -8,8 +8,15 @@
 """
 
 import re
-from UserList import UserList
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list
+
+from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.unicode_compatibility import *
+
+try:
+	from collections import UserList
+except:
+	from UserList import UserList
 
 # breaking down tasks regex
 REGEX_SUBTASK = re.compile(r'\[(\d*)/(\d*)\]')
@@ -82,7 +89,7 @@ class DomObj(object):
 		return u'<dom obj level=%s, title=%s>' % (level, title)
 
 	def __str__(self):
-		return self.__unicode__().encode(u'utf-8')
+		return u_encode(self.__unicode__())
 
 	def __len__(self):
 		# 1 is for the heading's title
@@ -292,7 +299,7 @@ class DomObj(object):
 				raise ValueError(u'Title must be a string.')
 			v = value
 			if type(v) == str:
-				v = v.decode(u'utf-8')
+				v = u_decode(v)
 			self._title = v.strip()
 			self.set_dirty()
 
@@ -311,7 +318,7 @@ class DomObj(object):
 			if type(value) in (list, tuple) or isinstance(value, UserList):
 				self._body[:] = flatten_list(value)
 			elif type(value) in (str, ):
-				self._body[:] = value.decode('utf-8').split(u'\n')
+				self._body[:] = u_decode(value).split(u'\n')
 			elif type(value) in (unicode, ):
 				self._body[:] = value.split(u'\n')
 			else:

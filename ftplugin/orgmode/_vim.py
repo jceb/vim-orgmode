@@ -8,8 +8,8 @@
 """
 
 import imp
-import types
 import re
+import sys
 
 import vim
 from datetime import datetime
@@ -27,6 +27,9 @@ REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
 TAGSPROPERTIES_EXISTS = False
 
 cache_heading = None
+
+from orgmode.py3compat.unicode_compatibility import *
+from orgmode.py3compat.encode_compatibility import *
 
 def realign_tags(f):
 	u"""
@@ -56,8 +59,7 @@ def repeat(f):
 	def r(*args, **kwargs):
 		res = f(*args, **kwargs)
 		if REPEAT_EXISTS and isinstance(res, basestring):
-			vim.command((u'silent! call repeat#set("\\<Plug>%s")' % res)
-					.encode(u'utf-8'))
+			vim.command(u_encode(u'silent! call repeat#set("\\<Plug>%s")' % res))
 		return res
 	return r
 
@@ -71,12 +73,12 @@ def apply_count(f):
 	def r(*args, **kwargs):
 		count = 0
 		try:
-			count = int(vim.eval(u'v:count'.encode('utf-8')))
+			count = int(vim.eval(u_encode(u'v:count')))
 
 			# visual count is not implemented yet
 			#if not count:
 			#	count = int(vim.eval(u'v:prevcount'.encode(u'utf-8')))
-		except Exception, e:
+		except Exception as e:
 			pass
 
 		res = f(*args, **kwargs)
@@ -94,7 +96,7 @@ def echo(message):
 	multiple lines are printed
 	"""
 	for m in message.split(u'\n'):
-		vim.command((u':echo "%s"' % m).encode(u'utf-8'))
+		vim.command(u_encode((u':echo "%s"' % m)))
 
 
 def echom(message):
@@ -104,7 +106,7 @@ def echom(message):
 	"""
 	# probably some escaping is needed here
 	for m in message.split(u'\n'):
-		vim.command((u':echomsg "%s"' % m).encode(u'utf-8'))
+		vim.command(u_encode(u':echomsg "%s"' % m))
 
 
 def echoe(message):
@@ -113,7 +115,7 @@ def echoe(message):
 	"""
 	# probably some escaping is needed here
 	for m in message.split(u'\n'):
-		vim.command((u':echoerr "%s"' % m).encode(u'utf-8'))
+		vim.command(u_encode(u':echoerr "%s"' % m))
 
 
 def insert_at_cursor(text, move=True, start_insertmode=False):
@@ -128,19 +130,18 @@ def insert_at_cursor(text, move=True, start_insertmode=False):
 	if move:
 		vim.current.window.cursor = (line, col + len(text))
 	if start_insertmode:
-		vim.command(u'startinsert'.encode(u'utf-8'))
+		vim.command(u_encode(u'startinsert'))
 
 
 def get_user_input(message):
 	u"""Print the message and take input from the user.
 	Return the input or None if there is no input.
 	"""
-	vim.command(u'call inputsave()'.encode(u'utf-8'))
-	vim.command((u"let user_input = input('" + message + u": ')")
-			.encode(u'utf-8'))
-	vim.command(u'call inputrestore()'.encode(u'utf-8'))
+	vim.command(u_encode(u'call inputsave()'))
+	vim.command(u_encode((u"let user_input = input('" + message + u": ')")))
+	vim.command(u_encode(u'call inputrestore()'))
 	try:
-		return vim.eval(u'user_input'.encode(u'utf-8')).decode(u'utf-8')
+		return u_decode(vim.eval(u_encode(u'user_input')))
 	except:
 		return None
 
@@ -173,7 +174,7 @@ def indent_orgmode():
 
 	:returns: None
 	"""
-	line = int(vim.eval(u'v:lnum'.encode(u'utf-8')))
+	line = int(vim.eval(u_encode(u'v:lnum')))
 	d = ORGMODE.get_document()
 	heading = d.current_heading(line - 1)
 	if heading and line != heading.start_vim:
@@ -188,7 +189,7 @@ def indent_orgmode():
 				# won't be indented either
 				level = checkbox.level + len(checkbox.type) + 1 + \
 						(4 if checkbox.status else 0)
-		vim.command((u'let b:indent_level = %d' % level).encode(u'utf-8'))
+		vim.command(u_encode((u'let b:indent_level = %d' % level)))
 
 
 def fold_text(allow_dirty=False):
@@ -198,7 +199,7 @@ def fold_text(allow_dirty=False):
 	:allow_dirty:	Perform a query without (re)building the DOM if True
 	:returns: None
 	"""
-	line = int(vim.eval(u'v:foldstart'.encode(u'utf-8')))
+	line = int(vim.eval(u_encode(u'v:foldstart')))
 	d = ORGMODE.get_document(allow_dirty=allow_dirty)
 	heading = None
 	if allow_dirty:
@@ -209,7 +210,7 @@ def fold_text(allow_dirty=False):
 		str_heading = unicode(heading)
 
 		# expand tabs
-		ts = int(vim.eval(u'&ts'.encode('utf-8')))
+		ts = int(vim.eval(u_encode(u'&ts')))
 		idx = str_heading.find(u'\t')
 		if idx != -1:
 			tabs, spaces = divmod(idx, ts)
@@ -217,8 +218,8 @@ def fold_text(allow_dirty=False):
 			str_heading = str_heading.replace(u'\t', u' ' * ts)
 
 		# Workaround for vim.command seems to break the completion menu
-		vim.eval((u'SetOrgFoldtext("%s...")' % (re.sub(r'\[\[([^[\]]*\]\[)?([^[\]]+)\]\]', r'\2',
-				str_heading).replace( u'\\', u'\\\\').replace(u'"', u'\\"'), )).encode(u'utf-8'))
+		vim.eval(u_encode(u'SetOrgFoldtext("%s...")' % (re.sub(r'\[\[([^[\]]*\]\[)?([^[\]]+)\]\]', r'\2',
+				str_heading).replace( u'\\', u'\\\\').replace(u'"', u'\\"'), )))
 
 
 def fold_orgmode(allow_dirty=False):
@@ -232,7 +233,7 @@ def fold_orgmode(allow_dirty=False):
 	:allow_dirty:	Perform a query without (re)building the DOM if True
 	:returns: None
 	"""
-	line = int(vim.eval(u'v:lnum'.encode(u'utf-8')))
+	line = int(vim.eval(u_encode(u'v:lnum')))
 	d = ORGMODE.get_document(allow_dirty=allow_dirty)
 	heading = None
 	if allow_dirty:
@@ -251,23 +252,21 @@ def fold_orgmode(allow_dirty=False):
 		if 0:
 			pass
 		elif line == heading.start_vim:
-			vim.command((u'let b:fold_expr = ">%d"' % heading.level).encode(u'utf-8'))
+			vim.command(u_encode(u'let b:fold_expr = ">%d"' % heading.level))
 		#elif line == heading.end_vim:
 		#	vim.command((u'let b:fold_expr = "<%d"' % heading.level).encode(u'utf-8'))
 		# end_of_last_child_vim is a performance junky and is actually not needed
 		#elif line == heading.end_of_last_child_vim:
 		#	vim.command((u'let b:fold_expr = "<%d"' % heading.level).encode(u'utf-8'))
 		else:
-			vim.command((u'let b:fold_expr = %d' % heading.level).encode(u'utf-8'))
+			vim.command(u_encode(u'let b:fold_expr = %d' % heading.level))
 
 
 def date_to_str(date):
 	if isinstance(date, datetime):
-		date = date.strftime(
-				u'%Y-%m-%d %a %H:%M'.encode(u'utf-8')).decode(u'utf-8')
+		date = date.strftime(u_decode(u_encode(u'%Y-%m-%d %a %H:%M')))
 	else:
-		date = date.strftime(
-				u'%Y-%m-%d %a'.encode(u'utf-8')).decode(u'utf-8')
+		date = date.strftime(u_decode(u_encode(u'%Y-%m-%d %a')))
 	return date
 
 class OrgMode(object):
@@ -331,7 +330,7 @@ class OrgMode(object):
 		# locate module and initialize plugin class
 		try:
 			module = imp.find_module(plugin, orgmode.plugins.__path__)
-		except ImportError, e:
+		except ImportError as e:
 			echom(u'Plugin not found: %s' % plugin)
 			if self.debug:
 				raise e
@@ -354,7 +353,7 @@ class OrgMode(object):
 			if self.debug:
 				echo(u'Plugin registered: %s' % plugin)
 			return self._plugins[plugin]
-		except Exception, e:
+		except Exception as e:
 			echoe(u'Unable to activate plugin: %s' % plugin)
 			echoe(u"%s" % e)
 			if self.debug:
@@ -366,14 +365,18 @@ class OrgMode(object):
 		def dummy(plugin):
 			return plugin
 
-		for p in self.plugins.itervalues():
-			dummy(p)
+		if sys.version_info < (3, ):
+			for p in self.plugins.itervalues():
+				dummy(p)
+		else:
+			for p in self.plugins.values():
+				dummy(p)
 
 	def register_menu(self):
 		self.orgmenu.create()
 
 	def unregister_menu(self):
-		vim.command(u'silent! aunmenu Org'.encode(u'utf-8'))
+		vim.command(u_encode(u'silent! aunmenu Org'))
 
 	def start(self):
 		u""" Start orgmode and load all requested plugins
@@ -386,15 +389,15 @@ class OrgMode(object):
 		if isinstance(plugins, basestring):
 			try:
 				self.register_plugin(plugins)
-			except Exception, e:
+			except Exception as e:
 				import traceback
 				traceback.print_exc()
-		elif isinstance(plugins, types.ListType) or \
-				isinstance(plugins, types.TupleType):
+		elif isinstance(plugins, list) or \
+				isinstance(plugins, tuple):
 			for p in plugins:
 				try:
 					self.register_plugin(p)
-				except Exception, e:
+				except Exception as e:
 					echoe('Error in %s plugin:' % p)
 					import traceback
 					traceback.print_exc()

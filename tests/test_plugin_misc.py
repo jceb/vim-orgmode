@@ -9,6 +9,8 @@ import vim
 
 from orgmode._vim import indent_orgmode, fold_orgmode, ORGMODE
 
+from orgmode.py3compat.encode_compatibility import *
+
 ORGMODE.debug = True
 
 START = True
@@ -24,17 +26,17 @@ class MiscTestCase(unittest.TestCase):
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
 				# no org_todo_keywords for b
-				u'exists("b:org_todo_keywords")'.encode(u'utf-8'): '0'.encode(u'utf-8'),
+				u_encode(u'exists("b:org_todo_keywords")'): u_encode('0'),
 				# global values for org_todo_keywords
-				u'exists("g:org_todo_keywords")'.encode(u'utf-8'): '1'.encode(u'utf-8'),
-				u'g:org_todo_keywords'.encode(u'utf-8'): [u'TODO'.encode(u'utf-8'), u'DONE'.encode(u'utf-8'), u'|'.encode(u'utf-8')],
-				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'b:changedtick'.encode(u'utf-8'): (u'%d' % counter).encode(u'utf-8'),
-				u"v:lnum".encode(u'utf-8'): u'0'.encode(u'utf-8')}
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
+				u_encode(u'exists("g:org_todo_keywords")'): u_encode('1'),
+				u_encode(u'g:org_todo_keywords'): [u_encode(u'TODO'), u_encode(u'DONE'), u_encode(u'|')],
+				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
+				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
+				u_encode(u'exists("*repeat#set()")'): u_encode(u'0'),
+				u_encode(u"v:count"): u_encode(u'0'),
+				u_encode(u'b:changedtick'): u_encode(u'%d' % counter),
+				u_encode(u"v:lnum"): u_encode(u'0')}
+		vim.current.buffer[:] = [ u_encode(i) for i in u"""
 * Überschrift 1
 Text 1
 
@@ -58,105 +60,105 @@ Bla Bla bla bla
 	def test_indent_noheading(self):
 		# test first heading
 		vim.current.window.cursor = (1, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'1'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'1')
 		indent_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 0)
 
 	def test_indent_heading(self):
 		# test first heading
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'2'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'2')
 		indent_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 0)
 
 	def test_indent_heading_middle(self):
 		# test first heading
 		vim.current.window.cursor = (3, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'3'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'3')
 		indent_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 1)
-		self.assertEqual(vim.CMDHISTORY[-1], u'let b:indent_level = 2'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'let b:indent_level = 2'))
 
 	def test_indent_heading_middle2(self):
 		# test first heading
 		vim.current.window.cursor = (4, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'4'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'4')
 		indent_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 1)
-		self.assertEqual(vim.CMDHISTORY[-1], u'let b:indent_level = 2'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'let b:indent_level = 2'))
 
 	def test_indent_heading_end(self):
 		# test first heading
 		vim.current.window.cursor = (5, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'5'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'5')
 		indent_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 1)
-		self.assertEqual(vim.CMDHISTORY[-1], u'let b:indent_level = 2'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'let b:indent_level = 2'))
 
 	def test_fold_heading_start(self):
 		# test first heading
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'2'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'2')
 		fold_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 1)
-		self.assertEqual(vim.CMDHISTORY[-1], u'let b:fold_expr = ">1"'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'let b:fold_expr = ">1"'))
 
 	def test_fold_heading_middle(self):
 		# test first heading
 		vim.current.window.cursor = (3, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'3'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'3')
 		fold_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 1)
-		self.assertEqual(vim.CMDHISTORY[-1], u'let b:fold_expr = 1'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'let b:fold_expr = 1'))
 
 	def test_fold_heading_end(self):
 		# test first heading
 		vim.current.window.cursor = (5, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'5'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'5')
 		fold_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 1)
-		self.assertEqual(vim.CMDHISTORY[-1], u'let b:fold_expr = 1'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'let b:fold_expr = 1'))
 
 	def test_fold_heading_end_of_last_child(self):
 		# test first heading
 		vim.current.window.cursor = (16, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'16'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'16')
 		fold_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 1)
 		# which is also end of the parent heading <1
-		self.assertEqual(vim.CMDHISTORY[-1], u'let b:fold_expr = ">3"'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'let b:fold_expr = ">3"'))
 
 	def test_fold_heading_end_of_last_child_next_heading(self):
 		# test first heading
 		vim.current.window.cursor = (17, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'17'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'17')
 		fold_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 1)
-		self.assertEqual(vim.CMDHISTORY[-1], u'let b:fold_expr = ">1"'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'let b:fold_expr = ">1"'))
 
 	def test_fold_middle_subheading(self):
 		# test first heading
 		vim.current.window.cursor = (13, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'13'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'13')
 		fold_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 1)
-		self.assertEqual(vim.CMDHISTORY[-1], u'let b:fold_expr = ">4"'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'let b:fold_expr = ">4"'))
 
 	def test_fold_middle_subheading2(self):
 		# test first heading
 		vim.current.window.cursor = (14, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'14'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'14')
 		fold_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 1)
-		self.assertEqual(vim.CMDHISTORY[-1], u'let b:fold_expr = 4'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'let b:fold_expr = 4'))
 
 	def test_fold_middle_subheading3(self):
 		# test first heading
 		vim.current.window.cursor = (15, 0)
-		vim.EVALRESULTS[u'v:lnum'.encode(u'utf-8')] = u'15'.encode(u'utf-8')
+		vim.EVALRESULTS[u_encode(u'v:lnum')] = u_encode(u'15')
 		fold_orgmode()
 		self.assertEqual(len(vim.CMDHISTORY), 1)
-		self.assertEqual(vim.CMDHISTORY[-1], u'let b:fold_expr = 4'.encode(u'utf-8'))
+		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'let b:fold_expr = 4'))
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(MiscTestCase)

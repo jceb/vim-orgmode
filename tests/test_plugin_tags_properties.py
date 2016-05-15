@@ -9,6 +9,8 @@ import vim
 
 from orgmode._vim import indent_orgmode, fold_orgmode, ORGMODE
 
+from orgmode.py3compat.encode_compatibility import *
+
 ORGMODE.debug = True
 
 START = True
@@ -24,22 +26,22 @@ class TagsPropertiesTestCase(unittest.TestCase):
 		vim.EVALHISTORY = []
 		vim.EVALRESULTS = {
 				# no org_todo_keywords for b
-				u'exists("b:org_todo_keywords")'.encode(u'utf-8'): '0'.encode(u'utf-8'),
+				u_encode(u'exists("b:org_todo_keywords")'): u_encode('0'),
 				# global values for org_todo_keywords
-				u'exists("g:org_todo_keywords")'.encode(u'utf-8'): '1'.encode(u'utf-8'),
-				u'g:org_todo_keywords'.encode(u'utf-8'): [u'TODO'.encode(u'utf-8'), u'DONE'.encode(u'utf-8'), u'|'.encode(u'utf-8')],
-				u'&ts'.encode(u'utf-8'): u'6'.encode(u'utf-8'),
-				u'exists("b:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("g:org_tag_column")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("g:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("b:org_debug")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'exists("*repeat#set()")'.encode(u'utf-8'): u'0'.encode(u'utf-8'),
-				u'b:changedtick'.encode(u'utf-8'): (u'%d' % counter).encode(u'utf-8'),
-				u"v:count".encode(u'utf-8'): u'0'.encode(u'utf-8')}
+				u_encode(u'exists("g:org_todo_keywords")'): u_encode('1'),
+				u_encode(u'g:org_todo_keywords'): [u_encode(u'TODO'), u_encode(u'DONE'), u_encode(u'|')],
+				u_encode(u'&ts'): u_encode(u'6'),
+				u_encode(u'exists("b:org_tag_column")'): u_encode(u'0'),
+				u_encode(u'exists("g:org_tag_column")'): u_encode(u'0'),
+				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
+				u_encode(u'exists("b:org_debug")'): u_encode(u'0'),
+				u_encode(u'exists("*repeat#set()")'): u_encode(u'0'),
+				u_encode(u'b:changedtick'): (u_encode(u'%d' % counter)),
+				u_encode(u"v:count"): u_encode(u'0')}
 		if not u'TagsProperties' in ORGMODE.plugins:
 			ORGMODE.register_plugin(u'TagsProperties')
 		self.tagsproperties = ORGMODE.plugins[u'TagsProperties']
-		vim.current.buffer[:] = [ i.encode(u'utf-8') for i in u"""
+		vim.current.buffer[:] = [ u_encode(i) for i in u"""
 * Überschrift 1
 Text 1
 
@@ -70,105 +72,105 @@ Bla Bla bla bla
 	def test_set_tags(self):
 		# set first tag
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u'input("Tags: ", "", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u':hello:'.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", "", "customlist,Org_complete_tags")')] = u_encode(u':hello:')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t\t    :hello:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t\t    :hello:'))
 
 		# set second tag
-		vim.EVALRESULTS[u'input("Tags: ", ":hello:", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u':hello:world:'.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", ":hello:", "customlist,Org_complete_tags")')] = u_encode(u':hello:world:')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'))
 
 	def test_parse_tags_no_colons_single_tag(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u'input("Tags: ", "", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u'hello'.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", "", "customlist,Org_complete_tags")')] = u_encode(u'hello')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t\t    :hello:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t\t    :hello:'))
 
 	def test_parse_tags_no_colons_multiple_tags(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u'input("Tags: ", "", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u'hello:world'.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", "", "customlist,Org_complete_tags")')] = u_encode(u'hello:world')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'))
 
 	def test_parse_tags_single_colon_left_single_tag(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u'input("Tags: ", "", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u':hello'.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", "", "customlist,Org_complete_tags")')] = u_encode(u':hello')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t\t    :hello:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t\t    :hello:'))
 
 	def test_parse_tags_single_colon_left_multiple_tags(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u'input("Tags: ", "", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u':hello:world'.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", "", "customlist,Org_complete_tags")')] = u_encode(u':hello:world')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'))
 
 	def test_parse_tags_single_colon_right_single_tag(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u'input("Tags: ", "", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u'hello:'.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", "", "customlist,Org_complete_tags")')] = u_encode(u'hello:')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t\t    :hello:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t\t    :hello:'))
 
 	def test_parse_tags_single_colon_right_multiple_tags(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u'input("Tags: ", "", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u'hello:world:'.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", "", "customlist,Org_complete_tags")')] = u_encode(u'hello:world:')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'))
 
 	def test_filter_empty_tags(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u'input("Tags: ", "", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u'::hello::'.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", "", "customlist,Org_complete_tags")')] = u_encode(u'::hello::')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t\t    :hello:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t\t    :hello:'))
 
 	def test_delete_tags(self):
 		# set up
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u'input("Tags: ", "", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u':hello:world:'.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", "", "customlist,Org_complete_tags")')] = u_encode(u':hello:world:')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'))
 
 		# delete second of two tags
-		vim.EVALRESULTS[u'input("Tags: ", ":hello:world:", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u':hello:'.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", ":hello:world:", "customlist,Org_complete_tags")')] = u_encode(u':hello:')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t\t    :hello:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t\t    :hello:'))
 
 		# delete last tag
-		vim.EVALRESULTS[u'input("Tags: ", ":hello:", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u''.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", ":hello:", "customlist,Org_complete_tags")')] = u_encode(u'')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1'))
 
 	def test_realign_tags_noop(self):
 		vim.current.window.cursor = (2, 0)
 		self.tagsproperties.realign_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1'))
 
 	def test_realign_tags_remove_spaces(self):
 		# remove spaces in multiple locations
-		vim.current.buffer[1] = u'*  Überschrift 1 '.encode(u'utf-8')
+		vim.current.buffer[1] = u_encode(u'*  Überschrift 1 ')
 		vim.current.window.cursor = (2, 0)
 		self.tagsproperties.realign_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1'))
 
 		# remove tabs and spaces in multiple locations
-		vim.current.buffer[1] = u'*\t  \tÜberschrift 1 \t'.encode(u'utf-8')
+		vim.current.buffer[1] = u_encode(u'*\t  \tÜberschrift 1 \t')
 		vim.current.window.cursor = (2, 0)
 		self.tagsproperties.realign_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1'))
 
 	def test_realign_tags(self):
 		vim.current.window.cursor = (2, 0)
-		vim.EVALRESULTS[u'input("Tags: ", "", "customlist,Org_complete_tags")'.encode(u'utf-8')] = u':hello:world:'.encode('utf-8')
+		vim.EVALRESULTS[u_encode(u'input("Tags: ", "", "customlist,Org_complete_tags")')] = u_encode(u':hello:world:')
 		self.tagsproperties.set_tags()
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'))
 
 		d = ORGMODE.get_document()
 		heading = d.find_current_heading()
-		self.assertEqual(str(heading), u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
+		self.assertEqual(str(heading), u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'))
 		self.tagsproperties.realign_tags()
 		heading = d.find_current_heading()
-		self.assertEqual(str(heading), u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
-		self.assertEqual(vim.current.buffer[1], u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'.encode('utf-8'))
+		self.assertEqual(str(heading), u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'))
+		self.assertEqual(vim.current.buffer[1], u_encode(u'* Überschrift 1\t\t\t\t\t\t\t\t    :hello:world:'))
 
 
 def suite():

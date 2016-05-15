@@ -10,6 +10,7 @@ from orgmode.liborgmode.orgdate import OrgDate
 from orgmode.liborgmode.orgdate import OrgDateTime
 from orgmode.liborgmode.orgdate import OrgTimeRange
 
+from orgmode.py3compat.unicode_compatibility import *
 
 class OrgDateParsingTestCase(unittest.TestCase):
 	u"""

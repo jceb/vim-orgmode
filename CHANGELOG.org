@@ -4,6 +4,7 @@
   This log is kept according to the [[http://keepachangelog.com/][Keep a CHANGELOG]] manifesto
 ** 0.6.0                  					 :unreleased:
 *** Added
+    - Add =Python3= support. (closes issue #226, merge PR #231)
     - Implementing agenda overview for current buffer. (merges PR #229)
     - =g:org_aggressive_conceal=, if value =1=, will conceal all simple format
       identifying characters, default =0=. (merges PR #188)

@@ -8,6 +8,8 @@ from orgmode._vim import echom, ORGMODE, realign_tags
 from orgmode.menu import Submenu, Separator, ActionEntry
 from orgmode.keybinding import Keybinding, Plug, Command
 
+from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 class Hyperlinks(object):
 	u""" Hyperlinks plugin """
@@ -40,7 +42,7 @@ class Hyperlinks(object):
 				or uri and description could be None if not set
 		"""
 		cursor = cursor if cursor else vim.current.window.cursor
-		line = vim.current.buffer[cursor[0] - 1].decode(u'utf-8')
+		line = u_decode(vim.current.buffer[cursor[0] - 1])
 
 		# if the cursor is on the last bracket, it's not recognized as a hyperlink
 		start = line.rfind(u'[[', 0, cursor[1])
@@ -92,12 +94,11 @@ class Hyperlinks(object):
 
 		if link and link[u'uri'] is not None:
 			# call UTL with the URI
-			vim.command((
-				u'Utl %s %s %s' % (action, visual, link[u'uri'])).encode(u'utf-8'))
+			vim.command(u_encode((u'Utl %s %s %s' % (action, visual, link[u'uri']))))
 			return link[u'uri']
 		else:
 			# call UTL and let it decide what to do
-			vim.command((u'Utl %s %s' % (action, visual)).encode(u'utf-8'))
+			vim.command(u_encode((u'Utl %s %s' % (action, visual))))
 
 	@classmethod
 	@realign_tags
@@ -125,23 +126,23 @@ class Hyperlinks(object):
 		if uri is None:
 			return
 		else:
-			uri = uri.decode(u'utf-8')
+			uri = u_decode(uri)
 
 		# character escaping
 		uri = uri.replace(u'\\', u'\\\\\\\\')
 		uri = uri.replace(u' ', u'\ ')
 
 		if description is None:
-			description = vim.eval(u'input("Description: ")').decode(u'utf-8')
+			description = u_decode(vim.eval(u'input("Description: ")'))
 		elif link:
 			description = vim.eval(
 				u'input("Description: ", "%s")' %
-				link[u'description']).decode(u'utf-8')
+				u_decode(link[u'description']))
 		if description is None:
 			return
 
 		cursor = vim.current.window.cursor
-		cl = vim.current.buffer[cursor[0] - 1].decode(u'utf-8')
+		cl = u_decode(vim.current.buffer[cursor[0] - 1])
 		head = cl[:cursor[1] + 1] if not link else cl[:link[u'start']]
 		tail = cl[cursor[1] + 1:] if not link else cl[link[u'end']:]
 
@@ -151,11 +152,10 @@ class Hyperlinks(object):
 
 		if uri or description:
 			vim.current.buffer[cursor[0] - 1] = \
-				(u''.join((head, u'[[%s%s%s]]' %
-					(uri, separator, description), tail))).encode(u'utf-8')
+				u_encode(u''.join((head, u'[[%s%s%s]]' % (uri, separator, description), tail)))
 		elif link:
 			vim.current.buffer[cursor[0] - 1] = \
-				(u''.join((head, tail))).encode(u'utf-8')
+				u_encode(u''.join((head, tail)))
 
 	def register(self):
 		u"""
@@ -163,7 +163,7 @@ class Hyperlinks(object):
 		"""
 		cmd = Command(
 			u'OrgHyperlinkFollow',
-			u':py ORGMODE.plugins[u"Hyperlinks"].follow()')
+			u'%s ORGMODE.plugins[u"Hyperlinks"].follow()' % VIM_PY_CALL)
 		self.commands.append(cmd)
 		self.keybindings.append(
 			Keybinding(u'gl', Plug(u'OrgHyperlinkFollow', self.commands[-1])))
@@ -171,7 +171,7 @@ class Hyperlinks(object):
 
 		cmd = Command(
 			u'OrgHyperlinkCopy',
-			u':py ORGMODE.plugins[u"Hyperlinks"].follow(action=u"copy")')
+			u'%s ORGMODE.plugins[u"Hyperlinks"].follow(action=u"copy")' % VIM_PY_CALL)
 		self.commands.append(cmd)
 		self.keybindings.append(
 			Keybinding(u'gyl', Plug(u'OrgHyperlinkCopy', self.commands[-1])))
@@ -179,7 +179,7 @@ class Hyperlinks(object):
 
 		cmd = Command(
 			u'OrgHyperlinkInsert',
-			u':py ORGMODE.plugins[u"Hyperlinks"].insert(<f-args>)',
+			u'%s ORGMODE.plugins[u"Hyperlinks"].insert(<f-args>)' % VIM_PY_CALL,
 			arguments=u'*')
 		self.commands.append(cmd)
 		self.keybindings.append(

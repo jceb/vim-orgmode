@@ -18,10 +18,17 @@ function! GetOrgIndent()
 		return -1
 	endif
 
+if has('python3')
+python3 << EOF
+from orgmode._vim import indent_orgmode
+indent_orgmode()
+EOF
+else
 python << EOF
 from orgmode._vim import indent_orgmode
 indent_orgmode()
 EOF
+endif
 	if exists('b:indent_level')
 		let l:tmp = b:indent_level
 		unlet b:indent_level
@@ -56,15 +63,31 @@ function! GetOrgFolding()
 				return b:org_folding_cache[v:lnum]
 			endif
 		endif
+
+		if has('python3')
+python3 << EOF
+from orgmode._vim import fold_orgmode
+fold_orgmode(allow_dirty=True)
+EOF
+		else
 python << EOF
 from orgmode._vim import fold_orgmode
 fold_orgmode(allow_dirty=True)
 EOF
+		endif
 	else
+
+		if has('python3')
+python3 << EOF
+from orgmode._vim import fold_orgmode
+fold_orgmode()
+EOF
+		else
 python << EOF
 from orgmode._vim import fold_orgmode
 fold_orgmode()
 EOF
+		endif
 	endif
 
 	if exists('b:fold_expr')
@@ -101,16 +124,30 @@ function! GetOrgFoldtext()
 		if has_key(b:org_foldtext_cache, v:foldstart)
 			return b:org_foldtext_cache[v:foldstart]
 		endif
+		if has('python3')
+python3 << EOF
+from orgmode._vim import fold_text
+fold_text(allow_dirty=True)
+EOF
+		else
 python << EOF
 from orgmode._vim import fold_text
 fold_text(allow_dirty=True)
 EOF
+		endif
 	else
 		unlet! b:org_foldtext_cache
+		if has('python3')
+python3 << EOF
+from orgmode._vim import fold_text
+fold_text()
+EOF
+		else
 python << EOF
 from orgmode._vim import fold_text
 fold_text()
 EOF
+		endif
 	endif
 
 	if exists('b:foldtext')

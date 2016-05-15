@@ -18,6 +18,11 @@ u"""
 from datetime import datetime
 from datetime import timedelta
 
+try:
+	from itertools import ifilter as filter
+except:
+	pass
+
 
 def filter_items(headings, filters):
 	u"""
@@ -36,7 +41,7 @@ def filter_items(headings, filters):
 	"""
 	filtered = headings
 	for f in filters:
-		filtered = filter(f, filtered)
+		filtered = list(filter(f, filtered))
 	return filtered
 
 

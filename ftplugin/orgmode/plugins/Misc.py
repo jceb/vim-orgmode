@@ -6,6 +6,8 @@ from orgmode._vim import ORGMODE, apply_count
 from orgmode.menu import Submenu
 from orgmode.keybinding import Keybinding, Plug, MODE_VISUAL, MODE_OPERATOR
 
+from orgmode.py3compat.encode_compatibility import *
+from orgmode.py3compat.py_py3_string import *
 
 class Misc(object):
 	u""" Miscellaneous functionality """
@@ -25,7 +27,7 @@ class Misc(object):
 	def jump_to_first_character(cls):
 		heading = ORGMODE.get_document().current_heading()
 		if not heading or heading.start_vim != vim.current.window.cursor[0]:
-			vim.eval(u'feedkeys("^", "n")'.encode(u'utf-8'))
+			vim.eval(u_encode(u'feedkeys("^", "n")'))
 			return
 
 		vim.current.window.cursor = (vim.current.window.cursor[0], heading.level + 1)
@@ -34,11 +36,11 @@ class Misc(object):
 	def edit_at_first_character(cls):
 		heading = ORGMODE.get_document().current_heading()
 		if not heading or heading.start_vim != vim.current.window.cursor[0]:
-			vim.eval(u'feedkeys("I", "n")'.encode(u'utf-8'))
+			vim.eval(u_encode(u'feedkeys("I", "n")'))
 			return
 
 		vim.current.window.cursor = (vim.current.window.cursor[0], heading.level + 1)
-		vim.command(u'startinsert'.encode(u'utf-8'))
+		vim.command(u_encode(u'startinsert'))
 
 	# @repeat
 	@classmethod
@@ -52,8 +54,8 @@ class Misc(object):
 			if selection != u'inner':
 				heading = heading if not heading.parent else heading.parent
 
-			line_start, col_start = [int(i) for i in vim.eval(u'getpos("\'<")'.encode(u'utf-8'))[1:3]]
-			line_end, col_end = [int(i) for i in vim.eval(u'getpos("\'>")'.encode(u'utf-8'))[1:3]]
+			line_start, col_start = [int(i) for i in vim.eval(u_encode(u'getpos("\'<")'))[1:3]]
+			line_end, col_end = [int(i) for i in vim.eval(u_encode(u'getpos("\'>")'))[1:3]]
 
 			if mode != u'visual':
 				line_start = vim.current.window.cursor[0]
@@ -81,21 +83,15 @@ class Misc(object):
 				if h:
 					heading = h
 
-			visualmode = vim.eval(u'visualmode()').decode(u'utf-8') if mode == u'visual' else u'v'
+			visualmode = u_decode(vim.eval(u'visualmode()')) if mode == u'visual' else u'v'
 
 			if line_start == start and line_start != heading.start_vim:
 				if col_start in (0, 1):
-					vim.command(
-						(u'normal! %dgg0%s%dgg$%s%s' %
-							(start, visualmode, end, move_one_character_back, swap_cursor)).encode(u'utf-8'))
+					vim.command(u_encode((u'normal! %dgg0%s%dgg$%s%s' % (start, visualmode, end, move_one_character_back, swap_cursor))))
 				else:
-					vim.command(
-						(u'normal! %dgg0%dl%s%dgg$%s%s' %
-							(start, col_start - 1, visualmode, end, move_one_character_back, swap_cursor)).encode(u'utf-8'))
+					vim.command(u_encode((u'normal! %dgg0%dl%s%dgg$%s%s' % (start, col_start - 1, visualmode, end, move_one_character_back, swap_cursor))))
 			else:
-				vim.command(
-					(u'normal! %dgg0%dl%s%dgg$%s%s' %
-						(start, heading.level + 1, visualmode, end, move_one_character_back, swap_cursor)).encode(u'utf-8'))
+				vim.command(u_encode((u'normal! %dgg0%dl%s%dgg$%s%s' % (start, heading.level + 1, visualmode, end, move_one_character_back, swap_cursor))))
 
 			if selection == u'inner':
 				if mode == u'visual':
@@ -108,7 +104,7 @@ class Misc(object):
 				else:
 					return u'OrgOuterHeadingOperator' if not skip_children else u'OrgOuterTreeOperator'
 		elif mode == u'visual':
-			vim.command(u'normal! gv'.encode(u'utf-8'))
+			vim.command(u_encode(u'normal! gv'))
 
 	# @repeat
 	@classmethod
@@ -122,8 +118,8 @@ class Misc(object):
 			if selection != u'inner':
 				heading = heading if not heading.parent else heading.parent
 
-			line_start, col_start = [int(i) for i in vim.eval(u'getpos("\'<")'.encode(u'utf-8'))[1:3]]
-			line_end, col_end = [int(i) for i in vim.eval(u'getpos("\'>")'.encode(u'utf-8'))[1:3]]
+			line_start, col_start = [int(i) for i in vim.eval(u_encode(u'getpos("\'<")'))[1:3]]
+			line_end, col_end = [int(i) for i in vim.eval(u_encode(u'getpos("\'>")'))[1:3]]
 
 			start = line_start
 			end = line_end
@@ -137,41 +133,41 @@ class Misc(object):
 
 			swap_cursor = u'o' if vim.current.window.cursor[0] == line_start else u''
 
-			vim.command(
-				(u'normal! %dgg%s%dgg$%s' %
-					(start, vim.eval(u'visualmode()'.encode(u'utf-8')), end, swap_cursor)).encode(u'utf-8'))
+			vim.command(u_encode((u'normal! %dgg%s%dgg$%s' %	(start, vim.eval(u_encode(u'visualmode()')), end, swap_cursor))))
 			if selection == u'inner':
 				return u'OrgAInnerHeadingVisual' if not skip_children else u'OrgAInnerTreeVisual'
 			else:
 				return u'OrgAOuterHeadingVisual' if not skip_children else u'OrgAOuterTreeVisual'
 		else:
-			vim.command(u'normal! gv'.encode(u'utf-8'))
+			vim.command(u_encode(u'normal! gv'))
 
 	def register(self):
 		u"""
 		Registration of plugin. Key bindings and other initialization should be done.
 		"""
-		self.keybindings.append(Keybinding(u'^', Plug(u'OrgJumpToFirstCharacter', u':py ORGMODE.plugins[u"Misc"].jump_to_first_character()<CR>')))
-		self.keybindings.append(Keybinding(u'I', Plug(u'OrgEditAtFirstCharacter', u':py ORGMODE.plugins[u"Misc"].edit_at_first_character()<CR>')))
+		self.keybindings.append(Keybinding(u'^',
+									 Plug(u'OrgJumpToFirstCharacter', u'%s ORGMODE.plugins[u"Misc"].jump_to_first_character()<CR>' % VIM_PY_CALL)))
+		self.keybindings.append(Keybinding(u'I',
+									 Plug(u'OrgEditAtFirstCharacter', u'%s ORGMODE.plugins[u"Misc"].edit_at_first_character()<CR>' % VIM_PY_CALL)))
 
-		self.keybindings.append(Keybinding(u'ih', Plug(u'OrgInnerHeadingVisual', u':<C-u>py ORGMODE.plugins[u"Misc"].i_heading()<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding(u'ah', Plug(u'OrgAInnerHeadingVisual', u':<C-u>py ORGMODE.plugins[u"Misc"].a_heading()<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding(u'Oh', Plug(u'OrgOuterHeadingVisual', u':<C-u>py ORGMODE.plugins[u"Misc"].i_heading(selection=u"outer")<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding(u'OH', Plug(u'OrgAOuterHeadingVisual', u':<C-u>py ORGMODE.plugins[u"Misc"].a_heading(selection=u"outer")<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'ih', Plug(u'OrgInnerHeadingVisual', u':<C-u>%s ORGMODE.plugins[u"Misc"].i_heading()<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'ah', Plug(u'OrgAInnerHeadingVisual', u':<C-u>%s ORGMODE.plugins[u"Misc"].a_heading()<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'Oh', Plug(u'OrgOuterHeadingVisual', u':<C-u>%s ORGMODE.plugins[u"Misc"].i_heading(selection=u"outer")<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'OH', Plug(u'OrgAOuterHeadingVisual', u':<C-u>%s ORGMODE.plugins[u"Misc"].a_heading(selection=u"outer")<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
 
-		self.keybindings.append(Keybinding(u'ih', Plug(u'OrgInnerHeadingOperator', u':<C-u>py ORGMODE.plugins[u"Misc"].i_heading(mode=u"operator")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding(u'ih', Plug(u'OrgInnerHeadingOperator', u':<C-u>%s ORGMODE.plugins[u"Misc"].i_heading(mode=u"operator")<CR>' % VIM_PY_CALL, mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding(u'ah', u':normal Vah<CR>', mode=MODE_OPERATOR))
-		self.keybindings.append(Keybinding(u'Oh', Plug(u'OrgOuterHeadingOperator', ':<C-u>py ORGMODE.plugins[u"Misc"].i_heading(mode=u"operator", selection=u"outer")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding(u'Oh', Plug(u'OrgOuterHeadingOperator', ':<C-u>%s ORGMODE.plugins[u"Misc"].i_heading(mode=u"operator", selection=u"outer")<CR>' % VIM_PY_CALL, mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding(u'OH', u':normal VOH<CR>', mode=MODE_OPERATOR))
 
-		self.keybindings.append(Keybinding(u'ir', Plug(u'OrgInnerTreeVisual', u':<C-u>py ORGMODE.plugins[u"Misc"].i_heading(skip_children=True)<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding(u'ar', Plug(u'OrgAInnerTreeVisual', u':<C-u>py ORGMODE.plugins[u"Misc"].a_heading(skip_children=True)<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding(u'Or', Plug(u'OrgOuterTreeVisual', u'<:<C-u>py ORGMODE.plugins[u"Misc"].i_heading(selection=u"outer", skip_children=True)<CR>', mode=MODE_VISUAL)))
-		self.keybindings.append(Keybinding(u'OR', Plug(u'OrgAOuterTreeVisual', u':<C-u>py ORGMODE.plugins[u"Misc"].a_heading(selection=u"outer", skip_children=True)<CR>', mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'ir', Plug(u'OrgInnerTreeVisual', u':<C-u>%s ORGMODE.plugins[u"Misc"].i_heading(skip_children=True)<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'ar', Plug(u'OrgAInnerTreeVisual', u':<C-u>%s ORGMODE.plugins[u"Misc"].a_heading(skip_children=True)<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'Or', Plug(u'OrgOuterTreeVisual', u'<:<C-u>%s ORGMODE.plugins[u"Misc"].i_heading(selection=u"outer", skip_children=True)<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
+		self.keybindings.append(Keybinding(u'OR', Plug(u'OrgAOuterTreeVisual', u':<C-u>%s ORGMODE.plugins[u"Misc"].a_heading(selection=u"outer", skip_children=True)<CR>' % VIM_PY_CALL, mode=MODE_VISUAL)))
 
-		self.keybindings.append(Keybinding(u'ir', Plug(u'OrgInnerTreeOperator', u':<C-u>py ORGMODE.plugins[u"Misc"].i_heading(mode=u"operator")<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding(u'ir', Plug(u'OrgInnerTreeOperator', u':<C-u>%s ORGMODE.plugins[u"Misc"].i_heading(mode=u"operator")<CR>' % VIM_PY_CALL, mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding(u'ar', u':normal Var<CR>', mode=MODE_OPERATOR))
-		self.keybindings.append(Keybinding(u'Or', Plug(u'OrgOuterTreeOperator', u':<C-u>py ORGMODE.plugins[u"Misc"].i_heading(mode=u"operator", selection=u"outer", skip_children=True)<CR>', mode=MODE_OPERATOR)))
+		self.keybindings.append(Keybinding(u'Or', Plug(u'OrgOuterTreeOperator', u':<C-u>%s ORGMODE.plugins[u"Misc"].i_heading(mode=u"operator", selection=u"outer", skip_children=True)<CR>' % VIM_PY_CALL, mode=MODE_OPERATOR)))
 		self.keybindings.append(Keybinding(u'OR', u':normal VOR<CR>', mode=MODE_OPERATOR))
 
 # vim: set noexpandtab:
