@@ -37,8 +37,8 @@ if !exists('g:loaded_orgtodo_syntax')
 					break
 				endif
 			endfor
-			exec 'syntax match orgtodo_todo_keyword_' . l:_i . ' /' . l:_i .'/ ' . a:todo_headings
-			exec 'hi def link orgtodo_todo_keyword_' . l:_i . ' ' . l:group
+			silent! exec 'syntax match orgtodo_todo_keyword_' . l:_i . ' /' . l:_i .'/ ' . a:todo_headings
+			silent! exec 'hi def link orgtodo_todo_keyword_' . l:_i . ' ' . l:group
 		endfor
 	endfunction
 endif
