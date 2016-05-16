@@ -561,20 +561,12 @@ class Heading(DomObj):
 	@property
 	def start(self):
 		u""" Access to the starting line of the heading """
-		if self.document is None:
+		if self.document is None or not self.document.is_dirty:
 			return self._orig_start
 
-		# static computation of start
-		if not self.document.is_dirty:
-			return self._orig_start
-
-		# dynamic computation of start, really slow!
-		def compute_start(h):
-			if h:
-				return len(h) + compute_start(h.previous_heading)
-			return len(self.document.meta_information) if \
+		meta_len = len(self.document.meta_information) if \
 				self.document.meta_information else 0
-		return compute_start(self.previous_heading)
+		return super(Heading, self).start + meta_len
 
 	@DomObj.level.setter
 	def level(self, value):
