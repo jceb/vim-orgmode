@@ -202,18 +202,14 @@ class DomObj(object):
 	@property
 	def start(self):
 		u""" Access to the starting line of the dom obj """
-		if self.document is None:
+		if self.document is None or not self.document.is_dirty:
 			return self._orig_start
 
-		# static computation of start
-		if not self.document.is_dirty:
-			return self._orig_start
-
-		# dynamic computation of start, really slow!
-		def compute_start(h):
-			if h:
-				return len(h) + compute_start(h.previous_item)
-		return compute_start(self.previous_item)
+		def item_len_generator(h):
+			while h:
+				yield len(h)
+				h = h.previous_item
+		return sum(item for item in item_len_generator(self.previous_item))
 
 	@property
 	def start_vim(self):
