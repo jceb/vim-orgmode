@@ -241,22 +241,25 @@ class DomObj(object):
 	def end_of_last_child_vim(self):
 		return self.end_of_last_child + 1
 
-	def children():
-		u""" Subheadings of the current dom obj """
-		def fget(self):
-			return self._children
+	@property
+	def children(self):
+		u""" MultiPurposeList[dom_objects??]: subheadings of the current DomObj
 
-		def fset(self, value):
-			v = value
-			if type(v) in (list, tuple) or isinstance(v, UserList):
-				v = flatten_list(v)
-			self._children[:] = v
+		Setter method takes list, tuple or userlist with DOMObjects
+		"""
+		return self._children
 
-		def fdel(self):
-			del self.children[:]
+	@children.setter
+	def children(self, value):
+		# TODO should it work with any iterable? Check flatten_list for this
+		v = value
+		if type(v) in (list, tuple) or isinstance(v, UserList):
+			v = flatten_list(v)
+		self._children[:] = v
 
-		return locals()
-	children = property(**children())
+	@children.deleter
+	def children(self):
+		del self.children[:]
 
 	@property
 	def first_child(self):
