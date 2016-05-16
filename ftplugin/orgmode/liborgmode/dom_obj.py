@@ -274,20 +274,22 @@ class DomObj(object):
 		if self.children:
 			return self.children[-1]
 
-	def level():
-		u""" Access to the dom obj level """
-		def fget(self):
-			return self._level
+	@property
+	def level(self):
+		u""" Access the the dom obj level """
+		return self._level
 
-		def fset(self, value):
-			self._level = int(value)
-			self.set_dirty()
+	@level.setter
+	def level(self, value):
+		u""" Set the dom obj level and mark the document dirty """
+		# TODO Shouldn't there be and error when values is not int?
+		self._level = int(value)
+		self.set_dirty()
 
-		def fdel(self):
-			self.level = None
-
-		return locals()
-	level = property(**level())
+	@level.deleter
+	def level(self):
+		u""" Delete the level of dom obj """
+		self.level = None
 
 	def title():
 		u""" Title of current dom object """
@@ -357,6 +359,7 @@ class DomObjList(MultiPurposeList):
 	def is_domobj(cls, obj):
 		return isinstance(obj, DomObj)
 
+	# TODO this should be made into a property
 	def _get_document(self):
 		if self.__class__.is_domobj(self._obj):
 			return self._obj._document

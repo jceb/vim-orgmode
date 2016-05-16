@@ -343,20 +343,12 @@ class Checkbox(DomObj):
 
 		return True
 
-	def level():
-		u""" Access to the checkbox indent level """
-		def fget(self):
-			return self._level
-
-		def fset(self, value):
-			self._level = int(value)
-			self.set_dirty_checkbox()
-
-		def fdel(self):
-			self.level = None
-
-		return locals()
-	level = property(**level())
+	@DomObj.level.setter
+	def level(self, value):
+		u""" Set the checkbox level and mark the checkbox and the document
+		dirty """
+		self._level = int(value)
+		self.set_dirty_checkbox()
 
 	def title():
 		u""" Title of current checkbox """

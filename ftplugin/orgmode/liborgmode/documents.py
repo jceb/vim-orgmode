@@ -145,6 +145,7 @@ class Document(object):
 
 		h = self.find_heading(heading=heading)
 		# initialize meta information
+		# TODO meta information can exist even without heading...
 		if h:
 			self._meta_information.data.extend(self._content[:h._orig_start])
 		else:

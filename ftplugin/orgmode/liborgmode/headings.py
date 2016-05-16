@@ -576,20 +576,11 @@ class Heading(DomObj):
 				self.document.meta_information else 0
 		return compute_start(self.previous_heading)
 
-	def level():
-		u""" Access to the heading level """
-		def fget(self):
-			return self._level
-
-		def fset(self, value):
-			self._level = int(value)
-			self.set_dirty_heading()
-
-		def fdel(self):
-			self.level = None
-
-		return locals()
-	level = property(**level())
+	@DomObj.level.setter
+	def level(self, value):
+		u""" Set the heading level and mark the heading and the document dirty """
+		self._level = int(value)
+		self.set_dirty_heading()
 
 	def todo():
 		u""" Todo state of current heading. When todo state is set"""
