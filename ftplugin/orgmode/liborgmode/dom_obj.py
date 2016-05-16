@@ -251,7 +251,6 @@ class DomObj(object):
 
 	@children.setter
 	def children(self, value):
-		# TODO should it work with any iterable? Check flatten_list for this
 		v = value
 		if type(v) in (list, tuple) or isinstance(v, UserList):
 			v = flatten_list(v)

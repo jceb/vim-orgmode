@@ -13,18 +13,35 @@ try:
 except:
 	from UserList import UserList
 
+import collections
 import sys
+from orgmode.py3compat.unicode_compatibility import *
 
-def flatten_list(l):
-	"""TODO"""
-	res = []
-	if type(l) in (tuple, list) or isinstance(l, UserList):
-		for i in l:
-			if type(i) in (list, tuple) or isinstance(i, UserList):
-				res.extend(flatten_list(i))
-			else:
-				res.append(i)
-	return res
+
+def flatten_list(lst):
+	""" Flattens a list
+
+	Args:
+		lst (iterable): An iterable that will is non-flat
+
+	Returns:
+		list: Flat list
+	"""
+	# TODO write tests
+	def gen_lst(item):
+		if isinstance(item, basestring) or isinstance(item, bytes):
+			yield item
+		elif isinstance(item, collections.Iterable):
+			# yield from would be so nice... but c'est la vie
+			for val in item:
+				if isinstance(val, collections.Iterable):
+					for final in gen_lst(val):
+						yield final
+				else:
+					yield val
+		else:
+			yield item
+	return [i for i in gen_lst(lst)]
 
 
 class Direction():
