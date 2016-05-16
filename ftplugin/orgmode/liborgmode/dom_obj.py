@@ -275,29 +275,32 @@ class DomObj(object):
 
 	@property
 	def level(self):
-		u""" Access the the dom obj level """
+		u""" int: Access the the dom obj level
+
+		Setter sets the DOM object and the document as dirty if invoked.
+		"""
 		return self._level
 
 	@level.setter
 	def level(self, value):
-		u""" Set the dom obj level and mark the document dirty """
 		# TODO Shouldn't there be and error when values is not int?
 		self._level = int(value)
 		self.set_dirty()
 
 	@level.deleter
 	def level(self):
-		u""" Delete the level of dom obj """
 		self.level = None
 
 	@property
 	def title(self):
-		u""" Get the title of current dom object """
+		u""" str: Get the title of current dom object
+
+		Setter sets the DOM object and the document as dirty if invoked.
+		"""
 		return self._title.strip()
 
 	@title.setter
 	def title(self, value):
-		u""" Set the title and mark the document dirty """
 		if type(value) not in (unicode, str):
 			raise ValueError(u'Title must be a string.')
 		v = value
@@ -308,7 +311,6 @@ class DomObj(object):
 
 	@title.deleter
 	def title(self):
-		u""" Delete the title i.e. set it to empty string """
 		self._title = u''
 
 	def body():
