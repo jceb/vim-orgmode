@@ -291,25 +291,26 @@ class DomObj(object):
 		u""" Delete the level of dom obj """
 		self.level = None
 
-	def title():
-		u""" Title of current dom object """
-		def fget(self):
-			return self._title.strip()
+	@property
+	def title(self):
+		u""" Get the title of current dom object """
+		return self._title.strip()
 
-		def fset(self, value):
-			if type(value) not in (unicode, str):
-				raise ValueError(u'Title must be a string.')
-			v = value
-			if type(v) == str:
-				v = u_decode(v)
-			self._title = v.strip()
-			self.set_dirty()
+	@title.setter
+	def title(self, value):
+		u""" Set the title and mark the document dirty """
+		if type(value) not in (unicode, str):
+			raise ValueError(u'Title must be a string.')
+		v = value
+		if type(v) == str:
+			v = u_decode(v)
+		self._title = v.strip()
+		self.set_dirty()
 
-		def fdel(self):
-			self.title = u''
-
-		return locals()
-	title = property(**title())
+	@title.deleter
+	def title(self):
+		u""" Delete the title i.e. set it to empty string """
+		self._title = u''
 
 	def body():
 		u""" Holds the content belonging to the heading """

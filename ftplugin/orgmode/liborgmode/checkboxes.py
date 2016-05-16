@@ -350,25 +350,16 @@ class Checkbox(DomObj):
 		self._level = int(value)
 		self.set_dirty_checkbox()
 
-	def title():
-		u""" Title of current checkbox """
-		def fget(self):
-			return self._title.strip()
-
-		def fset(self, value):
-			if type(value) not in (unicode, str):
-				raise ValueError(u'Title must be a string.')
-			v = value
-			if type(v) == str:
-				v = u_decode(v)
-			self._title = v.strip()
-			self.set_dirty_checkbox()
-
-		def fdel(self):
-			self.title = u''
-
-		return locals()
-	title = property(**title())
+	@DomObj.title.setter
+	def title(self, value):
+		u""" Set the title and mark the document and the checkbox dirty """
+		if type(value) not in (unicode, str):
+			raise ValueError(u'Title must be a string.')
+		v = value
+		if type(v) == str:
+			v = u_decode(v)
+		self._title = v.strip()
+		self.set_dirty_checkbox()
 
 	def status():
 		u""" status of current checkbox """
