@@ -313,26 +313,25 @@ class DomObj(object):
 	def title(self):
 		self._title = u''
 
-	def body():
-		u""" Holds the content belonging to the heading """
-		def fget(self):
-			return self._body
+	@property
+	def body(self):
+		u""" MultiPurposeList[]: Holds the content belonging to the heading """
+		return self._body
 
-		def fset(self, value):
-			if type(value) in (list, tuple) or isinstance(value, UserList):
-				self._body[:] = flatten_list(value)
-			elif type(value) in (str, ):
-				self._body[:] = u_decode(value).split(u'\n')
-			elif type(value) in (unicode, ):
-				self._body[:] = value.split(u'\n')
-			else:
-				self.body = list(unicode(value))
+	@body.setter
+	def body(self, value):
+		if type(value) in (list, tuple) or isinstance(value, UserList):
+			self._body[:] = flatten_list(value)
+		elif type(value) in (str, ):
+			self._body[:] = u_decode(value).split(u'\n')
+		elif type(value) in (unicode, ):
+			self._body[:] = value.split(u'\n')
+		else:
+			self.body = list(unicode(value))
 
-		def fdel(self):
-			self.body = []
-
-		return locals()
-	body = property(**body())
+	@body.deleter
+	def body(self):
+		self.body = []
 
 
 class DomObjList(MultiPurposeList):
