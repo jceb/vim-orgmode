@@ -232,18 +232,7 @@ class Checkbox(DomObj):
 	@property
 	def start(self):
 		u""" Access to the starting line of the checkbox """
-		if self.document is None:
-			return self._orig_start
-
-		# static computation of start
-		if not self.document.is_dirty:
-			return self._orig_start
-
-		# dynamic computation of start, really slow!
-		def compute_start(h):
-			if h:
-				return len(h) + compute_start(h.previous_checkbox)
-		return compute_start(self.previous_checkbox)
+		return super(Checkbox, self).start
 
 	def toggle(self):
 		u""" Toggle status of this checkbox """
