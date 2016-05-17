@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 
 
-class PluginError(Exception):
+class PluginError(BaseException):
 	def __init__(self, message):
-		Exception.__init__(self, message)
+		BaseException.__init__(self, message)
 
 
-class BufferNotFound(Exception):
+class BufferNotFound(BaseException):
 	def __init__(self, message):
-		Exception.__init__(self, message)
+		BaseException.__init__(self, message)
 
 
-class BufferNotInSync(Exception):
+class BufferNotInSync(BaseException):
 	def __init__(self, message):
-		Exception.__init__(self, message)
+		BaseException.__init__(self, message)
 
 
-class HeadingDomError(Exception):
+class HeadingDomError(BaseException):
 	def __init__(self, message):
-		Exception.__init__(self, message)
+		BaseException.__init__(self, message)
 
 # vim: set noexpandtab:

@@ -33,6 +33,7 @@ from orgmode.liborgmode.headings import Heading
 from orgmode.py3compat.encode_compatibility import *
 from orgmode.py3compat.unicode_compatibility import *
 
+
 class VimBuffer(Document):
 	def __init__(self, bufnr=0):
 		u"""

@@ -209,7 +209,7 @@ class Keybinding(object):
 
 			if create_mapping:
 				vim.command(u_encode(u':%smap %s %s %s' % (cmd, u' '.join(self._options), self._key, self._action)))
-		except Exception as e:
+		except BaseException as e:
 			if ORGMODE.debug:
 				echom(u'Failed to register key binding %s %s' % (self._key, self._action))
 

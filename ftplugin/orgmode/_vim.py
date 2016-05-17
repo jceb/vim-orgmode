@@ -31,6 +31,7 @@ cache_heading = None
 from orgmode.py3compat.unicode_compatibility import *
 from orgmode.py3compat.encode_compatibility import *
 
+
 def realign_tags(f):
 	u"""
 	Update tag alignment, dependency to TagsProperties plugin!
@@ -78,7 +79,7 @@ def apply_count(f):
 			# visual count is not implemented yet
 			#if not count:
 			#	count = int(vim.eval(u'v:prevcount'.encode(u'utf-8')))
-		except Exception as e:
+		except BaseException as e:
 			pass
 
 		res = f(*args, **kwargs)
@@ -353,7 +354,7 @@ class OrgMode(object):
 			if self.debug:
 				echo(u'Plugin registered: %s' % plugin)
 			return self._plugins[plugin]
-		except Exception as e:
+		except BaseException as e:
 			echoe(u'Unable to activate plugin: %s' % plugin)
 			echoe(u"%s" % e)
 			if self.debug:
@@ -389,7 +390,7 @@ class OrgMode(object):
 		if isinstance(plugins, basestring):
 			try:
 				self.register_plugin(plugins)
-			except Exception as e:
+			except BaseException as e:
 				import traceback
 				traceback.print_exc()
 		elif isinstance(plugins, list) or \
@@ -397,7 +398,7 @@ class OrgMode(object):
 			for p in plugins:
 				try:
 					self.register_plugin(p)
-				except Exception as e:
+				except BaseException as e:
 					echoe('Error in %s plugin:' % p)
 					import traceback
 					traceback.print_exc()
