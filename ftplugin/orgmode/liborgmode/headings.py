@@ -746,6 +746,7 @@ class HeadingList(DomObjList):
 							orig_len values are not updated.
 		"""
 		# TODO this method should be externalized and moved to the Heading class
+		# TODO should this method work with slice?
 		if type(heading) in (list, tuple) or isinstance(heading, UserList):
 			prev = previous_sibling
 			current = None
@@ -790,36 +791,22 @@ class HeadingList(DomObjList):
 				children=True, taint=taint)
 
 	def __setitem__(self, i, item):
-		# TODO rewrite this so that it can work when item is a tuple and i is slice
-		# it should be made to work with any item that is iterable
-		# It is also very poor design to just check for tuple and not raise any
-		# errors otherwise or implement list also
-		# TODO slice must differentiate between couple of cases:
-		# slice(None,None)
-		# slice(int, None)
-		# slice(None, int)
-		# this must be done because of _associate_heading and other methods
-		# that dont take into account slicing
 		if isinstance(i, slice):
-			# TODO fix this mess it is only copy pasted from setslice
-			sl = i
-			o = item
-			if self.__class__.is_heading(o):
-				o = (o, )
-			o = flatten_list(o)
-			for head in o:
+			start, stop, step = i.indices(len(self))
+			items = item
+			if self.__class__.is_heading(items):
+				items = (items, )
+			items = flatten_list(items)
+			for head in items:
 				if not self.__class__.is_heading(head):
 					raise ValueError(u'List contains items that are not a heading!')
 
-			i, j, k = sl.indices(len(self))
-			start, stop, step = sl.indices(len(self))
-
-			self._add_to_deleted_headings(self[sl])
+			self._add_to_deleted_headings(self[i])
 			self._associate_heading(
-				o,
-				self[i - 1] if i - 1 >= 0 and i < len(self) else None,
-				self[j] if j >= 0 and j < len(self) else None)
-			MultiPurposeList.__setitem__(self, sl, o)
+				items,
+				self[start - 1] if start - 1 >= 0 else None,
+				self[stop] if stop < len(self) else None)
+			MultiPurposeList.__setitem__(self, i, items)
 		else:
 			if not self.__class__.is_heading(item):
 				raise ValueError(u'Item is not a heading!')
@@ -830,11 +817,10 @@ class HeadingList(DomObjList):
 				item,
 				self[i - 1] if i - 1 >= 0 else None,
 				self[i + 1] if i + 1 < len(self) else None)
-
 			MultiPurposeList.__setitem__(self, i, item)
 
 	def __delitem__(self, i, taint=True):
-		# TODO remove this item, it works the same in dom_obj except taint?
+		# TODO refactor this item, it works the same in dom_obj except taint?
 		if isinstance(i, slice):
 			items = self[i]
 			if items:
