@@ -76,27 +76,23 @@ class Document(object):
 		"""
 		return self.todo_states
 
-	def tabstop():
+	@property
+	def tabstop(self):
 		u""" Tabstop for this document """
-		def fget(self):
-			return self._tabstop
+		return self._tabstop
 
-		def fset(self, value):
-			self._tabstop = value
+	@tabstop.setter
+	def tabstop(self, value):
+		self._tabstop = value
 
-		return locals()
-	tabstop = property(**tabstop())
-
-	def tag_column():
+	@property
+	def tag_column(self):
 		u""" The column all tags are right-aligned to """
-		def fget(self):
-			return self._tag_column
+		return self._tag_column
 
-		def fset(self, value):
-			self._tag_column = value
-
-		return locals()
-	tag_column = property(**tag_column())
+	@tag_column.setter
+	def tag_column(self, value):
+		self._tag_column = value
 
 	def init_dom(self, heading=Heading):
 		u""" Initialize all headings in document - build DOM. This method
@@ -165,45 +161,43 @@ class Document(object):
 
 		return self
 
-	def meta_information():
+	@property
+	def meta_information(self):
 		u"""
 		Meta information is text that precedes all headings in an org-mode
 		document. It might contain additional information about the document,
 		e.g. author
 		"""
-		def fget(self):
-			return self._meta_information
+		return self._meta_information
 
-		def fset(self, value):
-			if self._orig_meta_information_len is None:
-				self._orig_meta_information_len = len(self.meta_information)
-			if type(value) in (list, tuple) or isinstance(value, UserList):
-				self._meta_information[:] = flatten_list(value)
-			elif type(value) in (str, ):
-				self._meta_information[:] = u_decode(value).split(u'\n')
-			elif type(value) in (unicode, ):
-				self._meta_information[:] = value.split(u'\n')
-			self.set_dirty_meta_information()
+	@meta_information.setter
+	def meta_information(self, value):
+		if self._orig_meta_information_len is None:
+			self._orig_meta_information_len = len(self.meta_information)
+		if type(value) in (list, tuple) or isinstance(value, UserList):
+			self._meta_information[:] = flatten_list(value)
+		elif type(value) in (str, ):
+			self._meta_information[:] = u_decode(value).split(u'\n')
+		elif type(value) in (unicode, ):
+			self._meta_information[:] = value.split(u'\n')
+		self.set_dirty_meta_information()
 
-		def fdel(self):
-			self.meta_information = u''
+	@meta_information.deleter
+	def meta_information(self):
+		self.meta_information = u''
 
-		return locals()
-	meta_information = property(**meta_information())
-
-	def headings():
+	@property
+	def headings(self):
 		u""" List of top level headings """
-		def fget(self):
-			return self._headings
+		return self._headings
 
-		def fset(self, value):
-			self._headings[:] = value
+	@headings.setter
+	def headings(self, value):
+		self._headings[:] = value
 
-		def fdel(self):
-			del self.headings[:]
-
-		return locals()
-	headings = property(**headings())
+	@headings.deleter
+	def headings(self):
+		del self.headings[:]
 
 	def write(self):
 		u""" write the document

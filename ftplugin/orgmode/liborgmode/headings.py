@@ -574,50 +574,49 @@ class Heading(DomObj):
 		self._level = int(value)
 		self.set_dirty_heading()
 
-	def todo():
+	@property
+	def todo(self):
 		u""" Todo state of current heading. When todo state is set"""
-		def fget(self):
-			# extract todo state from heading
-			return self._todo
+		# extract todo state from heading
+		return self._todo
 
-		def fset(self, value):
-			# update todo state
-			if type(value) not in (unicode, str, type(None)):
-				raise ValueError(u'Todo state must be a string or None.')
-			if value and not REGEX_TODO.match(value):
-				raise ValueError(u'Found non allowed character in todo state! %s' % value)
-			if not value:
-				self._todo = None
-			else:
-				v = value
-				if type(v) == str:
-					v = u_decode(v)
-				self._todo = v
-			self.set_dirty_heading()
+	@todo.setter
+	def todo(self, value):
+		# update todo state
+		if type(value) not in (unicode, str, type(None)):
+			raise ValueError(u'Todo state must be a string or None.')
+		if value and not REGEX_TODO.match(value):
+			raise ValueError(u'Found non allowed character in todo state! %s' % value)
+		if not value:
+			self._todo = None
+		else:
+			v = value
+			if type(v) == str:
+				v = u_decode(v)
+			self._todo = v
+		self.set_dirty_heading()
 
-		def fdel(self):
-			self.todo = None
+	@todo.deleter
+	def todo(self):
+		self.todo = None
 
-		return locals()
-	todo = property(**todo())
-
-	def active_date():
+	@property
+	def active_date(self):
 		u"""
 		active date of the hearing.
 
 		active dates are used in the agenda view. they can be part of the
 		heading and/or the body.
 		"""
-		def fget(self):
-			return self._active_date
+		return self._active_date
 
-		def fset(self, value):
-			self._active_date = value
+	@active_date.setter
+	def active_date(self, value):
+		self._active_date = value
 
-		def fdel(self):
-			self._active_date = None
-		return locals()
-	active_date = property(**active_date())
+	@active_date.deleter
+	def active_date(self):
+		self._active_date = None
 
 	@DomObj.title.setter
 	def title(self, value):
@@ -631,50 +630,48 @@ class Heading(DomObj):
 		self._title = v.strip()
 		self.set_dirty_heading()
 
-	def tags():
+	@property
+	def tags(self):
 		u""" Tags of the current heading """
-		def fget(self):
-			return self._tags
+		return self._tags
 
-		def fset(self, value):
-			v = value
-			if type(v) in (unicode, str):
-				v = list(unicode(v))
-			if type(v) not in (list, tuple) and not isinstance(v, UserList):
-				v = list(unicode(v))
-			v = flatten_list(v)
-			v_decoded = []
-			for i in v:
-				if type(i) not in (unicode, str):
-					raise ValueError(u'Found non string value in tags! %s' % unicode(i))
-				if u':' in i:
-					raise ValueError(u'Found non allowed character in tag! %s' % i)
-				i_tmp = i.strip().replace(' ', '_').replace('\t', '_')
-				if type(i) == str:
-					i_tmp = u_decode(i)
-				v_decoded.append(i_tmp)
+	@tags.setter
+	def tags(self, value):
+		v = value
+		if type(v) in (unicode, str):
+			v = list(unicode(v))
+		if type(v) not in (list, tuple) and not isinstance(v, UserList):
+			v = list(unicode(v))
+		v = flatten_list(v)
+		v_decoded = []
+		for i in v:
+			if type(i) not in (unicode, str):
+				raise ValueError(u'Found non string value in tags! %s' % unicode(i))
+			if u':' in i:
+				raise ValueError(u'Found non allowed character in tag! %s' % i)
+			i_tmp = i.strip().replace(' ', '_').replace('\t', '_')
+			if type(i) == str:
+				i_tmp = u_decode(i)
+			v_decoded.append(i_tmp)
 
-			self._tags[:] = v_decoded
+		self._tags[:] = v_decoded
 
-		def fdel(self):
-			self.tags = []
+	@tags.deleter
+	def tags(self):
+		self.tags = []
 
-		return locals()
-	tags = property(**tags())
-
-	def checkboxes():
+	@property
+	def checkboxes(self):
 		u""" All checkboxes in current heading """
-		def fget(self):
-			return self._checkboxes
+		return self._checkboxes
 
-		def fset(self, value):
-			self._checkboxes[:] = value
+	@checkboxes.setter
+	def checkboxes(self, value):
+		self._checkboxes[:] = value
 
-		def fdel(self):
-			del self.checkboxes[:]
-
-		return locals()
-	checkboxes = property(**checkboxes())
+	@checkboxes.deleter
+	def checkboxes(self):
+		del self.checkboxes[:]
 
 
 class HeadingList(DomObjList):

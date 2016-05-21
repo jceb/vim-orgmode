@@ -80,14 +80,14 @@ class VimBuffer(Document):
 		"""
 		return self._bufnr
 
-	def changedtick():
+	@property
+	def changedtick(self):
 		u""" Number of changes in vimbuffer """
-		def fget(self):
-			return self._changedtick
-		def fset(self, value):
-			self._changedtick = value
-		return locals()
-	changedtick = property(**changedtick())
+		return self._changedtick
+
+	@changedtick.setter
+	def changedtick(self, value):
+		self._changedtick = value
 
 	def get_todo_states(self, strip_access_key=True):
 		u""" Returns a list containing a tuple of two lists of allowed todo

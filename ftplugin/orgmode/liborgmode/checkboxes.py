@@ -350,34 +350,32 @@ class Checkbox(DomObj):
 		self._title = v.strip()
 		self.set_dirty_checkbox()
 
-	def status():
+	@property
+	def status(self):
 		u""" status of current checkbox """
-		def fget(self):
-			return self._status
+		return self._status
 
-		def fset(self, value):
-			self._status = value
-			self.set_dirty()
+	@status.setter
+	def status(self, value):
+		self._status = value
+		self.set_dirty()
 
-		def fdel(self):
-			self._status = u''
+	@status.deleter
+	def status(self):
+		self._status = u''
 
-		return locals()
-	status = property(**status())
-
-	def type():
+	@property
+	def type(self):
 		u""" type of current checkbox list type """
-		def fget(self):
-			return self._type
+		return self._type
 
-		def fset(self, value):
-			self._type = value
+	@type.setter
+	def type(self, value):
+		self._type = value
 
-		def fdel(self):
-			self._type = u''
-
-		return locals()
-	type = property(**type())
+	@type.deleter
+	def type(self):
+		self._type = u''
 
 
 class CheckboxList(DomObjList):
