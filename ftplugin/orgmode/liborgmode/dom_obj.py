@@ -56,6 +56,8 @@ class DomObj(object):
 	Normally, we don't intend to use DomObj directly. However, we can add some more
 	DOM structure element based on this class to make code more concise.
 	"""
+	# TODO should this and DomObj_list be abstract methods? If so use ABC to
+	# force abstract methods
 
 	def __init__(self, level=1, title=u'', body=None):
 		u"""
@@ -359,6 +361,9 @@ class DomObjList(MultiPurposeList):
 
 	@classmethod
 	def is_domobj(cls, obj):
+		# TODO no reason for it to be class method. Does it even need to exist
+		# because it is quite clear what isinstance does and in derived methods
+		# isinstance(Heading, DomObj) would return True anyway.
 		return isinstance(obj, DomObj)
 
 	# TODO this should be made into a property
@@ -369,7 +374,7 @@ class DomObjList(MultiPurposeList):
 
 	def __setitem__(self, i, item):
 		if isinstance(i, slice):
-			o = other
+			o = item
 			if self.__class__.is_domobj(o):
 				o = (o, )
 			o = flatten_list(o)
@@ -406,7 +411,6 @@ class DomObjList(MultiPurposeList):
 					last.next_sibling._previous_sibling = first.previous_sibling
 			# if taint:
 				# self._add_to_deleted_domobjs(items)
-			MultiPurposeList.__delitem__(self, slice(i, j))
 		else:
 			item = self[i]
 			if item.previous_sibling:
@@ -416,7 +420,7 @@ class DomObjList(MultiPurposeList):
 
 			# if taint:
 				# self._add_to_deleted_domobjs(item)
-			MultiPurposeList.__delitem__(self, i)
+		MultiPurposeList.__delitem__(self, i)
 
 	def __setslice__(self, i, j, other):
 		self.__setitem__(slice(i, j), other)
@@ -462,7 +466,6 @@ class DomObjList(MultiPurposeList):
 		return item
 
 	def remove_slice(self, i, j, taint=True):
-		#self.__delslice__(i, j, taint=taint)
 		self.__delitem__(slice(i, j), taint=taint)
 
 	def remove(self, item, taint=True):
