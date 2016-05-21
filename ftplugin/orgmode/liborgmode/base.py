@@ -70,42 +70,43 @@ class MultiPurposeList(UserList):
 		self._on_change = on_change
 
 	def _changed(self):
-		u"""
-		Call hook
-		"""
+		u""" Call hook """
 		if callable(self._on_change):
 			self._on_change()
 
 	def __setitem__(self, i, item):
-		UserList.__setitem__(self, i, item)
+		if sys.version_info < (3, ) and isinstance(i, slice):
+			start, stop, _ = i.indices(len(self))
+			UserList.__setslice__(self, start, stop, item)
+		else:
+			UserList.__setitem__(self, i, item)
 		self._changed()
 
 	def __delitem__(self, i):
-		UserList.__delitem__(self, i)
+		if sys.version_info < (3, ) and isinstance(i, slice):
+			start, stop, _ = i.indices(len(self))
+			UserList.__delslice__(self, start, stop)
+		else:
+			UserList.__delitem__(self, i)
 		self._changed()
 
-	def __setslice__(self, i, j, other):
+	def __getitem__(self, i):
 		if sys.version_info < (3, ):
-			UserList.__setslice__(self, i, j, other)
-		else:
-			UserList.__setitem__(self, slice(i, j), other)
-		self._changed()
+			if isinstance(i, slice):
+				# TODO Return just a list. Why?
+				return [self[i] for i in range(*i.indices(len(self)))]
+				# return UserList([self[i] for i in range(*i.indices(len(self)))])
+		return UserList.__getitem__(self, i)
+
+	# NOTE: These wrappers are necessary because of python 2
+	def __setslice__(self, i, j, other):
+		self.__setitem__(slice(i, j), other)
 
 	def __delslice__(self, i, j):
-		if sys.version_info < (3, ):
-			UserList.__delslice__(self, i, j)
-		else:
-			UserList.__delitem__(self, slice(i, j))
-		self._changed()
+		self.__delitem__(slice(i, j))
 
 	def __getslice__(self, i, j):
-		# fix UserList - don't return a new list of the same type but just the
-		# normal list item
-		if sys.version_info < (3, ):
-			i = max(i, 0)
-			j = max(j, 0)
-			return self.data[i:j]
-		return UserList.__getitem__(self, slice(i, j))
+		return self.__getitem__(slice(i, j))
 
 	def __iadd__(self, other):
 		res = UserList.__iadd__(self, other)

@@ -330,6 +330,8 @@ class DomObj(object):
 
 	@body.deleter
 	def body(self):
+		# TODO write this as del self._body[:] because there is no reason to
+		# call so much code for deleting a list
 		self.body = []
 
 
@@ -366,58 +368,61 @@ class DomObjList(MultiPurposeList):
 		return self._obj
 
 	def __setitem__(self, i, item):
-		if not self.__class__.is_domobj(item):
-			raise ValueError(u'Item is not a Dom obj!')
-		if item in self:
-			raise ValueError(u'Dom obj is already part of this list!')
-		# self._add_to_deleted_domobjs(self[i])
+		if isinstance(i, slice):
+			o = other
+			if self.__class__.is_domobj(o):
+				o = (o, )
+			o = flatten_list(o)
+			for item in o:
+				if not self.__class__.is_domobj(item):
+					raise ValueError(u'List contains items that are not a Dom obj!')
 
-		# self._associate_domobj(item, \
-		# self[i - 1] if i - 1 >= 0 else None, \
-		# self[i + 1] if i + 1 < len(self) else None)
-		MultiPurposeList.__setitem__(self, i, item)
-
-	def __setslice__(self, i, j, other):
-		o = other
-		if self.__class__.is_domobj(o):
-			o = (o, )
-		o = flatten_list(o)
-		for item in o:
+			# self._add_to_deleted_domobjs(self[i:j])
+			# self._associate_domobj(o, \
+			# self[i - 1] if i - 1 >= 0 and i < len(self) else None, \
+			# self[j] if j >= 0 and j < len(self) else None)
+			MultiPurposeList.__setitem__(self, i, o)
+		else:
 			if not self.__class__.is_domobj(item):
-				raise ValueError(u'List contains items that are not a Dom obj!')
-		i = max(i, 0)
-		j = max(j, 0)
-		# self._add_to_deleted_domobjs(self[i:j])
-		# self._associate_domobj(o, \
-		# self[i - 1] if i - 1 >= 0 and i < len(self) else None, \
-		# self[j] if j >= 0 and j < len(self) else None)
-		MultiPurposeList.__setslice__(self, i, j, o)
+				raise ValueError(u'Item is not a Dom obj!')
+			if item in self:
+				raise ValueError(u'Dom obj is already part of this list!')
+			# self._add_to_deleted_domobjs(self[i])
+
+			# self._associate_domobj(item, \
+			# self[i - 1] if i - 1 >= 0 else None, \
+			# self[i + 1] if i + 1 < len(self) else None)
+			MultiPurposeList.__setitem__(self, i, item)
 
 	def __delitem__(self, i, taint=True):
-		item = self[i]
-		if item.previous_sibling:
-			item.previous_sibling._next_sibling = item.next_sibling
-		if item.next_sibling:
-			item.next_sibling._previous_sibling = item.previous_sibling
+		if isinstance(i, slice):
+			items = self[i]
+			if items:
+				first = items[0]
+				last = items[-1]
+				if first.previous_sibling:
+					first.previous_sibling._next_sibling = last.next_sibling
+				if last.next_sibling:
+					last.next_sibling._previous_sibling = first.previous_sibling
+			# if taint:
+				# self._add_to_deleted_domobjs(items)
+			MultiPurposeList.__delitem__(self, slice(i, j))
+		else:
+			item = self[i]
+			if item.previous_sibling:
+				item.previous_sibling._next_sibling = item.next_sibling
+			if item.next_sibling:
+				item.next_sibling._previous_sibling = item.previous_sibling
 
-		# if taint:
-			# self._add_to_deleted_domobjs(item)
-		MultiPurposeList.__delitem__(self, i)
+			# if taint:
+				# self._add_to_deleted_domobjs(item)
+			MultiPurposeList.__delitem__(self, i)
+
+	def __setslice__(self, i, j, other):
+		self.__setitem__(slice(i, j), other)
 
 	def __delslice__(self, i, j, taint=True):
-		i = max(i, 0)
-		j = max(j, 0)
-		items = self[i:j]
-		if items:
-			first = items[0]
-			last = items[-1]
-			if first.previous_sibling:
-				first.previous_sibling._next_sibling = last.next_sibling
-			if last.next_sibling:
-				last.next_sibling._previous_sibling = first.previous_sibling
-		# if taint:
-			# self._add_to_deleted_domobjs(items)
-		MultiPurposeList.__delslice__(self, i, j)
+		self.__delitem__(slice(i, j), taint=taint)
 
 	def __iadd__(self, other):
 		o = other
@@ -457,7 +462,8 @@ class DomObjList(MultiPurposeList):
 		return item
 
 	def remove_slice(self, i, j, taint=True):
-		self.__delslice__(i, j, taint=taint)
+		#self.__delslice__(i, j, taint=taint)
+		self.__delitem__(slice(i, j), taint=taint)
 
 	def remove(self, item, taint=True):
 		self.__delitem__(self.index(item), taint=taint)

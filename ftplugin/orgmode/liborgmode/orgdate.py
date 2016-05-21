@@ -62,6 +62,8 @@ def get_orgdate(data):
 
 	data can be a string or a list containing strings.
 	"""
+	# TODO maybe it should be checked just for iterable? Does it affect here if
+	# in base __getitem__(slice(i,j)) doesn't return a list but userlist...
 	if isinstance(data, list):
 		return _findfirst(_text2orgdate, data)
 	else:

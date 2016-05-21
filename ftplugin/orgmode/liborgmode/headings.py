@@ -698,6 +698,7 @@ class HeadingList(DomObjList):
 
 	@classmethod
 	def is_heading(cls, obj):
+		# TODO no need to make this or is_domobj a class methods
 		return HeadingList.is_domobj(obj)
 
 	def _get_document(self):
@@ -810,8 +811,8 @@ class HeadingList(DomObjList):
 				if not self.__class__.is_heading(head):
 					raise ValueError(u'List contains items that are not a heading!')
 
-			i = sl.start if sl.start is not None else 0
-			j = sl.stop if sl.stop is not None else len(self) - 1
+			i, j, k = sl.indices(len(self))
+			start, stop, step = sl.indices(len(self))
 
 			self._add_to_deleted_headings(self[sl])
 			self._associate_heading(
@@ -832,25 +833,8 @@ class HeadingList(DomObjList):
 
 			MultiPurposeList.__setitem__(self, i, item)
 
-	def __setslice__(self, i, j, other):
-		o = other
-		if self.__class__.is_heading(o):
-			o = [o]
-		#o = flatten_list(o)
-		for item in o:
-			if not self.__class__.is_heading(item):
-				raise ValueError(u'List contains items that are not a heading!')
-		i = max(i, 0)
-		j = max(j, 0)
-		self._add_to_deleted_headings(self[i:j])
-		self._associate_heading(
-			o,
-			self[i - 1] if i - 1 >= 0 and i < len(self) else None,
-			self[j] if j >= 0 and j < len(self) else None)
-		MultiPurposeList.__setslice__(self, i, j, o)
-
 	def __delitem__(self, i, taint=True):
-		# TODO this method needs more work
+		# TODO remove this item, it works the same in dom_obj except taint?
 		if isinstance(i, slice):
 			items = self[i]
 			if items:
@@ -873,21 +857,6 @@ class HeadingList(DomObjList):
 			if taint:
 				self._add_to_deleted_headings(item)
 			MultiPurposeList.__delitem__(self, i)
-
-	def __delslice__(self, i, j, taint=True):
-		i = max(i, 0)
-		j = max(j, 0)
-		items = self[i:j]
-		if items:
-			first = items[0]
-			last = items[-1]
-			if first.previous_sibling:
-				first.previous_sibling._next_sibling = last.next_sibling
-			if last.next_sibling:
-				last.next_sibling._previous_sibling = first.previous_sibling
-		if taint:
-			self._add_to_deleted_headings(items)
-		MultiPurposeList.__delslice__(self, i, j)
 
 	def __iadd__(self, other):
 		o = other
