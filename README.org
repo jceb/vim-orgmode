@@ -18,10 +18,10 @@
   [[https://github.com/jceb/vim-orgmode/blob/master/examples/mylife.org][file:examples/mylife.gif]]
 
 ** Features
-   vim-orgmode is still very young but already quite usable. Here is a short
-   list of the already supported features:
+   Currently vim-orgmode does not support all ormode features but is quite
+   usable. Short list of the already supported features:
 
-   - Proper syntax highlighting
+   - Syntax highlighting
    - Cycle visibility of headings (folding)
    - Navigate between headings
    - Edit the structure of the document: add, move, promote, denote headings
@@ -32,8 +32,6 @@
    - Lists in alphanumeric and bullet item notation and checkbox support
    - Basic date handling
    - Export to other formats (via Emacs' Org-Mode)
-
-   More features are coming...
 
 * Installation and Usage
   Installation and usage instructions are found in the file [[doc/orgguide.txt][doc/orgguide.txt]].
