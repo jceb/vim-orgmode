@@ -14,15 +14,15 @@ u"""
 	The function filter_items() can combine different filters and only returns
 	the filtered headings.
 """
-
 from datetime import datetime
 from datetime import timedelta
-from orgmode.vimbuffer import VimBuffer
 
 try:
 	from itertools import ifilter as filter
 except:
 	pass
+
+import orgmode
 
 
 def filter_items(headings, filters):
@@ -73,11 +73,13 @@ def contains_active_todo(heading):
 
 	Returns:
 		bool: True if heading contains an active TODO.
-
-	FIXME: the todo checking should consider a number of different active todo
-	states
 	"""
-	return heading.todo == u"TODO"
+	# TODO make this more efficient by checking some val and not calling the
+	# function
+	active = []
+	for act in orgmode._vim.ORGMODE.get_document().get_todo_states():
+		active.extend(act[0])
+	return heading.todo in active
 
 
 def contains_active_date(heading):
