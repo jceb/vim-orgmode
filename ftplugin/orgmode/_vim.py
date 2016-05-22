@@ -97,7 +97,7 @@ def echo(message):
 	multiple lines are printed
 	"""
 	for m in message.split(u'\n'):
-		vim.command(u_encode((u':echo "%s"' % m)))
+		vim.command(u_encode(u':echo "%s"' % m))
 
 
 def echom(message):
@@ -139,7 +139,7 @@ def get_user_input(message):
 	Return the input or None if there is no input.
 	"""
 	vim.command(u_encode(u'call inputsave()'))
-	vim.command(u_encode((u"let user_input = input('" + message + u": ')")))
+	vim.command(u_encode(u"let user_input = input('" + message + u": ')"))
 	vim.command(u_encode(u'call inputrestore()'))
 	try:
 		return u_decode(vim.eval(u_encode(u'user_input')))

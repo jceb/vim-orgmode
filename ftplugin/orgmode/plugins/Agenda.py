@@ -75,10 +75,10 @@ class Agenda(object):
 		# load org files of agenda
 		agenda_files = settings.get(u'org_agenda_files', u',')
 		if not agenda_files or agenda_files == ',':
-			echoe((
+			echoe(
 				u"No org_agenda_files defined. Use :let "
 				u"g:org_agenda_files=['~/org/index.org'] to add "
-				u"files to the agenda view."))
+				u"files to the agenda view.")
 			return
 		return self._load_agendafiles(agenda_files)
 

@@ -64,8 +64,6 @@ class Todo(object):
 		cls, current_state, all_states,
 		direction=Direction.FORWARD, interactive=False, next_set=False):
 		u"""
-		WTF is going on here!!!
-		FIXME: reimplement this in a clean way :)
 
 		:current_state:		the current todo state
 		:all_states:		a list containing all todo states within sublists.
@@ -78,6 +76,7 @@ class Todo(object):
 		:return:			return the next state as string, or NONE if the
 							next state is no state.
 		"""
+		# TODO FIXME: reimplement this in a clean way :)
 		if not all_states:
 			return
 
@@ -257,8 +256,8 @@ class Todo(object):
 		vim.command(u_encode(u'au orgmode BufLeave <buffer> :if exists("g:org_sav_timeoutlen")|let &timeoutlen=g:org_sav_timeoutlen|unlet g:org_sav_timeoutlen|endif'))
 		# make window a scratch window and set the statusline differently
 		vim.command(u_encode(u'setlocal nolist tabstop=16 buftype=nofile timeout timeoutlen=1 winfixheight'))
-		vim.command(u_encode((u'setlocal statusline=Org\\ todo\\ (%s)' % vim.eval(u_encode((u'fnameescape(fnamemodify(bufname(%d), ":t"))' % bufnr))))))
-		vim.command(u_encode((u'nnoremap <silent> <buffer> <Esc> :%sbw<CR>' % (vim.eval(u_encode(u'bufnr("%")')), ))))
+		vim.command(u_encode(u'setlocal statusline=Org\\ todo\\ (%s)' % vim.eval(u_encode((u'fnameescape(fnamemodify(bufname(%d), ":t"))' % bufnr)))))
+		vim.command(u_encode(u'nnoremap <silent> <buffer> <Esc> :%sbw<CR>' % (vim.eval(u_encode(u'bufnr("%")')), )))
 		vim.command(u_encode(u'nnoremap <silent> <buffer> <CR> :let g:org_state = fnameescape(expand("<cword>"))<Bar>bw<Bar>exec "%s ORGMODE.plugins[u\'Todo\'].set_todo_state(\'".g:org_state."\')"<Bar>unlet! g:org_state<CR>' % VIM_PY_CALL))
 
 		if all_states is None:
@@ -277,7 +276,7 @@ class Todo(object):
 							res += (u'\t' if res else u'') + u'[%s] %s' % (k, v)
 							# map access keys to callback that updates current heading
 							# map selection keys
-							vim.command(u_encode((u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>%s ORGMODE.plugins[u"Todo"].set_todo_state(u_decode("%s")))<CR>' % (k, VIM_PY_CALL, v))))
+							vim.command(u_encode(u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>%s ORGMODE.plugins[u"Todo"].set_todo_state(u_decode("%s")))<CR>' % (k, VIM_PY_CALL, v)))
 						elif v:
 							res += (u'\t' if res else u'') + v
 			if res:

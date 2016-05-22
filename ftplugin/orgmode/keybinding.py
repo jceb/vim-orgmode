@@ -117,7 +117,7 @@ class Plug(object):
 			cmd = self._mode
 			if cmd == MODE_ALL:
 				cmd = u''
-			vim.command(u_encode((u':%snoremap %s %s' % (cmd, str(self), self.command))))
+			vim.command(u_encode(u':%snoremap %s %s' % (cmd, str(self), self.command)))
 
 	@property
 	def mode(self):
