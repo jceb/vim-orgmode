@@ -20,6 +20,7 @@ from orgmode.liborgmode.agendafilter import contains_active_date
 
 class AgendaManager(object):
 	u"""Simple parsing of Documents to create an agenda."""
+	# TODO Move filters in this file, they do the same thing
 
 	def __init__(self):
 		super(AgendaManager, self).__init__()
@@ -29,10 +30,10 @@ class AgendaManager(object):
 		Get the todo agenda for the given documents (list of document).
 		"""
 		filtered = []
-		for i, document in enumerate(documents):
+		for document in iter(documents):
 			# filter and return headings
-			tmp = filter_items(document.all_headings(), [contains_active_todo])
-			filtered.extend(tmp)
+			filtered.extend(filter_items(document.all_headings(),
+								[contains_active_todo]))
 		return sorted(filtered)
 
 	def get_next_week_and_active_todo(self, documents):
@@ -41,12 +42,10 @@ class AgendaManager(object):
 		document).
 		"""
 		filtered = []
-		for i, document in enumerate(documents):
+		for document in iter(documents):
 			# filter and return headings
-			tmp = filter_items(
-				document.all_headings(),
-				[is_within_week_and_active_todo])
-			filtered.extend(tmp)
+			filtered.extend(filter_items(document.all_headings(),
+								[is_within_week_and_active_todo]))
 		return sorted(filtered)
 
 	def get_timestamped_items(self, documents):
@@ -55,12 +54,10 @@ class AgendaManager(object):
 		documents (list of document).
 		"""
 		filtered = []
-		for i, document in enumerate(documents):
+		for document in iter(documents):
 			# filter and return headings
-			tmp = filter_items(
-				document.all_headings(),
-				[contains_active_date])
-			filtered.extend(tmp)
+			filtered.extend(filter_items(document.all_headings(),
+								[contains_active_date]))
 		return sorted(filtered)
 
 # vim: set noexpandtab:
