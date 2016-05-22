@@ -49,6 +49,7 @@ class Document(object):
 		self._tabstop = 8
 		self._tag_column = 77
 
+		# TODO this doesn't differentiate between ACTIVE and FINISHED todo's
 		self.todo_states = [u'TODO', u'DONE']
 
 	def __unicode__(self):
@@ -65,6 +66,7 @@ class Document(object):
 
 		:returns:	[all todo/done states]
 		"""
+		# TODO This is not necessary remove
 		return flatten_list(self.get_todo_states())
 
 	def get_todo_states(self):
@@ -74,6 +76,9 @@ class Document(object):
 
 		:returns:	[([todo states], [done states]), ..]
 		"""
+		# TODO this should be made into property so todo states can be set like
+		# this too.. or there was also some todo property around... oh well..
+		# TODO there is the same method in vimbuffer
 		return self.todo_states
 
 	@property

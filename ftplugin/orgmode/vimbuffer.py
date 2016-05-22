@@ -100,6 +100,11 @@ class VimBuffer(Document):
 		# TODO this function gets called too many times when change of state of
 		# one todo is triggered, check with:
 		# print(states)
+		# this should be changed by saving todo states into some var and only
+		# if new states are set hook should be called to register them again
+		# into a property
+		# TODO move this to documents.py, it is all tangled up like this, no
+		# structure...
 		if type(states) not in (list, tuple):
 			return []
 
