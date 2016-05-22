@@ -77,10 +77,10 @@ class Todo(object):
 							next state is no state.
 		"""
 		# TODO FIXME: reimplement this in a clean way :)
-		if not all_states:
+		if all_states is None:
 			return
 
-		def find_current_todo_state(c, a, stop=0):
+		def find_current_todo_state(current, all_states, stop=0):
 			u"""
 			:c:		current todo state
 			:a:		list of todo states
@@ -89,22 +89,21 @@ class Todo(object):
 			:return:	first position of todo state in list in the form
 						(IDX_TOPLEVEL, IDX_SECOND_LEVEL (0|1), IDX_OF_ITEM)
 			"""
-			for i in range(0, len(a)):
-				if type(a[i]) in (tuple, list) and stop < 2:
-					r = find_current_todo_state(c, a[i], stop=stop + 1)
-					if r:
-						r.insert(0, i)
-						return r
+			for i, element in enumerate(all_states):
+				if type(element) in (tuple, list) and stop < 2:
+					res = find_current_todo_state(current, element, stop=stop + 1)
+					if res:
+						res.insert(0, i)
+						return res
 				# ensure that only on the second level of sublists todo states
 				# are found
-				if type(a[i]) == unicode and stop == 2:
-					_i = split_access_key(a[i])[0]
-					if c == _i:
+				if type(element) == unicode and stop == 2:
+					if current == split_access_key(element)[0]:
 						return [i]
 
 		ci = find_current_todo_state(current_state, all_states)
 
-		if not ci:
+		if ci is None:
 			if next_set and direction == Direction.BACKWARD:
 				echom(u'Already at the first keyword set')
 				return current_state
