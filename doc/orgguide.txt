@@ -686,7 +686,7 @@ Multi-state workflows~
   of which subsequence should be used for a given entry. The example also
   shows how to define keys for fast access of a particular state, by
   adding a letter in parenthesis after each keyword - you will be prompted
-  for the key after pressing ,d.
+  for the key after pressing <LocalLeader>d.
 
                                                        *orgguide-<LocalLeader>d*
   <LocalLeader>d        prompt for fast access of a todo state
