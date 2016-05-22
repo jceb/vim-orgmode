@@ -22,8 +22,6 @@ try:
 except:
 	pass
 
-import orgmode
-
 
 def filter_items(headings, filters):
 	u""" Filter the given headings.
@@ -76,8 +74,10 @@ def contains_active_todo(heading):
 	"""
 	# TODO make this more efficient by checking some val and not calling the
 	# function
+	# TODO why is this import failing at top level?
+	from orgmode._vim import ORGMODE
 	active = []
-	for act in orgmode._vim.ORGMODE.get_document().get_todo_states():
+	for act in ORGMODE.get_document().get_todo_states():
 		active.extend(act[0])
 	return heading.todo in active
 
