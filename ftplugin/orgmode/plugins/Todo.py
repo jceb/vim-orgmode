@@ -16,17 +16,29 @@ from orgmode.py3compat.encode_compatibility import *
 from orgmode.py3compat.unicode_compatibility import *
 from orgmode.py3compat.py_py3_string import *
 
-def split_access_key(t):
-	u"""
-	:t:		todo state
 
-	:return:	todo state and access key separated (TODO, ACCESS_KEY)
+def split_access_key(t):
+	u""" Split access key
+
+	Args:
+		t (str): Todo state
+
+	Returns:
+		tuple: Todo state and access key separated (TODO, ACCESS_KEY)
+
+	Example:
+		>>> split_access_key('TODO(t)')
+		>>> ('TODO', '(t)')
 	"""
 	if type(t) != unicode:
+		echom("String must be unicode")
 		return (None, None)
 
 	idx = t.find(u'(')
-	v, k = ((t[:idx], t[idx + 1:-1]) if t[idx + 1:-1] else (t, None)) if idx != -1 else (t, None)
+
+	v, k = (t, None)
+	if idx != -1 and t[idx + 1:-1]:
+		v, k = (t[:idx], t[idx + 1:-1])
 	return (v, k)
 
 
@@ -81,12 +93,15 @@ class Todo(object):
 			return
 
 		def find_current_todo_state(current, all_states, stop=0):
-			u"""
-			:c:		current todo state
-			:a:		list of todo states
-			:stop:	internal parameter for parsing only two levels of lists
+			u""" Find current todo state
 
-			:return:	first position of todo state in list in the form
+			Args:
+				current: Current todo state
+				all_states: List of todo states
+				stop: Internal parameter for parsing only two levels of lists
+
+			Returns:
+				list: First position of todo state in list in the form
 						(IDX_TOPLEVEL, IDX_SECOND_LEVEL (0|1), IDX_OF_ITEM)
 			"""
 			for i, element in enumerate(all_states):
