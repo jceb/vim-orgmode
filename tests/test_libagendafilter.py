@@ -23,10 +23,10 @@ class AgendaFilterTestCase(unittest.TestCase):
 	u"""Tests all the functionality of the Agenda filter module."""
 
 	def setUp(self):
-		self.text = [ u_encode(i) for i in u"""
+		self.text = [u_encode(i) for i in u"""
 * TODO Heading 1
   some text
-""".split(u'\n') ]
+""".split(u'\n')]
 
 	def test_contains_active_todo(self):
 		heading = Heading(title=u'Refactor the code', todo='TODO')
