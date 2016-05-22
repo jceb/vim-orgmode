@@ -90,16 +90,16 @@ class AgendaFilterTestCase(unittest.TestCase):
 		odate = OrgDate(True, tmpdate.year, tmpdate.month, tmpdate.day)
 		tmp_head = Heading(title=u'Refactor the code', todo=u'TODO', active_date=odate)
 		headings = [tmp_head]
-		filtered = filter_items(headings,
-				[contains_active_date, contains_active_todo])
+		filtered = list(filter_items(headings,
+				[contains_active_date, contains_active_todo]))
 
 		self.assertEqual(len(filtered), 1)
 		self.assertEqual(filtered, headings)
 
 		# try a longer list
 		headings = headings * 3
-		filtered = filter_items(headings,
-				[contains_active_date, contains_active_todo])
+		filtered = list(filter_items(headings,
+				[contains_active_date, contains_active_todo]))
 
 		self.assertEqual(len(filtered), 3)
 		self.assertEqual(filtered, headings)
@@ -109,8 +109,8 @@ class AgendaFilterTestCase(unittest.TestCase):
 		odate = OrgDate(True, tmpdate.year, tmpdate.month, tmpdate.day)
 		tmp_head = Heading(title=u'Refactor the code', active_date=odate)
 		headings = [tmp_head]
-		filtered = filter_items(headings, [contains_active_date,
-				contains_active_todo])
+		filtered = list(filter_items(headings, [contains_active_date,
+				contains_active_todo]))
 		self.assertEqual([], filtered)
 
 	def test_filter_items_with_some_todos_and_dates(self):
@@ -120,7 +120,8 @@ class AgendaFilterTestCase(unittest.TestCase):
 		tmp = [u"* TODO OrgMode Demo und Tests"
 				u"<2011-08-22 Mon>"]
 		headings = [Heading.parse_heading_from_data(tmp, [u'TODO'])]
-		filtered = filter_items(headings, [is_within_week_and_active_todo])
+		filtered = list(filter_items(headings,
+							   [is_within_week_and_active_todo]))
 		self.assertEqual(len(filtered), 1)
 		self.assertEqual(headings, filtered)
 
@@ -133,7 +134,8 @@ class AgendaFilterTestCase(unittest.TestCase):
 		for h in tmp:
 			headings.append(h)
 
-		filtered = filter_items(headings, [is_within_week_and_active_todo])
+		filtered = list(filter_items(headings,
+							   [is_within_week_and_active_todo]))
 		self.assertEqual(len(filtered), 3)
 		self.assertEqual(filtered, [headings[0], headings[2], headings[4]])
 

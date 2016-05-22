@@ -25,23 +25,23 @@ except:
 
 
 def filter_items(headings, filters):
-	u"""
-	Filter the given headings. Return the list of headings which were not
-	filtered.
+	u""" Filter the given headings.
 
-	:headings: is an list of headings
-	:filters: is the list of filters that are to be applied. all function in
+	Args:
+		headings (list): Contains headings
+		filters (list): Filters that will be applied. All functions in
 			this module (except this function) are filters.
 
-	You can use it like this:
+	Returns:
+		filter iterator: Headings which were not filtered.
 
-	>>> filtered = filter_items(headings, [contains_active_date,
+	Examples:
+		>>> filtered = filter_items(headings, [contains_active_date,
 				contains_active_todo])
-
 	"""
 	filtered = headings
 	for f in filters:
-		filtered = list(filter(f, filtered))
+		filtered = filter(f, filtered)
 	return filtered
 
 
