@@ -123,14 +123,29 @@ class Todo(object):
 				echom(u'Already at the first keyword set')
 				return current_state
 
-			return split_access_key(all_states[0][0][0] if all_states[0][0] else all_states[0][1][0])[0] \
-				if direction == Direction.FORWARD else \
-				split_access_key(all_states[0][1][-1] if all_states[0][1] else all_states[0][0][-1])[0]
+			if direction == Direction.FORWARD:
+				if all_states[0][0]:
+					return split_access_key(all_states[0][0][0])[0]
+				else:
+					return split_access_key(all_states[0][1][0])[0]
+			else:
+				if all_states[0][1]:
+					return split_access_key(all_states[0][1][-1])[0]
+				else:
+					return split_access_key(all_states[0][0][-1])[0]
+
+			# return split_access_key(all_states[0][0][0] if all_states[0][0] else all_states[0][1][0])[0] \
+			# 	if direction == Direction.FORWARD else \
+			# 	split_access_key(all_states[0][1][-1] if all_states[0][1] else all_states[0][0][-1])[0]
 		elif next_set:
 			if direction == Direction.FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
 				echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] + 1][0]), u', '.join(all_states[ci[0] + 1][1])))
-				return split_access_key(
-					all_states[ci[0] + 1][0][0] if all_states[ci[0] + 1][0] else all_states[ci[0] + 1][1][0])[0]
+				if all_states[ci[0] + 1][0]:
+					return split_access_key(all_states[ci[0] + 1][0][0])[0]
+				else:
+					return split_access_key(all_states[ci[0] + 1][1][0])[0]
+				# return split_access_key(
+				# 	all_states[ci[0] + 1][0][0] if all_states[ci[0] + 1][0] else all_states[ci[0] + 1][1][0])[0]
 			elif current_state is not None and direction == Direction.BACKWARD and ci[0] - 1 >= 0:
 				echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] - 1][0]), u', '.join(all_states[ci[0] - 1][1])))
 				return split_access_key(
