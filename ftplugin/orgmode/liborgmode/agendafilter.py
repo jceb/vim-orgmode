@@ -74,7 +74,7 @@ def contains_active_todo(heading):
 	"""
 	# TODO make this more efficient by checking some val and not calling the
 	# function
-	# TODO why is this import failing at top level?
+	# TODO why is this import failing at top level? circular dependecy...
 	from orgmode._vim import ORGMODE
 	active = []
 	for act in ORGMODE.get_document().get_todo_states():
