@@ -74,7 +74,7 @@ class Todo(object):
 	@classmethod
 	def _get_next_state(
 		cls, current_state, all_states,
-		direction=Direction.FORWARD, interactive=False, next_set=False):
+		direction=Direction.FORWARD, next_set=False):
 		u"""
 
 		:current_state:		the current todo state
@@ -220,9 +220,11 @@ class Todo(object):
 				vim.command(u_encode(
 					u'keepalt %s %dsplit org:todo/%d' % (prompt_pos, len(todo_states), d.bufnr)))
 		else:
+			# NOTE: interactive is ALWAYS false here and this is the only place
+			# this functions is used
 			new_state = Todo._get_next_state(
 				current_state, todo_states, direction=direction,
-				interactive=interactive, next_set=next_set)
+				next_set=next_set)
 			cls.set_todo_state(new_state)
 
 		# plug
