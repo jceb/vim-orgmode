@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import vim
+import itertools as it
 
 from orgmode._vim import echom, ORGMODE, apply_count, repeat, realign_tags
 from orgmode import settings
@@ -301,27 +302,15 @@ class Todo(object):
 			echom(u'No todo states avaiable for buffer %s' % vim.current.buffer.name)
 
 		for idx, state in enumerate(all_states):
-			res = u''
-			for j in range(2):
-				if j < len(state):
-					for raw_todo in state[j]:
-						if type(raw_todo) != unicode:
-							continue
-						todo, key = split_access_key(raw_todo)
-						if key:
-							res += (u'\t' if res else u'') + u'[%s] %s' % (key, todo)
-							# map access keys to callback that updates current heading
-							# map selection keys
-							vim.command(u_encode(u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>%s ORGMODE.plugins[u"Todo"].set_todo_state("%s")<CR>' % (key, VIM_PY_CALL, u_decode(todo))))
-						elif key:
-							res += (u'\t' if res else u'') + todo
-			if res:
-				if idx == 0:
-					# WORKAROUND: the cursor can not be positioned properly on
-					# the first line. Another line is just inserted and it
-					# works great
-					vim.current.buffer[0] = u_encode(u'')
-				vim.current.buffer.append(u_encode(res))
+			pairs = [split_access_key(x) for x in it.chain(*state)]
+			line = u'\t'.join(u''.join((u'[%s] ' % x[1] if x[1] is not None
+							   else u'', x[0])) for x in pairs)
+			vim.current.buffer.append(u_encode(line))
+			for p in pairs:
+				key = p[1] if p[1] is not None else u''
+				todo = p[0]
+				# FIXME if double key is used for access modified this doesn't work
+				vim.command(u_encode(u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>%s ORGMODE.plugins[u"Todo"].set_todo_state("%s")<CR>' % (key, VIM_PY_CALL, u_decode(todo))))
 
 		# position the cursor of the current todo item
 		vim.command(u_encode(u'normal! G'))
