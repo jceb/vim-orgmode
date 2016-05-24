@@ -225,6 +225,7 @@ class Todo(object):
 			new_state = Todo._get_next_state(
 				current_state, todo_states, direction=direction,
 				next_set=next_set)
+
 			cls.set_todo_state(new_state)
 
 		# plug
@@ -281,38 +282,41 @@ class Todo(object):
 		bufnr = int(vim.current.buffer.name.split('/')[-1])
 		all_states = ORGTODOSTATES.get(bufnr, None)
 
+		vim_commands = [
+			u'let g:org_sav_timeoutlen=&timeoutlen',
+			u'au orgmode BufEnter <buffer> :if ! exists("g:org_sav_timeoutlen")|let g:org_sav_timeoutlen=&timeoutlen|set timeoutlen=1|endif',
+			u'au orgmode BufLeave <buffer> :if exists("g:org_sav_timeoutlen")|let &timeoutlen=g:org_sav_timeoutlen|unlet g:org_sav_timeoutlen|endif',
+			u'setlocal nolist tabstop=16 buftype=nofile timeout timeoutlen=1 winfixheight',
+			u'setlocal statusline=Org\\ todo\\ (%s)' % vim.eval(u_encode(u'fnameescape(fnamemodify(bufname(%d), ":t"))' % bufnr)),
+			u'nnoremap <silent> <buffer> <Esc> :%sbw<CR>' % vim.eval(u_encode(u'bufnr("%")')),
+			u'nnoremap <silent> <buffer> <CR> :let g:org_state = fnameescape(expand("<cword>"))<Bar>bw<Bar>exec "%s ORGMODE.plugins[u\'Todo\'].set_todo_state(\'".g:org_state."\')"<Bar>unlet! g:org_state<CR>' % VIM_PY_CALL,
+			]
 		# because timeoutlen can only be set globally it needs to be stored and restored later
-		vim.command(u_encode(u'let g:org_sav_timeoutlen=&timeoutlen'))
-		vim.command(u_encode(u'au orgmode BufEnter <buffer> :if ! exists("g:org_sav_timeoutlen")|let g:org_sav_timeoutlen=&timeoutlen|set timeoutlen=1|endif'))
-		vim.command(u_encode(u'au orgmode BufLeave <buffer> :if exists("g:org_sav_timeoutlen")|let &timeoutlen=g:org_sav_timeoutlen|unlet g:org_sav_timeoutlen|endif'))
 		# make window a scratch window and set the statusline differently
-		vim.command(u_encode(u'setlocal nolist tabstop=16 buftype=nofile timeout timeoutlen=1 winfixheight'))
-		vim.command(u_encode(u'setlocal statusline=Org\\ todo\\ (%s)' % vim.eval(u_encode((u'fnameescape(fnamemodify(bufname(%d), ":t"))' % bufnr)))))
-		vim.command(u_encode(u'nnoremap <silent> <buffer> <Esc> :%sbw<CR>' % (vim.eval(u_encode(u'bufnr("%")')), )))
-		vim.command(u_encode(u'nnoremap <silent> <buffer> <CR> :let g:org_state = fnameescape(expand("<cword>"))<Bar>bw<Bar>exec "%s ORGMODE.plugins[u\'Todo\'].set_todo_state(\'".g:org_state."\')"<Bar>unlet! g:org_state<CR>' % VIM_PY_CALL))
+		for cmd in vim_commands:
+			vim.command(u_encode(cmd))
 
 		if all_states is None:
 			vim.command(u_encode(u'bw'))
 			echom(u'No todo states avaiable for buffer %s' % vim.current.buffer.name)
 
-		for l in range(0, len(all_states)):
+		for idx, state in enumerate(all_states):
 			res = u''
-			for j in range(0, 2):
-				if j < len(all_states[l]):
-					for i in all_states[l][j]:
-						if type(i) != unicode:
+			for j in range(2):
+				if j < len(state):
+					for raw_todo in state[j]:
+						if type(raw_todo) != unicode:
 							continue
-						v, k = split_access_key(i)
-						if k:
-							res += (u'\t' if res else u'') + u'[%s] %s' % (k, v)
+						todo, key = split_access_key(raw_todo)
+						if key:
+							res += (u'\t' if res else u'') + u'[%s] %s' % (key, todo)
 							# map access keys to callback that updates current heading
 							# map selection keys
-							vim.command(u_encode(u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>%s ORGMODE.plugins[u"Todo"].set_todo_state("%s")<CR>' % (k, VIM_PY_CALL, u_decode(v))))
-
-						elif v:
-							res += (u'\t' if res else u'') + v
+							vim.command(u_encode(u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>%s ORGMODE.plugins[u"Todo"].set_todo_state("%s")<CR>' % (key, VIM_PY_CALL, u_decode(todo))))
+						elif key:
+							res += (u'\t' if res else u'') + todo
 			if res:
-				if l == 0:
+				if idx == 0:
 					# WORKAROUND: the cursor can not be positioned properly on
 					# the first line. Another line is just inserted and it
 					# works great
@@ -324,12 +328,13 @@ class Todo(object):
 		current_state = settings.unset(u'org_current_state_%d' % bufnr)
 		found = False
 		if current_state is not None and current_state != '':
-			for i in range(0, len(vim.current.buffer)):
-				idx = vim.current.buffer[i].find(current_state)
+			for i, buf in enumerate(vim.current.buffer):
+				idx = buf.find(current_state)
 				if idx != -1:
 					vim.current.window.cursor = (i + 1, idx)
 					found = True
 					break
+
 		if not found:
 			vim.current.window.cursor = (2, 4)
 

@@ -112,6 +112,7 @@ class AgendaFilterTestCase(unittest.TestCase):
 		odate = OrgDate(True, tmpdate.year, tmpdate.month, tmpdate.day)
 		tmp_head = Heading(title=u'Refactor the code', todo=u'TODO', active_date=odate)
 		tmp_head_01 = Heading(title=u'Refactor the code', todo=u'STARTED', active_date=odate)
+		# TODO add more tests
 		headings = [tmp_head, tmp_head_01]
 		filtered = list(filter_items(headings,
 				[contains_active_date, contains_active_todo]))
