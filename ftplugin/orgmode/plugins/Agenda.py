@@ -212,11 +212,12 @@ class Agenda(object):
 
 	@classmethod
 	def list_all_todos(cls, current_buffer=False):
-		u"""
-		List all todos in:
-			current_buffer = False 		all agenda files
-			current_buffer = True 		current org_file
-		in one buffer.
+		u""" List all todos in one buffer.
+
+		Args:
+			current_buffer (bool):
+				False: all agenda files
+				True: current org_file
 		"""
 		if current_buffer:
 			agenda_documents = vim.current.buffer.name

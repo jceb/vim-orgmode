@@ -13,6 +13,14 @@ Subpackages
 Submodules
 ----------
 
+orgmode._vim module
+-------------------
+
+.. automodule:: orgmode._vim
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 orgmode.exceptions module
 -------------------------
 

@@ -2,7 +2,7 @@
 
 """
 	checkboxes
-	~~~~~~~~~
+	~~~~~~~~~~
 
 	TODO: explain this :)
 """
@@ -21,6 +21,7 @@ from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_
 
 from orgmode.py3compat.encode_compatibility import *
 from orgmode.py3compat.unicode_compatibility import *
+
 
 class Checkbox(DomObj):
 	u""" Structural checkbox object """

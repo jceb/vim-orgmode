@@ -15,6 +15,15 @@
 
 import sys
 import os
+import mock
+
+# Mock vim
+MOCK_MODULES = ['vim']
+for m in MOCK_MODULES:
+	sys.modules[m] = mock.Mock()
+
+import vim
+vim.eval = mock.MagicMock(return_value=1)
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -43,7 +52,7 @@ extensions = [
 # Napoleon config
 napoleon_google_docstring = True
 napoleon_numpy_docstring = True
-napoleon_include_private_with_doc = False
+napoleon_include_private_with_doc = True
 napoleon_include_special_with_doc = True
 napoleon_use_admonition_for_examples = False
 napoleon_use_admonition_for_notes = False
@@ -53,7 +62,7 @@ napoleon_use_param = True
 napoleon_use_rtype = True
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+#templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -103,7 +112,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #default_role = None
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
-#add_function_parentheses = True
+add_function_parentheses = True
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
@@ -142,7 +151,7 @@ html_theme = 'alabaster'
 
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
-#html_title = 'orgmode v'
+html_title = 'orgmode v0.5'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
@@ -159,7 +168,7 @@ html_theme = 'alabaster'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
