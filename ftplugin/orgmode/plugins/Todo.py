@@ -18,11 +18,13 @@ from orgmode.py3compat.unicode_compatibility import *
 from orgmode.py3compat.py_py3_string import *
 
 
-def split_access_key(t):
+def split_access_key(t, sub=None):
 	u""" Split access key
 
 	Args:
 		t (str): Todo state
+		sub: A value that will be returned instead of access key if there was
+			not access key
 
 	Returns:
 		tuple: Todo state and access key separated (TODO, ACCESS_KEY)
@@ -30,6 +32,8 @@ def split_access_key(t):
 	Example:
 		>>> split_access_key('TODO(t)')
 		>>> ('TODO', '(t)')
+		>>> split_access_key('WANT', sub='(hi)')
+		>>> ('WANT', '(hi)')
 	"""
 	if type(t) != unicode:
 		echom("String must be unicode")
@@ -37,7 +41,7 @@ def split_access_key(t):
 
 	idx = t.find(u'(')
 
-	v, k = (t, None)
+	v, k = (t, sub)
 	if idx != -1 and t[idx + 1:-1]:
 		v, k = (t[:idx], t[idx + 1:-1])
 	return (v, k)
