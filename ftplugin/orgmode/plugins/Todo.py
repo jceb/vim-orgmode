@@ -296,7 +296,8 @@ class Todo(object):
 			u'nnoremap <silent> <buffer> <Esc> :%sbw<CR>' % vim.eval(u_encode(u'bufnr("%")')),
 			u'nnoremap <silent> <buffer> <CR> :let g:org_state = fnameescape(expand("<cword>"))<Bar>bw<Bar>exec "%s ORGMODE.plugins[u\'Todo\'].set_todo_state(\'".g:org_state."\')"<Bar>unlet! g:org_state<CR>' % VIM_PY_CALL,
 			]
-		# because timeoutlen can only be set globally it needs to be stored and restored later
+		# because timeoutlen can only be set globally it needs to be stored and
+		# restored later
 		# make window a scratch window and set the statusline differently
 		for cmd in vim_commands:
 			vim.command(u_encode(cmd))
@@ -316,17 +317,14 @@ class Todo(object):
 		# position the cursor of the current todo item
 		vim.command(u_encode(u'normal! G'))
 		current_state = settings.unset(u'org_current_state_%d' % bufnr)
-		found = False
 		if current_state is not None and current_state != '':
 			for i, buf in enumerate(vim.current.buffer):
 				idx = buf.find(current_state)
 				if idx != -1:
 					vim.current.window.cursor = (i + 1, idx)
-					found = True
 					break
-
-		if not found:
-			vim.current.window.cursor = (2, 4)
+			else:
+				vim.current.window.cursor = (2, 4)
 
 		# finally make buffer non modifiable
 		vim.command(u_encode(u'setfiletype orgtodo'))
