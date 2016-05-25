@@ -306,13 +306,10 @@ class Todo(object):
 			echom(u'No todo states avaiable for buffer %s' % vim.current.buffer.name)
 
 		for idx, state in enumerate(all_states):
-			pairs = [split_access_key(x) for x in it.chain(*state)]
-			line = u'\t'.join(u''.join((u'[%s] ' % x[1] if x[1] is not None
-							   else u'', x[0])) for x in pairs)
+			pairs = [split_access_key(x, sub=u' ') for x in it.chain(*state)]
+			line = u'\t'.join(u''.join((u'[%s] ' % x[1], x[0])) for x in pairs)
 			vim.current.buffer.append(u_encode(line))
-			for p in pairs:
-				key = p[1] if p[1] is not None else u''
-				todo = p[0]
+			for todo, key in pairs:
 				# FIXME if double key is used for access modified this doesn't work
 				vim.command(u_encode(u'nnoremap <silent> <buffer> %s :bw<CR><c-w><c-p>%s ORGMODE.plugins[u"Todo"].set_todo_state("%s")<CR>' % (key, VIM_PY_CALL, u_decode(todo))))
 
