@@ -144,11 +144,11 @@ class Todo(object):
 				else:
 					echom("Using set: %s" % str(all_states[-1]))
 					return split_access_key(flatten_list(all_states[-1])[0])[0]
-			ind = (ci[0] + dir) % len(tmp)
-			echom("Using set: %s" % str(tmp[ind]))
+			ind = (ci[0] + dir) % len(all_states)
+			echom("Using set: %s" % str(all_states[ind]))
 			# NOTE: List must be flatten because todo states can be empty, this
 			# is also valid for above use of flat_list
-			return split_access_key(flatten_list(tmp[ind])[0])[0]
+			return split_access_key(flatten_list(all_states[ind])[0])[0]
 		# No next set, cycle around everything
 		else:
 			tmp = [split_access_key(x)[0] for x in flatten_list(all_states)] + [None]
