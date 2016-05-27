@@ -5,7 +5,7 @@ import itertools as it
 
 from orgmode._vim import echom, ORGMODE, apply_count, repeat, realign_tags
 from orgmode import settings
-from orgmode.liborgmode.base import Direction
+from orgmode.liborgmode.base import Direction, flatten_list
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug
 
@@ -80,23 +80,30 @@ class Todo(object):
 	def _get_next_state(
 		cls, current_state, all_states,
 		direction=Direction.FORWARD, next_set=False):
-		u"""
+		u""" Get the next todo state
 
-		:current_state:		the current todo state
-		:all_states:		a list containing all todo states within sublists.
-							The todo states may contain access keys
-		:direction:			direction of state or keyword set change (forward/backward)
-		:interactive:		if interactive and more than one todo sequence is
-							specified, open a selection window
-		:next_set:			advance to the next keyword set in defined direction
+		Args:
+			current_state (str): The current todo state
+			all_states (list): A list containing all todo states within
+				sublists. The todo states may contain access keys
+			direction: Direction of state or keyword set change (forward or
+				backward)
+			next_set: Advance to the next keyword set in defined direction.
 
-		:return:			return the next state as string, or NONE if the
-							next state is no state.
+		Returns:
+			str or None: next todo state, or None if there is no next state.
+
+		Note: all_states should have the form of:
+			[(['TODO(t)'], ['DONE(d)']),
+			 (['REPORT(r)', 'BUG(b)', 'KNOWNCAUSE(k)'], ['FIXED(f)']),
+			 ([], ['CANCELED(c)'])]
 		"""
-		# TODO FIXME: reimplement this in a clean way :)
+		# TODO improve implementation
 		if all_states is None:
 			return
 
+		# TODO this would not work if there are 2 keys with same name... this
+		# also causes problem for find in below method
 		def find_current_todo_state(current, all_states, stop=0):
 			u""" Find current todo state
 
@@ -123,59 +130,91 @@ class Todo(object):
 
 		ci = find_current_todo_state(current_state, all_states)
 
-		if ci is None:
-			if next_set and direction == Direction.BACKWARD:
-				echom(u'Already at the first keyword set')
-				return current_state
-
-			if direction == Direction.FORWARD:
-				if all_states[0][0]:
-					return split_access_key(all_states[0][0][0])[0]
+		# backward direction should really be -1 not 2
+		dir = 1
+		if direction == Direction.BACKWARD:
+			dir = -1
+		# work only with top level index
+		if next_set:
+			# there was no todo state return one based on direction
+			if ci is None:
+				if direction == Direction.FORWARD:
+					echom("Using set: %s" % str(all_states[0]))
+					return split_access_key(flatten_list(all_states[0])[0])[0]
 				else:
-					return split_access_key(all_states[0][1][0])[0]
-			else:
-				if all_states[0][1]:
-					return split_access_key(all_states[0][1][-1])[0]
-				else:
-					return split_access_key(all_states[0][0][-1])[0]
-
-			# return split_access_key(all_states[0][0][0] if all_states[0][0] else all_states[0][1][0])[0] \
-			# 	if direction == Direction.FORWARD else \
-			# 	split_access_key(all_states[0][1][-1] if all_states[0][1] else all_states[0][0][-1])[0]
-		elif next_set:
-			if direction == Direction.FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
-				echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] + 1][0]), u', '.join(all_states[ci[0] + 1][1])))
-				if all_states[ci[0] + 1][0]:
-					return split_access_key(all_states[ci[0] + 1][0][0])[0]
-				else:
-					return split_access_key(all_states[ci[0] + 1][1][0])[0]
-				# return split_access_key(
-				# 	all_states[ci[0] + 1][0][0] if all_states[ci[0] + 1][0] else all_states[ci[0] + 1][1][0])[0]
-			elif current_state is not None and direction == Direction.BACKWARD and ci[0] - 1 >= 0:
-				echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] - 1][0]), u', '.join(all_states[ci[0] - 1][1])))
-				return split_access_key(
-					all_states[ci[0] - 1][0][0] if all_states[ci[0] - 1][0] else all_states[ci[0] - 1][1][0])[0]
-			else:
-				echom(u'Already at the %s keyword set' % (u'first' if direction == Direction.BACKWARD else u'last'))
-				return current_state
+					echom("Using set: %s" % str(all_states[-1]))
+					return split_access_key(flatten_list(all_states[-1])[0])[0]
+			ind = (ci[0] + dir) % len(tmp)
+			echom("Using set: %s" % str(tmp[ind]))
+			# NOTE: List must be flatten because todo states can be empty, this
+			# is also valid for above use of flat_list
+			return split_access_key(flatten_list(tmp[ind])[0])[0]
+		# No next set, cycle around everything
 		else:
-			next_pos = ci[2] + 1 if direction == Direction.FORWARD else ci[2] - 1
-			if direction == Direction.FORWARD:
-				if next_pos < len(all_states[ci[0]][ci[1]]):
-					# select next state within done or todo states
-					return split_access_key(all_states[ci[0]][ci[1]][next_pos])[0]
+			tmp = [split_access_key(x)[0] for x in flatten_list(all_states)] + [None]
+			# TODO same problem as above if there are 2 todo states with same
+			# name
+			try:
+				ind = (tmp.index(current_state) + dir) % len(tmp)
+			except ValueError as e:
+				# print(e)
+				# TODO should this return None like or first todo item?
+				ind = 0
+			return tmp[ind]
 
-				elif not ci[1] and next_pos - len(all_states[ci[0]][ci[1]]) < len(all_states[ci[0]][ci[1] + 1]):
-					# finished todo states, jump to done states
-					return split_access_key(all_states[ci[0]][ci[1] + 1][next_pos - len(all_states[ci[0]][ci[1]])])[0]
-			else:
-				if next_pos >= 0:
-					# select previous state within done or todo states
-					return split_access_key(all_states[ci[0]][ci[1]][next_pos])[0]
+###############################################################################
+# Old code: left until all details are fixed about new code
+###############################################################################
 
-				elif ci[1] and len(all_states[ci[0]][ci[1] - 1]) + next_pos < len(all_states[ci[0]][ci[1] - 1]):
-					# finished done states, jump to todo states
-					return split_access_key(all_states[ci[0]][ci[1] - 1][len(all_states[ci[0]][ci[1] - 1]) + next_pos])[0]
+		# if ci is None:
+		# 	if next_set and direction == Direction.BACKWARD:
+		# 		echom(u'Already at the first keyword set')
+		# 		return current_state
+
+		# 	if direction == Direction.FORWARD:
+		# 		if all_states[0][0]:
+		# 			return split_access_key(all_states[0][0][0])[0]
+		# 		else:
+		# 			return split_access_key(all_states[0][1][0])[0]
+		# 	else:
+		# 		if all_states[0][1]:
+		# 			return split_access_key(all_states[0][1][-1])[0]
+		# 		else:
+		# 			return split_access_key(all_states[0][0][-1])[0]
+
+		# elif next_set:
+		# 	if direction == Direction.FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
+		# 		echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] + 1][0]), u', '.join(all_states[ci[0] + 1][1])))
+		# 		if all_states[ci[0] + 1][0]:
+		# 			return split_access_key(all_states[ci[0] + 1][0][0])[0]
+		# 		else:
+		# 			return split_access_key(all_states[ci[0] + 1][1][0])[0]
+
+		# 	elif current_state is not None and direction == Direction.BACKWARD and ci[0] - 1 >= 0:
+		# 		echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] - 1][0]), u', '.join(all_states[ci[0] - 1][1])))
+		# 		return split_access_key(
+		# 			all_states[ci[0] - 1][0][0] if all_states[ci[0] - 1][0] else all_states[ci[0] - 1][1][0])[0]
+		# 	else:
+		# 		echom(u'Already at the %s keyword set' % (u'first' if direction == Direction.BACKWARD else u'last'))
+		# 		return current_state
+		# else:
+		# 	next_pos = ci[2] + 1 if direction == Direction.FORWARD else ci[2] - 1
+		# 	if direction == Direction.FORWARD:
+		# 		if next_pos < len(all_states[ci[0]][ci[1]]):
+		# 			# select next state within done or todo states
+		# 			return split_access_key(all_states[ci[0]][ci[1]][next_pos])[0]
+
+		# 		elif not ci[1] and next_pos - len(all_states[ci[0]][ci[1]]) < len(all_states[ci[0]][ci[1] + 1]):
+		# 			# finished todo states, jump to done states
+		# 			return split_access_key(all_states[ci[0]][ci[1] + 1][next_pos - len(all_states[ci[0]][ci[1]])])[0]
+		# 	else:
+		# 		if next_pos >= 0:
+		# 			# select previous state within done or todo states
+		# 			return split_access_key(all_states[ci[0]][ci[1]][next_pos])[0]
+
+		# 		elif ci[1] and len(all_states[ci[0]][ci[1] - 1]) + next_pos < len(all_states[ci[0]][ci[1] - 1]):
+		# 			# finished done states, jump to todo states
+		# 			return split_access_key(all_states[ci[0]][ci[1] - 1][len(all_states[ci[0]][ci[1] - 1]) + next_pos])[0]
 
 	@classmethod
 	@realign_tags
@@ -225,8 +264,6 @@ class Todo(object):
 				vim.command(u_encode(
 					u'keepalt %s %dsplit org:todo/%d' % (prompt_pos, len(todo_states), d.bufnr)))
 		else:
-			# NOTE: interactive is ALWAYS false here and this is the only place
-			# this functions is used
 			new_state = Todo._get_next_state(
 				current_state, todo_states, direction=direction,
 				next_set=next_set)
