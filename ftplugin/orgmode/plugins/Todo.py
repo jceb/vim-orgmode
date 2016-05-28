@@ -5,7 +5,7 @@ import itertools as it
 
 from orgmode._vim import echom, ORGMODE, apply_count, repeat, realign_tags
 from orgmode import settings
-from orgmode.liborgmode.base import Direction, flatten_list
+from orgmode.liborgmode.base import Direction
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug
 
@@ -104,53 +104,54 @@ class Todo(object):
 
 		# TODO this would not work if there are 2 keys with same name... this
 		# also causes problem for find in below method
-		def find_current_todo_state(current, all_states, stop=0):
-			u""" Find current todo state
+		# def find_current_todo_state(current, all_states, stop=0):
+		# 	u""" Find current todo state
 
-			Args:
-				current: Current todo state
-				all_states: List of todo states
-				stop: Internal parameter for parsing only two levels of lists
+		# 	Args:
+		# 		current: Current todo state
+		# 		all_states: List of todo states
+		# 		stop: Internal parameter for parsing only two levels of lists
 
-			Returns:
-				list: First position of todo state in list in the form
-						(IDX_TOPLEVEL, IDX_SECOND_LEVEL (0|1), IDX_OF_ITEM)
-			"""
-			for i, element in enumerate(all_states):
-				if type(element) in (tuple, list) and stop < 2:
-					res = find_current_todo_state(current, element, stop=stop + 1)
-					if res:
-						res.insert(0, i)
-						return res
-				# ensure that only on the second level of sublists todo states
-				# are found
-				if type(element) == unicode and stop == 2:
-					if current == split_access_key(element)[0]:
-						return [i]
+		# 	Returns:
+		# 		list: First position of todo state in list in the form
+		# 				(IDX_TOPLEVEL, IDX_SECOND_LEVEL (0|1), IDX_OF_ITEM)
+		# 	"""
+		# 	for i, element in enumerate(all_states):
+		# 		if type(element) in (tuple, list) and stop < 2:
+		# 			res = find_current_todo_state(current, element, stop=stop + 1)
+		# 			if res:
+		# 				res.insert(0, i)
+		# 				return res
+		# 		# ensure that only on the second level of sublists todo states
+		# 		# are found
+		# 		if type(element) == unicode and stop == 2:
+		# 			if current == split_access_key(element)[0]:
+		# 				return [i]
 
-		ci = find_current_todo_state(current_state, all_states)
+		# ci = find_current_todo_state(current_state, all_states)
+
+		cleaned_todos = [[split_access_key(todo)[0] for todo in
+			  it.chain.from_iterable(x)] for x in all_states]
+		todo_position = [1 if current_state in set else 0 for set in cleaned_todos]
+		# TODO This is the case when there are 2 todo states with the same
+		# name. Wat do?
+		if sum(todo_position) > 1: pass
 
 		# backward direction should really be -1 not 2
-		dir = 1
-		if direction == Direction.BACKWARD:
-			dir = -1
+		dir = -1 if direction == Direction.BACKWARD else 1
 		# work only with top level index
 		if next_set:
-			top_set = ci[0] if ci is not None else 0
-			ind = (top_set + dir) % len(all_states)
+			top_set = todo_position.index(1) if todo_position else 0
+			ind = (top_set + dir) % len(cleaned_todos)
 			echom("Using set: %s" % str(all_states[ind]))
-			# NOTE: List must be flatten because todo states can be empty, this
-			# is also valid for above use of flat_list
-			return split_access_key(flatten_list(all_states[ind])[0])[0]
+			return cleaned_todos[ind][0]
 		# No next set, cycle around everything
 		else:
-			tmp = [split_access_key(x)[0] for x in flatten_list(all_states)] + [None]
-			# TODO same problem as above if there are 2 todo states with same
-			# name
+			tmp = list(it.chain.from_iterable(cleaned_todos)) + [None]
 			try:
 				ind = (tmp.index(current_state) + dir) % len(tmp)
 			except ValueError:
-				# TODO should this return None like or first todo item?
+				# TODO should this return None or first todo item?
 				ind = 0
 			return tmp[ind]
 
