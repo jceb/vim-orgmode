@@ -136,15 +136,8 @@ class Todo(object):
 			dir = -1
 		# work only with top level index
 		if next_set:
-			# there was no todo state return one based on direction
-			if ci is None:
-				if direction == Direction.FORWARD:
-					echom("Using set: %s" % str(all_states[0]))
-					return split_access_key(flatten_list(all_states[0])[0])[0]
-				else:
-					echom("Using set: %s" % str(all_states[-1]))
-					return split_access_key(flatten_list(all_states[-1])[0])[0]
-			ind = (ci[0] + dir) % len(all_states)
+			top_set = ci[0] if ci is not None else 0
+			ind = (top_set + dir) % len(all_states)
 			echom("Using set: %s" % str(all_states[ind]))
 			# NOTE: List must be flatten because todo states can be empty, this
 			# is also valid for above use of flat_list
@@ -156,8 +149,7 @@ class Todo(object):
 			# name
 			try:
 				ind = (tmp.index(current_state) + dir) % len(tmp)
-			except ValueError as e:
-				# print(e)
+			except ValueError:
 				# TODO should this return None like or first todo item?
 				ind = 0
 			return tmp[ind]
