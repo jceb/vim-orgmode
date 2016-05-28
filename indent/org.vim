@@ -13,22 +13,22 @@ setlocal nolisp
 setlocal nosmartindent
 setlocal autoindent
 
+if has('python3')
+	let s:py_env = 'python3 << EOF'
+else
+	let s:py_env = 'python << EOF'
+endif
+
 function! GetOrgIndent()
 	if g:org_indent == 0
 		return -1
 	endif
 
-if has('python3')
-python3 << EOF
+exec py_env
 from orgmode._vim import indent_orgmode
 indent_orgmode()
 EOF
-else
-python << EOF
-from orgmode._vim import indent_orgmode
-indent_orgmode()
-EOF
-endif
+
 	if exists('b:indent_level')
 		let l:tmp = b:indent_level
 		unlet b:indent_level
@@ -64,31 +64,16 @@ function! GetOrgFolding()
 			endif
 		endif
 
-		if has('python3')
-python3 << EOF
+		exe s:py_env
 from orgmode._vim import fold_orgmode
 fold_orgmode(allow_dirty=True)
 EOF
-		else
-python << EOF
-from orgmode._vim import fold_orgmode
-fold_orgmode(allow_dirty=True)
-EOF
-		endif
 	else
 
-		if has('python3')
-python3 << EOF
+		exe s:py_env
 from orgmode._vim import fold_orgmode
 fold_orgmode()
 EOF
-		else
-python << EOF
-from orgmode._vim import fold_orgmode
-fold_orgmode()
-EOF
-		endif
-	endif
 
 	if exists('b:fold_expr')
 		let l:tmp = b:fold_expr
@@ -124,30 +109,16 @@ function! GetOrgFoldtext()
 		if has_key(b:org_foldtext_cache, v:foldstart)
 			return b:org_foldtext_cache[v:foldstart]
 		endif
-		if has('python3')
-python3 << EOF
+		exe s:py_env
 from orgmode._vim import fold_text
 fold_text(allow_dirty=True)
 EOF
-		else
-python << EOF
-from orgmode._vim import fold_text
-fold_text(allow_dirty=True)
-EOF
-		endif
 	else
 		unlet! b:org_foldtext_cache
-		if has('python3')
-python3 << EOF
+		exec s:py_env
 from orgmode._vim import fold_text
 fold_text()
 EOF
-		else
-python << EOF
-from orgmode._vim import fold_text
-fold_text()
-EOF
-		endif
 	endif
 
 	if exists('b:foldtext')

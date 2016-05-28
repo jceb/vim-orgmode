@@ -9,8 +9,10 @@
 if v:version > 702
 	if has('python3')
 		let s:py_version = 'python3 '
+		let s:py_env = 'python3 << EOF'
 	elseif has('python')
 		let s:py_version = 'python '
+		let s:py_env = 'python << EOF'
 	else
 		echoerr "Unable to start orgmode. Orgmode depends on Vim >= 7.3 with Python support complied in."
 		finish
@@ -37,11 +39,7 @@ if ! exists('b:did_ftplugin')
 
 	" register keybindings if they don't have been registered before
 	if exists("g:loaded_org")
-		if has('python3')
-			python3 ORGMODE.register_keybindings()
-		else
-			python ORGMODE.register_keybindings()
-		endif
+		exe s:py_version . 'ORGMODE.register_keybindings()'
 	endif
 endif
 
@@ -77,40 +75,20 @@ endif
 
 " Menu and document handling {{{1
 function! <SID>OrgRegisterMenu()
-	if has('python3')
-		python3 ORGMODE.register_menu()
-	else
-		python ORGMODE.register_menu()
-	endif
+	exe s:py_version . 'ORGMODE.register_menu()'
 endfunction
 
 function! <SID>OrgUnregisterMenu()
-	if has('python3')
-		python3 ORGMODE.unregister_menu()
-	else
-		python ORGMODE.unregister_menu()
-	endif
+	exe s:py_version . 'ORGMODE.unregister_menu()'
 endfunction
 
-if has('python3')
 function! <SID>OrgDeleteUnusedDocument(bufnr)
-python3 << EOF
+	exe s:py_env
 b = int(vim.eval('a:bufnr'))
 if b in ORGMODE._documents:
 	del ORGMODE._documents[b]
 EOF
 endfunction
-
-else
-
-function! <SID>OrgDeleteUnusedDocument(bufnr)
-python << EOF
-b = int(vim.eval('a:bufnr'))
-if b in ORGMODE._documents:
-	del ORGMODE._documents[b]
-EOF
-endfunction
-endif
 
 " show and hide Org menu depending on the filetype
 augroup orgmode
@@ -121,8 +99,7 @@ augroup END
 
 " Start orgmode {{{1
 " Expand our path
-if has('python3')
-python3 << EOF
+exec s:py_env
 import vim, os, sys
 
 for p in vim.eval("&runtimepath").split(','):
@@ -137,25 +114,6 @@ ORGMODE.start()
 
 import datetime
 EOF
-
-else
-
-python << EOF
-import vim, os, sys
-
-for p in vim.eval("&runtimepath").split(','):
-	dname = os.path.join(p, "ftplugin")
-	if os.path.exists(os.path.join(dname, "orgmode")):
-		if dname not in sys.path:
-			sys.path.append(dname)
-			break
-
-from orgmode._vim import ORGMODE, insert_at_cursor, get_user_input, date_to_str
-ORGMODE.start()
-
-import datetime
-EOF
-endif
 
 " 3rd Party Plugin Integration {{{1
 " * Repeat {{{2
