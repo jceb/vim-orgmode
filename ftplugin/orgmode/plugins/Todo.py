@@ -141,7 +141,7 @@ class Todo(object):
 		dir = -1 if direction == Direction.BACKWARD else 1
 		# work only with top level index
 		if next_set:
-			top_set = todo_position.index(1) if todo_position else 0
+			top_set = todo_position.index(1) if sum(todo_position) > 0 else 0
 			ind = (top_set + dir) % len(cleaned_todos)
 			echom("Using set: %s" % str(all_states[ind]))
 			return cleaned_todos[ind][0]
