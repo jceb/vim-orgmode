@@ -8,7 +8,7 @@ from orgmode import settings
 from orgmode.liborgmode.base import Direction
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug
-from orgmode.exception import PluginError
+from orgmode.exceptions import PluginError
 
 # temporary todo states for differnent orgmode buffers
 ORGTODOSTATES = {}
