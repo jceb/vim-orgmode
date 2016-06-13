@@ -102,33 +102,36 @@ class Todo(object):
 			return
 
 		cleaned_todos = [[split_access_key(todo)[0] for todo in
-			  it.chain.from_iterable(x)] for x in all_states]
-		todo_position = [1 if current_state in set else 0 for set in cleaned_todos]
+			  it.chain.from_iterable(x)] for x in all_states]+[[None]]
+		todo_position = [1 if current_state in todo_set else 0 for todo_set in
+						 cleaned_todos]
 		# TODO This is the case when there are 2 todo states with the same
-		# name. It should be handeled by making a simple class to hold TODO
+		# name. It should be handled by making a simple class to hold TODO
 		# states, which would avoid mixing 2 todo states with the same name
 		# since they would have a different reference (but same content),
 		# albeit this can fail because python optimizes short strings (i.e.
 		# they hold the same ref) so care should be taken in implementation
 		if sum(todo_position) > 1:
-			echom("There are 2 todo's with the same name, currently this is not supported")
+			echom("There are 2 todo's with the same name, currently this is not supported. ")
 
 		# backward direction should really be -1 not 2
-		dir = -1 if direction == Direction.BACKWARD else 1
+		next_dir = -1 if direction == Direction.BACKWARD else 1
 		# work only with top level index
 		if next_set:
-			top_set = todo_position.index(1) if sum(todo_position) > 0 else 0
-			ind = (top_set + dir) % len(cleaned_todos)
+			top_set = todo_position.index(1) if sum(todo_position) > 0 else -1
+			ind = (top_set + next_dir) % len(cleaned_todos)
 			echom("Using set: %s" % str(all_states[ind]))
 			return cleaned_todos[ind][0]
 		# No next set, cycle around everything
 		else:
-			tmp = list(it.chain.from_iterable(cleaned_todos)) + [None]
+			tmp = list(it.chain.from_iterable(cleaned_todos))
 			try:
-				ind = (tmp.index(current_state) + dir) % len(tmp)
+				ind = (tmp.index(current_state) + next_dir) % len(tmp)
 			except ValueError:
 				# TODO should this return None or first todo item?
-				ind = 0
+				# Ron: It should return None. Though I doubt it'll ever happen
+				# 	   in real life usage.
+				ind = -1
 			return tmp[ind]
 
 	@classmethod

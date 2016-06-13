@@ -375,12 +375,12 @@ class TodoTestCase(unittest.TestCase):
 		current_state = None
 		result = Todo._get_next_state(current_state, states,
 				Direction.BACKWARD, next_set=True)
-		self.assertEquals(result, None)
+		self.assertEquals(result, u'QA')
 
 		current_state = u'TODO'
 		result = Todo._get_next_state(current_state, states,
 				Direction.BACKWARD, next_set=True)
-		self.assertEquals(result, u'TODO')
+		self.assertEquals(result, None)
 
 		current_state = u'TODO'
 		result = Todo._get_next_state(current_state, states,
@@ -405,12 +405,12 @@ class TodoTestCase(unittest.TestCase):
 		current_state = u'QA'
 		result = Todo._get_next_state(current_state, states,
 				Direction.FORWARD, next_set=True)
-		self.assertEquals(result, u'QA')
+		self.assertEquals(result, None)
 
 		current_state = u'RELEASED'
 		result = Todo._get_next_state(current_state, states,
 				Direction.FORWARD, next_set=True)
-		self.assertEquals(result, u'RELEASED')
+		self.assertEquals(result, None)
 
 		current_state = u'RELEASED'
 		result = Todo._get_next_state(current_state, states,
