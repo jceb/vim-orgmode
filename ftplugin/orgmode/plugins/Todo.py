@@ -136,12 +136,15 @@ class Todo(object):
 			if top_set is None:
 				return top_set
 			ind = (top_set + next_dir) % len(cleaned_todos)
-			echom("Using set: %s" % str(all_states[ind]))
+			if ind != len(cleaned_todos)-1:
+				echom("Using set: %s" % str(all_states[ind]))
+			else:
+				echom("Keyword removed.")
 			return cleaned_todos[ind][0]
 		# No next set, cycle around everything
 		else:
-			ind = next((todo_iter[0] for todo_iter in enumerate(current_state)
-					    if todo_iter[1] is current_state), None)
+			ind = next((todo_iter[0] for todo_iter in enumerate(flattened_todos)
+					    if todo_iter[1] == current_state), None)
 			if ind is None:
 				return ind
 			return flattened_todos [(ind+next_dir)%len(flattened_todos)]
