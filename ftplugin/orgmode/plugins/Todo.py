@@ -8,6 +8,7 @@ from orgmode import settings
 from orgmode.liborgmode.base import Direction
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug
+from orgmode.exception import PluginError
 
 # temporary todo states for differnent orgmode buffers
 ORGTODOSTATES = {}
@@ -77,6 +78,32 @@ class Todo(object):
 		self.keybindings = []
 
 	@classmethod
+	def _process_all_states(cls, all_states):
+		u""" verify if states defined by user is valid.
+		Return cleaned_todo and flattened if is. Raise Exception if not.
+		Valid checking:
+			* all_states is not empty
+			* no two state share a same name
+		"""
+		# TODO Write tests. -- Ron89
+		if all_states is None:
+			raise PluginError(u"Empty TODO keyword list. Please examine `g/b:org_todo_keywords`")
+		cleaned_todos = [[
+			split_access_key(todo)[0] for todo in it.chain.from_iterable(x)] 
+			for x in all_states] + [[None]]
+
+		flattened_todos = list(it.chain.from_iterable(cleaned_todos))
+		if len(flattened_todos) != len(set(flattened_todos)):
+			raise PluginError(u"Duplicate name in TODO keyword list. Please examine `g/b:org_todo_keywords`")
+		# TODO This is the case when there are 2 todo states with the same
+		# name. It should be handled by making a simple class to hold TODO
+		# states, which would avoid mixing 2 todo states with the same name
+		# since they would have a different reference (but same content),
+		# albeit this can fail because python optimizes short strings (i.e.
+		# they hold the same ref) so care should be taken in implementation
+		return (cleaned_todos, flattened_todos)
+
+	@classmethod
 	def _get_next_state(
 		cls, current_state, all_states,
 		direction=Direction.FORWARD, next_set=False):
@@ -98,41 +125,26 @@ class Todo(object):
 			 (['REPORT(r)', 'BUG(b)', 'KNOWNCAUSE(k)'], ['FIXED(f)']),
 			 ([], ['CANCELED(c)'])]
 		"""
-		if all_states is None:
-			return
-
-		cleaned_todos = [[split_access_key(todo)[0] for todo in
-			  it.chain.from_iterable(x)] for x in all_states]+[[None]]
-		todo_position = [1 if current_state in todo_set else 0 for todo_set in
-						 cleaned_todos]
-		# TODO This is the case when there are 2 todo states with the same
-		# name. It should be handled by making a simple class to hold TODO
-		# states, which would avoid mixing 2 todo states with the same name
-		# since they would have a different reference (but same content),
-		# albeit this can fail because python optimizes short strings (i.e.
-		# they hold the same ref) so care should be taken in implementation
-		if sum(todo_position) > 1:
-			echom("There are 2 todo's with the same name, currently this is not supported. ")
+		cleaned_todos, flattened_todos = cls._process_all_states(all_states)
 
 		# backward direction should really be -1 not 2
 		next_dir = -1 if direction == Direction.BACKWARD else 1
 		# work only with top level index
 		if next_set:
-			top_set = todo_position.index(1) if sum(todo_position) > 0 else -1
+			top_set = next((todo_set[0] for todo_set in enumerate(cleaned_todos)
+						    if current_state in todo_set[1]), None)
+			if top_set is None:
+				return top_set
 			ind = (top_set + next_dir) % len(cleaned_todos)
 			echom("Using set: %s" % str(all_states[ind]))
 			return cleaned_todos[ind][0]
 		# No next set, cycle around everything
 		else:
-			tmp = list(it.chain.from_iterable(cleaned_todos))
-			try:
-				ind = (tmp.index(current_state) + next_dir) % len(tmp)
-			except ValueError:
-				# TODO should this return None or first todo item?
-				# Ron: It should return None. Though I doubt it'll ever happen
-				# 	   in real life usage.
-				ind = -1
-			return tmp[ind]
+			ind = next((todo_iter[0] for todo_iter in enumerate(current_state)
+					    if todo_iter[1] is current_state), None)
+			if ind is None:
+				return ind
+			return flattened_todos [(ind+next_dir)%len(flattened_todos)]
 
 	@classmethod
 	@realign_tags
