@@ -98,44 +98,20 @@ class Todo(object):
 			 (['REPORT(r)', 'BUG(b)', 'KNOWNCAUSE(k)'], ['FIXED(f)']),
 			 ([], ['CANCELED(c)'])]
 		"""
-		# TODO improve implementation
 		if all_states is None:
 			return
-
-		# TODO this would not work if there are 2 keys with same name... this
-		# also causes problem for find in below method
-		# def find_current_todo_state(current, all_states, stop=0):
-		# 	u""" Find current todo state
-
-		# 	Args:
-		# 		current: Current todo state
-		# 		all_states: List of todo states
-		# 		stop: Internal parameter for parsing only two levels of lists
-
-		# 	Returns:
-		# 		list: First position of todo state in list in the form
-		# 				(IDX_TOPLEVEL, IDX_SECOND_LEVEL (0|1), IDX_OF_ITEM)
-		# 	"""
-		# 	for i, element in enumerate(all_states):
-		# 		if type(element) in (tuple, list) and stop < 2:
-		# 			res = find_current_todo_state(current, element, stop=stop + 1)
-		# 			if res:
-		# 				res.insert(0, i)
-		# 				return res
-		# 		# ensure that only on the second level of sublists todo states
-		# 		# are found
-		# 		if type(element) == unicode and stop == 2:
-		# 			if current == split_access_key(element)[0]:
-		# 				return [i]
-
-		# ci = find_current_todo_state(current_state, all_states)
 
 		cleaned_todos = [[split_access_key(todo)[0] for todo in
 			  it.chain.from_iterable(x)] for x in all_states]
 		todo_position = [1 if current_state in set else 0 for set in cleaned_todos]
 		# TODO This is the case when there are 2 todo states with the same
-		# name. Wat do?
-		if sum(todo_position) > 1: pass
+		# name. It should be handeled by making a simple class to hold TODO
+		# states, which would avoid mixing 2 todo states with the same name
+		# since they would have a different reference (but same content),
+		# albeit this can fail because python optimizes short strings (i.e.
+		# they hold the same ref) so care should be taken in implementation
+		if sum(todo_position) > 1:
+			echom("There are 2 todo's with the same name, currently this is not supported")
 
 		# backward direction should really be -1 not 2
 		dir = -1 if direction == Direction.BACKWARD else 1
@@ -154,60 +130,6 @@ class Todo(object):
 				# TODO should this return None or first todo item?
 				ind = 0
 			return tmp[ind]
-
-###############################################################################
-# Old code: left until all details are fixed about new code
-###############################################################################
-
-		# if ci is None:
-		# 	if next_set and direction == Direction.BACKWARD:
-		# 		echom(u'Already at the first keyword set')
-		# 		return current_state
-
-		# 	if direction == Direction.FORWARD:
-		# 		if all_states[0][0]:
-		# 			return split_access_key(all_states[0][0][0])[0]
-		# 		else:
-		# 			return split_access_key(all_states[0][1][0])[0]
-		# 	else:
-		# 		if all_states[0][1]:
-		# 			return split_access_key(all_states[0][1][-1])[0]
-		# 		else:
-		# 			return split_access_key(all_states[0][0][-1])[0]
-
-		# elif next_set:
-		# 	if direction == Direction.FORWARD and ci[0] + 1 < len(all_states[ci[0]]):
-		# 		echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] + 1][0]), u', '.join(all_states[ci[0] + 1][1])))
-		# 		if all_states[ci[0] + 1][0]:
-		# 			return split_access_key(all_states[ci[0] + 1][0][0])[0]
-		# 		else:
-		# 			return split_access_key(all_states[ci[0] + 1][1][0])[0]
-
-		# 	elif current_state is not None and direction == Direction.BACKWARD and ci[0] - 1 >= 0:
-		# 		echom(u'Keyword set: %s | %s' % (u', '.join(all_states[ci[0] - 1][0]), u', '.join(all_states[ci[0] - 1][1])))
-		# 		return split_access_key(
-		# 			all_states[ci[0] - 1][0][0] if all_states[ci[0] - 1][0] else all_states[ci[0] - 1][1][0])[0]
-		# 	else:
-		# 		echom(u'Already at the %s keyword set' % (u'first' if direction == Direction.BACKWARD else u'last'))
-		# 		return current_state
-		# else:
-		# 	next_pos = ci[2] + 1 if direction == Direction.FORWARD else ci[2] - 1
-		# 	if direction == Direction.FORWARD:
-		# 		if next_pos < len(all_states[ci[0]][ci[1]]):
-		# 			# select next state within done or todo states
-		# 			return split_access_key(all_states[ci[0]][ci[1]][next_pos])[0]
-
-		# 		elif not ci[1] and next_pos - len(all_states[ci[0]][ci[1]]) < len(all_states[ci[0]][ci[1] + 1]):
-		# 			# finished todo states, jump to done states
-		# 			return split_access_key(all_states[ci[0]][ci[1] + 1][next_pos - len(all_states[ci[0]][ci[1]])])[0]
-		# 	else:
-		# 		if next_pos >= 0:
-		# 			# select previous state within done or todo states
-		# 			return split_access_key(all_states[ci[0]][ci[1]][next_pos])[0]
-
-		# 		elif ci[1] and len(all_states[ci[0]][ci[1] - 1]) + next_pos < len(all_states[ci[0]][ci[1] - 1]):
-		# 			# finished done states, jump to todo states
-		# 			return split_access_key(all_states[ci[0]][ci[1] - 1][len(all_states[ci[0]][ci[1] - 1]) + next_pos])[0]
 
 	@classmethod
 	@realign_tags
