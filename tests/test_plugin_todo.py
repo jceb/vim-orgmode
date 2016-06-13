@@ -363,7 +363,7 @@ class TodoTestCase(unittest.TestCase):
 		current_state = None
 		result = Todo._get_next_state(current_state, states,
 				Direction.BACKWARD)
-		self.assertEquals(result, u'DONE')
+		self.assertEquals(result, u'RELEASED')
 
 	def test_get_next_keyword_sequence(self):
 		states = [((u'TODO(t)', u'NEXT(n)', u'NOW(w)'), (u'DELEGATED(g)', u'DONE(d)')), ((u'QA(q)', ), (u'RELEASED(r)', ))]

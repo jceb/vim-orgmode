@@ -132,9 +132,7 @@ class Todo(object):
 		# work only with top level index
 		if next_set:
 			top_set = next((todo_set[0] for todo_set in enumerate(cleaned_todos)
-						    if current_state in todo_set[1]), None)
-			if top_set is None:
-				return top_set
+						    if current_state in todo_set[1]), -1)
 			ind = (top_set + next_dir) % len(cleaned_todos)
 			if ind != len(cleaned_todos)-1:
 				echom("Using set: %s" % str(all_states[ind]))
@@ -144,9 +142,7 @@ class Todo(object):
 		# No next set, cycle around everything
 		else:
 			ind = next((todo_iter[0] for todo_iter in enumerate(flattened_todos)
-					    if todo_iter[1] == current_state), None)
-			if ind is None:
-				return ind
+					    if todo_iter[1] == current_state), -1)
 			return flattened_todos [(ind+next_dir)%len(flattened_todos)]
 
 	@classmethod
