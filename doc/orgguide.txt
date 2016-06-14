@@ -834,7 +834,7 @@ Timestamps~
   A timestamp is a specification of a date (possibly with a time or a range of
   times) in a special format, either <2003-09-16 Tue> or <2003-09-16 Tue
   09:39> or <2003-09-16 Tue 12:00-12:30>. A timestamp can appear anywhere in
-  the headline or body of an org tree entry.  Its presence causes entries to
+  the headline or body of an org tree entry. Its presence causes entries to
   be shown on specific dates in the agenda (see section |orgguide-agenda|). We
   distinguish:
 
@@ -904,8 +904,11 @@ Creating timestamps~
   When vim-orgmode prompts for a date/time, it will accept any string
   containing some date and/or time information, and intelligently interpret
   the string, deriving defaults for unspecified information from the current
-  date and time. See the manual for more information on how exactly the
-  date/time prompt works.
+  date and time.
+    Example~
+      If the current date is <2016-06-14 Tue>, entering +3 at the prompt will
+      insert the date <2016-06-17 Fri>, entering sat will insert date
+      <2016-06-18 Sat>
 
   You can also select a date in the pop-up calendar.
   NOTE: The plugin 'calendar' should be installed for this feature.
