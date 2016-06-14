@@ -89,13 +89,13 @@ class Todo(object):
 		if all_states is None:
 			raise PluginError(u"Empty TODO keyword list. Please examine `g/b:org_todo_keywords`")
 		cleaned_todos = [[
-			split_access_key(todo)[0] for todo in it.chain.from_iterable(x)] 
+			split_access_key(todo)[0] for todo in it.chain.from_iterable(x)]
 			for x in all_states] + [[None]]
 
 		flattened_todos = []
 		duplicate_marker = [
 			flattened_todos.append(todo_iter) if todo_iter not in
-			flattened_todos else True 
+			flattened_todos else True
 			for todo_iter in it.chain.from_iterable(cleaned_todos)]
 		if True in duplicate_marker:
 			raise PluginError(u"Duplicate name in TODO keyword list. Please examine `g/b:org_todo_keywords`")
