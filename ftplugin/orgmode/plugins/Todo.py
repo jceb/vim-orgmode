@@ -92,8 +92,12 @@ class Todo(object):
 			split_access_key(todo)[0] for todo in it.chain.from_iterable(x)] 
 			for x in all_states] + [[None]]
 
-		flattened_todos = list(it.chain.from_iterable(cleaned_todos))
-		if len(flattened_todos) != len(set(flattened_todos)):
+		flattened_todos = []
+		duplicate_marker = [
+			flattened_todos.append(todo_iter) if todo_iter not in
+			flattened_todos else True 
+			for todo_iter in it.chain.from_iterable(cleaned_todos)]
+		if True in duplicate_marker:
 			raise PluginError(u"Duplicate name in TODO keyword list. Please examine `g/b:org_todo_keywords`")
 		# TODO This is the case when there are 2 todo states with the same
 		# name. It should be handled by making a simple class to hold TODO
@@ -131,8 +135,9 @@ class Todo(object):
 		next_dir = -1 if direction == Direction.BACKWARD else 1
 		# work only with top level index
 		if next_set:
-			top_set = next((todo_set[0] for todo_set in enumerate(cleaned_todos)
-						    if current_state in todo_set[1]), -1)
+			top_set = next((
+				todo_set[0] for todo_set in enumerate(cleaned_todos)
+				if current_state in todo_set[1]), -1)
 			ind = (top_set + next_dir) % len(cleaned_todos)
 			if ind != len(cleaned_todos)-1:
 				echom("Using set: %s" % str(all_states[ind]))
@@ -141,8 +146,9 @@ class Todo(object):
 			return cleaned_todos[ind][0]
 		# No next set, cycle around everything
 		else:
-			ind = next((todo_iter[0] for todo_iter in enumerate(flattened_todos)
-					    if todo_iter[1] == current_state), -1)
+			ind = next((
+				todo_iter[0] for todo_iter in enumerate(flattened_todos)
+				if todo_iter[1] == current_state), -1)
 			return flattened_todos [(ind+next_dir)%len(flattened_todos)]
 
 	@classmethod
