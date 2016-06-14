@@ -91,7 +91,7 @@ class Todo(object):
 			for x in all_states] + [[None]]
 
 		flattened_todos = list(it.chain.from_iterable(cleaned_todos))
-		if len(flattened_todos)!=len(set(flattened_todos)):
+		if len(flattened_todos) != len(set(flattened_todos)):
 			raise PluginError(u"Duplicate names detected in TODO keyword list. Please examine `g/b:org_todo_keywords`")
 		# TODO This is the case when there are 2 todo states with the same
 		# name. It should be handled by making a simple class to hold TODO
@@ -103,8 +103,8 @@ class Todo(object):
 
 	@classmethod
 	def _get_next_state(
-		cls, current_state, all_states,
-		direction=Direction.FORWARD, next_set=False):
+		cls, current_state, all_states, direction=Direction.FORWARD,
+		next_set=False):
 		u""" Get the next todo state
 
 		Args:
@@ -120,8 +120,8 @@ class Todo(object):
 
 		Note: all_states should have the form of:
 			[(['TODO(t)'], ['DONE(d)']),
-			 (['REPORT(r)', 'BUG(b)', 'KNOWNCAUSE(k)'], ['FIXED(f)']),
-			 ([], ['CANCELED(c)'])]
+			(['REPORT(r)', 'BUG(b)', 'KNOWNCAUSE(k)'], ['FIXED(f)']),
+			([], ['CANCELED(c)'])]
 		"""
 		cleaned_todos, flattened_todos = cls._process_all_states(all_states)
 
@@ -133,7 +133,7 @@ class Todo(object):
 				todo_set[0] for todo_set in enumerate(cleaned_todos)
 				if current_state in todo_set[1]), -1)
 			ind = (top_set + next_dir) % len(cleaned_todos)
-			if ind!=len(cleaned_todos)-1:
+			if ind != len(cleaned_todos) - 1:
 				echom("Using set: %s" % str(all_states[ind]))
 			else:
 				echom("Keyword removed.")
@@ -143,13 +143,14 @@ class Todo(object):
 			ind = next((
 				todo_iter[0] for todo_iter in enumerate(flattened_todos)
 				if todo_iter[1] == current_state), -1)
-			return flattened_todos[(ind+next_dir)%len(flattened_todos)]
+			return flattened_todos[(ind + next_dir) % len(flattened_todos)]
 
 	@classmethod
 	@realign_tags
 	@repeat
 	@apply_count
-	def toggle_todo_state(cls, direction=Direction.FORWARD, interactive=False, next_set=False):
+	def toggle_todo_state(
+		cls, direction=Direction.FORWARD, interactive=False, next_set=False):
 		u""" Toggle state of TODO item
 
 		:returns: The changed heading
