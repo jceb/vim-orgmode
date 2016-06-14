@@ -24,7 +24,7 @@ function! GetOrgIndent()
 		return -1
 	endif
 
-exec py_env
+exe s:py_env
 from orgmode._vim import indent_orgmode
 indent_orgmode()
 EOF
@@ -74,6 +74,7 @@ EOF
 from orgmode._vim import fold_orgmode
 fold_orgmode()
 EOF
+	endif
 
 	if exists('b:fold_expr')
 		let l:tmp = b:fold_expr

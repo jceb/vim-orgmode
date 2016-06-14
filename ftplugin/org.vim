@@ -17,6 +17,9 @@ if v:version > 702
 		echoerr "Unable to start orgmode. Orgmode depends on Vim >= 7.3 with Python support complied in."
 		finish
 	endif
+else
+	echoerr "Unable to start orgmode. Orgmode depends on Vim >= 7.3 with Python support complied in."
+	finish
 endif
 
 " Init buffer for file {{{1
