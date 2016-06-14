@@ -86,19 +86,13 @@ class Todo(object):
 			* no two state share a same name
 		"""
 		# TODO Write tests. -- Ron89
-		if all_states is None:
-			raise PluginError(u"Empty TODO keyword list. Please examine `g/b:org_todo_keywords`")
 		cleaned_todos = [[
 			split_access_key(todo)[0] for todo in it.chain.from_iterable(x)]
 			for x in all_states] + [[None]]
 
-		flattened_todos = []
-		duplicate_marker = [
-			flattened_todos.append(todo_iter) if todo_iter not in
-			flattened_todos else True
-			for todo_iter in it.chain.from_iterable(cleaned_todos)]
-		if True in duplicate_marker:
-			raise PluginError(u"Duplicate name in TODO keyword list. Please examine `g/b:org_todo_keywords`")
+		flattened_todos = list(it.chain.from_iterable(cleaned_todos))
+		if len(flattened_todos)!=len(set(flattened_todos)):
+			raise PluginError(u"Duplicate names detected in TODO keyword list. Please examine `g/b:org_todo_keywords`")
 		# TODO This is the case when there are 2 todo states with the same
 		# name. It should be handled by making a simple class to hold TODO
 		# states, which would avoid mixing 2 todo states with the same name
@@ -139,7 +133,7 @@ class Todo(object):
 				todo_set[0] for todo_set in enumerate(cleaned_todos)
 				if current_state in todo_set[1]), -1)
 			ind = (top_set + next_dir) % len(cleaned_todos)
-			if ind != len(cleaned_todos)-1:
+			if ind!=len(cleaned_todos)-1:
 				echom("Using set: %s" % str(all_states[ind]))
 			else:
 				echom("Keyword removed.")
@@ -149,7 +143,7 @@ class Todo(object):
 			ind = next((
 				todo_iter[0] for todo_iter in enumerate(flattened_todos)
 				if todo_iter[1] == current_state), -1)
-			return flattened_todos [(ind+next_dir)%len(flattened_todos)]
+			return flattened_todos[(ind+next_dir)%len(flattened_todos)]
 
 	@classmethod
 	@realign_tags
