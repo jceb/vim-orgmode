@@ -477,22 +477,28 @@ class Heading(DomObj):
 		self.title = REGEX_SUBTASK_PERCENT.sub("[%d%%]" % (percent), self.title)
 		self.document.write_heading(self, including_children=False)
 
-	@classmethod
-	def identify_heading(cls, line):
+	@staticmethod
+	def identify_heading(line):
 		u""" Test if a certain line is a heading or not.
 
-		:line: the line to check
+		Args:
+			line (str): the line to check
 
-		:returns: level
+		Returns:
+			int or None: level of heading or None if line is not heading
 		"""
-		level = 0
+		# TODO would it make sense to return 0 for heading level?
+		# TODO add tests e.g. '*** abc', '**', '', '* ', '*\t'
 		if not line:
 			return None
-		for i in range(0, len(line)):
-			if line[i] == u'*':
-				level += 1
-				if len(line) > (i + 1) and line[i + 1] in (u'\t', u' '):
-					return level
+
+		for i, item in enumerate(line):
+			if item == '*':
+				try:
+					if line[i + 1] in ('\t', ' '):
+						return i + 1
+				except Exception:
+					return None
 			else:
 				return None
 
