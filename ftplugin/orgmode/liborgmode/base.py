@@ -34,11 +34,8 @@ def flatten_list(lst):
 		elif isinstance(item, collections.Iterable):
 			# yield from would be so nice... but c'est la vie
 			for val in item:
-				if isinstance(val, collections.Iterable):
-					for final in gen_lst(val):
-						yield final
-				else:
-					yield val
+				for final in gen_lst(val):
+					yield final
 		else:
 			yield item
 	return [i for i in gen_lst(lst)]
