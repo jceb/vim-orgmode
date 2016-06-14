@@ -40,7 +40,8 @@ class Document(object):
 		self._content = None
 		self._dirty_meta_information = False
 		self._dirty_document = False
-		self._meta_information = MultiPurposeList(on_change=self.set_dirty_meta_information)
+		self._meta_information = MultiPurposeList(
+			on_change=self.set_dirty_meta_information)
 		self._orig_meta_information_len = None
 		self._headings = HeadingList(obj=self)
 		self._deleted_headings = []
@@ -64,7 +65,8 @@ class Document(object):
 		u""" Convenience function that returns all todo and done states and
 		sequences in one big list.
 
-		:returns:	[all todo/done states]
+		Returns:
+			list: [all todo/done states]
 		"""
 		# TODO This is not necessary remove
 		return flatten_list(self.get_todo_states())
@@ -74,7 +76,8 @@ class Document(object):
 		states split by todo and done states. Multiple todo-done state
 		sequences can be defined.
 
-		:returns:	[([todo states], [done states]), ..]
+		Returns:
+			list: [([todo states], [done states]), ..]
 		"""
 		# TODO this should be made into property so todo states can be set like
 		# this too.. or there was also some todo property around... oh well..
@@ -103,7 +106,8 @@ class Document(object):
 		u""" Initialize all headings in document - build DOM. This method
 		should be call prior to accessing the document.
 
-		:returns:	self
+		Returns:
+			self
 		"""
 		def init_heading(_h):
 			u"""
@@ -146,7 +150,6 @@ class Document(object):
 
 		h = self.find_heading(heading=heading)
 		# initialize meta information
-		# TODO meta information can exist even without heading...
 		if h:
 			self._meta_information.data.extend(self._content[:h._orig_start])
 		else:
@@ -168,8 +171,7 @@ class Document(object):
 
 	@property
 	def meta_information(self):
-		u"""
-		Meta information is text that precedes all headings in an org-mode
+		u""" Meta information is text that precedes all headings in an org-mode
 		document. It might contain additional information about the document,
 		e.g. author
 		"""
@@ -205,30 +207,38 @@ class Document(object):
 		del self.headings[:]
 
 	def write(self):
-		u""" write the document
+		u""" Write the document
 
-		:returns:	True if something was written, otherwise False
+		Returns:
+			bool: True if something was written, otherwise False
 		"""
 		raise NotImplementedError(u'Abstract method, please use concrete impelementation!')
 
 	def set_dirty_meta_information(self):
-		u""" Mark the meta information dirty so that it will be rewritten when
-		saving the document """
+		u""" Mark the meta information dirty.
+
+		Note:
+			Causes meta information to be rewritten when saving the document
+		"""
 		self._dirty_meta_information = True
 
 	def set_dirty_document(self):
-		u""" Mark the whole document dirty. When changing a heading this
-		method must be executed in order to changed computation of start and
-		end positions from a static to a dynamic computation """
+		u""" Mark the whole document dirty.
+
+		Note:
+			When changing a heading this method must be executed in order to
+			changed computation of start and end positions from a static to a
+			dynamic computation
+		"""
 		self._dirty_document = True
 
 	@property
 	def is_dirty(self):
-		u"""
-		Return information about unsaved changes for the document and all
+		u""" Return information about unsaved changes for the document and all
 		related headings.
 
-		:returns:	 Return True if document contains unsaved changes.
+		Returns:
+			bool: True if document contains unsaved changes.
 		"""
 		if self.is_dirty_meta_information:
 			return True
@@ -268,29 +278,38 @@ class Document(object):
 		raise StopIteration()
 
 	def find_heading(
-		self, position=0, direction=Direction.FORWARD,
-		heading=Heading, connect_with_document=True):
+		self, position=0, direction=Direction.FORWARD, heading=Heading,
+		connect_with_document=True):
 		u""" Find heading in the given direction
 
-		:postition: starting line, counting from 0 (in vim you start
-				counting from 1, don't forget)
-		:direction: downwards == Direction.FORWARD,
-				upwards == Direction.BACKWARD
-		:heading:   Heading class from which new heading objects will be
-				instanciated
-		:connect_with_document: if True, the newly created heading will be
-				connected with the document, otherwise not
+		Args:
+			position (int): starting line, counting from 0 (in vim you start
+					counting from 1, don't forget)
+			direction: downwards == Direction.FORWARD,
+					upwards == Direction.BACKWARD
+			heading:   Heading class from which new heading objects will be
+					instanciated
+			connect_with_document: if True, the newly created heading will be
+					connected with the document, otherwise not
 
-		:returns:	New heading object or None
+		Returns:
+			heading or None: New heading
 		"""
-		(start, end) = get_domobj_range(content=self._content, position=position, direction=direction, identify_fun=heading.identify_heading)
+		start, end = get_domobj_range(
+			content=self._content, position=position, direction=direction,
+			identify_fun=heading.identify_heading)
 
-		if start is not None and end is None:
+		if start is None:
+			return None
+
+		if end is None:
 			end = len(self._content) - 1
-		if start is not None and end is not None:
-			return heading.parse_heading_from_data(
-				self._content[start:end + 1], self.get_all_todo_states(),
-				document=self if connect_with_document else None, orig_start=start)
+
+		document = self if connect_with_document else None
+
+		return heading.parse_heading_from_data(
+			self._content[start:end + 1], self.get_all_todo_states(),
+			document=document, orig_start=start)
 
 
 # vim: set noexpandtab:
