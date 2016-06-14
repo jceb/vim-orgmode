@@ -488,19 +488,16 @@ class Heading(DomObj):
 			int or None: level of heading or None if line is not heading
 		"""
 		# TODO would it make sense to return 0 for heading level?
-		# TODO add tests e.g. '*** abc', '**', '', '* ', '*\t'
-		if not line:
-			return None
-
+		# TODO add tests e.g. '*** abc', '**', '', '* ', '*\t', '*'
 		for i, item in enumerate(line):
 			if item == '*':
-				try:
-					if line[i + 1] in ('\t', ' '):
-						return i + 1
-				except Exception:
-					return None
-			else:
-				return None
+				continue
+			break
+		try:
+			if i and line[i] in ('\t', ' '):
+				return i
+		except Exception:
+			return None
 
 	@property
 	def is_dirty(self):
