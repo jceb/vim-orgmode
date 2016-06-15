@@ -492,12 +492,10 @@ class Heading(DomObj):
 		for i, item in enumerate(line):
 			if item == '*':
 				continue
-			break
-		try:
-			if i and line[i] in ('\t', ' '):
+			elif i and item in ('\t', ' '):
 				return i
-		except Exception:
-			return None
+			break
+		return None
 
 	@property
 	def is_dirty(self):

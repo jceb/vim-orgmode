@@ -82,7 +82,6 @@ class Todo(object):
 		u""" verify if states defined by user is valid.
 		Return cleaned_todo and flattened if is. Raise Exception if not.
 		Valid checking:
-			* all_states is not empty
 			* no two state share a same name
 		"""
 		# TODO Write tests. -- Ron89
