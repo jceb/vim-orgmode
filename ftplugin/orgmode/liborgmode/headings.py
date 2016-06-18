@@ -127,7 +127,7 @@ class Heading(DomObj):
 				return True
 			elif not self.active_date and other.active_date:
 				return False
-			elif not self.active_date and not other.active:
+			elif not self.active_date and not other.active_date:
 				return False
 
 	def __le__(self, other):
