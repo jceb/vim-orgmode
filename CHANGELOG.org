@@ -28,6 +28,7 @@
 *** Removed
     - Removed the requirement for TODO state keywords to be upper-case.
 *** Fixed
+    - Fixed bug when promote/demote headings when it contain lists. (merges #239)
     - Silenced =W18= warning when non-ASCII coded TODO keywords are used. (merges #236)
     - Fix non-English locale support issue in OrgDate and Agenda. (merges #234,
       closes #230)
