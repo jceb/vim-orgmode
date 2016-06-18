@@ -175,7 +175,7 @@ class Navigator(object):
 		move_col_end = u'%dl' % (col_end - 1) if (col_end - 1) > 0 and (col_end - 1) < 2000000000 else u''
 		swap = u'o' if swap_cursor else u''
 
-		vim.command(u_encode(( u'normal! %dgg%s%s%dgg%s%s' % (line_start, move_col_start, vim.eval(u_encode(u'visualmode()')), line_end, move_col_end, swap))))
+		vim.command(u_encode(u'normal! %dgg%s%s%dgg%s%s' % (line_start, move_col_start, vim.eval(u_encode(u'visualmode()')), line_end, move_col_end, swap)))
 
 	@classmethod
 	def _focus_heading(cls, mode, direction=Direction.FORWARD, skip_children=False):

@@ -62,6 +62,8 @@ def get_orgdate(data):
 
 	data can be a string or a list containing strings.
 	"""
+	# TODO maybe it should be checked just for iterable? Does it affect here if
+	# in base __getitem__(slice(i,j)) doesn't return a list but userlist...
 	if isinstance(data, list):
 		return _findfirst(_text2orgdate, data)
 	else:
@@ -96,7 +98,7 @@ def _text2orgdate(string):
 			start = datetime.datetime(syear, smonth, sday, shour, smin)
 			end = datetime.datetime(syear, smonth, sday, ehour, emin)
 			return OrgTimeRange(True, start, end)
-		except Exception:
+		except BaseException:
 			return None
 
 	# handle active datetime
@@ -108,7 +110,7 @@ def _text2orgdate(string):
 			start = datetime.datetime(syear, smonth, sday, shour, smin)
 			end = datetime.datetime(eyear, emonth, eday, ehour, emin)
 			return OrgTimeRange(True, start, end)
-		except Exception:
+		except BaseException:
 			return None
 
 	# handle active datetime
@@ -120,7 +122,7 @@ def _text2orgdate(string):
 			start = datetime.date(syear, smonth, sday)
 			end = datetime.date(eyear, emonth, ehour)
 			return OrgTimeRange(True, start, end)
-		except Exception:
+		except BaseException:
 			return None
 
 	# handle active datetime
@@ -129,7 +131,7 @@ def _text2orgdate(string):
 		try:
 			year, month, day, hour, minutes = [int(m) for m in result.groups()]
 			return OrgDateTime(True, year, month, day, hour, minutes)
-		except Exception:
+		except BaseException:
 			return None
 
 	# handle passive datetime
@@ -138,7 +140,7 @@ def _text2orgdate(string):
 		try:
 			year, month, day, hour, minutes = [int(m) for m in result.groups()]
 			return OrgDateTime(False, year, month, day, hour, minutes)
-		except Exception:
+		except BaseException:
 			return None
 
 	# handle passive dates
@@ -147,7 +149,7 @@ def _text2orgdate(string):
 		try:
 			year, month, day = [int(m) for m in result.groups()]
 			return OrgDate(False, year, month, day)
-		except Exception:
+		except BaseException:
 			return None
 
 	# handle active dates
@@ -156,7 +158,7 @@ def _text2orgdate(string):
 		try:
 			year, month, day = [int(m) for m in result.groups()]
 			return OrgDate(True, year, month, day)
-		except Exception:
+		except BaseException:
 			return None
 
 

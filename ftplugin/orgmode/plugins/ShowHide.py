@@ -36,7 +36,7 @@ class ShowHide(object):
 		if not isinstance(h, Heading):
 			return
 
-		if int(vim.eval(u_encode((u'foldclosed(%d)' % h.start_vim)))) != -1:
+		if int(vim.eval(u_encode(u'foldclosed(%d)' % h.start_vim))) != -1:
 			return (h.number_of_parents, True)
 
 		res = [h.number_of_parents + 1]

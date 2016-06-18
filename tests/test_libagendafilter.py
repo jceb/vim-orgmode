@@ -17,16 +17,36 @@ from orgmode.liborgmode.agendafilter import is_within_week
 from orgmode.liborgmode.agendafilter import is_within_week_and_active_todo
 from orgmode.liborgmode.agendafilter import filter_items
 
+import vim
+
 from orgmode.py3compat.encode_compatibility import *
+
+counter = 0
 
 class AgendaFilterTestCase(unittest.TestCase):
 	u"""Tests all the functionality of the Agenda filter module."""
 
 	def setUp(self):
-		self.text = [ u_encode(i) for i in u"""
+		global counter
+		counter += 1
+
+		vim.EVALHISTORY = []
+		vim.EVALRESULTS = {
+				# no org_todo_keywords for b
+				u_encode(u'exists("b:org_todo_keywords")'): u_encode('0'),
+				# global values for org_todo_keywords
+				u_encode(u'exists("g:org_todo_keywords")'): u_encode('1'),
+				u_encode(u'g:org_todo_keywords'): [u_encode(u'TODO'), u_encode(u'|'), u_encode(u'DONE')],
+				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
+				u_encode(u'exists("b:org_debug")'): u_encode(u'0'),
+				u_encode(u'exists("*repeat#set()")'): u_encode(u'0'),
+				u_encode(u'b:changedtick'): u_encode(u'%d' % counter),
+				u_encode(u"v:count"): u_encode(u'0')
+				}
+		vim.current.buffer[:] = [u_encode(i) for i in u"""
 * TODO Heading 1
   some text
-""".split(u'\n') ]
+""".split(u'\n')]
 
 	def test_contains_active_todo(self):
 		heading = Heading(title=u'Refactor the code', todo='TODO')
@@ -86,22 +106,26 @@ class AgendaFilterTestCase(unittest.TestCase):
 
 	def test_filter_items(self):
 		# only headings with date and todo should be returned
+		vim.EVALRESULTS[u_encode(u'g:org_todo_keywords')] = \
+				[u_encode(u'TODO'), u_encode(u'STARTED'), u_encode(u'|'), u_encode(u'DONE')]
 		tmpdate = date.today()
 		odate = OrgDate(True, tmpdate.year, tmpdate.month, tmpdate.day)
 		tmp_head = Heading(title=u'Refactor the code', todo=u'TODO', active_date=odate)
-		headings = [tmp_head]
-		filtered = filter_items(headings,
-				[contains_active_date, contains_active_todo])
+		tmp_head_01 = Heading(title=u'Refactor the code', todo=u'STARTED', active_date=odate)
+		# TODO add more tests
+		headings = [tmp_head, tmp_head_01]
+		filtered = list(filter_items(headings,
+				[contains_active_date, contains_active_todo]))
 
-		self.assertEqual(len(filtered), 1)
+		self.assertEqual(len(filtered), 2)
 		self.assertEqual(filtered, headings)
 
 		# try a longer list
 		headings = headings * 3
-		filtered = filter_items(headings,
-				[contains_active_date, contains_active_todo])
+		filtered = list(filter_items(headings,
+				[contains_active_date, contains_active_todo]))
 
-		self.assertEqual(len(filtered), 3)
+		self.assertEqual(len(filtered), 6)
 		self.assertEqual(filtered, headings)
 
 		# date does not contain all needed fields thus gets ignored
@@ -109,8 +133,8 @@ class AgendaFilterTestCase(unittest.TestCase):
 		odate = OrgDate(True, tmpdate.year, tmpdate.month, tmpdate.day)
 		tmp_head = Heading(title=u'Refactor the code', active_date=odate)
 		headings = [tmp_head]
-		filtered = filter_items(headings, [contains_active_date,
-				contains_active_todo])
+		filtered = list(filter_items(headings, [contains_active_date,
+				contains_active_todo]))
 		self.assertEqual([], filtered)
 
 	def test_filter_items_with_some_todos_and_dates(self):
@@ -120,7 +144,8 @@ class AgendaFilterTestCase(unittest.TestCase):
 		tmp = [u"* TODO OrgMode Demo und Tests"
 				u"<2011-08-22 Mon>"]
 		headings = [Heading.parse_heading_from_data(tmp, [u'TODO'])]
-		filtered = filter_items(headings, [is_within_week_and_active_todo])
+		filtered = list(filter_items(headings,
+							   [is_within_week_and_active_todo]))
 		self.assertEqual(len(filtered), 1)
 		self.assertEqual(headings, filtered)
 
@@ -133,7 +158,8 @@ class AgendaFilterTestCase(unittest.TestCase):
 		for h in tmp:
 			headings.append(h)
 
-		filtered = filter_items(headings, [is_within_week_and_active_todo])
+		filtered = list(filter_items(headings,
+							   [is_within_week_and_active_todo]))
 		self.assertEqual(len(filtered), 3)
 		self.assertEqual(filtered, [headings[0], headings[2], headings[4]])
 

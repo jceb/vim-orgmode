@@ -30,7 +30,7 @@ class CheckboxTestCase(unittest.TestCase):
 				u_encode(u'exists("b:org_todo_keywords")'): u_encode('0'),
 				# global values for org_todo_keywords
 				u_encode(u'exists("g:org_todo_keywords")'): u_encode('1'),
-				u_encode(u'g:org_todo_keywords'): [u_encode(u'TODO'), u_encode(u'DONE'), u_encode(u'|')],
+				u_encode(u'g:org_todo_keywords'): [u_encode(u'TODO'), u_encode(u'|'), u_encode(u'DONE')],
 				u_encode(u'exists("g:org_improve_split_heading")'): u_encode(u'0'),
 				u_encode(u'exists("b:org_improve_split_heading")'): u_encode(u'0'),
 				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),

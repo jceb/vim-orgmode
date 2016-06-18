@@ -50,10 +50,13 @@ class Export(object):
 
 	@classmethod
 	def _export(cls, format_):
-		"""Export current file to format_.
+		"""Export current file to format.
 
-		:format_:  pdf or html
-		:returns:  return code
+		Args:
+			format_: pdf or html
+
+		Returns:
+			return code
 		"""
 		emacsbin = os.path.expandvars(os.path.expanduser(
 			settings.get(u'org_export_emacs', u'/usr/bin/emacs')))

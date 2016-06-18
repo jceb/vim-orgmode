@@ -6,7 +6,18 @@
 " @Revision     : 0.4
 " vi: ft=vim:tw=80:sw=4:ts=4:fdm=marker
 
-if ! (has('python3') || has('python')) || v:version < 703
+if v:version > 702
+	if has('python3')
+		let s:py_version = 'python3 '
+		let s:py_env = 'python3 << EOF'
+	elseif has('python')
+		let s:py_version = 'python '
+		let s:py_env = 'python << EOF'
+	else
+		echoerr "Unable to start orgmode. Orgmode depends on Vim >= 7.3 with Python support complied in."
+		finish
+	endif
+else
 	echoerr "Unable to start orgmode. Orgmode depends on Vim >= 7.3 with Python support complied in."
 	finish
 endif
@@ -31,11 +42,7 @@ if ! exists('b:did_ftplugin')
 
 	" register keybindings if they don't have been registered before
 	if exists("g:loaded_org")
-		if has('python3')
-			python3 ORGMODE.register_keybindings()
-		else
-			python ORGMODE.register_keybindings()
-		endif
+		exe s:py_version . 'ORGMODE.register_keybindings()'
 	endif
 endif
 
@@ -71,40 +78,20 @@ endif
 
 " Menu and document handling {{{1
 function! <SID>OrgRegisterMenu()
-	if has('python3')
-		python3 ORGMODE.register_menu()
-	else
-		python ORGMODE.register_menu()
-	endif
+	exe s:py_version . 'ORGMODE.register_menu()'
 endfunction
 
 function! <SID>OrgUnregisterMenu()
-	if has('python3')
-		python3 ORGMODE.unregister_menu()
-	else
-		python ORGMODE.unregister_menu()
-	endif
+	exe s:py_version . 'ORGMODE.unregister_menu()'
 endfunction
 
-if has('python3')
 function! <SID>OrgDeleteUnusedDocument(bufnr)
-python3 << EOF
+	exe s:py_env
 b = int(vim.eval('a:bufnr'))
 if b in ORGMODE._documents:
 	del ORGMODE._documents[b]
 EOF
 endfunction
-
-else
-
-function! <SID>OrgDeleteUnusedDocument(bufnr)
-python << EOF
-b = int(vim.eval('a:bufnr'))
-if b in ORGMODE._documents:
-	del ORGMODE._documents[b]
-EOF
-endfunction
-endif
 
 " show and hide Org menu depending on the filetype
 augroup orgmode
@@ -115,8 +102,7 @@ augroup END
 
 " Start orgmode {{{1
 " Expand our path
-if has('python3')
-python3 << EOF
+exec s:py_env
 import vim, os, sys
 
 for p in vim.eval("&runtimepath").split(','):
@@ -129,29 +115,8 @@ for p in vim.eval("&runtimepath").split(','):
 from orgmode._vim import ORGMODE, insert_at_cursor, get_user_input, date_to_str
 ORGMODE.start()
 
-from Date import Date
 import datetime
 EOF
-
-else
-
-python << EOF
-import vim, os, sys
-
-for p in vim.eval("&runtimepath").split(','):
-	dname = os.path.join(p, "ftplugin")
-	if os.path.exists(os.path.join(dname, "orgmode")):
-		if dname not in sys.path:
-			sys.path.append(dname)
-			break
-
-from orgmode._vim import ORGMODE, insert_at_cursor, get_user_input, date_to_str
-ORGMODE.start()
-
-from Date import Date
-import datetime
-EOF
-endif
 
 " 3rd Party Plugin Integration {{{1
 " * Repeat {{{2
@@ -182,20 +147,20 @@ endif
 fun CalendarAction(day, month, year, week, dir)
 	let g:org_timestamp = printf("%04d-%02d-%02d Fri", a:year, a:month, a:day)
 	let datetime_date = printf("datetime.date(%d, %d, %d)", a:year, a:month, a:day)
-	exe "py selected_date = " . datetime_date
+	exe s:py_version . "selected_date = " . datetime_date
 	" get_user_input
 	let msg = printf("Inserting %s | Modify date", g:org_timestamp)
-	exe "py modifier = get_user_input('" . msg . "')"
+	exe s:py_version . "modifier = get_user_input('" . msg . "')"
 	" change date according to user input
-	exe "py print modifier"
-	exe "py newdate = Date._modify_time(selected_date, modifier)"
-	exe "py newdate = date_to_str(newdate)"
+	exe s:py_version . "print modifier"
+	exe s:py_version . "newdate = Date._modify_time(selected_date, modifier)"
+	exe s:py_version . "newdate = date_to_str(newdate)"
 	" close Calendar
 	exe "q"
 	" goto previous window
 	exe "wincmd p"
-	exe "py timestamp = '" . g:org_timestamp_template . "' % newdate"
-	exe "py insert_at_cursor(timestamp)"
+	exe s:py_version . "timestamp = '" . g:org_timestamp_template . "' % newdate"
+	exe s:py_version . "insert_at_cursor(timestamp)"
 	" restore calendar_action
 	let g:calendar_action = g:org_calendar_action_backup
 endf

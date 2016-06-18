@@ -40,7 +40,8 @@ class Document(object):
 		self._content = None
 		self._dirty_meta_information = False
 		self._dirty_document = False
-		self._meta_information = MultiPurposeList(on_change=self.set_dirty_meta_information)
+		self._meta_information = MultiPurposeList(
+			on_change=self.set_dirty_meta_information)
 		self._orig_meta_information_len = None
 		self._headings = HeadingList(obj=self)
 		self._deleted_headings = []
@@ -49,6 +50,7 @@ class Document(object):
 		self._tabstop = 8
 		self._tag_column = 77
 
+		# TODO this doesn't differentiate between ACTIVE and FINISHED todo's
 		self.todo_states = [u'TODO', u'DONE']
 
 	def __unicode__(self):
@@ -63,8 +65,10 @@ class Document(object):
 		u""" Convenience function that returns all todo and done states and
 		sequences in one big list.
 
-		:returns:	[all todo/done states]
+		Returns:
+			list: [all todo/done states]
 		"""
+		# TODO This is not necessary remove
 		return flatten_list(self.get_todo_states())
 
 	def get_todo_states(self):
@@ -72,37 +76,38 @@ class Document(object):
 		states split by todo and done states. Multiple todo-done state
 		sequences can be defined.
 
-		:returns:	[([todo states], [done states]), ..]
+		Returns:
+			list: [([todo states], [done states]), ..]
 		"""
+		# TODO this should be made into property so todo states can be set like
+		# this too.. or there was also some todo property around... oh well..
+		# TODO there is the same method in vimbuffer
 		return self.todo_states
 
-	def tabstop():
+	@property
+	def tabstop(self):
 		u""" Tabstop for this document """
-		def fget(self):
-			return self._tabstop
+		return self._tabstop
 
-		def fset(self, value):
-			self._tabstop = value
+	@tabstop.setter
+	def tabstop(self, value):
+		self._tabstop = value
 
-		return locals()
-	tabstop = property(**tabstop())
-
-	def tag_column():
+	@property
+	def tag_column(self):
 		u""" The column all tags are right-aligned to """
-		def fget(self):
-			return self._tag_column
+		return self._tag_column
 
-		def fset(self, value):
-			self._tag_column = value
-
-		return locals()
-	tag_column = property(**tag_column())
+	@tag_column.setter
+	def tag_column(self, value):
+		self._tag_column = value
 
 	def init_dom(self, heading=Heading):
 		u""" Initialize all headings in document - build DOM. This method
 		should be call prior to accessing the document.
 
-		:returns:	self
+		Returns:
+			self
 		"""
 		def init_heading(_h):
 			u"""
@@ -164,71 +169,76 @@ class Document(object):
 
 		return self
 
-	def meta_information():
-		u"""
-		Meta information is text that precedes all headings in an org-mode
+	@property
+	def meta_information(self):
+		u""" Meta information is text that precedes all headings in an org-mode
 		document. It might contain additional information about the document,
 		e.g. author
 		"""
-		def fget(self):
-			return self._meta_information
+		return self._meta_information
 
-		def fset(self, value):
-			if self._orig_meta_information_len is None:
-				self._orig_meta_information_len = len(self.meta_information)
-			if type(value) in (list, tuple) or isinstance(value, UserList):
-				self._meta_information[:] = flatten_list(value)
-			elif type(value) in (str, ):
-				self._meta_information[:] = u_decode(value).split(u'\n')
-			elif type(value) in (unicode, ):
-				self._meta_information[:] = value.split(u'\n')
-			self.set_dirty_meta_information()
+	@meta_information.setter
+	def meta_information(self, value):
+		if self._orig_meta_information_len is None:
+			self._orig_meta_information_len = len(self.meta_information)
+		if type(value) in (list, tuple) or isinstance(value, UserList):
+			self._meta_information[:] = flatten_list(value)
+		elif type(value) in (str, ):
+			self._meta_information[:] = u_decode(value).split(u'\n')
+		elif type(value) in (unicode, ):
+			self._meta_information[:] = value.split(u'\n')
+		self.set_dirty_meta_information()
 
-		def fdel(self):
-			self.meta_information = u''
+	@meta_information.deleter
+	def meta_information(self):
+		self.meta_information = u''
 
-		return locals()
-	meta_information = property(**meta_information())
-
-	def headings():
+	@property
+	def headings(self):
 		u""" List of top level headings """
-		def fget(self):
-			return self._headings
+		return self._headings
 
-		def fset(self, value):
-			self._headings[:] = value
+	@headings.setter
+	def headings(self, value):
+		self._headings[:] = value
 
-		def fdel(self):
-			del self.headings[:]
-
-		return locals()
-	headings = property(**headings())
+	@headings.deleter
+	def headings(self):
+		del self.headings[:]
 
 	def write(self):
-		u""" write the document
+		u""" Write the document
 
-		:returns:	True if something was written, otherwise False
+		Returns:
+			bool: True if something was written, otherwise False
 		"""
 		raise NotImplementedError(u'Abstract method, please use concrete impelementation!')
 
 	def set_dirty_meta_information(self):
-		u""" Mark the meta information dirty so that it will be rewritten when
-		saving the document """
+		u""" Mark the meta information dirty.
+
+		Note:
+			Causes meta information to be rewritten when saving the document
+		"""
 		self._dirty_meta_information = True
 
 	def set_dirty_document(self):
-		u""" Mark the whole document dirty. When changing a heading this
-		method must be executed in order to changed computation of start and
-		end positions from a static to a dynamic computation """
+		u""" Mark the whole document dirty.
+
+		Note:
+			When changing a heading this method must be executed in order to
+			changed computation of start and end positions from a static to a
+			dynamic computation
+		"""
 		self._dirty_document = True
 
 	@property
 	def is_dirty(self):
-		u"""
-		Return information about unsaved changes for the document and all
+		u""" Return information about unsaved changes for the document and all
 		related headings.
 
-		:returns:	 Return True if document contains unsaved changes.
+		Returns:
+			bool: True if document contains unsaved changes.
 		"""
 		if self.is_dirty_meta_information:
 			return True
@@ -268,29 +278,38 @@ class Document(object):
 		raise StopIteration()
 
 	def find_heading(
-		self, position=0, direction=Direction.FORWARD,
-		heading=Heading, connect_with_document=True):
+		self, position=0, direction=Direction.FORWARD, heading=Heading,
+		connect_with_document=True):
 		u""" Find heading in the given direction
 
-		:postition: starting line, counting from 0 (in vim you start
-				counting from 1, don't forget)
-		:direction: downwards == Direction.FORWARD,
-				upwards == Direction.BACKWARD
-		:heading:   Heading class from which new heading objects will be
-				instanciated
-		:connect_with_document: if True, the newly created heading will be
-				connected with the document, otherwise not
+		Args:
+			position (int): starting line, counting from 0 (in vim you start
+					counting from 1, don't forget)
+			direction: downwards == Direction.FORWARD,
+					upwards == Direction.BACKWARD
+			heading:   Heading class from which new heading objects will be
+					instanciated
+			connect_with_document: if True, the newly created heading will be
+					connected with the document, otherwise not
 
-		:returns:	New heading object or None
+		Returns:
+			heading or None: New heading
 		"""
-		(start, end) = get_domobj_range(content=self._content, position=position, direction=direction, identify_fun=heading.identify_heading)
+		start, end = get_domobj_range(
+			content=self._content, position=position, direction=direction,
+			identify_fun=heading.identify_heading)
 
-		if start is not None and end is None:
+		if start is None:
+			return None
+
+		if end is None:
 			end = len(self._content) - 1
-		if start is not None and end is not None:
-			return heading.parse_heading_from_data(
-				self._content[start:end + 1], self.get_all_todo_states(),
-				document=self if connect_with_document else None, orig_start=start)
+
+		document = self if connect_with_document else None
+
+		return heading.parse_heading_from_data(
+			self._content[start:end + 1], self.get_all_todo_states(),
+			document=document, orig_start=start)
 
 
 # vim: set noexpandtab:

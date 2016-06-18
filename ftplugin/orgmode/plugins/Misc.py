@@ -87,11 +87,11 @@ class Misc(object):
 
 			if line_start == start and line_start != heading.start_vim:
 				if col_start in (0, 1):
-					vim.command(u_encode((u'normal! %dgg0%s%dgg$%s%s' % (start, visualmode, end, move_one_character_back, swap_cursor))))
+					vim.command(u_encode(u'normal! %dgg0%s%dgg$%s%s' % (start, visualmode, end, move_one_character_back, swap_cursor)))
 				else:
-					vim.command(u_encode((u'normal! %dgg0%dl%s%dgg$%s%s' % (start, col_start - 1, visualmode, end, move_one_character_back, swap_cursor))))
+					vim.command(u_encode(u'normal! %dgg0%dl%s%dgg$%s%s' % (start, col_start - 1, visualmode, end, move_one_character_back, swap_cursor)))
 			else:
-				vim.command(u_encode((u'normal! %dgg0%dl%s%dgg$%s%s' % (start, heading.level + 1, visualmode, end, move_one_character_back, swap_cursor))))
+				vim.command(u_encode(u'normal! %dgg0%dl%s%dgg$%s%s' % (start, heading.level + 1, visualmode, end, move_one_character_back, swap_cursor)))
 
 			if selection == u'inner':
 				if mode == u'visual':
@@ -133,7 +133,7 @@ class Misc(object):
 
 			swap_cursor = u'o' if vim.current.window.cursor[0] == line_start else u''
 
-			vim.command(u_encode((u'normal! %dgg%s%dgg$%s' %	(start, vim.eval(u_encode(u'visualmode()')), end, swap_cursor))))
+			vim.command(u_encode(u'normal! %dgg%s%dgg$%s' %	(start, vim.eval(u_encode(u'visualmode()')), end, swap_cursor)))
 			if selection == u'inner':
 				return u'OrgAInnerHeadingVisual' if not skip_children else u'OrgAInnerTreeVisual'
 			else:

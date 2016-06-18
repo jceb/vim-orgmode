@@ -2,7 +2,7 @@
 
 """
 	checkboxes
-	~~~~~~~~~
+	~~~~~~~~~~
 
 	TODO: explain this :)
 """
@@ -21,6 +21,7 @@ from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_
 
 from orgmode.py3compat.encode_compatibility import *
 from orgmode.py3compat.unicode_compatibility import *
+
 
 class Checkbox(DomObj):
 	u""" Structural checkbox object """
@@ -232,18 +233,7 @@ class Checkbox(DomObj):
 	@property
 	def start(self):
 		u""" Access to the starting line of the checkbox """
-		if self.document is None:
-			return self._orig_start
-
-		# static computation of start
-		if not self.document.is_dirty:
-			return self._orig_start
-
-		# dynamic computation of start, really slow!
-		def compute_start(h):
-			if h:
-				return len(h) + compute_start(h.previous_checkbox)
-		return compute_start(self.previous_checkbox)
+		return super(Checkbox, self).start
 
 	def toggle(self):
 		u""" Toggle status of this checkbox """
@@ -343,69 +333,50 @@ class Checkbox(DomObj):
 
 		return True
 
-	def level():
-		u""" Access to the checkbox indent level """
-		def fget(self):
-			return self._level
+	@DomObj.level.setter
+	def level(self, value):
+		u""" Set the checkbox level and mark the checkbox and the document
+		dirty """
+		self._level = int(value)
+		self.set_dirty_checkbox()
 
-		def fset(self, value):
-			self._level = int(value)
-			self.set_dirty_checkbox()
+	@DomObj.title.setter
+	def title(self, value):
+		u""" Set the title and mark the document and the checkbox dirty """
+		if type(value) not in (unicode, str):
+			raise ValueError(u'Title must be a string.')
+		v = value
+		if type(v) == str:
+			v = u_decode(v)
+		self._title = v.strip()
+		self.set_dirty_checkbox()
 
-		def fdel(self):
-			self.level = None
-
-		return locals()
-	level = property(**level())
-
-	def title():
-		u""" Title of current checkbox """
-		def fget(self):
-			return self._title.strip()
-
-		def fset(self, value):
-			if type(value) not in (unicode, str):
-				raise ValueError(u'Title must be a string.')
-			v = value
-			if type(v) == str:
-				v = u_decode(v)
-			self._title = v.strip()
-			self.set_dirty_checkbox()
-
-		def fdel(self):
-			self.title = u''
-
-		return locals()
-	title = property(**title())
-
-	def status():
+	@property
+	def status(self):
 		u""" status of current checkbox """
-		def fget(self):
-			return self._status
+		return self._status
 
-		def fset(self, value):
-			self._status = value
-			self.set_dirty()
+	@status.setter
+	def status(self, value):
+		self._status = value
+		self.set_dirty()
 
-		def fdel(self):
-			self._status = u''
+	@status.deleter
+	def status(self):
+		self._status = u''
 
-		return locals()
-	status = property(**status())
-
-	def type():
+	@property
+	def type(self):
 		u""" type of current checkbox list type """
-		def fget(self):
-			return self._type
+		return self._type
 
-		def fset(self, value):
-			self._type = value
+	@type.setter
+	def type(self, value):
+		self._type = value
 
-		def fdel(self):
-			self._type = u''
-
-		return locals()
-	type = property(**type())
+	@type.deleter
+	def type(self):
+		self._type = u''
 
 
 class CheckboxList(DomObjList):

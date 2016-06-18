@@ -14,7 +14,6 @@ u"""
 	The function filter_items() can combine different filters and only returns
 	the filtered headings.
 """
-
 from datetime import datetime
 from datetime import timedelta
 
@@ -25,30 +24,32 @@ except:
 
 
 def filter_items(headings, filters):
-	u"""
-	Filter the given headings. Return the list of headings which were not
-	filtered.
+	u""" Filter the given headings.
 
-	:headings: is an list of headings
-	:filters: is the list of filters that are to be applied. all function in
+	Args:
+		headings (list): Contains headings
+		filters (list): Filters that will be applied. All functions in
 			this module (except this function) are filters.
 
-	You can use it like this:
+	Returns:
+		filter iterator: Headings which were not filtered.
 
-	>>> filtered = filter_items(headings, [contains_active_date,
+	Examples:
+		>>> filtered = filter_items(headings, [contains_active_date,
 				contains_active_todo])
-
 	"""
 	filtered = headings
 	for f in filters:
-		filtered = list(filter(f, filtered))
+		filtered = filter(f, filtered)
 	return filtered
 
 
 def is_within_week(heading):
-	u"""
-	Return True if the date in the deading is within a week in the future (or
-	older.
+	u""" Test if headings date is withing a week
+
+	Returns:
+		bool: True if the date in the deading is within a week in the future (or
+			older False otherwise.
 	"""
 	if contains_active_date(heading):
 		next_week = datetime.today() + timedelta(days=7)
@@ -58,25 +59,34 @@ def is_within_week(heading):
 
 def is_within_week_and_active_todo(heading):
 	u"""
-	Return True if heading contains an active TODO and the date is within a
-	week.
+	Returns:
+		bool: True if heading contains an active TODO and the date is within a
+			week.
 	"""
 	return is_within_week(heading) and contains_active_todo(heading)
 
 
 def contains_active_todo(heading):
 	u"""
-	Return True if heading contains an active TODO.
 
-	FIXME: the todo checking should consider a number of different active todo
-	states
+	Returns:
+		bool: True if heading contains an active TODO.
 	"""
-	return heading.todo == u"TODO"
+	# TODO make this more efficient by checking some val and not calling the
+	# function
+	# TODO why is this import failing at top level? circular dependecy...
+	from orgmode._vim import ORGMODE
+	active = []
+	for act in ORGMODE.get_document().get_todo_states():
+		active.extend(act[0])
+	return heading.todo in active
 
 
 def contains_active_date(heading):
 	u"""
-	Return True if heading contains an active date.
+
+	Returns:
+		bool: True if heading contains an active date.
 	"""
 	return not(heading.active_date is None)
 

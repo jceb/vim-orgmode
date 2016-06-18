@@ -56,6 +56,8 @@ class DomObj(object):
 	Normally, we don't intend to use DomObj directly. However, we can add some more
 	DOM structure element based on this class to make code more concise.
 	"""
+	# TODO should this and DomObj_list be abstract methods? If so use ABC to
+	# force abstract methods
 
 	def __init__(self, level=1, title=u'', body=None):
 		u"""
@@ -202,18 +204,14 @@ class DomObj(object):
 	@property
 	def start(self):
 		u""" Access to the starting line of the dom obj """
-		if self.document is None:
+		if self.document is None or not self.document.is_dirty:
 			return self._orig_start
 
-		# static computation of start
-		if not self.document.is_dirty:
-			return self._orig_start
-
-		# dynamic computation of start, really slow!
-		def compute_start(h):
-			if h:
-				return len(h) + compute_start(h.previous_item)
-		return compute_start(self.previous_item)
+		def item_len_generator(h):
+			while h:
+				yield len(h)
+				h = h.previous_item
+		return sum(item for item in item_len_generator(self.previous_item))
 
 	@property
 	def start_vim(self):
@@ -245,22 +243,24 @@ class DomObj(object):
 	def end_of_last_child_vim(self):
 		return self.end_of_last_child + 1
 
-	def children():
-		u""" Subheadings of the current dom obj """
-		def fget(self):
-			return self._children
+	@property
+	def children(self):
+		u""" MultiPurposeList[dom_objects??]: subheadings of the current DomObj
 
-		def fset(self, value):
-			v = value
-			if type(v) in (list, tuple) or isinstance(v, UserList):
-				v = flatten_list(v)
-			self._children[:] = v
+		Setter method takes list, tuple or userlist with DOMObjects
+		"""
+		return self._children
 
-		def fdel(self):
-			del self.children[:]
+	@children.setter
+	def children(self, value):
+		v = value
+		if type(v) in (list, tuple) or isinstance(v, UserList):
+			v = flatten_list(v)
+		self._children[:] = v
 
-		return locals()
-	children = property(**children())
+	@children.deleter
+	def children(self):
+		del self.children[:]
 
 	@property
 	def first_child(self):
@@ -274,61 +274,67 @@ class DomObj(object):
 		if self.children:
 			return self.children[-1]
 
-	def level():
-		u""" Access to the dom obj level """
-		def fget(self):
-			return self._level
+	@property
+	def level(self):
+		u""" int: Access the the dom obj level
 
-		def fset(self, value):
-			self._level = int(value)
-			self.set_dirty()
+		Setter sets the DOM object and the document as dirty if invoked.
+		"""
+		return self._level
 
-		def fdel(self):
-			self.level = None
+	@level.setter
+	def level(self, value):
+		# TODO Shouldn't there be and error when values is not int?
+		self._level = int(value)
+		self.set_dirty()
 
-		return locals()
-	level = property(**level())
+	@level.deleter
+	def level(self):
+		self.level = None
 
-	def title():
-		u""" Title of current dom object """
-		def fget(self):
-			return self._title.strip()
+	@property
+	def title(self):
+		u""" str: Get the title of current dom object
 
-		def fset(self, value):
-			if type(value) not in (unicode, str):
-				raise ValueError(u'Title must be a string.')
-			v = value
-			if type(v) == str:
-				v = u_decode(v)
-			self._title = v.strip()
-			self.set_dirty()
+		Setter sets the DOM object and the document as dirty if invoked.
+		"""
+		return self._title.strip()
 
-		def fdel(self):
-			self.title = u''
+	@title.setter
+	def title(self, value):
+		if type(value) not in (unicode, str):
+			raise ValueError(u'Title must be a string.')
+		v = value
+		if type(v) == str:
+			v = u_decode(v)
+		self._title = v.strip()
+		self.set_dirty()
 
-		return locals()
-	title = property(**title())
+	@title.deleter
+	def title(self):
+		self._title = u''
 
-	def body():
-		u""" Holds the content belonging to the heading """
-		def fget(self):
-			return self._body
+	@property
+	def body(self):
+		u""" MultiPurposeList[]: Holds the content belonging to the heading """
+		return self._body
 
-		def fset(self, value):
-			if type(value) in (list, tuple) or isinstance(value, UserList):
-				self._body[:] = flatten_list(value)
-			elif type(value) in (str, ):
-				self._body[:] = u_decode(value).split(u'\n')
-			elif type(value) in (unicode, ):
-				self._body[:] = value.split(u'\n')
-			else:
-				self.body = list(unicode(value))
+	@body.setter
+	def body(self, value):
+		if type(value) in (list, tuple) or isinstance(value, UserList):
+			self._body[:] = flatten_list(value)
+		elif type(value) in (str, ):
+			self._body[:] = u_decode(value).split(u'\n')
+		elif type(value) in (unicode, ):
+			self._body[:] = value.split(u'\n')
+		else:
+			self.body = list(unicode(value))
 
-		def fdel(self):
-			self.body = []
-
-		return locals()
-	body = property(**body())
+	@body.deleter
+	def body(self):
+		# TODO write this as del self._body[:] because there is no reason to
+		# call so much code for deleting a list
+		self.body = []
 
 
 class DomObjList(MultiPurposeList):
@@ -355,66 +361,72 @@ class DomObjList(MultiPurposeList):
 
 	@classmethod
 	def is_domobj(cls, obj):
+		# TODO no reason for it to be class method. Does it even need to exist
+		# because it is quite clear what isinstance does and in derived methods
+		# isinstance(Heading, DomObj) would return True anyway.
 		return isinstance(obj, DomObj)
 
+	# TODO this should be made into a property
 	def _get_document(self):
 		if self.__class__.is_domobj(self._obj):
 			return self._obj._document
 		return self._obj
 
 	def __setitem__(self, i, item):
-		if not self.__class__.is_domobj(item):
-			raise ValueError(u'Item is not a Dom obj!')
-		if item in self:
-			raise ValueError(u'Dom obj is already part of this list!')
-		# self._add_to_deleted_domobjs(self[i])
+		if isinstance(i, slice):
+			o = item
+			if self.__class__.is_domobj(o):
+				o = (o, )
+			o = flatten_list(o)
+			for item in o:
+				if not self.__class__.is_domobj(item):
+					raise ValueError(u'List contains items that are not a Dom obj!')
 
-		# self._associate_domobj(item, \
-		# self[i - 1] if i - 1 >= 0 else None, \
-		# self[i + 1] if i + 1 < len(self) else None)
-		MultiPurposeList.__setitem__(self, i, item)
-
-	def __setslice__(self, i, j, other):
-		o = other
-		if self.__class__.is_domobj(o):
-			o = (o, )
-		o = flatten_list(o)
-		for item in o:
+			# self._add_to_deleted_domobjs(self[i:j])
+			# self._associate_domobj(o, \
+			# self[i - 1] if i - 1 >= 0 and i < len(self) else None, \
+			# self[j] if j >= 0 and j < len(self) else None)
+			MultiPurposeList.__setitem__(self, i, o)
+		else:
 			if not self.__class__.is_domobj(item):
-				raise ValueError(u'List contains items that are not a Dom obj!')
-		i = max(i, 0)
-		j = max(j, 0)
-		# self._add_to_deleted_domobjs(self[i:j])
-		# self._associate_domobj(o, \
-		# self[i - 1] if i - 1 >= 0 and i < len(self) else None, \
-		# self[j] if j >= 0 and j < len(self) else None)
-		MultiPurposeList.__setslice__(self, i, j, o)
+				raise ValueError(u'Item is not a Dom obj!')
+			if item in self:
+				raise ValueError(u'Dom obj is already part of this list!')
+			# self._add_to_deleted_domobjs(self[i])
+
+			# self._associate_domobj(item, \
+			# self[i - 1] if i - 1 >= 0 else None, \
+			# self[i + 1] if i + 1 < len(self) else None)
+			MultiPurposeList.__setitem__(self, i, item)
 
 	def __delitem__(self, i, taint=True):
-		item = self[i]
-		if item.previous_sibling:
-			item.previous_sibling._next_sibling = item.next_sibling
-		if item.next_sibling:
-			item.next_sibling._previous_sibling = item.previous_sibling
+		if isinstance(i, slice):
+			items = self[i]
+			if items:
+				first = items[0]
+				last = items[-1]
+				if first.previous_sibling:
+					first.previous_sibling._next_sibling = last.next_sibling
+				if last.next_sibling:
+					last.next_sibling._previous_sibling = first.previous_sibling
+			# if taint:
+				# self._add_to_deleted_domobjs(items)
+		else:
+			item = self[i]
+			if item.previous_sibling:
+				item.previous_sibling._next_sibling = item.next_sibling
+			if item.next_sibling:
+				item.next_sibling._previous_sibling = item.previous_sibling
 
-		# if taint:
-			# self._add_to_deleted_domobjs(item)
+			# if taint:
+				# self._add_to_deleted_domobjs(item)
 		MultiPurposeList.__delitem__(self, i)
 
+	def __setslice__(self, i, j, other):
+		self.__setitem__(slice(i, j), other)
+
 	def __delslice__(self, i, j, taint=True):
-		i = max(i, 0)
-		j = max(j, 0)
-		items = self[i:j]
-		if items:
-			first = items[0]
-			last = items[-1]
-			if first.previous_sibling:
-				first.previous_sibling._next_sibling = last.next_sibling
-			if last.next_sibling:
-				last.next_sibling._previous_sibling = first.previous_sibling
-		# if taint:
-			# self._add_to_deleted_domobjs(items)
-		MultiPurposeList.__delslice__(self, i, j)
+		self.__delitem__(slice(i, j), taint=taint)
 
 	def __iadd__(self, other):
 		o = other
@@ -454,7 +466,7 @@ class DomObjList(MultiPurposeList):
 		return item
 
 	def remove_slice(self, i, j, taint=True):
-		self.__delslice__(i, j, taint=taint)
+		self.__delitem__(slice(i, j), taint=taint)
 
 	def remove(self, item, taint=True):
 		self.__delitem__(self.index(item), taint=taint)

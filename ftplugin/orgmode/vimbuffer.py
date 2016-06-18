@@ -33,6 +33,7 @@ from orgmode.liborgmode.headings import Heading
 from orgmode.py3compat.encode_compatibility import *
 from orgmode.py3compat.unicode_compatibility import *
 
+
 class VimBuffer(Document):
 	def __init__(self, bufnr=0):
 		u"""
@@ -42,7 +43,6 @@ class VimBuffer(Document):
 		self._bufnr          = vim.current.buffer.number if bufnr == 0 else bufnr
 		self._changedtick    = -1
 		self._cached_heading = None
-
 		if self._bufnr == vim.current.buffer.number:
 			self._content = VimBufferContent(vim.current.buffer)
 		else:
@@ -80,14 +80,14 @@ class VimBuffer(Document):
 		"""
 		return self._bufnr
 
-	def changedtick():
+	@property
+	def changedtick(self):
 		u""" Number of changes in vimbuffer """
-		def fget(self):
-			return self._changedtick
-		def fset(self, value):
-			self._changedtick = value
-		return locals()
-	changedtick = property(**changedtick())
+		return self._changedtick
+
+	@changedtick.setter
+	def changedtick(self, value):
+		self._changedtick = value
 
 	def get_todo_states(self, strip_access_key=True):
 		u""" Returns a list containing a tuple of two lists of allowed todo
@@ -97,6 +97,14 @@ class VimBuffer(Document):
 		:returns:	[([todo states], [done states]), ..]
 		"""
 		states = settings.get(u'org_todo_keywords', [])
+		# TODO this function gets called too many times when change of state of
+		# one todo is triggered, check with:
+		# print(states)
+		# this should be changed by saving todo states into some var and only
+		# if new states are set hook should be called to register them again
+		# into a property
+		# TODO move this to documents.py, it is all tangled up like this, no
+		# structure...
 		if type(states) not in (list, tuple):
 			return []
 
@@ -389,41 +397,41 @@ class VimBufferContent(MultiPurposeList):
 		return MultiPurposeList.__contains__(self, i)
 
 	def __getitem__(self, i):
-		item = MultiPurposeList.__getitem__(self, i)
-		if type(item) is str:
-			return u_decode(item)
-		return item
-
-	def __getslice__(self, i, j):
-		return [u_decode(item) if type(item) is str else item \
-				for item in MultiPurposeList.__getslice__(self, i, j)]
+		if isinstance(i, slice):
+			return [u_decode(item) if type(item) is str else item \
+					for item in MultiPurposeList.__getitem__(self, i)]
+		else:
+			item = MultiPurposeList.__getitem__(self, i)
+			if type(item) is str:
+				return u_decode(item)
+			return item
 
 	def __setitem__(self, i, item):
-		_i = item
-		if type(_i) is unicode:
-			_i = u_encode(item)
+		if isinstance(i, slice):
+			o = []
+			o_tmp = item
+			if type(o_tmp) not in (list, tuple) and not isinstance(o_tmp, UserList):
+				o_tmp = list(o_tmp)
+			for item in o_tmp:
+				if type(item) == unicode:
+					o.append(u_encode(item))
+				else:
+					o.append(item)
+			MultiPurposeList.__setitem__(self, i, o)
+		else:
+			_i = item
+			if type(_i) is unicode:
+				_i = u_encode(item)
 
-		# TODO: fix this bug properly, it is really strange that it fails on
-		# python3 without it. Problem is that when _i = ['* '] it fails in
-		# UserList.__setitem__() but if it is changed in debuggr in __setitem__
-		# like item[0] = '* ' it works, hence this is some quirk with unicode
-		# stuff but very likely vim 7.4 BUG too.
-		if isinstance(_i, UserList) and sys.version_info > (3, ):
-			_i = [s.encode('utf8').decode('utf8') for s in _i]
+			# TODO: fix this bug properly, it is really strange that it fails on
+			# python3 without it. Problem is that when _i = ['* '] it fails in
+			# UserList.__setitem__() but if it is changed in debuggr in __setitem__
+			# like item[0] = '* ' it works, hence this is some quirk with unicode
+			# stuff but very likely vim 7.4 BUG too.
+			if isinstance(_i, UserList) and sys.version_info > (3, ):
+				_i = [s.encode('utf8').decode('utf8') for s in _i]
 
-		MultiPurposeList.__setitem__(self, i, _i)
-
-	def __setslice__(self, i, j, other):
-		o = []
-		o_tmp = other
-		if type(o_tmp) not in (list, tuple) and not isinstance(o_tmp, UserList):
-			o_tmp = list(o_tmp)
-		for item in o_tmp:
-			if type(item) == unicode:
-				o.append(u_encode(item))
-			else:
-				o.append(item)
-		MultiPurposeList.__setslice__(self, i, j, o)
+			MultiPurposeList.__setitem__(self, i, _i)
 
 	def __add__(self, other):
 		raise NotImplementedError()

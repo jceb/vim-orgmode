@@ -28,7 +28,7 @@ class TodoTestCase(unittest.TestCase):
 				u_encode(u'exists("b:org_todo_keywords")'): u_encode('0'),
 				# global values for org_todo_keywords
 				u_encode(u'exists("g:org_todo_keywords")'): u_encode('1'),
-				u_encode(u'g:org_todo_keywords'): [u_encode(u'TODO'), u_encode(u'DONE'), u_encode(u'|')],
+				u_encode(u'g:org_todo_keywords'): [u_encode(u'TODO'), u_encode(u'|'), u_encode(u'DONE')],
 				u_encode(u'exists("g:org_debug")'): u_encode(u'0'),
 				u_encode(u'exists("b:org_debug")'): u_encode(u'0'),
 				u_encode(u'exists("*repeat#set()")'): u_encode(u'0'),
@@ -363,7 +363,7 @@ class TodoTestCase(unittest.TestCase):
 		current_state = None
 		result = Todo._get_next_state(current_state, states,
 				Direction.BACKWARD)
-		self.assertEquals(result, u'DONE')
+		self.assertEquals(result, u'RELEASED')
 
 	def test_get_next_keyword_sequence(self):
 		states = [((u'TODO(t)', u'NEXT(n)', u'NOW(w)'), (u'DELEGATED(g)', u'DONE(d)')), ((u'QA(q)', ), (u'RELEASED(r)', ))]
@@ -375,12 +375,12 @@ class TodoTestCase(unittest.TestCase):
 		current_state = None
 		result = Todo._get_next_state(current_state, states,
 				Direction.BACKWARD, next_set=True)
-		self.assertEquals(result, None)
+		self.assertEquals(result, u'QA')
 
 		current_state = u'TODO'
 		result = Todo._get_next_state(current_state, states,
 				Direction.BACKWARD, next_set=True)
-		self.assertEquals(result, u'TODO')
+		self.assertEquals(result, None)
 
 		current_state = u'TODO'
 		result = Todo._get_next_state(current_state, states,
@@ -405,12 +405,12 @@ class TodoTestCase(unittest.TestCase):
 		current_state = u'QA'
 		result = Todo._get_next_state(current_state, states,
 				Direction.FORWARD, next_set=True)
-		self.assertEquals(result, u'QA')
+		self.assertEquals(result, None)
 
 		current_state = u'RELEASED'
 		result = Todo._get_next_state(current_state, states,
 				Direction.FORWARD, next_set=True)
-		self.assertEquals(result, u'RELEASED')
+		self.assertEquals(result, None)
 
 		current_state = u'RELEASED'
 		result = Todo._get_next_state(current_state, states,

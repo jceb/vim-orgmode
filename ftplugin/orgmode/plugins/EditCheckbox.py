@@ -135,9 +135,9 @@ class EditCheckbox(object):
 
 		# do not start insert upon adding new checkbox, Issue #211
 		if int(settings.get(u'org_prefer_insert_mode', u'1')):
-			vim.command(u_encode((u'exe "normal %dgg"|startinsert!' % (start + 1, ))))
+			vim.command(u_encode(u'exe "normal %dgg"|startinsert!' % (start + 1, )))
 		else:
-			vim.command(u_encode((u'exe "normal %dgg$"' % (start + 1, ))))
+			vim.command(u_encode(u'exe "normal %dgg$"' % (start + 1, )))
 
 	@classmethod
 	def toggle(cls, checkbox=None):

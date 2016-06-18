@@ -29,7 +29,7 @@ class TagsPropertiesTestCase(unittest.TestCase):
 				u_encode(u'exists("b:org_todo_keywords")'): u_encode('0'),
 				# global values for org_todo_keywords
 				u_encode(u'exists("g:org_todo_keywords")'): u_encode('1'),
-				u_encode(u'g:org_todo_keywords'): [u_encode(u'TODO'), u_encode(u'DONE'), u_encode(u'|')],
+				u_encode(u'g:org_todo_keywords'): [u_encode(u'TODO'), u_encode(u'|'), u_encode(u'DONE')],
 				u_encode(u'&ts'): u_encode(u'6'),
 				u_encode(u'exists("b:org_tag_column")'): u_encode(u'0'),
 				u_encode(u'exists("g:org_tag_column")'): u_encode(u'0'),
