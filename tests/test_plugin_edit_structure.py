@@ -254,7 +254,6 @@ Bla Bla bla bla
 	def test_demote_heading(self):
 		vim.current.window.cursor = (13, 0)
 		self.assertNotEqual(self.editstructure.demote_heading(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'normal 13ggV15gg='))
 		self.assertEqual(vim.current.buffer[10], u_encode(u'Text 3'))
 		self.assertEqual(vim.current.buffer[11], u_encode(u''))
 		self.assertEqual(vim.current.buffer[12], u_encode(u'***** Überschrift 1.2.1.falsch'))
@@ -277,7 +276,6 @@ Bla Bla bla bla
 
 		vim.current.window.cursor = (6, 2)
 		self.assertNotEqual(self.editstructure.demote_heading(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'normal 6ggV17gg='))
 		self.assertEqual(vim.current.buffer[5], u_encode(u'** '))
 		self.assertEqual(vim.current.buffer[6], u_encode(u'*** Überschrift 1.1'))
 		self.assertEqual(vim.current.buffer[10], u_encode(u'*** Überschrift 1.2'))
@@ -322,7 +320,6 @@ Bla Bla bla bla
 	def test_promote_heading(self):
 		vim.current.window.cursor = (13, 0)
 		self.assertNotEqual(self.editstructure.promote_heading(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'normal 13ggV15gg='))
 		self.assertEqual(vim.current.buffer[10], u_encode(u'Text 3'))
 		self.assertEqual(vim.current.buffer[11], u_encode(u''))
 		self.assertEqual(vim.current.buffer[12], u_encode(u'*** Überschrift 1.2.1.falsch'))
@@ -342,7 +339,6 @@ Bla Bla bla bla
 	def test_demote_parent_heading(self):
 		vim.current.window.cursor = (2, 0)
 		self.assertNotEqual(self.editstructure.demote_heading(), None)
-		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'normal 2ggV16gg='))
 		self.assertEqual(vim.current.buffer[1], u_encode(u'** Überschrift 1'))
 		self.assertEqual(vim.current.buffer[5], u_encode(u'*** Überschrift 1.1'))
 		self.assertEqual(vim.current.buffer[9], u_encode(u'*** Überschrift 1.2'))
@@ -367,10 +363,6 @@ Bla Bla bla bla
 		vim.current.window.cursor = (2, 0)
 		vim.EVALRESULTS[u"v:count"] = u_encode(u'3')
 		self.assertNotEqual(self.editstructure.demote_heading(), None)
-		self.assertEqual(len(vim.CMDHISTORY), 3)
-		self.assertEqual(vim.CMDHISTORY[-3], u_encode(u'normal 2ggV16gg='))
-		self.assertEqual(vim.CMDHISTORY[-2], u_encode(u'normal 2ggV16gg='))
-		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'normal 2ggV16gg='))
 		self.assertEqual(vim.current.buffer[1], u_encode(u'**** Überschrift 1'))
 		self.assertEqual(vim.current.buffer[5], u_encode(u'***** Überschrift 1.1'))
 		self.assertEqual(vim.current.buffer[9], u_encode(u'***** Überschrift 1.2'))
@@ -384,10 +376,6 @@ Bla Bla bla bla
 		vim.current.window.cursor = (13, 0)
 		vim.EVALRESULTS[u"v:count"] = u_encode(u'3')
 		self.assertNotEqual(self.editstructure.promote_heading(), None)
-		self.assertEqual(len(vim.CMDHISTORY), 3)
-		self.assertEqual(vim.CMDHISTORY[-3], u_encode(u'normal 13ggV15gg='))
-		self.assertEqual(vim.CMDHISTORY[-2], u_encode(u'normal 13ggV15gg='))
-		self.assertEqual(vim.CMDHISTORY[-1], u_encode(u'normal 13ggV16gg='))
 		self.assertEqual(vim.current.buffer[5], u_encode(u'** Überschrift 1.1'))
 		self.assertEqual(vim.current.buffer[9], u_encode(u'** Überschrift 1.2'))
 		self.assertEqual(vim.current.buffer[12], u_encode(u'* Überschrift 1.2.1.falsch'))
