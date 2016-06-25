@@ -129,7 +129,10 @@ class EditStructure(object):
 		:on_heading:			True if promoting/demoting should only happen when the cursor is on the heading
 		:insert_mode:			True if vim is in insert mode
 		"""
-
+		# TODO : current promote and demote works for only headings. Since
+		# 		 checkboxes also have tree structure. We should think of
+		# 		 expanding the functionality of promoting and demoting to
+		# 		 checkboxes as well
 		d = ORGMODE.get_document()
 		current_heading = d.current_heading()
 		if not current_heading or on_heading and current_heading.start_vim != vim.current.window.cursor[0]:
@@ -247,8 +250,7 @@ class EditStructure(object):
 					d.headings.insert(idx, current_heading, taint=False)
 
 		d.write()
-		if indent_end_vim != current_heading.start_vim:
-			vim.command(u_encode(u'normal %dggV%dgg=' % (current_heading.start_vim, indent_end_vim)))
+
 		# restore cursor position
 		vim.current.window.cursor = (c[0], c[1] + level)
 
