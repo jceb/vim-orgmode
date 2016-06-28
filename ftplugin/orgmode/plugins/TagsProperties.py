@@ -108,7 +108,7 @@ class TagsProperties(object):
 			# user pressed <Esc> abort any further processing
 			return
 
-		heading.tags = [x for x in u_decode(tags).strip().strip(u':').split(u':') if x.strip() != u'']
+		tags = [x for x in u_decode(tags).strip().strip(u':').split(u':') if x.strip() != u'']
 		if tags:
 			searchstring = u'\\('
 			first = True
