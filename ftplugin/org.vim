@@ -115,6 +115,7 @@ for p in vim.eval("&runtimepath").split(','):
 from orgmode._vim import ORGMODE, insert_at_cursor, get_user_input, date_to_str
 ORGMODE.start()
 
+from Date import Date
 import datetime
 EOF
 
@@ -152,7 +153,6 @@ fun CalendarAction(day, month, year, week, dir)
 	let msg = printf("Inserting %s | Modify date", g:org_timestamp)
 	exe s:py_version . "modifier = get_user_input('" . msg . "')"
 	" change date according to user input
-	exe s:py_version . "print modifier"
 	exe s:py_version . "newdate = Date._modify_time(selected_date, modifier)"
 	exe s:py_version . "newdate = date_to_str(newdate)"
 	" close Calendar
