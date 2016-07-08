@@ -1,6 +1,6 @@
 " Delete the next line to avoid the special indention of items
 if !exists("g:org_indent")
-  let g:org_indent = 1
+  let g:org_indent = 0
 endif
 
 setlocal foldtext=GetOrgFoldtext()

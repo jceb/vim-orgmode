@@ -18,6 +18,7 @@
     - Add export as LaTeX beamer slides (merges PR #206)
     - Keybinding to create plainlist item directly. (closes issue #190)
 *** Changed
+    - Changed default value for =g:org_indent= from =1= to =0=. (issue #243)
     - Revamped TODO keyword cycling rules. (PR #237)
     - In [[syntax/org.vim][syntax/org.vim]], changed `\@<=' with computational faster `\zs'
     - Using =<localleader>c[n/N]= to create new plainlist item following
