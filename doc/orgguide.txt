@@ -327,8 +327,8 @@ Headlines~
   that has whitespace followed by a single star as headline starters.
   |g:org_heading_shade_leading_stars| describes a setup to realize this.
 
-  Body text under headings is indented by default, but you can control this
-  with the  |g:org_indent| variable.
+  Body text under headings is not indented by default, but you can control
+  this  with the  |g:org_indent| variable.
 
 ------------------------------------------------------------------------------
 Text objects~
@@ -1261,11 +1261,11 @@ syntax highlighting and indentation~
 <
 
                                                                   *g:org_indent*
-  Default: 1
-  Defines if body text is indented. By default text is indented according to
-  heading level (heading.level + 1). You can disable it by setting:
+  Default: 0
+  Defines if body text is indented. By default, text is not indented according
+  to heading level (heading.level + 1). You can enable it by setting:
 >
-  let g:org_indent = 0
+  let g:org_indent = 1
 <
 
   Syntax Highlighting Examples~
