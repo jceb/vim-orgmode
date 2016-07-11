@@ -18,7 +18,7 @@
   [[https://github.com/jceb/vim-orgmode/blob/master/examples/mylife.org][file:examples/mylife.gif]]
 
 ** Features
-   Currently vim-orgmode does not support all ormode features but is quite
+   Currently vim-orgmode does not support all orgmode features but is quite
    usable. Short list of the already supported features:
 
    - Syntax highlighting
