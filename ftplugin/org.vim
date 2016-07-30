@@ -40,6 +40,9 @@ if ! exists('b:did_ftplugin')
 	" expand tab for counting level of checkbox
 	setlocal expandtab
 
+	" enable % for angle brackets < >
+	setlocal matchpairs+=<:>
+
 	" register keybindings if they don't have been registered before
 	if exists("g:loaded_org")
 		exe s:py_version . 'ORGMODE.register_keybindings()'
