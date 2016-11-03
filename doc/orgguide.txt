@@ -716,6 +716,7 @@ Priorities~
 
 ------------------------------------------------------------------------------
 Breaking tasks down into subtasks~
+  Not fully implemented in vim-orgmode~
 
 It is often advisable to break down large tasks into smaller, manageable
 subtasks. You can do this by creating an outline tree below a TODO item,
