@@ -17,6 +17,7 @@
       =g:org_prefer_insert_mode= to 0. (closes issue #211)
     - Add export as LaTeX beamer slides (merges PR #206)
     - Keybinding to create plainlist item directly. (closes issue #190)
+    - Make % jump between < and >. (closes issue #250)
 *** Changed
     - Changed default value for =g:org_indent= from =1= to =0=. (issue #243)
     - Revamped TODO keyword cycling rules. (PR #237)
