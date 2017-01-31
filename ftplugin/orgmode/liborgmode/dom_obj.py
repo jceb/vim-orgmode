@@ -25,10 +25,10 @@ REGEX_SUBTASK_PERCENT = re.compile(r'\[(\d*)%\]')
 # heading regex
 REGEX_HEADING = re.compile(
 	r'^(?P<level>\*+)(\s+(?P<title>.*?))?\s*(\s(?P<tags>:[\w_:@]+:))?$',
-	flags=re.U | re.L)
+	flags=re.U)
 REGEX_TAG = re.compile(
 	r'^\s*((?P<title>[^\s]*?)\s+)?(?P<tags>:[\w_:@]+:)$',
-	flags=re.U | re.L)
+	flags=re.U)
 REGEX_TODO = re.compile(r'^[^\s]*$')
 
 # checkbox regex:
@@ -40,7 +40,7 @@ UnOrderListType = [u'-', u'+', u'*']
 OrderListType = [u'.', u')']
 REGEX_CHECKBOX = re.compile(
 	r'^(?P<level>\s*)(?P<type>[%s]|([a-zA-Z]|[\d]+)[%s])(\s+(?P<status>\[.\]))?\s*(?P<title>.*)$'
-	% (''.join(UnOrderListType), ''.join(OrderListType)), flags=re.U | re.L)
+	% (''.join(UnOrderListType), ''.join(OrderListType)), flags=re.U)
 
 
 class DomObj(object):
