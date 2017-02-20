@@ -364,7 +364,7 @@ class EditStructure(object):
 									 Plug(u'OrgNewHeadingBelowNormal', u':silent! %s ORGMODE.plugins[u"EditStructure"].new_heading(below=True)<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'New Heading &below', self.keybindings[-1])
 		self.keybindings.append(Keybinding(u'<localleader>hh', u'<Plug>OrgNewHeadingBelowNormal', mode=MODE_NORMAL))
-		self.keybindings.append(Keybinding(u'<leader><CR>', u'<Plug>OrgNewHeadingBelowNormal', mode=MODE_NORMAL))
+		self.keybindings.append(Keybinding(u'<localleader><CR>', u'<Plug>OrgNewHeadingBelowNormal', mode=MODE_NORMAL))
 
 		self.keybindings.append(Keybinding(u'<C-CR>', Plug(u'OrgNewHeadingBelowAfterChildrenNormal', u':silent! %s ORGMODE.plugins[u"EditStructure"].new_heading(below=True, end_of_last_child=True)<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'New Heading below, after &children', self.keybindings[-1])
