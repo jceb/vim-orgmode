@@ -50,7 +50,7 @@ def get(setting, default=None, scope=SCOPE_ALL):
 
 
 def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):
-	u""" Store setting in the definied scope
+	u""" Store setting in the defined scope
 
 	WARNING: For the return value, only string are converted to unicode. If a
 	different value is received by vim.eval, e.g. a list or dict, no conversion
@@ -60,7 +60,7 @@ def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):
 	:value:     the actual value, repr is called on the value to create a string
 	            representation
 	:scope:     the scope o the setting/variable
-	:overwrite: overwrite existing settings (probably user definied settings)
+	:overwrite: overwrite existing settings (probably user defined settings)
 
 	:returns: the new value in case of overwrite==False the current value
 	"""
@@ -83,7 +83,7 @@ def set(setting, value, scope=SCOPE_GLOBAL, overwrite=False):
 
 
 def unset(setting, scope=SCOPE_GLOBAL):
-	u""" Unset setting int the definied scope
+	u""" Unset setting in the defined scope
 	:setting: name of the setting
 	:scope:   the scope o the setting/variable
 
