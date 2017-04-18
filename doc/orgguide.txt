@@ -1226,7 +1226,7 @@ syntax highlighting and indentation~
 
                                                 *g:org_heading_highlight_levels*
   Default: len(g:org_heading_highlight_colors)
-  Definie the number of levels of highlighting. If this number is bigger than
+  Define the number of levels of highlighting. If this number is bigger than
   the list of colors defined in of g:org_heading_highlight_colors the colors
   of g:org_heading_highlight_colors get repeated. Example:
 >
