@@ -2,6 +2,8 @@
 import re
 from datetime import timedelta, date, datetime
 
+import operator
+
 import vim
 
 from orgmode._vim import ORGMODE, echom, insert_at_cursor, get_user_input
@@ -65,6 +67,8 @@ class Date(object):
 
 		# rm crap from modifier
 		modifier = modifier.strip()
+
+		ops = {'-': operator.sub, '+': operator.add}
 
 		# check real date
 		date_regex = r"(\d\d\d\d)-(\d\d)-(\d\d)"
@@ -131,37 +135,42 @@ class Date(object):
 			newdate = startdate + timedelta(days=diff)
 
 		# check for days modifier with appended d
-		match = re.search(u'\+(\d*)d', modifier)
+		match = re.search(u'^(\+|-)(\d*)d', modifier)
 		if match:
-			days = int(match.groups()[0])
-			newdate = startdate + timedelta(days=days)
+			op, days = match.groups()
+			newdate = ops[op](startdate, timedelta(days=int(days)))
 
 		# check for days modifier without appended d
-		match = re.search(u'\+(\d*) |\+(\d*)$', modifier)
+		match = re.search(u'^(\+|-)(\d*) |^(\+|-)(\d*)$', modifier)
 		if match:
+			groups = match.groups()
 			try:
-				days = int(match.groups()[0])
+				op = groups[0]
+				days = int(groups[1])
 			except:
-				days = int(match.groups()[1])
-			newdate = startdate + timedelta(days=days)
+				op = groups[2]
+				days = int(groups[3])
+			newdate = ops[op](startdate, timedelta(days=days))
 
 		# check for week modifier
-		match = re.search(u'\+(\d+)w', modifier)
+		match = re.search(u'^(\+|-)(\d+)w', modifier)
 		if match:
-			weeks = int(match.groups()[0])
-			newdate = startdate + timedelta(weeks=weeks)
+			op, weeks = match.groups()
+			newdate = ops[op](startdate, timedelta(weeks=int(weeks)))
 
-		# check for week modifier
-		match = re.search(u'\+(\d+)m', modifier)
+		# check for month modifier
+		match = re.search(u'^(\+|-)(\d+)m', modifier)
 		if match:
-			months = int(match.groups()[0])
-			newdate = date(startdate.year, startdate.month + months, startdate.day)
+			op, months = match.groups()
+			newdate = date(startdate.year, ops[op](startdate.month, int(months)),
+					startdate.day)
 
 		# check for year modifier
-		match = re.search(u'\+(\d*)y', modifier)
+		match = re.search(u'^(\+|-)(\d*)y', modifier)
 		if match:
-			years = int(match.groups()[0])
-			newdate = date(startdate.year + years, startdate.month, startdate.day)
+			op, years = match.groups()
+			newdate = date(ops[op](startdate.year, int(years)), startdate.month,
+					startdate.day)
 
 		# check for month day
 		match = re.search(
