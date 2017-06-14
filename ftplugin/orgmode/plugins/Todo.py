@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import vim
+import re
 import itertools as it
 
 from orgmode._vim import echom, ORGMODE, apply_count, repeat, realign_tags
@@ -250,7 +251,7 @@ class Todo(object):
 	def init_org_todo(cls):
 		u""" Initialize org todo selection window.
 		"""
-		bufnr = int(vim.current.buffer.name.split('/')[-1])
+		bufnr = int(re.findall('\d+$',vim.current.buffer.name)[0])
 		all_states = ORGTODOSTATES.get(bufnr, None)
 
 		vim_commands = [
