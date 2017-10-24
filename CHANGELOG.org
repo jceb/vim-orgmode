@@ -2,54 +2,58 @@
   All notable changes to this project will be documented in this file.
 
   This log is kept according to the [[http://keepachangelog.com/][Keep a CHANGELOG]] manifesto
-** 0.6.0                  					 :unreleased:
+** 0.6.0 <2017-10-24 Tue>							 :released:
 *** Added
     - Introduced sphinx documentation to Python modules. (PR #237)
-    - Add =Python3= support. (closes issue #226, merge PR #231)
-    - Implementing agenda overview for current buffer. (merges PR #229)
+    - Add =Python3= support. (PR #231, closes #226)
+    - Implementing agenda overview for current buffer. (PR #229)
     - =g:org_aggressive_conceal=, if value =1=, will conceal all simple format
-      identifying characters, default =0=. (merges PR #188)
+      identifying characters, default =0=. (PR #188)
     - (testing on `g:org_aggressive_conceal=1' mode) Add possibility to escape
       format indicating characters from leading inline markup, by escaping with
       "\".
     - Add alternative behavior: refrain from entering insert mode after
       heading/checkbox creation through keybindings. Activate by setting
-      =g:org_prefer_insert_mode= to 0. (closes issue #211)
-    - Add export as LaTeX beamer slides (merges PR #206)
-    - Keybinding to create plainlist item directly. (closes issue #190)
-    - Make % jump between < and >. (closes issue #250)
+      =g:org_prefer_insert_mode= to 0. (closes #211)
+    - Add export as LaTeX beamer slides (PR #206)
+    - Keybinding to create plainlist item directly. (closes #190)
+    - Make % jump between < and >. (PR #251, closes #250)
 *** Changed
-    - Changed default value for =g:org_indent= from =1= to =0=. (issue #243)
+    - Changed default value for =g:org_indent= from =1= to =0=. (closes #243)
     - Revamped TODO keyword cycling rules. (PR #237)
     - In [[syntax/org.vim][syntax/org.vim]], changed `\@<=' with computational faster `\zs'
     - Using =<localleader>c[n/N]= to create new plainlist item following
       current plainlist item. Now these keybindings will unconditionally
-      create empty checkbox. (issue #190)
+      create empty checkbox. (closes #190)
 *** Deprecated
     - Nothing
 *** Removed
     - Removed the requirement for TODO state keywords to be upper-case.
+      (PR #235)
 *** Fixed
-    - Fixed python3 compatible issue within =CalendarAction=. (merges #242, closes #241)
+    - Avoid duplicate =InsertLeave= handlers (PR #222, closes #223)
+    - Fix python3 compatibility issue with regexes
+      (PR #266, closes #263, #265)
+    - Fixed python3 compatible issue within =CalendarAction=.
+      (PR #242, closes #241)
     - Tree promoting/demoting no longer destroy list and checkbox structure.
       (closes #217)
-    - Fixed bug when promote/demote headings when it contain lists. (merges
-      #239, partly fixed #217)
-    - Silenced =W18= warning when non-ASCII coded TODO keywords are used. (merges #236)
-    - Fix non-English locale support issue in OrgDate and Agenda. (merges #234,
+    - Fixed bug when promote/demote headings when it contain lists.
+      (PR #239, partly fixes #217)
+    - Silenced =W18= warning when non-ASCII coded TODO keywords are used.
+      (PR #236)
+    - Fix non-English locale support issue in OrgDate and Agenda. (PR #234,
       closes #230)
     - Fix =concealcursor= mis-setting. (from ="nc"= to =nc=)
-    - Fix duplicate =InsertLeave= autocmd for =tag_complete=. (close issue
-      #223)
-    - Fix utl error when =\= or white space is in the link by
-      auto-escaping(issue #220)
-    - Fix typo vbm -> vmb (merges PR #219.)
-      instance in document on NeoVim.(closes issue #213)
-    - Fix toggling checkboxes with plain embedded lists (closes issue #209)
-    - Return to right window before setting todo (closes issue #202)
-    - Fix link to calendar-vim (closes issue #197)
-    - Fix `out of bound` issue when creating heading/checkbox after last
-      instance in document on NeoVim.
+    - Fix duplicate =InsertLeave= autocmd for =tag_complete=. (closes #223)
+    - Fix utl error when =\= or white space is in the link by auto-escaping.
+      (closes #220)
+    - Fix typo vbm -> vmb (PR #219)
+    - Fix toggling checkboxes with plain embedded lists (PR #212, closes #209)
+    - Return to right window before setting todo (closes #202)
+    - Fix link to calendar-vim (closes #197)
+    - Fix =out of bound= issue when creating heading/checkbox after last
+      instance in document on NeoVim. (closes #213)
 ** 0.5.0 <2015-10-10 Sat>							 :released:
 *** Added
     - show link description in headings when folded, instead of the whole
