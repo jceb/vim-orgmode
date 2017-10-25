@@ -81,7 +81,7 @@ class Export(object):
 		p.wait()
 
 		if p.returncode != 0 or settings.get(u'org_export_verbose') == 1:
-			echom('\n'.join(p.communicate()))
+			echom(b'\n'.join(p.communicate()))
 		return p.returncode
 
 	@classmethod
