@@ -2,7 +2,7 @@
   All notable changes to this project will be documented in this file.
 
   This log is kept according to the [[http://keepachangelog.com/][Keep a CHANGELOG]] manifesto
-** 0.6.0 <2017-10-24 Tue>							 :released:
+** 0.6.0 <2017-11-06 Mon>							 :released:
 *** Added
     - Introduced sphinx documentation to Python modules. (PR #237)
     - Add =Python3= support. (PR #231, closes #226)
