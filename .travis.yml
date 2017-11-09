@@ -11,7 +11,11 @@ python:
 
 install:
     - pip install coverage
+    - pip install codecov
 
 script:
     - cd tests
     - nosetests --with-coverage .
+
+after_success:
+    - codecov
