@@ -3,6 +3,8 @@
 
   This log is kept according to the [[http://keepachangelog.com/][Keep a CHANGELOG]] manifesto
 ** 0.7.0									     :unreleased:
+*** Added
+    - Subtracting when entering dates (PR #276)
 *** Fixed
     - =ir= text object now works with most operations (PR #284, closes #273)
 ** 0.6.0 <2017-11-06 Mon>							 :released:
