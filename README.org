@@ -2,8 +2,8 @@
 
   #+ATTR_HTML: title="Join the chat at https://gitter.im/jceb/vim-orgmode"
   [[https://gitter.im/jceb/vim-orgmode?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge][file:https://badges.gitter.im/jceb/vim-orgmode.svg]]
-
-  [[https://secure.travis-ci.org/jceb/vim-orgmode.png?branch=master]]
+  [[https://travis-ci.org/jceb/vim-orgmode][file:https://travis-ci.org/jceb/vim-orgmode.svg]]
+  [[https://codecov.io/gh/jceb/vim-orgmode][file:https://codecov.io/gh/jceb/vim-orgmode/branch/master/graph/badge.svg]]
 
   Text outlining and task management for Vim based on [[http://orgmode.org/][Emacs' Org-Mode]].
 

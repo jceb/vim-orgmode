@@ -4,18 +4,18 @@ before_install:
     - sudo apt-get update && sudo apt-get --reinstall install -qq language-pack-pt
 
 python:
-    - "2.6"
     - "2.7"
     - "3.4"
     - "3.5"
+    - "3.6"
 
-# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-    - pip install flake8
     - pip install coverage
+    - pip install codecov
 
-# command to run tests, e.g. python setup.py test
 script:
-    # - "flake8 --ignore=W191,E101 --max-complexity=10 **/**.py"
     - cd tests
     - nosetests --with-coverage .
+
+after_success:
+    - codecov
