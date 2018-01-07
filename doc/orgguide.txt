@@ -251,7 +251,7 @@ Suggested plugins~
     needed when you want to repeat the previous orgmode action.
 
   taglist~
-    ([http://www.vim.org/scripts/script.php?script_id=273)
+    (http://www.vim.org/scripts/script.php?script_id=273)
     Display tags for the currently edited file. Vim-orgmode ships with support
     for displaying the heading structure and hyperlinks in the taglist plugin.
 
