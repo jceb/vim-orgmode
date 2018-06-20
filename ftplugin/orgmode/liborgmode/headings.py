@@ -12,8 +12,9 @@ import re
 import vim
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list, Direction, get_domobj_range
 from orgmode.liborgmode.orgdate import OrgTimeRange
-from orgmode.liborgmode.orgdate import get_orgdate
+from orgmode.liborgmode.orgdate import get_orgdate, _text2orgdate
 from orgmode.liborgmode.checkboxes import Checkbox, CheckboxList
+from orgmode.liborgmode.logbook import ClockLine, Logbook
 from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT, REGEX_HEADING, REGEX_TAG, REGEX_TODO
 
 from orgmode.py3compat.xrange_compatibility import *
@@ -61,6 +62,8 @@ class Heading(DomObj):
 		# checkboxes
 		self._checkboxes = CheckboxList(obj=self)
 		self._cached_checkbox = None
+
+		self._logbook = Logbook(obj=self)
 
 	def __unicode__(self):
 		res = u'*' * self.level
@@ -332,6 +335,19 @@ class Heading(DomObj):
 			c = self.find_checkbox(c.end_of_last_child + 1, checkbox=checkbox)
 
 		return self
+
+	def init_logbook(self):
+		heading_end = self.start + len(self) - 1
+		self.logbook.clear()
+		for i, line in enumerate(self.document._content[self.start + 1:heading_end + 1]):
+			line_date = _text2orgdate(line)
+			if line_date is not None:
+				clock_line = ClockLine(
+					date=line_date,
+					orig_start=self.start + 1 + i,
+					level=self.level + 1,
+				)
+				self.logbook.data.append(clock_line)
 
 	def current_checkbox(self, position=None):
 		u""" Find the current checkbox (search backward) and return the related object
@@ -673,6 +689,10 @@ class Heading(DomObj):
 	@checkboxes.deleter
 	def checkboxes(self):
 		del self.checkboxes[:]
+
+	@property
+	def logbook(self):
+		return self._logbook
 
 
 class HeadingList(DomObjList):

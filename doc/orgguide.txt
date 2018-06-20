@@ -928,7 +928,28 @@ Deadlines and scheduling~
 
 ------------------------------------------------------------------------------
 Clocking work time~
-  Not yet implemented in vim-orgmode~
+
+  Org mode allows you to clock the time you spend on specific tasks in a
+  project.
+
+                                                       orgmode-<LocalLeader>ci
+  <LocalLeader>ci       Start the clock on the current item (clock-in). This
+                        inserts the CLOCK keyword together with a timestamp.
+                        Currently vim-orgmode will insert LOGBOOK drawer even
+                        if there is only one clock line
+
+  <LocalLeader>co       Stop the clock (clock-out) in the current heading.
+                        This inserts another timestamp at the location of the
+                        last started clock in the heading. It also directly
+                        computes the resulting time in inserts it after the
+                        time range as ‘=> HH:MM’
+
+  <LocalLeader>cu       Update duration of the current clock line after the
+                        the timestamps were changed manually
+
+  <LocalLeader>ct       Display total time spent in the current heading. This
+                        command will recursively sum times in the nested
+                        headings too
 
 ==============================================================================
 CAPTURE - REFILE - ARCHIVE                                    *orgguide-capture*
