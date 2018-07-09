@@ -269,13 +269,13 @@ class Document(object):
 					the current file in serialized order
 		"""
 		if not self.headings:
-			raise StopIteration()
+			return
 
 		h = self.headings[0]
 		while h:
 			yield h
 			h = h.next_heading
-		raise StopIteration()
+		return
 
 	def find_heading(
 		self, position=0, direction=Direction.FORWARD, heading=Heading,

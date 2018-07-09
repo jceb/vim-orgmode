@@ -223,24 +223,24 @@ class Heading(DomObj):
 					the current heading in serialized order
 		"""
 		if not self.checkboxes:
-			raise StopIteration()
+			return
 
 		c = self.first_checkbox
 		while c:
 			yield c
 			c = c.next_checkbox
-		raise StopIteration()
+		return
 
 	def all_toplevel_checkboxes(self):
 		u""" return all top level checkboxes for current heading """
 		if not self.checkboxes:
-			raise StopIteration()
+			return
 
 		c = self.first_checkbox
 		while c:
 			yield c
 			c = c.next_sibling
-		raise StopIteration()
+		return
 
 	def find_checkbox(self, position=0, direction=Direction.FORWARD,
 		checkbox=Checkbox, connect_with_heading=True):
