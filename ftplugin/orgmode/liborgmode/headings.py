@@ -14,7 +14,7 @@ from orgmode.liborgmode.base import MultiPurposeList, flatten_list, Direction, g
 from orgmode.liborgmode.orgdate import OrgTimeRange
 from orgmode.liborgmode.orgdate import get_orgdate
 from orgmode.liborgmode.checkboxes import Checkbox, CheckboxList
-from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT, REGEX_HEADING, REGEX_TAG, REGEX_TODO
+from orgmode.liborgmode.dom_obj import DomObj, DomObjList, REGEX_SUBTASK, REGEX_SUBTASK_PERCENT, REGEX_HEADING, REGEX_TAG, REGEX_TODO, REGEX_PLANNING
 
 from orgmode.py3compat.xrange_compatibility import *
 from orgmode.py3compat.encode_compatibility import *
@@ -29,14 +29,18 @@ except:
 class Heading(DomObj):
 	u""" Structural heading object """
 
-	def __init__(self, level=1, title=u'', tags=None, todo=None, body=None, active_date=None):
+	def __init__(self, level=1, title=u'', tags=None, todo=None, body=None, active_date=None,
+		scheduled_date=None, closed_date=None, deadline_date=None, has_planning_line=False):
 		u"""
-		:level:		Level of the heading
-		:title:		Title of the heading
-		:tags:		Tags of the heading
-		:todo:		Todo state of the heading
-		:body:		Body of the heading
-		:active_date: active date that is used in the agenda
+		:level:		    Level of the heading
+		:title:		    Title of the heading
+		:tags:		    Tags of the heading
+		:todo:		    Todo state of the heading
+		:body:		    Body of the heading
+		:active_date:	    active date that is used in the agenda
+		:scheduled_date:   planning line SCHEDULED keyword datetime
+		:deadline_date:	    planning line DEADLINE keyword datetime
+		:closed_date:	    planning line CLOSED keyword datetime
 		"""
 		DomObj.__init__(self, level=level, title=title, body=body)
 
@@ -55,8 +59,12 @@ class Heading(DomObj):
 
 		# active date
 		self._active_date = active_date
-		if active_date:
-			self.active_date = active_date
+
+		# planning dates
+		self._scheduled_date = scheduled_date
+		self._closed_date = closed_date
+		self._deadline_date = deadline_date
+		self.has_planning_line = has_planning_line
 
 		# checkboxes
 		self._checkboxes = CheckboxList(obj=self)
@@ -153,39 +161,13 @@ class Heading(DomObj):
 		"""
 		Headings can be sorted by date.
 		"""
-		try:
-			if self.active_date > other.active_date:
-				return True
-			elif self.active_date == other.active_date:
-				return True
-			elif self.active_date < other.active_date:
-				return False
-		except:
-			if not self.active_date and other.active_date:
-				return True
-			elif self.active_date and not other.active_date:
-				return False
-			elif not self.active_date and not other.active:
-				return True
+		return not self < other
 
 	def __gt__(self, other):
 		"""
 		Headings can be sorted by date.
 		"""
-		try:
-			if self.active_date > other.active_date:
-				return True
-			elif self.active_date == other.active_date:
-				return False
-			elif self.active_date < other.active_date:
-				return False
-		except:
-			if not self.active_date and other.active_date:
-				return True
-			elif self.active_date and not other.active_date:
-				return False
-			elif not self.active_date and not other.active:
-				return False
+		return not self <= other
 
 	def copy(self, including_children=True, parent=None):
 		u"""
@@ -200,7 +182,10 @@ class Heading(DomObj):
 		"""
 		heading = self.__class__(
 			level=self.level, title=self.title,
-			tags=self.tags, todo=self.todo, body=self.body[:])
+			tags=self.tags, todo=self.todo, body=self.body[:],
+			scheduled_date=self.scheduled_date, deadline_date=self.deadline_date,
+			closed_date=self.closed_date, active_date=self.active_date,
+			has_planning_line=self.has_planning_line)
 		if parent:
 			parent.children.append(heading)
 		if including_children and self.children:
@@ -390,6 +375,15 @@ class Heading(DomObj):
 		if self.checkboxes:
 			return self.checkboxes[0]
 
+	def parse_planning_line(self, planning_line):
+		KEYWORDS = self.get_plannings()
+		matches = list(REGEX_PLANNING.finditer(planning_line))
+
+		for m in matches:
+			if m.group(1) in KEYWORDS:
+				KEYWORDS[m.group(1)] = get_orgdate(str(m))
+		return KEYWORDS
+
 	@classmethod
 	def parse_heading_from_data(
 		cls, data, allowed_todo_states, document=None,
@@ -440,10 +434,17 @@ class Heading(DomObj):
 		if not data:
 			raise ValueError(u'Unable to create heading, no data provided.')
 
-		# create new heaing
+		# create new heading
 		new_heading = cls()
 		new_heading.level, new_heading.todo, new_heading.title, new_heading.tags = parse_title(data[0])
 		new_heading.body = data[1:]
+		if new_heading.body:
+			new_heading._scheduled_date, new_heading._deadline_date, new_heading._closed_date =\
+			    new_heading.parse_planning_line(data[1]).values()
+			new_heading.has_planning_line =  (new_heading.scheduled_date or \
+				new_heading.deadline_date or \
+				new_heading.closed_date or \
+				data[1].strip() == "")
 		if orig_start is not None:
 			new_heading._dirty_heading = False
 			new_heading._dirty_body = False
@@ -602,6 +603,33 @@ class Heading(DomObj):
 		self.todo = None
 
 	@property
+	def scheduled_date(self):
+		u"""
+		scheduled date
+
+		supports PLANNING lines SCHEDULED keyword
+		"""
+		return self._scheduled_date
+
+	@property
+	def closed_date(self):
+		u"""
+		scheduled date
+
+		supports PLANNING lines SCHEDULED keyword
+		"""
+		return self._closed_date
+
+	@property
+	def deadline_date(self):
+		u"""
+		scheduled date
+
+		supports PLANNING lines SCHEDULED keyword
+		"""
+		return self._deadline_date
+
+	@property
 	def active_date(self):
 		u"""
 		active date of the hearing.
@@ -611,13 +639,81 @@ class Heading(DomObj):
 		"""
 		return self._active_date
 
+	def render_planning_line(self, line=None):
+		matches = []
+		if line:
+			matches = REGEX_PLANNING.finditer(line)
+
+		plannings = self.get_plannings()
+		for k in plannings:
+			new_str = ""
+			if plannings[k]:
+			        new_str = "%s: %s" % (k, plannings[k])
+
+			old = None
+			for m in matches:
+				if m.group(1) == k:
+					old = str(m)
+			if old:
+				line.replace(old, new_str)
+			else:
+				line = " ".join([new_str, str(line)])
+
+
+	def update_planning_line(self):
+		self._is_dirty_body = True
+		if self.has_planning_line:
+			self.body[0] = self.render_planning_line(self.body[0])
+		else:
+			self.body.insert(0, self.render_planning_line())
+
+	@scheduled_date.setter
+	def scheduled_date(self, value):
+		if self.scheduled_date != value:
+			self._scheduled_date = value
+			self.update_planning_line()
+
+
+	@closed_date.setter
+	def closed_date(self, value):
+		if self.closed_date != value:
+			self._closed_date = value
+			self.update_planning_line()
+
+	@deadline_date.setter
+	def deadline_date(self, value):
+		if self.deadline_date != value:
+			self._deadline_date = value
+			self.update_planning_line()
+
 	@active_date.setter
 	def active_date(self, value):
 		self._active_date = value
 
+	@scheduled_date.deleter
+	def scheduled_date(self):
+		self._scheduled_date = None
+		self.update_planning_line()
+
+	@closed_date.deleter
+	def closed_date(self):
+		self._closed_date = None
+		self.update_planning_line()
+
+	@deadline_date.deleter
+	def deadline_date(self):
+		self._deadline_date = None
+		self.update_planning_line()
+
 	@active_date.deleter
 	def active_date(self):
 		self._active_date = None
+
+	def get_plannings(self):
+		KEYWORDS = { "SCHEDULED" : self.scheduled_date,
+			"DEADLINE" : self.deadline_date,
+			"CLOSED" : self.closed_date }
+		return KEYWORDS
 
 	@DomObj.title.setter
 	def title(self, value):

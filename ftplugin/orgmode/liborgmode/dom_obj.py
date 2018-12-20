@@ -31,6 +31,8 @@ REGEX_TAG = re.compile(
 	flags=re.U)
 REGEX_TODO = re.compile(r'^[^\s]*$')
 
+REGEX_PLANNING = re.compile(r'(CLOSED|SCHEDULED|DEADLINE)\s*:[^]>]+(\]|>)', flags=re.U)
+
 # checkbox regex:
 #   - [ ] checkbox item
 # - [X] checkbox item

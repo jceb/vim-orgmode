@@ -145,6 +145,15 @@ class Todo(object):
 			return flattened_todos[(ind + next_dir) % len(flattened_todos)]
 
 	@classmethod
+	def print_plannings(cls):
+		d = ORGMODE.get_document(allow_dirty=True)
+		heading = d.find_current_heading()
+		if not heading:
+			return
+		print("Planning: SCHEDULED=%s, DEADLINE=%s, CLOSED=%s" % (heading.scheduled_date,
+			heading.deadline_date, heading.closed_date))
+
+	@classmethod
 	@realign_tags
 	@repeat
 	@apply_count
@@ -312,6 +321,11 @@ class Todo(object):
 			u'OrgTodoToggleInteractive',
 			u'%s ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=True)<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'&TODO/DONE/- (interactiv)', self.keybindings[-1])
+
+		self.keybindings.append(Keybinding(u'<localleader>z', Plug(
+			u'OrgTodoPrintPlannings',
+			u'%s ORGMODE.plugins[u"Todo"].print_plannings()<CR>' % VIM_PY_CALL)))
+		self.menu + ActionEntry(u'&PLANNING DEBUG', self.keybindings[-1])
 
 		# add submenu
 		submenu = self.menu + Submenu(u'Select &keyword')
