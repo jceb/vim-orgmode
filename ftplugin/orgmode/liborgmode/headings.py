@@ -441,7 +441,7 @@ class Heading(DomObj):
 		if new_heading.body:
 			new_heading._scheduled_date, new_heading._deadline_date, new_heading._closed_date =\
 			    new_heading.parse_planning_line(data[1]).values()
-			new_heading.has_planning_line =  (new_heading.scheduled_date or \
+			new_heading.has_planning_line =  bool (new_heading.scheduled_date or \
 				new_heading.deadline_date or \
 				new_heading.closed_date or \
 				data[1].strip() == "")
