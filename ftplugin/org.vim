@@ -116,6 +116,7 @@ for p in vim.eval("&runtimepath").split(','):
 			break
 
 from orgmode._vim import ORGMODE, insert_at_cursor, get_user_input, date_to_str
+from orgmode._vim import ORGMODE, set_scheduled_date, set_deadline_date
 ORGMODE.start()
 
 from Date import Date
