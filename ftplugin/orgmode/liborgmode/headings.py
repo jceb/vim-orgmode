@@ -648,7 +648,7 @@ class Heading(DomObj):
 		for k in plannings:
 			new_str = ""
 			if plannings[k]:
-			        new_str = "%s: %s" % (k, plannings[k])
+			        new_str = "%s: <%s>" % (k, plannings[k])
 
 			old = None
 			for m in matches:
@@ -657,11 +657,10 @@ class Heading(DomObj):
 			if old:
 				line.replace(old, new_str)
 			else:
-				line = " ".join([new_str, str(line)])
-
+				line = line + " " + new_str
+		return line
 
 	def update_planning_line(self):
-		self._is_dirty_body = True
 		if self.has_planning_line:
 			self.body[0] = self.render_planning_line(self.body[0])
 		else:
