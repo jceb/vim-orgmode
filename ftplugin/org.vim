@@ -167,3 +167,37 @@ fun CalendarAction(day, month, year, week, dir)
 	" restore calendar_action
 	let g:calendar_action = g:org_calendar_action_backup
 endf
+fun CalendarActionScheduled(day, month, year, week, dir)
+	let g:org_timestamp = printf("%04d-%02d-%02d Fri", a:year, a:month, a:day)
+	let datetime_date = printf("datetime.date(%d, %d, %d)", a:year, a:month, a:day)
+	exe s:py_version . "selected_date = " . datetime_date
+	" get_user_input
+	let msg = printf("Inserting %s | Modify date", g:org_timestamp)
+	exe s:py_version . "modifier = get_user_input('" . msg . "')"
+	" change date according to user input
+	exe s:py_version . "newdate = Date._modify_time(selected_date, modifier)"
+	" close Calendar
+	exe "q"
+	" goto previous window
+	exe "wincmd p"
+	exe s:py_version . "set_scheduled_date(newdate)"
+	" restore calendar_action
+	let g:calendar_action = g:org_calendar_action_backup
+endf
+fun CalendarActionDeadline(day, month, year, week, dir)
+	let g:org_timestamp = printf("%04d-%02d-%02d Fri", a:year, a:month, a:day)
+	let datetime_date = printf("datetime.date(%d, %d, %d)", a:year, a:month, a:day)
+	exe s:py_version . "selected_date = " . datetime_date
+	" get_user_input
+	let msg = printf("Inserting %s | Modify date", g:org_timestamp)
+	exe s:py_version . "modifier = get_user_input('" . msg . "')"
+	" change date according to user input
+	exe s:py_version . "newdate = Date._modify_time(selected_date, modifier)"
+	" close Calendar
+	exe "q"
+	" goto previous window
+	exe "wincmd p"
+	exe s:py_version . "set_deadline_date(newdate)"
+	" restore calendar_action
+	let g:calendar_action = g:org_calendar_action_backup
+endf

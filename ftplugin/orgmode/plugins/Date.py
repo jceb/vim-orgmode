@@ -7,6 +7,7 @@ import operator
 import vim
 
 from orgmode._vim import ORGMODE, echom, insert_at_cursor, get_user_input
+from orgmode._vim import set_deadline_date, set_scheduled_date
 from orgmode import settings
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.menu import Submenu, ActionEntry, add_cmd_mapping_menu
@@ -224,7 +225,7 @@ class Date(object):
 			return startdate
 
 	@classmethod
-	def insert_timestamp(cls, active=True):
+	def get_timestamp_cmdline(cls):
 		u"""
 		Insert a timestamp at the cursor position.
 
@@ -251,12 +252,29 @@ class Date(object):
 		else:
 			newdate = newdate.strftime(
 				u_decode(u_encode(u'%Y-%m-%d %a')))
+		return newdate
+
+
+	@classmethod
+	def insert_timestamp(cls, active=True):
+		newdate = cls.get_timestamp_cmdline()
+
 		timestamp = u'<%s>' % newdate if active else u'[%s]' % newdate
 
 		insert_at_cursor(timestamp)
 
 	@classmethod
-	def insert_timestamp_with_calendar(cls, active=True):
+	def set_scheduled_cmdline(cls):
+		newdate = cls.get_timestamp_cmdline()
+		set_scheduled_date(newdate)
+
+	@classmethod
+	def set_deadline_cmdline(cls):
+		newdate = cls.get_timestamp_cmdline()
+		set_deadline_date(newdate)
+
+	@classmethod
+	def get_timestamp_calendar(cls, ca_func_name):
 		u"""
 		Insert a timestamp at the cursor position.
 		Show fancy calendar to pick the date from.
@@ -270,11 +288,23 @@ class Date(object):
 		# backup calendar_action
 		calendar_action = vim.eval("g:calendar_action")
 		vim.command("let g:org_calendar_action_backup = '" + calendar_action + "'")
-		vim.command("let g:calendar_action = 'CalendarAction'")
+		vim.command("let g:calendar_action = '" + ca_func_name + "'")
 
+
+	@classmethod
+	def insert_timestamp_with_calendar(cls, active=True):
+		cls.get_timestamp_calendar("CalendarAction")
 		timestamp_template = u'<%s>' if active else u'[%s]'
 		# timestamp template
 		vim.command("let g:org_timestamp_template = '" + timestamp_template + "'")
+
+	@classmethod
+	def set_scheduled_calendar(cls):
+		cls.get_timestamp_calendar("CalendarActionScheduled")
+
+	@classmethod
+	def set_deadline_calendar(cls):
+		cls.get_timestamp_calendar("CalendarActionDeadline")
 
 	def register(self):
 		u"""
@@ -289,6 +319,35 @@ class Date(object):
 			function=u'%s ORGMODE.plugins[u"Date"].insert_timestamp()' % VIM_PY_CALL,
 			menu_desrc=u'Timest&amp'
 		)
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgDateSetScheduledTimestampCmdLine',
+			key_mapping=u'<localleader>scs',
+			function=u'%s ORGMODE.plugins[u"Date"].set_scheduled_cmdline()' % VIM_PY_CALL,
+			menu_desrc=u'Modify SCHEDULED Planning Entry'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgDateSetScheduledTimestampWithCalendar',
+			key_mapping=u'<localleader>scp',
+			function=u'%s ORGMODE.plugins[u"Date"].set_scheduled_calendar()' % VIM_PY_CALL,
+			menu_desrc=u'Modify SCHEDULED Planning Entry with Calendar'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgDateSetDeadlineTimestampCmdLine',
+			key_mapping=u'<localleader>dls',
+			function=u'%s ORGMODE.plugins[u"Date"].set_deadline_cmdline()' % VIM_PY_CALL,
+			menu_desrc=u'Modify DEADLINE Planning Entry'
+		)
+		add_cmd_mapping_menu(
+			self,
+			name=u'OrgDateSetDeadlineTimestampWithCalendar',
+			key_mapping=u'<localleader>dlp',
+			function=u'%s ORGMODE.plugins[u"Date"].set_deadline_calendar()' % VIM_PY_CALL,
+			menu_desrc=u'Modify DEADLINE Planning Entry with Calendar'
+		)
+
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateInsertTimestampInactiveCmdLine',
