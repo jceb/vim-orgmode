@@ -323,28 +323,28 @@ class Date(object):
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateSetScheduledTimestampCmdLine',
-			key_mapping=u'<localleader>scs',
+			key_mapping=u'<localleader>ssc',
 			function=u'%s ORGMODE.plugins[u"Date"].set_scheduled_cmdline()' % VIM_PY_CALL,
 			menu_desrc=u'Modify SCHEDULED Planning Entry'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateSetScheduledTimestampWithCalendar',
-			key_mapping=u'<localleader>scp',
+			key_mapping=u'<localleader>psc',
 			function=u'%s ORGMODE.plugins[u"Date"].set_scheduled_calendar()' % VIM_PY_CALL,
 			menu_desrc=u'Modify SCHEDULED Planning Entry with Calendar'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateSetDeadlineTimestampCmdLine',
-			key_mapping=u'<localleader>dls',
+			key_mapping=u'<localleader>sdl',
 			function=u'%s ORGMODE.plugins[u"Date"].set_deadline_cmdline()' % VIM_PY_CALL,
 			menu_desrc=u'Modify DEADLINE Planning Entry'
 		)
 		add_cmd_mapping_menu(
 			self,
 			name=u'OrgDateSetDeadlineTimestampWithCalendar',
-			key_mapping=u'<localleader>dlp',
+			key_mapping=u'<localleader>pdl',
 			function=u'%s ORGMODE.plugins[u"Date"].set_deadline_calendar()' % VIM_PY_CALL,
 			menu_desrc=u'Modify DEADLINE Planning Entry with Calendar'
 		)

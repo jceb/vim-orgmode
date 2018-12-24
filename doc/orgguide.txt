@@ -168,8 +168,13 @@ via the 'Org' menu. Most are only usable in command mode.
   Dates:~
     <localleader>sa     - insert date
     <localleader>si     - insert inactive date
+    <localleader>ssc    - set the SCHEDULED date of the current headline
+    <localleader>sdl    - set the DEADLINE date of the current headline
     <localleader>pa     - insert date by using calendar selection
     <localleader>pi     - insert inactive date by using calendar selection
+    <localleader>psc    - set the SCHEDULED date by using calendar selection
+    <localleader>pdl    - set the DEADLINE date by using calendar selection
+
 
   Agenda:~
     <localleader>caa    - agenda for the week
