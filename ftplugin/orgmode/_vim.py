@@ -21,7 +21,7 @@ import orgmode.settings
 from orgmode.exceptions import PluginError
 from orgmode.vimbuffer import VimBuffer
 from orgmode.liborgmode.agenda import AgendaManager
-
+from orgmode.liborgmode.orgdate import get_orgdate
 
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
 TAGSPROPERTIES_EXISTS = False
@@ -183,6 +183,7 @@ def set_scheduled_date(new_date):
 	allow_dirty = True
 	line, col = vim.current.window.cursor
 	doc, heading = get_heading(allow_dirty=allow_dirty, line=line)
+	new_date = get_orgdate(u"<%s>" % date_to_str(new_date))
 	heading.scheduled_date = new_date
 	doc.write_heading(heading)
 
@@ -193,6 +194,7 @@ def set_deadline_date(new_date):
 	allow_dirty = True
 	line, col = vim.current.window.cursor
 	doc, heading = get_heading(allow_dirty=allow_dirty, line=line)
+	new_date = get_orgdate("<%s>" % date_to_str(new_date))
 	heading.deadline_date = new_date
 	doc.write_heading(heading)
 

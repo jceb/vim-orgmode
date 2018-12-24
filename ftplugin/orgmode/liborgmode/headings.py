@@ -648,7 +648,7 @@ class Heading(DomObj):
 		for k in plannings:
 			new_str = ""
 			if plannings[k]:
-			        new_str = "%s: <%s>" % (k, plannings[k])
+			        new_str = "%s: %s" % (k, plannings[k])
 
 			old = None
 			for m in matches:

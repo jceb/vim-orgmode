@@ -245,6 +245,13 @@ class Date(object):
 
 		newdate = cls._modify_time(today, modifier)
 
+		return newdate
+
+
+	@classmethod
+	def insert_timestamp(cls, active=True):
+		newdate = cls.get_timestamp_cmdline()
+
 		# format
 		if isinstance(newdate, datetime):
 			newdate = newdate.strftime(
@@ -252,12 +259,6 @@ class Date(object):
 		else:
 			newdate = newdate.strftime(
 				u_decode(u_encode(u'%Y-%m-%d %a')))
-		return newdate
-
-
-	@classmethod
-	def insert_timestamp(cls, active=True):
-		newdate = cls.get_timestamp_cmdline()
 
 		timestamp = u'<%s>' % newdate if active else u'[%s]' % newdate
 
