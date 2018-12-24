@@ -647,15 +647,15 @@ class Heading(DomObj):
 		plannings = self.get_plannings()
 		for k in plannings:
 			new_str = ""
-			if plannings[k]:
-			        new_str = "%s: %s" % (k, plannings[k])
-
+			if not plannings[k]:
+			    continue
+			new_str = "%s: %s" % (k, plannings[k])
 			old = None
 			for m in matches:
 				if m.group(1) == k:
-					old = str(m)
+					old = m.group(0)
 			if old:
-				line.replace(old, new_str)
+				line = line.replace(old, new_str)
 			else:
 				line = line + " " + new_str
 		return line
