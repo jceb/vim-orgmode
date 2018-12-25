@@ -89,6 +89,12 @@ class VimBuffer(Document):
 	def changedtick(self, value):
 		self._changedtick = value
 
+	def get_done_states(self, strip_access_key=True):
+		all_states = self.get_todo_states(strip_access_key)
+		done_states =  list([ done_state for x in all_states for done_state in x[1]])
+
+		return done_states
+
 	def get_todo_states(self, strip_access_key=True):
 		u""" Returns a list containing a tuple of two lists of allowed todo
 		states split by todo and done states. Multiple todo-done state

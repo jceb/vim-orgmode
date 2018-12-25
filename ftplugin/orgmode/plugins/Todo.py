@@ -3,12 +3,16 @@
 import vim
 import itertools as it
 
+import datetime
+
 from orgmode._vim import echom, ORGMODE, apply_count, repeat, realign_tags
 from orgmode import settings
 from orgmode.liborgmode.base import Direction
+from orgmode.liborgmode.orgdate import OrgDateTime
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.exceptions import PluginError
+
 
 # temporary todo states for differnent orgmode buffers
 ORGTODOSTATES = {}
@@ -228,11 +232,20 @@ class Todo(object):
 
 		if not heading:
 			return
-
+		done_states = d.get_done_states(strip_access_key = True)
 		current_state = heading.todo
 
 		# set new headline
 		heading.todo = state
+
+		if (current_state in done_states) != (state in done_states):
+			if state in done_states:
+				n = datetime.datetime.now()
+				heading.closed_date = OrgDateTime(False, n.year, n.month, n.day, n.hour,
+					n.minute)
+			else:
+				heading.closed_date = None
+
 		d.write_heading(heading)
 
 		# move cursor along with the inserted state only when current position
