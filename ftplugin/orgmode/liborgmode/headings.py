@@ -639,7 +639,7 @@ class Heading(DomObj):
 		"""
 		return self._active_date
 
-	def render_planning_line(self, line=None):
+	def render_planning_line(self, line=""):
 		matches = []
 		if line:
 			matches = list(REGEX_PLANNING.finditer(line))
@@ -655,7 +655,7 @@ class Heading(DomObj):
 			if old:
 				line = line.replace(old, new_str)
 			else:
-				if new_str != "":
+				if new_str:
 					line = line + " " + new_str
 
 		return line
