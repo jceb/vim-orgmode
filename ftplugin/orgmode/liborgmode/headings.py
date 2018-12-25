@@ -642,8 +642,7 @@ class Heading(DomObj):
 	def render_planning_line(self, line=None):
 		matches = []
 		if line:
-			matches = REGEX_PLANNING.finditer(line)
-
+			matches = list(REGEX_PLANNING.finditer(line))
 		plannings = self.get_plannings()
 		for k in plannings:
 			new_str = ""
