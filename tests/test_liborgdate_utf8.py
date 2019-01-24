@@ -33,8 +33,8 @@ class OrgDateUtf8TestCase(unittest.TestCase):
 		self.year = 2016
 		self.month = 5
 		self.day = 7
-		self.text = u'<2016-05-07 Sáb>'
-		self.textinactive = u'[2016-05-07 Sáb]'
+		self.text = u'<2016-05-07 sáb>'
+		self.textinactive = u'[2016-05-07 sáb]'
 
 	def test_OrdDate_str_unicode_active(self):
 		with self.setlocale(self.UTF8_LOCALE):
