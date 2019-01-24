@@ -27,7 +27,7 @@ import re
 from orgmode.py3compat.encode_compatibility import *
 
 _DAYNAME = r"[^]>\s+0-9-]+"
-_DATE = r"(\d\d\d\d)-(\d\d)-(\d\d) %s" % _DAYNAME
+_DATE = r"(\d\d\d\d)-(\d\d)-(\d\d)(?:\s+%s)?" % _DAYNAME
 
 # <2011-09-12 Mon>
 _DATE_REGEX = re.compile(r"<%s>" %_DATE, re.UNICODE)
