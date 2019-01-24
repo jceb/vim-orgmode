@@ -30,6 +30,10 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 		self.h_no_date = Heading.parse_heading_from_data(tmp,
 				self.allowed_todo_states)
 
+		tmp = ["* This heading has an incative date [2011-08-26 Fri]"]
+		self.h_no_date_2 = Heading.parse_heading_from_data(tmp, self.allowed_todo_states)
+
+
 	def test_heading_parsing_no_date(self):
 		"""""
 		'text' doesn't contain any valid date.
@@ -38,15 +42,7 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
 		self.assertEqual(None, h.active_date)
 
-		text = ["* TODO This is a test <2011-08-25>"]
-		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
-		self.assertEqual(None, h.active_date)
-
-		text = ["* TODO This is a test <2011-08-25 Wednesday>"]
-		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
-		self.assertEqual(None, h.active_date)
-
-		text = ["* TODO This is a test <20110825>"]
+		text = ["* TODO This is a test"]
 		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
 		self.assertEqual(None, h.active_date)
 
@@ -65,6 +61,7 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 		odate = OrgDateTime(True, 2011, 8, 25, 10, 10)
 		h = Heading.parse_heading_from_data(text, self.allowed_todo_states)
 		self.assertEqual(odate, h.active_date)
+
 
 	def test_heading_parsing_with_date_and_body(self):
 		"""""
@@ -148,6 +145,11 @@ class TestHeadingRecognizeDatesInHeading(unittest.TestCase):
 				[self.h1, self.h2_datetime, self.h2, self.h3, self.h_no_date],
 				sorted([self.h2_datetime, self.h3, self.h2, self.h_no_date, self.h1]))
 
+		self.assertEqual(
+				[self.h1, self.h2_datetime, self.h2, self.h3,
+     self.h_no_date_2],
+				sorted([self.h2_datetime, self.h3, self.h2,
+	    self.h_no_date_2, self.h1]))
 
 def suite():
 	return unittest.TestLoader().loadTestsFromTestCase(
