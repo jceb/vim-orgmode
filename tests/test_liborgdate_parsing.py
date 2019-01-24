@@ -177,10 +177,11 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		self.assertEquals(get_orgdate(u"2011-08-29 Mon"), None)
 		self.assertEquals(get_orgdate(u"2011-08-29"), None)
 		self.assertEquals(get_orgdate(u"2011-08-29 mon"), None)
-		self.assertEquals(get_orgdate(u"<2011-08-29 mon>"), None)
+		self.assertEquals(get_orgdate(u"<2011-08-r mon>"), None)
+		self.assertEquals(get_orgdate(u"<2011-08-29 m0n>"), None)
 
-		self.assertEquals(get_orgdate(u"wrong date embedded <2011-08-29 mon>"), None)
-		self.assertEquals(get_orgdate(u"wrong date <2011-08-29 mon>embedded "), None)
+		self.assertEquals(get_orgdate(u"wrong date embedded <2011-08-r9 mon>"), None)
+		self.assertEquals(get_orgdate(u"wrong date <2011-08-r9 mon>embedded "), None)
 
 	def test_get_orgdate_parsing_with_invalid_dates(self):
 		u"""
