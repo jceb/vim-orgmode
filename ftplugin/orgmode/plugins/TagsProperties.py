@@ -122,7 +122,7 @@ class TagsProperties(object):
 				for t2 in tags:
 					if t1 == t2:
 						continue
-					searchstring += u'\\(:[a-zA-Z:]*\\)\?:%s' % t2
+					searchstring += u'\\(:[a-zA-Z:]*\\)\\?:%s' % t2
 			searchstring += u'\\)'
 
 			vim.command(u'/\\zs:%s:\\ze' % searchstring)
