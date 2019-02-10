@@ -140,7 +140,7 @@ class EditStructure(object):
 			# keys instead of making keys up like this
 			if level > 0:
 				if insert_mode:
-					vim.eval(u_encode(u'feedkeys("\<C-t>", "n")'))
+					vim.eval(u_encode(u'feedkeys("\\<C-t>", "n")'))
 				elif including_children:
 					vim.eval(u_encode(u'feedkeys(">]]", "n")'))
 				elif on_heading:
@@ -149,7 +149,7 @@ class EditStructure(object):
 					vim.eval(u_encode(u'feedkeys(">}", "n")'))
 			else:
 				if insert_mode:
-					vim.eval(u_encode(u'feedkeys("\<C-d>", "n")'))
+					vim.eval(u_encode(u'feedkeys("\\<C-d>", "n")'))
 				elif including_children:
 					vim.eval(u_encode(u'feedkeys("<]]", "n")'))
 				elif on_heading:

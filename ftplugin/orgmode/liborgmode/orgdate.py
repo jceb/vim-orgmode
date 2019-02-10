@@ -43,13 +43,13 @@ _DATERANGE_REGEX = re.compile(
 	# <2011-09-12 Mon>--
 	r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>--"
 	# <2011-09-13 Tue>
-	"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>", re.UNICODE)
+	r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w>", re.UNICODE)
 # <2011-09-12 Mon 10:00>--<2011-09-12 Mon 11:00>
 _DATETIMERANGE_REGEX = re.compile(
 	# <2011-09-12 Mon 10:00>--
 	r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)>--"
 	# <2011-09-12 Mon 11:00>
-	"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)>", re.UNICODE)
+	r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)>", re.UNICODE)
 # <2011-09-12 Mon 10:00--12:00>
 _DATETIMERANGE_SAME_DAY_REGEX = re.compile(
 	r"<(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)-(\d\d):(\d\d)>", re.UNICODE)

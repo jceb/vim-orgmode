@@ -130,7 +130,7 @@ class Hyperlinks(object):
 
 		# character escaping
 		uri = uri.replace(u'\\', u'\\\\\\\\')
-		uri = uri.replace(u' ', u'\ ')
+		uri = uri.replace(u' ', u'\\ ')
 
 		if description is None:
 			description = u_decode(vim.eval(u'input("Description: ")'))
@@ -191,7 +191,7 @@ class Hyperlinks(object):
 		# find next link
 		cmd = Command(
 			u'OrgHyperlinkNextLink',
-			u":if search('\[\{2}\zs[^][]*\(\]\[[^][]*\)\?\ze\]\{2}', 's') == 0 | echo 'No further link found.' | endif")
+			u":if search('\\[\\{2}\\zs[^][]*\\(\\]\\[[^][]*\\)\\?\\ze\\]\\{2}', 's') == 0 | echo 'No further link found.' | endif")
 		self.commands.append(cmd)
 		self.keybindings.append(
 			Keybinding(u'gn', Plug(u'OrgHyperlinkNextLink', self.commands[-1])))
@@ -200,7 +200,7 @@ class Hyperlinks(object):
 		# find previous link
 		cmd = Command(
 			u'OrgHyperlinkPreviousLink',
-			u":if search('\[\{2}\zs[^][]*\(\]\[[^][]*\)\?\ze\]\{2}', 'bs') == 0 | echo 'No further link found.' | endif")
+			u":if search('\\[\\{2}\\zs[^][]*\\(\\]\\[[^][]*\\)\\?\\ze\\]\\{2}', 'bs') == 0 | echo 'No further link found.' | endif")
 		self.commands.append(cmd)
 		self.keybindings.append(
 			Keybinding(u'go', Plug(u'OrgHyperlinkPreviousLink', self.commands[-1])))

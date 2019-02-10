@@ -78,7 +78,7 @@ class Date(object):
 			newdate = date(int(year), int(month), int(day))
 
 		# check abbreviated date, seperated with '-'
-		date_regex = u"(\d{1,2})-(\d+)-(\d+)"
+		date_regex = u"(\\d{1,2})-(\\d+)-(\\d+)"
 		match = re.search(date_regex, modifier)
 		if match:
 			year, month, day = match.groups()
@@ -86,7 +86,7 @@ class Date(object):
 
 		# check abbreviated date, seperated with '/'
 		# month/day
-		date_regex = u"(\d{1,2})/(\d{1,2})"
+		date_regex = u"(\\d{1,2})/(\\d{1,2})"
 		match = re.search(date_regex, modifier)
 		if match:
 			month, day = match.groups()
@@ -98,7 +98,7 @@ class Date(object):
 		# check full date, seperated with 'space'
 		# month day year
 		# 'sep 12 9' --> 2009 9 12
-		date_regex = u"(\w\w\w) (\d{1,2}) (\d{1,2})"
+		date_regex = u"(\\w\\w\\w) (\\d{1,2}) (\\d{1,2})"
 		match = re.search(date_regex, modifier)
 		if match:
 			gr = match.groups()
@@ -108,7 +108,7 @@ class Date(object):
 			newdate = date(year, int(month), int(day))
 
 		# check days as integers
-		date_regex = u"^(\d{1,2})$"
+		date_regex = u"^(\\d{1,2})$"
 		match = re.search(date_regex, modifier)
 		if match:
 			newday, = match.groups()
@@ -135,13 +135,13 @@ class Date(object):
 			newdate = startdate + timedelta(days=diff)
 
 		# check for days modifier with appended d
-		match = re.search(u'^(\+|-)(\d*)d', modifier)
+		match = re.search(u'^(\\+|-)(\\d*)d', modifier)
 		if match:
 			op, days = match.groups()
 			newdate = ops[op](startdate, timedelta(days=int(days)))
 
 		# check for days modifier without appended d
-		match = re.search(u'^(\+|-)(\d*) |^(\+|-)(\d*)$', modifier)
+		match = re.search(u'^(\\+|-)(\\d*) |^(\\+|-)(\\d*)$', modifier)
 		if match:
 			groups = match.groups()
 			try:
@@ -153,20 +153,20 @@ class Date(object):
 			newdate = ops[op](startdate, timedelta(days=days))
 
 		# check for week modifier
-		match = re.search(u'^(\+|-)(\d+)w', modifier)
+		match = re.search(u'^(\\+|-)(\\d+)w', modifier)
 		if match:
 			op, weeks = match.groups()
 			newdate = ops[op](startdate, timedelta(weeks=int(weeks)))
 
 		# check for month modifier
-		match = re.search(u'^(\+|-)(\d+)m', modifier)
+		match = re.search(u'^(\\+|-)(\\d+)m', modifier)
 		if match:
 			op, months = match.groups()
 			newdate = date(startdate.year, ops[op](startdate.month, int(months)),
 					startdate.day)
 
 		# check for year modifier
-		match = re.search(u'^(\+|-)(\d*)y', modifier)
+		match = re.search(u'^(\\+|-)(\\d*)y', modifier)
 		if match:
 			op, years = match.groups()
 			newdate = date(ops[op](startdate.year, int(years)), startdate.month,
@@ -174,7 +174,7 @@ class Date(object):
 
 		# check for month day
 		match = re.search(
-			u'(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec) (\d{1,2})',
+			u'(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec) (\\d{1,2})',
 			modifier.lower())
 		if match:
 			month = cls.month_mapping[match.groups()[0]]
@@ -186,7 +186,7 @@ class Date(object):
 
 		# check abbreviated date, seperated with '/'
 		# month/day/year
-		date_regex = u"(\d{1,2})/(\d+)/(\d+)"
+		date_regex = u"(\\d{1,2})/(\\d+)/(\\d+)"
 		match = re.search(date_regex, modifier)
 		if match:
 			month, day, year = match.groups()
@@ -195,7 +195,7 @@ class Date(object):
 		# check for month day year
 		# sep 12 2011
 		match = re.search(
-			u'(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec) (\d{1,2}) (\d{1,4})',
+			u'(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec) (\\d{1,2}) (\\d{1,4})',
 			modifier.lower())
 		if match:
 			month = int(cls.month_mapping[match.groups()[0]])
@@ -208,7 +208,7 @@ class Date(object):
 
 		# check for time: HH:MM
 		# '12:45' --> datetime(2006, 06, 13, 12, 45))
-		match = re.search(u'(\d{1,2}):(\d\d)$', modifier)
+		match = re.search(u'(\\d{1,2}):(\\d\\d)$', modifier)
 		if match:
 			try:
 				startdate = newdate
