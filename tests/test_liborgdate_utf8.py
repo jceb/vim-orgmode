@@ -18,7 +18,7 @@ class OrgDateUtf8TestCase(unittest.TestCase):
 	Tests OrgDate with utf-8 enabled locales
 	"""
 	LOCALE_LOCK = threading.Lock()
-	UTF8_LOCALE = "pt_BR.utf-8"
+	UTF8_LOCALE = "es_ES.utf-8"
 
 	@contextmanager
 	def setlocale(self, name):
