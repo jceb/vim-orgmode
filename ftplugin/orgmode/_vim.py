@@ -138,10 +138,10 @@ def get_user_input(message):
 	u"""Print the message and take input from the user.
 	Return the input or None if there is no input.
 	"""
-	vim.command(u_encode(u'call inputsave()'))
-	vim.command(u_encode(u"let user_input = input('" + message + u": ')"))
-	vim.command(u_encode(u'call inputrestore()'))
 	try:
+		vim.command(u_encode(u'call inputsave()'))
+		vim.command(u_encode(u"let user_input = input('" + message + u": ')"))
+		vim.command(u_encode(u'call inputrestore()'))
 		return u_decode(vim.eval(u_encode(u'user_input')))
 	except:
 		return None
