@@ -162,7 +162,7 @@ fun CalendarAction(day, month, year, week, dir)
 	" goto previous window
 	exe "wincmd p"
 	exe s:py_version . "timestamp = '" . g:org_timestamp_template . "' % newdate"
-	exe s:py_version . "insert_at_cursor(timestamp)"
+	exe s:py_version . "if modifier != None: insert_at_cursor(timestamp)"
 	" restore calendar_action
 	let g:calendar_action = g:org_calendar_action_backup
 endf
