@@ -18,6 +18,7 @@
 	is UTF-8.
 """
 
+
 try:
 	from collections import UserList
 except:
@@ -32,7 +33,6 @@ from orgmode.liborgmode.headings import Heading
 
 from orgmode.py3compat.encode_compatibility import *
 from orgmode.py3compat.unicode_compatibility import *
-
 
 class VimBuffer(Document):
 	def __init__(self, bufnr=0):
@@ -88,68 +88,6 @@ class VimBuffer(Document):
 	@changedtick.setter
 	def changedtick(self, value):
 		self._changedtick = value
-
-	def get_done_states(self, strip_access_key=True):
-		all_states = self.get_todo_states(strip_access_key)
-		done_states =  list([ done_state for x in all_states for done_state in x[1]])
-
-		return done_states
-
-	def get_todo_states(self, strip_access_key=True):
-		u""" Returns a list containing a tuple of two lists of allowed todo
-		states split by todo and done states. Multiple todo-done state
-		sequences can be defined.
-
-		:returns:	[([todo states], [done states]), ..]
-		"""
-		states = settings.get(u'org_todo_keywords', [])
-		# TODO this function gets called too many times when change of state of
-		# one todo is triggered, check with:
-		# print(states)
-		# this should be changed by saving todo states into some var and only
-		# if new states are set hook should be called to register them again
-		# into a property
-		# TODO move this to documents.py, it is all tangled up like this, no
-		# structure...
-		if type(states) not in (list, tuple):
-			return []
-
-		def parse_states(s, stop=0):
-			res = []
-			if not s:
-				return res
-			if type(s[0]) in (unicode, str):
-				r = []
-				for i in s:
-					_i = i
-					if type(_i) == str:
-						_i = u_decode(_i)
-					if type(_i) == unicode and _i:
-						if strip_access_key and u'(' in _i:
-							_i = _i[:_i.index(u'(')]
-							if _i:
-								r.append(_i)
-						else:
-							r.append(_i)
-				if not u'|' in r:
-					if not stop:
-						res.append((r[:-1], [r[-1]]))
-					else:
-						res = (r[:-1], [r[-1]])
-				else:
-					seperator_pos = r.index(u'|')
-					if not stop:
-						res.append((r[0:seperator_pos], r[seperator_pos + 1:]))
-					else:
-						res = (r[0:seperator_pos], r[seperator_pos + 1:])
-			elif type(s) in (list, tuple) and not stop:
-				for i in s:
-					r = parse_states(i, stop=1)
-					if r:
-						res.append(r)
-			return res
-
-		return parse_states(states)
 
 	def update_changedtick(self):
 		if self.bufnr == vim.current.buffer.number:

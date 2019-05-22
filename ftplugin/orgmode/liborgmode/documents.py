@@ -12,11 +12,16 @@ try:
 except:
 	from UserList import UserList
 
+from orgmode import settings
+
 from orgmode.liborgmode.base import MultiPurposeList, flatten_list, Direction, get_domobj_range
 from orgmode.liborgmode.headings import Heading, HeadingList
 
 from orgmode.py3compat.encode_compatibility import *
 from orgmode.py3compat.unicode_compatibility import *
+
+import re
+REGEX_LOGGING_MODIFIERS = re.compile(r"[!@/]")
 
 class Document(object):
 	u"""
@@ -51,7 +56,8 @@ class Document(object):
 		self._tag_column = 77
 
 		# TODO this doesn't differentiate between ACTIVE and FINISHED todo's
-		self.todo_states = [u'TODO', u'DONE']
+		self.todo_states_stripped = self.get_settings_todo_states(True)
+		self.todo_states = self.get_settings_todo_states(False)
 
 	def __unicode__(self):
 		if self.meta_information is None:
@@ -60,6 +66,65 @@ class Document(object):
 
 	def __str__(self):
 		return u_encode(self.__unicode__())
+
+	def get_done_states(self, strip_access_key=True):
+		all_states = self.get_todo_states(strip_access_key)
+		done_states =  list([ done_state for x in all_states for done_state in x[1]])
+
+		return done_states
+
+	def parse_todo_settings(self, setting, strip_access_key = True):
+		def parse_states(s, stop=0):
+			res = []
+			if not s:
+				return res
+			if type(s[0]) in (unicode, str):
+				r = []
+				for i in s:
+					_i = i
+					if type(_i) == str:
+						_i = u_decode(_i)
+					if type(_i) == unicode and _i:
+						if strip_access_key and u'(' in _i:
+							_i = _i[:_i.index(u'(')]
+							if _i:
+								r.append(_i)
+						else:
+							_i = REGEX_LOGGING_MODIFIERS.sub("", _i)
+							r.append(_i)
+				if not u'|' in r:
+					if not stop:
+						res.append((r[:-1], [r[-1]]))
+					else:
+						res = (r[:-1], [r[-1]])
+				else:
+					seperator_pos = r.index(u'|')
+					if not stop:
+						res.append((r[0:seperator_pos], r[seperator_pos + 1:]))
+					else:
+						res = (r[0:seperator_pos], r[seperator_pos + 1:])
+			elif type(s) in (list, tuple) and not stop:
+				for i in s:
+					r = parse_states(i, stop=1)
+					if r:
+						res.append(r)
+			return res
+		return parse_states(setting)
+
+
+	def get_settings_todo_states(self, strip_access_key=True):
+		u""" Returns a list containing a tuple of two lists of allowed todo
+		states split by todo and done states. Multiple todo-done state
+		sequences can be defined.
+
+		:returns:	[([todo states], [done states]), ..]
+		"""
+		states = settings.get(u'org_todo_keywords', [])
+
+		if type(states) not in (list, tuple):
+			return []
+
+		return self.parse_todo_settings(states, strip_access_key)
 
 	def get_all_todo_states(self):
 		u""" Convenience function that returns all todo and done states and
@@ -71,7 +136,7 @@ class Document(object):
 		# TODO This is not necessary remove
 		return flatten_list(self.get_todo_states())
 
-	def get_todo_states(self):
+	def get_todo_states(self, strip_access_key=True):
 		u""" Returns a list containing a tuple of two lists of allowed todo
 		states split by todo and done states. Multiple todo-done state
 		sequences can be defined.
@@ -82,7 +147,12 @@ class Document(object):
 		# TODO this should be made into property so todo states can be set like
 		# this too.. or there was also some todo property around... oh well..
 		# TODO there is the same method in vimbuffer
-		return self.todo_states
+
+		ret = self.todo_states
+		if strip_access_key:
+		    ret = self.todo_states_stripped
+
+		return ret
 
 	@property
 	def tabstop(self):

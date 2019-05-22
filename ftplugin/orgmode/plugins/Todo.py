@@ -292,7 +292,7 @@ class Todo(object):
 
 		if all_states is None:
 			vim.command(u_encode(u'bw'))
-			echom(u'No todo states avaiable for buffer %s' % vim.current.buffer.name)
+			echom(u'No todo states available for buffer %s' % vim.current.buffer.name)
 
 		for idx, state in enumerate(all_states):
 			pairs = [split_access_key(x, sub=u' ') for x in it.chain(*state)]
