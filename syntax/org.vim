@@ -282,6 +282,11 @@ hi def link hyperlink Underlined
 syntax match org_comment /^#.*/
 hi def link org_comment Comment
 
+" References: {{{1
+syntax match reference '\\ref{.*}' transparent contains=referenceStart,referenceEnd
+syntax match referenceStart '\\ref{*' contained conceal cchar=[
+syntax match referenceEnd '\(\\ref{\w\+\)\@<=\zs}' contained conceal cchar=]
+
 " Bullet Lists: {{{1
 " Ordered Lists:
 " 1. list item
