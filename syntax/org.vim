@@ -386,6 +386,7 @@ if exists('g:loaded_SyntaxRange')
   call SyntaxRange#Include('\\begin[.*]{.*}', '\\end{.*}', 'tex')
   call SyntaxRange#Include('\\begin{.*}', '\\end{.*}', 'tex')
   call SyntaxRange#Include('\\\[', '\\\]', 'tex')
+  call SyntaxRange#Include('\$[^$]', '\$', 'tex')
 endif
 
 " vi: ft=vim:tw=80:sw=4:ts=4:fdm=marker
