@@ -370,7 +370,10 @@ if exists('g:loaded_SyntaxRange')
   call SyntaxRange#Include('#+BEGIN_SRC c', '#+END_SRC', 'c', 'comment')
   " cpp must be below c, otherwise you get c syntax hl for cpp files
   call SyntaxRange#Include('#+BEGIN_SRC cpp', '#+END_SRC', 'cpp', 'comment')
+  call SyntaxRange#Include('#+BEGIN_SRC haskell', '#+END_SRC', 'haskell', 'comment')
+  call SyntaxRange#Include('#+BEGIN_SRC ocaml', '#+END_SRC', 'ocaml', 'comment')
   call SyntaxRange#Include('#+BEGIN_SRC ruby', '#+END_SRC', 'ruby', 'comment')
+  call SyntaxRange#Include('#+BEGIN_SRC rust', '#+END_SRC', 'rust', 'comment')
   " call SyntaxRange#Include('#+BEGIN_SRC lua', '#+END_SRC', 'lua', 'comment')
   " call SyntaxRange#Include('#+BEGIN_SRC lisp', '#+END_SRC', 'lisp', 'comment')
 
