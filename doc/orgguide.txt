@@ -1106,7 +1106,7 @@ to your init.el. Make also sure to specify your path by using the
 Default: "/usr/bin/emacs"
 Path to Emacs executable. Example:
 >
-  :let g:org_export_emacs="~/bin/emcas"
+  :let g:org_export_emacs="~/bin/emacs"
 <
 
                                                           *g:org_export_verbose*
