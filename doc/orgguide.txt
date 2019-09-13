@@ -234,6 +234,14 @@ INSTALLATION AND UPGRADE                                 *orgguide-installation*
   dependencies i.e. vim-plug (https://github.com/junegunn/vim-plug), dein.vim
   (https://github.com/Shougo/dein.vim).
 
+  Example using *vim-plug* : 
+>
+    Plug 'jceb/vim-orgmode'
+<
+  Example using *dein.vim* : 
+>
+    call dein#add('jceb/vim-orgmode')
+<
   NOTE: For some functionality vim-orgmode relies on external plugins which
   are mentioned in suggested plugins.
 
