@@ -21,7 +21,7 @@ import orgmode.settings
 from orgmode.exceptions import PluginError
 from orgmode.vimbuffer import VimBuffer
 from orgmode.liborgmode.agenda import AgendaManager
-
+from orgmode.liborgmode.orgdate import get_orgdate
 
 REPEAT_EXISTS = bool(int(vim.eval('exists("*repeat#set()")')))
 TAGSPROPERTIES_EXISTS = False
@@ -165,6 +165,39 @@ def get_bufname(bufnr):
 		if b.number == bufnr:
 			return b.name
 
+def get_heading(allow_dirty=False, line=None):
+	if not line:
+		line = int(vim.eval(u_encode(u'v:lnum')))
+	d = ORGMODE.get_document(allow_dirty=allow_dirty)
+	heading = None
+	if allow_dirty:
+		heading = d.find_current_heading(line - 1)
+	else:
+		heading = d.current_heading(line - 1)
+	return d, heading
+
+def set_scheduled_date(new_date):
+	u""" Set the SCHEDULED entry in the Planning line of the current heading
+
+	"""
+	allow_dirty = True
+	line, col = vim.current.window.cursor
+	doc, heading = get_heading(allow_dirty=allow_dirty, line=line)
+	new_date = get_orgdate(u"<%s>" % date_to_str(new_date))
+	heading.scheduled_date = new_date
+	doc.write_heading(heading)
+
+
+def set_deadline_date(new_date):
+	u""" Set de DEADLINE entry in the Planning line of the current heading
+	"""
+	allow_dirty = True
+	line, col = vim.current.window.cursor
+	doc, heading = get_heading(allow_dirty=allow_dirty, line=line)
+	new_date = get_orgdate("<%s>" % date_to_str(new_date))
+	heading.deadline_date = new_date
+	doc.write_heading(heading)
+
 
 def indent_orgmode():
 	u""" Set the indent value for the current line in the variable
@@ -176,8 +209,7 @@ def indent_orgmode():
 	:returns: None
 	"""
 	line = int(vim.eval(u_encode(u'v:lnum')))
-	d = ORGMODE.get_document()
-	heading = d.current_heading(line - 1)
+	doc, heading = get_heading()
 	if heading and line != heading.start_vim:
 		heading.init_checkboxes()
 		checkbox = heading.current_checkbox()
@@ -200,12 +232,7 @@ def fold_text(allow_dirty=False):
 	:returns: None
 	"""
 	line = int(vim.eval(u_encode(u'v:foldstart')))
-	d = ORGMODE.get_document(allow_dirty=allow_dirty)
-	heading = None
-	if allow_dirty:
-		heading = d.find_current_heading(line - 1)
-	else:
-		heading = d.current_heading(line - 1)
+	doc, heading = get_heading(allow_dirty, line)
 	if heading:
 		str_heading = unicode(heading)
 
@@ -234,12 +261,7 @@ def fold_orgmode(allow_dirty=False):
 	:returns: None
 	"""
 	line = int(vim.eval(u_encode(u'v:lnum')))
-	d = ORGMODE.get_document(allow_dirty=allow_dirty)
-	heading = None
-	if allow_dirty:
-		heading = d.find_current_heading(line - 1)
-	else:
-		heading = d.current_heading(line - 1)
+	doc, heading = get_heading(allow_dirty)
 
 	# if cache_heading != heading:
 		# heading.init_checkboxes()

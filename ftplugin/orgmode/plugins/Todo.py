@@ -3,12 +3,16 @@
 import vim
 import itertools as it
 
+import datetime
+
 from orgmode._vim import echom, ORGMODE, apply_count, repeat, realign_tags
 from orgmode import settings
 from orgmode.liborgmode.base import Direction
+from orgmode.liborgmode.orgdate import OrgDateTime
 from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.exceptions import PluginError
+
 
 # temporary todo states for differnent orgmode buffers
 ORGTODOSTATES = {}
@@ -145,6 +149,15 @@ class Todo(object):
 			return flattened_todos[(ind + next_dir) % len(flattened_todos)]
 
 	@classmethod
+	def print_plannings(cls):
+		d = ORGMODE.get_document(allow_dirty=True)
+		heading = d.find_current_heading()
+		if not heading:
+			return
+		print("Planning: SCHEDULED=%s, DEADLINE=%s, CLOSED=%s" % (heading.scheduled_date,
+			heading.deadline_date, heading.closed_date))
+
+	@classmethod
 	@realign_tags
 	@repeat
 	@apply_count
@@ -219,11 +232,20 @@ class Todo(object):
 
 		if not heading:
 			return
-
+		done_states = d.get_done_states(strip_access_key = True)
 		current_state = heading.todo
 
 		# set new headline
 		heading.todo = state
+
+		if (current_state in done_states) != (state in done_states):
+			if state in done_states:
+				n = datetime.datetime.now()
+				heading.closed_date = OrgDateTime(False, n.year, n.month, n.day, n.hour,
+					n.minute)
+			else:
+				heading.closed_date = None
+
 		d.write_heading(heading)
 
 		# move cursor along with the inserted state only when current position
@@ -270,7 +292,7 @@ class Todo(object):
 
 		if all_states is None:
 			vim.command(u_encode(u'bw'))
-			echom(u'No todo states avaiable for buffer %s' % vim.current.buffer.name)
+			echom(u'No todo states available for buffer %s' % vim.current.buffer.name)
 
 		for idx, state in enumerate(all_states):
 			pairs = [split_access_key(x, sub=u' ') for x in it.chain(*state)]
@@ -312,6 +334,11 @@ class Todo(object):
 			u'OrgTodoToggleInteractive',
 			u'%s ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=True)<CR>' % VIM_PY_CALL)))
 		self.menu + ActionEntry(u'&TODO/DONE/- (interactiv)', self.keybindings[-1])
+
+		self.keybindings.append(Keybinding(u'<localleader>z', Plug(
+			u'OrgTodoPrintPlannings',
+			u'%s ORGMODE.plugins[u"Todo"].print_plannings()<CR>' % VIM_PY_CALL)))
+		self.menu + ActionEntry(u'&PLANNING DEBUG', self.keybindings[-1])
 
 		# add submenu
 		submenu = self.menu + Submenu(u'Select &keyword')

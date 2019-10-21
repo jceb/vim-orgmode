@@ -90,14 +90,31 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		result = get_orgdate(self.textinactive)
 		self.assertNotEqual(result, None)
 		self.assertTrue(isinstance(result, OrgDate))
-		self.assertTrue(isinstance(get_orgdate(u"[2011-08-30 Tue]"), OrgDate))
-		self.assertEqual(get_orgdate(u"[2011-08-30 Tue]").year, 2011)
-		self.assertEqual(get_orgdate(u"[2011-08-30 Tue]").month, 8)
-		self.assertEqual(get_orgdate(u"[2011-08-30 Tue]").day, 30)
-		self.assertFalse(get_orgdate(u"[2011-08-30 Tue]").active)
+
+		text = u"[2011-08-30 Tue]"
+		expected_result = OrgDate(False, 2011, 8, 30)
+		result = get_orgdate(text)
+		self.assertTrue(isinstance(result, OrgDate))
+		self.assertEqual(result, expected_result)
+		self.assertEqual(result.active == False, expected_result.active == False)
 
 		datestr = u"This date [2011-08-30 Tue] is embedded"
 		self.assertTrue(isinstance(get_orgdate(datestr), OrgDate))
+
+		text = u"[2011-08-30]"
+		expected_result = OrgDate(False, 2011, 8, 30)
+		result = get_orgdate(text)
+		self.assertTrue(isinstance(result, OrgDate))
+		self.assertEqual(result, expected_result)
+		self.assertEqual(result.active == False, expected_result.active == False)
+
+
+		text = u"[2011-08-30 Dienstag]"
+		expected_result = OrgDate(False, 2011, 8, 30)
+		result = get_orgdate(text)
+		self.assertTrue(isinstance(result, OrgDate))
+		self.assertEqual(result, expected_result)
+		self.assertEqual(result.active == False, expected_result.active == False)
 
 	def test_get_orgdatetime_parsing_passive(self):
 		u"""
@@ -169,6 +186,7 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		self.assertEqual(result.minute, 10)
 
 	def test_get_orgdate_parsing_with_invalid_input(self):
+		self.assertEquals(get_orgdate(u""), None)
 		self.assertEquals(get_orgdate(u"NONSENSE"), None)
 		self.assertEquals(get_orgdate(u"No D<2011- Date 08-29 Mon>"), None)
 		self.assertEquals(get_orgdate(u"2011-08-r9 Mon]"), None)
@@ -177,10 +195,11 @@ class OrgDateParsingTestCase(unittest.TestCase):
 		self.assertEquals(get_orgdate(u"2011-08-29 Mon"), None)
 		self.assertEquals(get_orgdate(u"2011-08-29"), None)
 		self.assertEquals(get_orgdate(u"2011-08-29 mon"), None)
-		self.assertEquals(get_orgdate(u"<2011-08-29 mon>"), None)
+		self.assertEquals(get_orgdate(u"<2011-08-r mon>"), None)
+		self.assertEquals(get_orgdate(u"<2011-08-29 m0n>"), None)
 
-		self.assertEquals(get_orgdate(u"wrong date embedded <2011-08-29 mon>"), None)
-		self.assertEquals(get_orgdate(u"wrong date <2011-08-29 mon>embedded "), None)
+		self.assertEquals(get_orgdate(u"wrong date embedded <2011-08-r9 mon>"), None)
+		self.assertEquals(get_orgdate(u"wrong date <2011-08-r9 mon>embedded "), None)
 
 	def test_get_orgdate_parsing_with_invalid_dates(self):
 		u"""
