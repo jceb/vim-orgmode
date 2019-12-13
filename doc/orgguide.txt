@@ -214,8 +214,9 @@ INSTALLATION AND UPGRADE                                 *orgguide-installation*
 
   Installation can be done with plugin managers, e.g. vim-plug
   (https://github.com/junegunn/vim-plug), dein.vim
-  (https://github.com/Shougo/dein.vim), or if you're using Vim >= 8.0, you can
-  use the built-in plugin manager.
+  (https://github.com/Shougo/dein.vim), pathogen.vim 
+  (https://github.com/tpope/vim-pathogen) or if you're using Vim >= 8.0, you
+  can use the built-in plugin manager.
 
   Add the following to your .vimrc, for *vim-plug* : 
 >
@@ -225,12 +226,17 @@ INSTALLATION AND UPGRADE                                 *orgguide-installation*
 >
     call dein#add('jceb/vim-orgmode')
 <
+  With pathogen, you need to run the following in your terminal:
+>
+    cd ~/.vim/bundle && \
+    git clone https://github.com/jceb/vim-orgmode.git
+<
   With the package feature of Vim 8, it is a bit more involved. Run the
   following in your terminal
 >
-    $ mkdir -p ~/.vim/pack/git-plugins/start
-    $ cd ~/.vim/pack/git-plugins/start
-    $ git clone https://github.com/jceb/vim-orgmode
+    mkdir -p ~/.vim/pack/git-plugins/start
+    cd ~/.vim/pack/git-plugins/start
+    git clone https://github.com/jceb/vim-orgmode
 <
   Then, add this to your ~/.vimrc:
 >
