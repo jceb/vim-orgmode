@@ -212,17 +212,30 @@ Inline markup~
 ------------------------------------------------------------------------------
 INSTALLATION AND UPGRADE                                 *orgguide-installation*
 
-  Installation can be done with plugin managers that automatically pull
-  dependencies i.e. vim-plug (https://github.com/junegunn/vim-plug) or
-  dein.vim (https://github.com/Shougo/dein.vim).
+  Installation can be done with plugin managers, e.g. vim-plug
+  (https://github.com/junegunn/vim-plug), dein.vim
+  (https://github.com/Shougo/dein.vim), or if you're using Vim >= 8.0, you can
+  use the built-in plugin manager.
 
-  Example using *vim-plug* : 
+  Add the following to your .vimrc, for *vim-plug* : 
 >
     Plug 'jceb/vim-orgmode'
 <
-  Example using *dein.vim* : 
+  And for *dein.vim* : 
 >
     call dein#add('jceb/vim-orgmode')
+<
+  With the package feature of Vim 8, it is a bit more involved. Run the
+  following in your terminal
+>
+    $ mkdir -p ~/.vim/pack/git-plugins/start
+    $ cd ~/.vim/pack/git-plugins/start
+    $ git clone https://github.com/jceb/vim-orgmode
+<
+  Then, add this to your ~/.vimrc:
+>
+    packloadall
+    silent! helptags ALL
 <
   NOTE: For some functionality vim-orgmode relies on external plugins which
   are mentioned in suggested plugins.
