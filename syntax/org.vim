@@ -209,17 +209,18 @@ if !exists('g:loaded_org_syntax')
 			endif
 			" strip access key
 			let l:_i = substitute(l:i, "\(.*$", "", "")
+			let l:safename = substitute(l:_i, "\\W", "\\=('u' . char2nr(submatch(0)))", "g")
 
 			let l:group = l:default_group
 			for l:j in g:org_todo_keyword_faces
 				if l:j[0] == l:_i
-					let l:group = 'org_todo_keyword_face_' . l:_i
+					let l:group = 'org_todo_keyword_face_' . l:safename
 					call OrgExtendHighlightingGroup(l:default_group, l:group, OrgInterpretFaces(l:j[1]))
 					break
 				endif
 			endfor
-			silent! exec 'syntax match org_todo_keyword_' . l:_i . ' /\*\{1,\}\s\{1,\}\zs' . l:_i .'\(\s\|$\)/ ' . a:todo_headings
-			silent! exec 'hi def link org_todo_keyword_' . l:_i . ' ' . l:group
+			silent! exec 'syntax match org_todo_keyword_' . l:safename . ' /\*\{1,\}\s\{1,\}\zs' . l:_i .'\(\s\|$\)/ ' . a:todo_headings
+			silent! exec 'hi def link org_todo_keyword_' . l:safename . ' ' . l:group
 		endfor
 	endfunction
 endif
