@@ -978,7 +978,7 @@ Agenda files~
 
   You can change the list of agenda files like this:
 >
-    let g:org_agenda_files = ['~/org/index.org', ~/org/project.org']
+    let g:org_agenda_files = ['~/org/index.org', '~/org/project.org']
 <
 
   Also globbing is allowed. This makes it easy to use ALL *.org files in a
