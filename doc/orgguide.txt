@@ -510,13 +510,6 @@ Plain lists~
      - Sean Austin :: He plays Sam, Frodo's friend.
 <
 
-  The following commands act on items when the cursor is in the first line
-  of an item (the line with the bullet or number).
-
-  Not yet implemented in vim-orgmode~
-  The following commands act on items when the cursor is in the first line of
-  an item (the line with the bullet or number).
-
 ------------------------------------------------------------------------------
 Footnotes~
   Not yet implemented in vim-orgmode~
