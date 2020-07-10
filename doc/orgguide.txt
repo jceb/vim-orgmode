@@ -805,7 +805,7 @@ Setting tags~
                         will either offer completion or a special single-key
                         interface for setting tags, see below.  After pressing
                         <CR>, the tags will be inserted and aligned to
-                        'org-tags-column'.
+                        'org_tags_column'.
 
                                                       *orgguide-<LocalLeader>ft*
   <LocalLeader>ft       Find tags in the current file.
