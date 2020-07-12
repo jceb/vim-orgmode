@@ -139,7 +139,7 @@ class AgendaFilterTestCase(unittest.TestCase):
 
 	def test_filter_items_with_some_todos_and_dates(self):
 		u"""
-		Only the headings with todo and dates should be retunrned.
+		Only the headings with todo and dates should be returned.
 		"""
 		tmp = [u"* TODO OrgMode Demo und Tests"
 				u"<2011-08-22 Mon>"]

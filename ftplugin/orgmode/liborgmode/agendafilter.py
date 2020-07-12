@@ -9,7 +9,7 @@ u"""
 
 
 	All functions except filter_items() in the module are filters. Given a
-	heading they return if the heading meets the critera of the filter.
+	heading they return if the heading meets the criteria of the filter.
 
 	The function filter_items() can combine different filters and only returns
 	the filtered headings.
@@ -45,7 +45,7 @@ def filter_items(headings, filters):
 
 
 def is_within_week(heading):
-	u""" Test if headings date is withing a week
+	u""" Test if headings date is within a week
 
 	Returns:
 		bool: True if the date in the deading is within a week in the future (or
@@ -74,7 +74,7 @@ def contains_active_todo(heading):
 	"""
 	# TODO make this more efficient by checking some val and not calling the
 	# function
-	# TODO why is this import failing at top level? circular dependecy...
+	# TODO why is this import failing at top level? circular dependency...
 	from orgmode._vim import ORGMODE
 	active = []
 	for act in ORGMODE.get_document().get_todo_states():

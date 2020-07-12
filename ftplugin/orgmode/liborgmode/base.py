@@ -149,7 +149,7 @@ def get_domobj_range(content=[], position=0, direction=Direction.FORWARD, identi
 	Get the start and end line number of the dom obj lines from content.
 
 	:content:		String to be recognized dom obj
-	:positon:		Line number in content
+	:position:		Line number in content
 	:direction:		Search direction
 	:identify_fun:  A identify function to recognize dom obj(Heading, Checkbox) title string.
 

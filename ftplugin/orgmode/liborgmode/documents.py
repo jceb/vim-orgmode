@@ -212,7 +212,7 @@ class Document(object):
 		Returns:
 			bool: True if something was written, otherwise False
 		"""
-		raise NotImplementedError(u'Abstract method, please use concrete impelementation!')
+		raise NotImplementedError(u'Abstract method, please use concrete implementation!')
 
 	def set_dirty_meta_information(self):
 		u""" Mark the meta information dirty.
@@ -288,7 +288,7 @@ class Document(object):
 			direction: downwards == Direction.FORWARD,
 					upwards == Direction.BACKWARD
 			heading:   Heading class from which new heading objects will be
-					instanciated
+					instantiated
 			connect_with_document: if True, the newly created heading will be
 					connected with the document, otherwise not
 

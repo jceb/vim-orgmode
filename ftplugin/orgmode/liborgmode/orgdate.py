@@ -168,7 +168,7 @@ class OrgDate(datetime.date):
 
 	OrgDates can be active or inactive.
 
-	NOTE: date is immutable. Thats why there needs to be __new__().
+	NOTE: date is immutable. That's why there needs to be __new__().
 	See: http://docs.python.org/reference/datamodel.html#object.__new__
 	"""
 	def __init__(self, active, year, month, day):
@@ -200,7 +200,7 @@ class OrgDateTime(datetime.datetime):
 
 	OrgDateTime can be active or inactive.
 
-	NOTE: date is immutable. Thats why there needs to be __new__().
+	NOTE: date is immutable. That's why there needs to be __new__().
 	See: http://docs.python.org/reference/datamodel.html#object.__new__
 	"""
 

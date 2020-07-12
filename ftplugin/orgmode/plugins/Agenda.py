@@ -192,19 +192,19 @@ class Agenda(object):
 
 			bufname = os.path.basename(vim.buffers[h.document.bufnr].name)
 			bufname = bufname[:-4] if bufname.endswith(u'.org') else bufname
-			formated = u"  %(bufname)s (%(bufnr)d)  %(todo)s  %(title)s" % {
+			formatted = u"  %(bufname)s (%(bufnr)d)  %(todo)s  %(title)s" % {
 				'bufname': bufname,
 				'bufnr': h.document.bufnr,
 				'todo': h.todo,
 				'title': h.title
 			}
-			final_agenda.append(formated)
+			final_agenda.append(formatted)
 			cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
 
 		# show agenda
 		vim.current.buffer[:] = [u_encode(i) for i in final_agenda]
 		vim.command(u_encode(u'setlocal nomodifiable  conceallevel=2 concealcursor=nc'))
-		# try to jump to the positon of today
+		# try to jump to the position of today
 		try:
 			vim.command(u_encode(u'normal! %sgg<CR>' % today_row))
 		except:

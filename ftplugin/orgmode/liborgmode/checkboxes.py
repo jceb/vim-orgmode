@@ -271,7 +271,7 @@ class Checkbox(DomObj):
 		return
 
 	def all_children_status(self):
-		u""" Return checkboxes status for currnet checkbox's all children
+		u""" Return checkboxes status for current checkbox's all children
 
 		:return: (total, on)
 			total: total # of checkboxes
@@ -288,7 +288,7 @@ class Checkbox(DomObj):
 		return (total, on)
 
 	def all_siblings_status(self):
-		u""" Return checkboxes status for currnet checkbox's all siblings
+		u""" Return checkboxes status for current checkbox's all siblings
 
 		:return: (total, on)
 			total: total # of checkboxes
