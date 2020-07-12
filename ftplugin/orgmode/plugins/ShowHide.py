@@ -110,7 +110,7 @@ class ShowHide(object):
 					p = heading.number_of_parents
 					if not p:
 						p = heading.level
-					# reopen fold again beacause the former closing of the fold closed all levels, including parents!
+					# reopen fold again because the former closing of the fold closed all levels, including parents!
 					vim.command(u_encode(u'normal! %dzo' % (p, )))
 		else:
 			# close the last level of folds
@@ -131,7 +131,7 @@ class ShowHide(object):
 		if reverse:
 			foldlevel = int(vim.eval(u_encode(u'&foldlevel')))
 			if foldlevel == 0:
-				# open all folds because the user tries to close folds beyound 0
+				# open all folds because the user tries to close folds beyond 0
 				vim.eval(u_encode(u'feedkeys("zR", "n")'))
 			else:
 				# vim can reduce the foldlevel on its own

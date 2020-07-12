@@ -238,7 +238,7 @@ class Navigator(object):
 		if not focus_heading:
 			if mode in (u'visual', u'operator'):
 				# the cursor seems to be on the last or first heading of this
-				# document and performes another next/previous operation
+				# document and performs another next/previous operation
 				focus_heading = heading
 				noheadingfound = True
 			else:

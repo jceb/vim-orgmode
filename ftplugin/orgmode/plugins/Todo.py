@@ -10,7 +10,7 @@ from orgmode.menu import Submenu, ActionEntry
 from orgmode.keybinding import Keybinding, Plug
 from orgmode.exceptions import PluginError
 
-# temporary todo states for differnent orgmode buffers
+# temporary todo states for different orgmode buffers
 ORGTODOSTATES = {}
 
 from orgmode.py3compat.xrange_compatibility import *
@@ -270,7 +270,7 @@ class Todo(object):
 
 		if all_states is None:
 			vim.command(u_encode(u'bw'))
-			echom(u'No todo states avaiable for buffer %s' % vim.current.buffer.name)
+			echom(u'No todo states available for buffer %s' % vim.current.buffer.name)
 
 		for idx, state in enumerate(all_states):
 			pairs = [split_access_key(x, sub=u' ') for x in it.chain(*state)]
@@ -311,7 +311,7 @@ class Todo(object):
 		self.keybindings.append(Keybinding(u'<localleader>d', Plug(
 			u'OrgTodoToggleInteractive',
 			u'%s ORGMODE.plugins[u"Todo"].toggle_todo_state(interactive=True)<CR>' % VIM_PY_CALL)))
-		self.menu + ActionEntry(u'&TODO/DONE/- (interactiv)', self.keybindings[-1])
+		self.menu + ActionEntry(u'&TODO/DONE/- (interactive)', self.keybindings[-1])
 
 		# add submenu
 		submenu = self.menu + Submenu(u'Select &keyword')

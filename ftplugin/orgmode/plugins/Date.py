@@ -77,14 +77,14 @@ class Date(object):
 			year, month, day = match.groups()
 			newdate = date(int(year), int(month), int(day))
 
-		# check abbreviated date, seperated with '-'
+		# check abbreviated date, separated with '-'
 		date_regex = u"(\\d{1,2})-(\\d+)-(\\d+)"
 		match = re.search(date_regex, modifier)
 		if match:
 			year, month, day = match.groups()
 			newdate = date(2000 + int(year), int(month), int(day))
 
-		# check abbreviated date, seperated with '/'
+		# check abbreviated date, separated with '/'
 		# month/day
 		date_regex = u"(\\d{1,2})/(\\d{1,2})"
 		match = re.search(date_regex, modifier)
@@ -95,7 +95,7 @@ class Date(object):
 			if newdate < startdate:
 				newdate = date(startdate.year + 1, int(month), int(day))
 
-		# check full date, seperated with 'space'
+		# check full date, separated with 'space'
 		# month day year
 		# 'sep 12 9' --> 2009 9 12
 		date_regex = u"(\\w\\w\\w) (\\d{1,2}) (\\d{1,2})"
@@ -184,7 +184,7 @@ class Date(object):
 			if newdate < startdate:
 				newdate = date(startdate.year + 1, int(month), int(day))
 
-		# check abbreviated date, seperated with '/'
+		# check abbreviated date, separated with '/'
 		# month/day/year
 		date_regex = u"(\\d{1,2})/(\\d+)/(\\d+)"
 		match = re.search(date_regex, modifier)
@@ -238,7 +238,7 @@ class Date(object):
 			u' | Modify date'])
 		modifier = get_user_input(msg)
 
-		# abort if the user canceled the input promt
+		# abort if the user canceled the input prompt
 		if modifier is None:
 			return
 

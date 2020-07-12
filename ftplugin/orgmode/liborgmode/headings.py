@@ -246,12 +246,12 @@ class Heading(DomObj):
 		checkbox=Checkbox, connect_with_heading=True):
 		u""" Find checkbox in the given direction
 
-		:postition: starting line, counting from 0 (in vim you start
+		:position: starting line, counting from 0 (in vim you start
 					counting from 1, don't forget)
 		:direction: downwards == Direction.FORWARD,
 					upwards == Direction.BACKWARD
 		:checkbox:  Checkbox class from which new checkbox objects will be
-					instanciated
+					instantiated
 		:connect_with_heading: if True, the newly created checkbox will be
 								connected with the heading, otherwise not
 
@@ -259,7 +259,7 @@ class Heading(DomObj):
 		"""
 		doc = self.document
 		(start, end) = get_domobj_range(content=doc._content, position=position, direction=direction, identify_fun=checkbox.identify_checkbox)
-		# if out of current headinig range, reutrn None
+		# if out of current headinig range, return None
 		heading_end = self.start + len(self) - 1
 		if start is not None and start > heading_end:
 			return None
@@ -622,7 +622,7 @@ class Heading(DomObj):
 	@DomObj.title.setter
 	def title(self, value):
 		u""" Set the title and mark the document and the heading dirty """
-		# TODO these setter should be rewriten to also reuse code from DOM OBJ
+		# TODO these setter should be rewritten to also reuse code from DOM OBJ
 		if type(value) not in (unicode, str):
 			raise ValueError(u'Title must be a string.')
 		v = value
@@ -682,7 +682,7 @@ class HeadingList(DomObjList):
 
 	A Heading List must be linked to a Document or Heading!
 
-	See documenatation of MultiPurposeList for more information.
+	See documentation of MultiPurposeList for more information.
 	"""
 	def __init__(self, initlist=None, obj=None):
 		"""

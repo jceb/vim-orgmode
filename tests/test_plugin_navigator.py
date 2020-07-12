@@ -229,7 +229,7 @@ Bla Bla bla bla
 	def test_forward_movement_visual(self):
 		# selection start: <<
 		# selection end:   >>
-		# cursor poistion: |
+		# cursor position: |
 
 		# << text
 		# text| >>
@@ -400,7 +400,7 @@ test
 	def test_backward_movement_visual(self):
 		# selection start: <<
 		# selection end:   >>
-		# cursor poistion: |
+		# cursor position: |
 
 		# << text | >>
 		# text
@@ -556,7 +556,7 @@ test
 	def test_parent_movement_visual(self):
 		# selection start: <<
 		# selection end:   >>
-		# cursor poistion: |
+		# cursor position: |
 
 		# heading
 		# << text|
