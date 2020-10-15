@@ -1,3 +1,5 @@
+THIS REPOSITORY IS UNMAINTAINED! If you want to become the maintainer, please reach out!
+
 * Vim-OrgMode
 
   #+ATTR_HTML: title="Join the chat at https://gitter.im/jceb/vim-orgmode"
