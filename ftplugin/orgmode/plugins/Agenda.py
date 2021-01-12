@@ -261,7 +261,7 @@ class Agenda(object):
         # format text of agenda
         final_agenda = []
         for i, h in enumerate(raw_agenda):
-            tmp = u"%s %s" % (h.todo, h.title)
+            tmp = fmt.format('{} {}', h.todo, h.title)
             final_agenda.append(tmp)
             cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
 
