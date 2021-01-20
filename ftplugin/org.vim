@@ -106,14 +106,16 @@ augroup END
 " Start orgmode {{{1
 " Expand our path
 exec s:py_env
-import vim, os, sys
+import glob, vim, os, sys
 
 for p in vim.eval("&runtimepath").split(','):
 	dname = os.path.join(p, "ftplugin")
-	if os.path.exists(os.path.join(dname, "orgmode")):
-		if dname not in sys.path:
-			sys.path.append(dname)
-			break
+	matches = glob.glob(dname)
+	for match in matches:
+		if os.path.exists(os.path.join(match, "orgmode")):
+			if match not in sys.path:
+				sys.path.append(match)
+				break
 
 from orgmode._vim import ORGMODE, insert_at_cursor, get_user_input, date_to_str
 ORGMODE.start()
