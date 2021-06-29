@@ -138,7 +138,7 @@ via the 'Org' menu. Most are only usable in command mode.
       <ar             - promote subtree
 
   Hyperlinks:~
-    gl              - goto link
+    gl              - goto link (vim builin gx would work too)
     gyl             - yank link
     gil             - insert new link
 
