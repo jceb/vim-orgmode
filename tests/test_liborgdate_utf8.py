@@ -18,7 +18,7 @@ class OrgDateUtf8TestCase(unittest.TestCase):
     Tests OrgDate with utf-8 enabled locales
     """
     LOCALE_LOCK = threading.Lock()
-    UTF8_LOCALE = "pt_BR.utf-8"
+    UTF8_LOCALE = "fr_FR.utf-8"
 
     @contextmanager
     def setlocale(self, name):
@@ -33,8 +33,8 @@ class OrgDateUtf8TestCase(unittest.TestCase):
         self.year = 2016
         self.month = 5
         self.day = 7
-        self.text = u'<2016-05-07 Sáb>'
-        self.textinactive = u'[2016-05-07 Sáb]'
+        self.text = u'<2016-05-07 sam.>'
+        self.textinactive = u'[2016-05-07 sam.]'
 
     def test_OrdDate_str_unicode_active(self):
         with self.setlocale(self.UTF8_LOCALE):
