@@ -15,7 +15,7 @@ except:
 
 try:
 	from collections.abc import Iterable
-except ModuleNotFoundError:
+except ImportError:
 	# preserve compatibility with python < 3.10
 	from collections import Iterable
 
