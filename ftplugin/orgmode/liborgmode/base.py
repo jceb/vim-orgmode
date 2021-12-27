@@ -13,7 +13,12 @@ try:
 except:
 	from UserList import UserList
 
-import collections.abc
+try:
+	from collections.abc import Iterable
+except ModuleNotFoundError:
+	# preserve compatibility with python < 3.10
+	from collections import Iterable
+
 import sys
 from orgmode.py3compat.unicode_compatibility import *
 
@@ -31,7 +36,7 @@ def flatten_list(lst):
 	def gen_lst(item):
 		if isinstance(item, basestring) or isinstance(item, bytes):
 			yield item
-		elif isinstance(item, collections.abc.Iterable):
+		elif isinstance(item, Iterable):
 			# yield from would be so nice... but c'est la vie
 			for val in item:
 				for final in gen_lst(val):
