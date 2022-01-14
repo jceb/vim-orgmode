@@ -38,6 +38,12 @@ _DATETIME_REGEX = re.compile(
 _DATETIME_PASSIVE_REGEX = re.compile(
 	r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d{1,2}):(\d\d)\]", re.UNICODE)
 
+_DATETIMERANGE_PASSIVE_REGEX = re.compile(
+	# <2011-09-12 Mon 10:00>--
+	r"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)\]--"
+	# <2011-09-12 Mon 11:00>
+	"\[(\d\d\d\d)-(\d\d)-(\d\d) [A-Z]\w\w (\d\d):(\d\d)\]", re.UNICODE)
+
 # <2011-09-12 Mon>--<2011-09-13 Tue>
 _DATERANGE_REGEX = re.compile(
 	# <2011-09-12 Mon>--
@@ -131,6 +137,18 @@ def _text2orgdate(string):
 		try:
 			year, month, day, hour, minutes = [int(m) for m in result.groups()]
 			return OrgDateTime(True, year, month, day, hour, minutes)
+		except BaseException:
+			return None
+
+	# handle passive datetime
+	result = _DATETIMERANGE_PASSIVE_REGEX.search(string)
+	if result:
+		try:
+			tmp = [int(m) for m in result.groups()]
+			(syear, smonth, sday, shour, smin, eyear, emonth, eday, ehour, emin) = tmp
+			start = datetime.datetime(syear, smonth, sday, shour, smin)
+			end = datetime.datetime(eyear, emonth, eday, ehour, emin)
+			return OrgTimeRange(False, start, end)
 		except BaseException:
 			return None
 
@@ -247,6 +265,8 @@ class OrgTimeRange(object):
 		self.end = end
 		self.active = active
 
+		self.verbose = False
+
 	def __unicode__(self):
 		u"""
 		Return a string representation.
@@ -275,7 +295,7 @@ class OrgTimeRange(object):
 		else:
 			if isinstance(self.start, datetime.datetime):
 				# if start and end are on same the day
-				if self.start.year == self.end.year and\
+				if not self.verbose and self.start.year == self.end.year and\
 					self.start.month == self.end.month and\
 					self.start.day == self.end.day:
 					return u"[%s-%s]" % (
@@ -293,4 +313,11 @@ class OrgTimeRange(object):
 	def __str__(self):
 		return u_encode(self.__unicode__())
 
+	def duration(self):
+		return self.end - self.start
+
+	def str_duration(self):
+		duration = self.duration()
+		hours, minutes = divmod(duration.total_seconds(), 3600)
+		return u'%d:%d' % (hours, minutes // 60)
 # vim: set noexpandtab:

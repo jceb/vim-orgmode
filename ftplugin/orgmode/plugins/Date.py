@@ -231,7 +231,7 @@ class Date(object):
 		TODO: show fancy calendar to pick the date from.
 		TODO: add all modifier of orgmode.
 		"""
-		today = date.today()
+		today = datetime.now()
 		msg = u''.join([
 			u'Inserting ',
 			unicode(u_decode(today.strftime(u'%Y-%m-%d %a'))),

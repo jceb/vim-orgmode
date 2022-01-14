@@ -57,7 +57,7 @@ let g:loaded_org = 1
 
 " Default org plugins that will be loaded (in the given order) {{{2
 if ! exists('g:org_plugins') && ! exists('b:org_plugins')
-	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', 'EditCheckbox', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|', 'Export']
+	let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', 'EditCheckbox', '|', 'Hyperlinks', '|', 'Todo', 'TagsProperties', 'Date', 'Agenda', 'Misc', '|', 'Export', 'LoggingWork']
 endif
 
 " Default org plugin settings {{{2

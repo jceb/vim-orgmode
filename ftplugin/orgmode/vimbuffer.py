@@ -288,6 +288,13 @@ class VimBuffer(Document):
 	def write_checkboxes(self, checkboxes):
 		pass
 
+	def write_clockline(self, clockline):
+		if clockline._orig_start is None:
+			raise ValueError('Clock line must contain the attribute _orig_start! %s ' % clockline)
+
+		if clockline.is_dirty:
+			self._content[clockline._orig_start:clockline._orig_start + 1] = [unicode(clockline)]
+
 	def previous_heading(self, position=None):
 		u""" Find the next heading (search forward) and return the related object
 		:returns:	Heading object or None
