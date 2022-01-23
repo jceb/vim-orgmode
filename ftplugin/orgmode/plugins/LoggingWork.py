@@ -9,34 +9,34 @@ from orgmode.keybinding import Keybinding, Plug, Command
 from orgmode.py3compat.py_py3_string import *
 
 class LoggingWork(object):
-	u""" LoggingWork plugin """
+    u""" LoggingWork plugin """
 
-	def __init__(self):
-		u""" Initialize plugin """
-		object.__init__(self)
-		# menu entries this plugin should create
-		self.menu = ORGMODE.orgmenu + Submenu(u'&Logging work')
+    def __init__(self):
+        u""" Initialize plugin """
+        object.__init__(self)
+        # menu entries this plugin should create
+        self.menu = ORGMODE.orgmenu + Submenu(u'&Logging work')
 
-		# key bindings for this plugin
-		# key bindings are also registered through the menu so only additional
-		# bindings should be put in this variable
-		self.keybindings = []
+        # key bindings for this plugin
+        # key bindings are also registered through the menu so only additional
+        # bindings should be put in this variable
+        self.keybindings = []
 
-		# commands for this plugin
-		self.commands = []
+        # commands for this plugin
+        self.commands = []
 
-	@classmethod
-	def action(cls):
-		u""" Some kind of action
+    @classmethod
+    def action(cls):
+        u""" Some kind of action
 
-		:returns: TODO
-		"""
-		pass
+        :returns: TODO
+        """
+        pass
 
-	def register(self):
-		u"""
-		Registration of plugin. Key bindings and other initialization should be done.
-		"""
-		# an Action menu entry which binds "keybinding" to action ":action"
-		self.commands.append(Command(u'OrgLoggingRecordDoneTime', u'%s ORGMODE.plugins[u"LoggingWork"].action()' % VIM_PY_CALL))
-		self.menu + ActionEntry(u'&Record DONE time', self.commands[-1])
+    def register(self):
+        u"""
+        Registration of plugin. Key bindings and other initialization should be done.
+        """
+        # an Action menu entry which binds "keybinding" to action ":action"
+        self.commands.append(Command(u'OrgLoggingRecordDoneTime', u'%s ORGMODE.plugins[u"LoggingWork"].action()' % VIM_PY_CALL))
+        self.menu + ActionEntry(u'&Record DONE time', self.commands[-1])

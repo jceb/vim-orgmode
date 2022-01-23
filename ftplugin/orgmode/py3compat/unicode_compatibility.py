@@ -1,4 +1,4 @@
 try:
-	unicode
+    unicode
 except NameError:
-	basestring = unicode = str
+    basestring = unicode = str

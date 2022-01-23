@@ -20,7 +20,7 @@ import mock
 # Mock vim
 MOCK_MODULES = ['vim']
 for m in MOCK_MODULES:
-	sys.modules[m] = mock.Mock()
+    sys.modules[m] = mock.Mock()
 
 import vim
 vim.eval = mock.MagicMock(return_value=1)
