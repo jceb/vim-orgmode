@@ -15,7 +15,6 @@ endif
 " *bold*, /italic/, _underline_, +strike-through+, =code=, ~verbatim~
 " Note:
 " - /italic/ is rendered as reverse in most terms (works fine in gVim, though)
-" - +strike-through+ doesn't work on Vim / gVim
 " - the non-standard `code' markup is also supported
 " - =code= and ~verbatim~ are also supported as block-level markup, see below.
 " Ref: http://orgmode.org/manual/Emphasis-and-monospace.html
@@ -32,6 +31,7 @@ if (s:conceal_aggressively == 1)
    syntax region org_code      matchgroup=org_border_code start="[^ \\]\zs=\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs=\|\(^\|[^\\]\)\@<==\S\@="        end="[^ \\]\zs=\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs=\|[^\\]\zs=\S\@="     concealends oneline
    syntax region org_code      matchgroup=org_border_code start="[^ \\]\zs`\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs`\|\(^\|[^\\]\)\@<=`\S\@="        end="[^ \\]\zs'\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs'\|[^\\]\zs'\S\@="     concealends oneline
    syntax region org_verbatim  matchgroup=org_border_verb start="[^ \\]\zs\~\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs\~\|\(^\|[^\\]\)\@<=\~\S\@="     end="[^ \\]\zs\~\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs\~\|[^\\]\zs\~\S\@="  concealends oneline
+   syntax region org_strikethrough  matchgroup=org_border_strike start="[^ \\]\zs+\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs+\|\(^\|[^\\]\)\@<=+\S\@="     end="[^ \\]\zs+\|\(\(^\|[^\\]\)\zs\(\\\\\)\+\)\zs+\|[^\\]\zs+\S\@="  concealends oneline
 else
     syntax region org_bold      start="\S\zs\*\|\*\S\@="     end="\S\zs\*\|\*\S\@="  keepend oneline
     syntax region org_italic    start="\S\zs\/\|\/\S\@="     end="\S\zs\/\|\/\S\@="  keepend oneline
@@ -39,11 +39,13 @@ else
     syntax region org_code      start="\S\zs=\|=\S\@="       end="\S\zs=\|=\S\@="    keepend oneline
     syntax region org_code      start="\S\zs`\|`\S\@="       end="\S\zs'\|'\S\@="    keepend oneline
     syntax region org_verbatim  start="\S\zs\~\|\~\S\@="     end="\S\zs\~\|\~\S\@="  keepend oneline
+    syntax region org_strikethrough  start="\S\zs+\|+\S\@="     end="\S\zs+\|+\S\@="  keepend oneline
 endif
 
 hi def org_bold      term=bold      cterm=bold      gui=bold
 hi def org_italic    term=italic    cterm=italic    gui=italic
 hi def org_underline term=underline cterm=underline gui=underline
+hi def org_strikethrough term=strikethrough cterm=strikethrough gui=strikethrough
 
 if (s:conceal_aggressively == 1)
     hi link org_border_bold org_bold
