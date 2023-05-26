@@ -460,6 +460,9 @@ class Heading(DomObj):
         else:
             new_heading.active_date = None
 
+        if new_heading.tags:
+            with open('/tmp/orgdebug.txt', 'a') as f:
+                print('Found tags', new_heading, file=f)
         return new_heading
 
     def update_subtasks(self, total=0, on=0):

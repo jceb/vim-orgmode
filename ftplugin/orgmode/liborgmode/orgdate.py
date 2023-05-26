@@ -175,6 +175,24 @@ class OrgDate(datetime.date):
         self.active = active
         pass
 
+    def _cast_to_datetime_to_compare(self):
+        now = datetime.datetime.now()
+        today = now.date()
+        time_to_add = now.time() if today == self else datetime.time(0, 0) if today < self else datetime.time(23, 59)
+        return datetime.datetime.combine(self, time_to_add)
+
+    def __le__(self, other):
+        return (super(OrgDate, self) if not isinstance(other, datetime.datetime) else self._cast_to_datetime_to_compare()).__le__(other)
+
+    def __lt__(self, other):
+        return (super(OrgDate, self) if not isinstance(other, datetime.datetime) else self._cast_to_datetime_to_compare()).__lt__(other)
+
+    def __ge__(self, other):
+        return (super(OrgDate, self) if not isinstance(other, datetime.datetime) else self._cast_to_datetime_to_compare()).__ge__(other)
+
+    def __gt__(self, other):
+        return (super(OrgDate, self) if not isinstance(other, datetime.datetime) else self._cast_to_datetime_to_compare()).__gt__(other)
+
     def __new__(cls, active, year, month, day):
         return datetime.date.__new__(cls, year, month, day)
 
@@ -189,6 +207,12 @@ class OrgDate(datetime.date):
 
     def __str__(self):
         return u_encode(self.__unicode__())
+
+    def timestr(self):
+        return '--:--'
+
+    def date(self):
+        return self
 
     def strftime(self, fmt):
         return u_decode(datetime.date.strftime(self, u_encode(fmt)))
@@ -210,6 +234,18 @@ class OrgDateTime(datetime.datetime):
     def __new__(cls, active, year, month, day, hour, minute):
         return datetime.datetime.__new__(cls, year, month, day, hour, minute)
 
+    def __le__(self, other):
+        return super(OrgDateTime, self).__le__(other._cast_to_datetime_to_compare() if isinstance(other, OrgDate) else other)
+
+    def __lt__(self, other):
+        return super(OrgDateTime, self).__lt__(other._cast_to_datetime_to_compare() if isinstance(other, OrgDate) else other)
+
+    def __ge__(self, other):
+        return super(OrgDateTime, self).__ge__(other._cast_to_datetime_to_compare() if isinstance(other, OrgDate) else other)
+
+    def __gt__(self, other):
+        return super(OrgDateTime, self).__gt__(other._cast_to_datetime_to_compare() if isinstance(other, OrgDate) else other)
+
     def __unicode__(self):
         u"""
         Return a string representation.
@@ -221,6 +257,12 @@ class OrgDateTime(datetime.datetime):
 
     def __str__(self):
         return u_encode(self.__unicode__())
+
+    def timestr(self):
+        return self.strftime('%H:%M')
+
+    def date(self):
+        return OrgDate(self.active, self.year, self.month, self.day)
 
     def strftime(self, fmt):
         return u_decode(datetime.datetime.strftime(self, u_encode(fmt)))
