@@ -26,8 +26,8 @@ def agenda_sorting_key(heading):
     if isinstance(orgtime, OrgTimeRange):
         return orgtime.start
 
-    # Then it is an OrgDate. OrgDate cannot be compared with datetime-based Org* values
-    # by default, so it will be converted in such a way that:
+    # It is an OrgDate. OrgDate cannot be compared with datetime-based Org* values by 
+    # default, so it will be converted in such a way that:
     # * OrgDate value of _today_ will be displayed after today's passed events and before
     #   today's upcoming scheduled events.
     # * OrgDate value of a past day will be displayed after all other items of the same
