@@ -304,3 +304,6 @@ class OrgTimeRange(object):
 
     def __str__(self):
         return u_encode(self.__unicode__())
+
+    def date(self):
+        return OrgDate(self.active, self.start.year, self.start.month, self.start.day)

@@ -5,7 +5,7 @@
 syn match org_todo_key /\[\zs[^]]*\ze\]/
 hi def link org_todo_key Identifier
 
-" ['Title', 'Constant', 'Statement', 'Type', 'Special']
+" Multi-colored tags in agenda
 syn match org_tag_1 /:[a-iA-I][^: ]*:/hs=s+1,me=e-1
 syn match org_tag_2 /:[j-rJ-R][^: ]*:/hs=s+1,me=e-1
 syn match org_tag_3 /:[s-zS-Z0][^: ]*:/hs=s+1,me=e-1
