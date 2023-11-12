@@ -7,7 +7,13 @@
     TODO
 """
 
-import imp
+try:
+    import importlib
+    USE_DEPRECATED_IMP=False
+except:
+    import imp
+    USE_DEPRECATED_IMP=True
+
 import re
 import sys
 
@@ -327,21 +333,26 @@ class OrgMode(object):
         # actual plugin class
         _class = None
 
-        # locate module and initialize plugin class
-        try:
-            module = imp.find_module(plugin, orgmode.plugins.__path__)
-        except ImportError as e:
-            echom(u'Plugin not found: %s' % plugin)
-            if self.debug:
-                raise e
-            return
+        if USE_DEPRECATED_IMP:
+            # locate module and initialize plugin class
+            try:
+                module = imp.find_module(plugin, orgmode.plugins.__path__)
+            except ImportError as e:
+                echom(u'Plugin not found: %s' % plugin)
+                if self.debug:
+                    raise e
+                return
 
-        if not module:
-            echom(u'Plugin not found: %s' % plugin)
-            return
+            if not module:
+                echom(u'Plugin not found: %s' % plugin)
+                return
 
         try:
-            module = imp.load_module(plugin, *module)
+            if USE_DEPRECATED_IMP:
+                module = imp.load_module(plugin, *module)
+            else:
+                module = importlib.import_module(".plugins." + plugin, "orgmode")
+
             if not hasattr(module, plugin):
                 echoe(u'Unable to find plugin: %s' % plugin)
                 if self.debug:
