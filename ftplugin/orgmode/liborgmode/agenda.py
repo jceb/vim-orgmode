@@ -16,7 +16,28 @@ from orgmode.liborgmode.agendafilter import filter_items
 from orgmode.liborgmode.agendafilter import is_within_week_and_active_todo
 from orgmode.liborgmode.agendafilter import contains_active_todo
 from orgmode.liborgmode.agendafilter import contains_active_date
+from orgmode.liborgmode.orgdate import OrgDateTime, OrgTimeRange
+import datetime
 
+def agenda_sorting_key(heading):
+    orgtime = heading.active_date
+    if orgtime is None or isinstance(orgtime, OrgDateTime):
+        return orgtime
+    if isinstance(orgtime, OrgTimeRange):
+        return orgtime.start
+
+    # It is an OrgDate. OrgDate cannot be compared with datetime-based Org* values by 
+    # default, so it will be converted in such a way that:
+    # * OrgDate value of _today_ will be displayed after today's passed events and before
+    #   today's upcoming scheduled events.
+    # * OrgDate value of a past day will be displayed after all other items of the same
+    #   day.
+    # * OrgDate value of a future day will be displayed before all other items of the same
+    #   day.
+    now = datetime.datetime.now()
+    today = now.date()
+    time_to_add = now.time() if today == orgtime else datetime.time(0, 0) if today < orgtime else datetime.time(23, 59)
+    return datetime.datetime.combine(orgtime, time_to_add)
 
 class AgendaManager(object):
     u"""Simple parsing of Documents to create an agenda."""
@@ -34,7 +55,7 @@ class AgendaManager(object):
             # filter and return headings
             filtered.extend(filter_items(document.all_headings(),
                                 [contains_active_todo]))
-        return sorted(filtered)
+        return sorted(filtered, key=agenda_sorting_key)
 
     def get_next_week_and_active_todo(self, documents):
         u"""
@@ -46,7 +67,7 @@ class AgendaManager(object):
             # filter and return headings
             filtered.extend(filter_items(document.all_headings(),
                                 [is_within_week_and_active_todo]))
-        return sorted(filtered)
+        return sorted(filtered, key=agenda_sorting_key)
 
     def get_timestamped_items(self, documents):
         u"""
@@ -58,4 +79,4 @@ class AgendaManager(object):
             # filter and return headings
             filtered.extend(filter_items(document.all_headings(),
                                 [contains_active_date]))
-        return sorted(filtered)
+        return sorted(filtered, key=agenda_sorting_key)

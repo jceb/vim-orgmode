@@ -171,32 +171,39 @@ class Agenda(object):
         # It's easy to jump to the right document this way
         cls.line2doc = {}
         # format text for agenda
-        last_date = raw_agenda[0].active_date
-        final_agenda = [u'Week Agenda:', unicode(last_date)]
+        last_date = None
+        final_agenda = [u'Week Agenda:']
         for i, h in enumerate(raw_agenda):
             # insert date information for every new date (not datetime)
-            if unicode(h.active_date)[1:11] != unicode(last_date)[1:11]:
+            active_date_no_time = h.active_date.date()
+            if active_date_no_time != last_date:
                 today = date.today()
                 # insert additional "TODAY" string
-                if h.active_date.year == today.year and \
-                    h.active_date.month == today.month and \
-                    h.active_date.day == today.day:
-                    section = unicode(h.active_date) + u" TODAY"
+                if active_date_no_time == today:
+                    section = unicode(active_date_no_time) + u" TODAY"
                     today_row = len(final_agenda) + 1
                 else:
-                    section = unicode(h.active_date)
+                    section = unicode(active_date_no_time)
                 final_agenda.append(section)
 
                 # update last_date
-                last_date = h.active_date
+                last_date = active_date_no_time
+
+            p = h
+            tags = []
+            while p is not None:
+                tags += p.tags
+                p = p.parent
 
             bufname = os.path.basename(vim.buffers[h.document.bufnr].name)
             bufname = bufname[:-4] if bufname.endswith(u'.org') else bufname
-            formatted = u"  %(bufname)s (%(bufnr)d)  %(todo)s  %(title)s" % {
+            formatted = u"  %(bufname)s (%(bufnr)d)  %(todo)s  %(timestr)s  %(title)s %(tags)s" % {
                 'bufname': bufname,
                 'bufnr': h.document.bufnr,
                 'todo': h.todo,
-                'title': h.title
+                'timestr': h.active_date.timestr(),
+                'title': h.title,
+                'tags': ':' + ':'.join(tags) + ':' if tags else ''
             }
             final_agenda.append(formatted)
             cls.line2doc[len(final_agenda)] = (get_bufname(h.document.bufnr), h.document.bufnr, h.start)
