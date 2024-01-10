@@ -1272,7 +1272,7 @@ syntax highlighting and indentation~
 <
 
   Syntax Highlighting Examples~
-    Define an additionaly keyword 'WAITING' and set the foreground color to
+    Define an additionally keyword 'WAITING' and set the foreground color to
     'cyan'. Define another keyword 'CANCELED' and set the foreground color to
     red, background to black and the weight to normal, slant to italc and
     decoration to underline:

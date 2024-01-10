@@ -103,7 +103,7 @@ Bla Bla bla bla
         self.navigator.next(mode=u'normal')
         self.assertEqual(vim.current.window.cursor, (18, 2))
 
-        ## don't move cursor if last heading is already focussed
+        ## don't move cursor if last heading is already focused
         vim.current.window.cursor = (19, 6)
         self.navigator.next(mode=u'normal')
         self.assertEqual(vim.current.window.cursor, (19, 6))

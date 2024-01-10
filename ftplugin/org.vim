@@ -66,7 +66,7 @@ if ! exists('g:org_syntax_highlight_leading_stars') && ! exists('b:org_syntax_hi
 	let g:org_syntax_highlight_leading_stars = 1
 endif
 
-" setting to conceal aggresively
+" setting to conceal aggressively
 if ! exists('g:org_aggressive_conceal') && ! exists('b:org_aggressive_conceal')
 	let g:org_aggressive_conceal = 0
 endif
