@@ -251,7 +251,7 @@ class Todo(object):
     def init_org_todo(cls):
         u""" Initialize org todo selection window.
         """
-        bufnr = int(re.findall('\d+$',vim.current.buffer.name)[0])
+        bufnr = int(re.findall(r'\d+$',vim.current.buffer.name)[0])
         all_states = ORGTODOSTATES.get(bufnr, None)
 
         vim_commands = [
