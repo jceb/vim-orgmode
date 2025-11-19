@@ -2,7 +2,7 @@
 " (we're adding two markdown-like variants for =code= and blockquotes)
 " -----------------------------------------------------------------------------
 "
-" Do we use aggresive conceal?
+" Do we use aggressive conceal?
 if exists("b:org_aggressive_conceal")
     let s:conceal_aggressively=b:org_aggressive_conceal
 elseif exists("g:org_aggressive_conceal")
