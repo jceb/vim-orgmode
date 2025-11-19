@@ -190,6 +190,12 @@ class OrgDate(datetime.date):
     def __str__(self):
         return u_encode(self.__unicode__())
 
+    def timestr(self):
+        return '--:--'
+
+    def date(self):
+        return self
+
     def strftime(self, fmt):
         return u_decode(datetime.date.strftime(self, u_encode(fmt)))
 
@@ -221,6 +227,12 @@ class OrgDateTime(datetime.datetime):
 
     def __str__(self):
         return u_encode(self.__unicode__())
+
+    def timestr(self):
+        return self.strftime('%H:%M')
+
+    def date(self):
+        return OrgDate(self.active, self.year, self.month, self.day)
 
     def strftime(self, fmt):
         return u_decode(datetime.datetime.strftime(self, u_encode(fmt)))
@@ -292,3 +304,6 @@ class OrgTimeRange(object):
 
     def __str__(self):
         return u_encode(self.__unicode__())
+
+    def date(self):
+        return OrgDate(self.active, self.start.year, self.start.month, self.start.day)

@@ -5,6 +5,18 @@
 syn match org_todo_key /\[\zs[^]]*\ze\]/
 hi def link org_todo_key Identifier
 
+" Multi-colored tags in agenda
+syn match org_tag_1 /:[a-iA-I][^: ]*:/hs=s+1,me=e-1
+syn match org_tag_2 /:[j-rJ-R][^: ]*:/hs=s+1,me=e-1
+syn match org_tag_3 /:[s-zS-Z0][^: ]*:/hs=s+1,me=e-1
+syn match org_tag_4 /:[1-9_][^: ]*:/hs=s+1,me=e-1
+syn match org_tag_5 /:[\W][^: ]*:/hs=s+1,me=e-1
+hi def link org_tag_1 Title
+hi def link org_tag_2 Constant
+hi def link org_tag_3 Statement
+hi def link org_tag_4 Type
+hi def link org_tag_5 Special
+
 let s:todo_headings = ''
 let s:i = 1
 while s:i <= g:org_heading_highlight_levels
