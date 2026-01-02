@@ -2,6 +2,10 @@
 "      - Most of the stuff here is also in syntax.org
 "      - DRY!
 
+if exists("b:current_syntax")
+    finish
+endif
+
 syn match org_todo_key /\[\zs[^]]*\ze\]/
 hi def link org_todo_key Identifier
 
@@ -89,3 +93,5 @@ syntax match hyperlinkBracketsLeft		contained "\[\{2}" conceal
 syntax match hyperlinkURL				contained "[^][]*\]\[" conceal
 syntax match hyperlinkBracketsRight		contained "\]\{2}" conceal
 hi def link hyperlink Underlined
+
+let b:current_syntax = "orgagenda"
