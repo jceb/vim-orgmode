@@ -1,3 +1,7 @@
+if exists("b:current_syntax")
+    finish
+endif
+
 " Support org authoring markup as closely as possible
 " (we're adding two markdown-like variants for =code= and blockquotes)
 " -----------------------------------------------------------------------------
@@ -392,4 +396,5 @@ if exists('g:loaded_SyntaxRange')
   call SyntaxRange#Include('\$[^$]', '\$', 'tex')
 endif
 
+let b:current_syntax = "org"
 " vi: ft=vim:tw=80:sw=4:ts=4:fdm=marker

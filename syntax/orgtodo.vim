@@ -1,3 +1,7 @@
+if exists("b:current_syntax")
+    finish
+endif
+
 syn match org_todo_key /\[\zs[^]]*\ze\]/
 hi def link org_todo_key Identifier
 
@@ -45,3 +49,5 @@ endif
 
 call s:ReadTodoKeywords(g:org_todo_keywords, s:todo_headings)
 unlet! s:todo_headings
+
+let b:current_syntax = "orgtodo"
